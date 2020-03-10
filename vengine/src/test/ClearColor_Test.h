@@ -6,9 +6,6 @@ namespace test {
 
     class ClearColor : public Test 
     {
-    public:
-        static ClearColor* s_Instance;
-
     private:
         float m_Color[4];
 
@@ -17,10 +14,11 @@ namespace test {
         ~ClearColor();
 
     public:
-        static ClearColor* getInstance()
+        ClearColor(const ClearColor&) = delete;
+
+        static ClearColor& getInstance()
         {
-            if (!s_Instance)
-                s_Instance = new ClearColor();
+            static ClearColor s_Instance;
             return s_Instance;
         }
 
