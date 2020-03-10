@@ -1,0 +1,12 @@
+*.db
+*.idb
+*.ilk
+*.ipch
+*.log
+*.obj
+*.opendb
+*.pdb
+*.suo
+*.tlog
+
+vengine.vcxproj.FileListAbsolute.txt
