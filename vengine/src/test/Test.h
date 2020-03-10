@@ -4,11 +4,10 @@ namespace test {
 
     class Test
     {
-    public:
+    protected:
         Test() {}
         virtual ~Test() {}
 
-    private:
         virtual void onUpdate(float deltaTime) {}
         virtual void onRender() {}
         virtual void onImGuiRender() {}

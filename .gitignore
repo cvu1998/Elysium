@@ -1,5 +1,6 @@
 *.db
 *.idb
+*.ini
 *.ilk
 *.ipch
 *.log
