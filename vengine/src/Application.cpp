@@ -19,8 +19,6 @@
 */
 #include "test/ClearColor_Test.h"
 
-test::ClearColor* test::ClearColor::s_Instance = 0;
-
 static void screenSaverLogic(float translation, bool& signX, bool& signY, float& x, float& y)
 {
     if (!(x > -3.0f && x < 3.0f) &&
@@ -193,23 +191,22 @@ int main(void)
 
         bool show_demo_window = true;
         bool show_another_window = false;
-        ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
-        test::ClearColor::s_Instance = test::ClearColor::getInstance();
+        test::ClearColor& s_Instance = test::ClearColor::getInstance();
         /* Loop until the user closes the window */
         while (!glfwWindowShouldClose(window))
         {
             /* Render here */
             renderer.clear();
 
-            test::ClearColor::s_Instance->onUpdate(0.0f);
-            test::ClearColor::s_Instance->onRender();
+            s_Instance.onUpdate(0.0f);
+            s_Instance.onRender();
 
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
 
-            test::ClearColor::s_Instance->onImGuiRender();
+            s_Instance.onImGuiRender();
 
             /***CAMERA***/
             /*
