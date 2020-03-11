@@ -151,9 +151,8 @@ int main(void)
 
         /***TEXTURE*/
         sShader.setUniform1i("u_UseTexture", 0);
-        Texture sTexture("res/texture/meadow.png");
-        sTexture.bind(/*0*/);
-        sShader.setUniform1i("u_Texture", 0);
+        //Texture sTexture("res/texture/Vader.png");
+        //sTexture.bind(/*0*/);
         /***TEXTURE*/
         /***SECOND***/
 

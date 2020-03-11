@@ -32,7 +32,8 @@ void main()
     vec4 texColor = texture(u_Texture, v_TexCoord);
     if (u_UseTexture == 1) {
         color = texColor;
-    } else {
+    }
+    else {
         color = u_Color;
     }
 };
