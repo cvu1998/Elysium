@@ -2,11 +2,11 @@
 
 #include "stb_image/stb_image.h"
 
-Texture::Texture(const std::string filepath) 
+Texture::Texture(const char* filepath) 
     : m_RendererID(0), m_FilePath(filepath), m_LocalBuffer(nullptr), m_Height(0), m_Width(0), m_BPP(0)
 {
     stbi_set_flip_vertically_on_load(1);
-    m_LocalBuffer = stbi_load(filepath.c_str(), &m_Width, &m_Height, &m_BPP, 4);
+    m_LocalBuffer = stbi_load(filepath, &m_Width, &m_Height, &m_BPP, 4);
 
     GL_ASSERT(glGenTextures(1, &m_RendererID));
     GL_ASSERT(glBindTexture(GL_TEXTURE_2D, m_RendererID));

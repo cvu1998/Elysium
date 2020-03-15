@@ -2,29 +2,28 @@
 
 #include <imgui/imgui.h>
 
-#include "Utility.h"
-
 namespace test {
 
-    ClearColor::ClearColor() : m_Color {0.25f, 0.25f, 0.4f, 0.0f}
+    ClearColor_Test::ClearColor_Test() : m_Color {0.25f, 0.25f, 0.4f, 0.0f}
     {
     }
 
-    ClearColor::~ClearColor()
+    ClearColor_Test::~ClearColor_Test()
+    {
+        GL_ASSERT(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
+    }
+
+    void ClearColor_Test::onUpdate(float deltaTime)
     {
     }
 
-    void ClearColor::onUpdate(float deltaTime)
-    {
-    }
-
-    void ClearColor::onRender()
+    void ClearColor_Test::onRender(const glm::mat4& proj, const glm::mat4& view)
     {
         GL_ASSERT(glClearColor(m_Color[0], m_Color[1], m_Color[2] , m_Color[3]));
         GL_ASSERT(glClear(GL_COLOR_BUFFER_BIT))
     }
 
-    void ClearColor::onImGuiRender()
+    void ClearColor_Test::onImGuiRender()
     {
         ImGui::ColorEdit4("Clear Color", m_Color);
     }

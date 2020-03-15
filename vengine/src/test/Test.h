@@ -2,7 +2,10 @@
 
 #include <functional>
 #include <iostream>
+#include <memory>
 #include <vector>
+
+#include "Renderer.h"
 
 namespace test {
 
@@ -13,7 +16,7 @@ namespace test {
         virtual ~Test() {}
 
         virtual void onUpdate(float deltaTime) {}
-        virtual void onRender() {}
+        virtual void onRender(const glm::mat4& proj, const glm::mat4& view) {}
         virtual void onImGuiRender() {}
     };
 

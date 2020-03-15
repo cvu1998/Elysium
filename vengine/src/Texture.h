@@ -8,12 +8,12 @@ class Texture
 {
 private:
     unsigned int m_RendererID;
-    std::string m_FilePath;
+    const char* m_FilePath;
     unsigned char* m_LocalBuffer;
     int m_Width, m_Height, m_BPP;
 
 public:
-    Texture(const std::string filepath);
+    Texture(const char* filepath);
     ~Texture();
 
     void bind(unsigned int slot = 0) const;

@@ -1,43 +1,45 @@
 #pragma once
 
-#include "Renderer.h"
+#include "Test.h"
+
+enum class OutOfBounds{
+    INBOUNDS = -1,
+    XY = 0,
+    XONLY = 1,
+    YONLY = 2,
+};
 
 namespace test {
 
-    class ScreenSaver
+    class ScreenSaver_Test : public Test
     {
     private:
+        float m_Height;
+        float m_Width;
+
         VertexArray m_va;
+        std::unique_ptr<VertexBuffer> m_vb;
         VertexBufferLayout m_Layout;
-        IndexBuffer* m_ib; 
-        Shader* m_Shader;
+        std::unique_ptr<IndexBuffer> m_ib; 
+        Shader m_Shader;
 
         float r;
         bool inc;
 
+        float m_Translation;
         float x;
         float y;
         bool m_SignX;
         bool m_SignY;
-
-    private:
-        ScreenSaver();
-        ~ScreenSaver();
+        OutOfBounds m_Case;
 
     public:
-        ScreenSaver(const ScreenSaver&) = delete;
+        ScreenSaver_Test();
+        ~ScreenSaver_Test();
 
-        static ScreenSaver* s_Instance;
-        static ScreenSaver* getInstance() {
-            if (!s_Instance)
-                s_Instance = new ScreenSaver();
-            return s_Instance;
-        }
-        void destroyScreenSaver();
-
-        void setScreenSaver(const VertexBuffer& vb);
-        void updateScreenSaver(Renderer& renderer, const glm::mat4& proj, const glm::mat4& view);
-        void unBind() const;
+        virtual void onUpdate(float deltaTime) override;
+        virtual void onRender(const glm::mat4& proj, const glm::mat4& view) override;
+        virtual void onImGuiRender() override;
     };
 }
 
