@@ -9,18 +9,9 @@ namespace test {
     private:
         float m_Color[4];
 
-    private:
+    public:
         ClearColor();
         ~ClearColor();
-
-    public:
-        ClearColor(const ClearColor&) = delete;
-
-        static ClearColor& getInstance()
-        {
-            static ClearColor s_Instance;
-            return s_Instance;
-        }
 
         virtual void onUpdate(float deltaTime) override;
         virtual void onRender() override;

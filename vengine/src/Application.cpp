@@ -18,39 +18,9 @@
 #include "Shader.h"
 */
 #include "test/ClearColor_Test.h"
+#include "test/ScreenSaver_Test.h"
 
-static void screenSaverLogic(float translation, bool& signX, bool& signY, float& x, float& y)
-{
-    if (!(x > -3.0f && x < 3.0f) &&
-        !(y > -2.0f && y < 2.0f)) {
-        signX = !signX;
-        signY = !signY;
-    }
-    else if (!(x > -3.0f && x < 3.0f) &&
-        (y > -2.0f && y < 2.0f)) {
-        signX = !signX;
-    }
-    else if ((x > -3.0f && x < 3.0f) &&
-        !(y > -2.0f && y < 2.0f)) {
-        signY = !signY;
-    }
-    if (signX && signY) {
-        x += translation;
-        y += translation;
-    }
-    else if (signX && !signY) {
-        x += translation;
-        y -= translation;
-    }
-    else if (!signX && signY) {
-        x -= translation;
-        y += translation;
-    }
-    else {
-        x += -translation;
-        y += -translation;
-    }
-}
+test::ScreenSaver* test::ScreenSaver::s_Instance;
 
 int main(void)
 {
@@ -79,9 +49,6 @@ int main(void)
 
     if (glewInit() != GLEW_OK)
         std::cout << "Glew Init Error!" << std::endl;
-
-    float x = 0.0f;
-    float y = 0.0f;
 
     glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
     glm::mat4 proj = glm::ortho(-4.0f, 4.0f, -3.0f, 3.0f, -1.0f, 1.0f);
@@ -130,43 +97,10 @@ int main(void)
         Texture texture("res/texture/meadow.png");
         texture.bind(/*0*/);
 
-        /***SECOND***/
-        unsigned int sIndices[] = {
-            5, 6, 7,
-            7, 8, 5
-        };
-
-        VertexArray sVa;
-        //VertexBuffer sVb(positions, 9 * 4 * sizeof(float));
-
-        VertexBufferLayout sLayout;
-        sLayout.push<float>(2);
-        sLayout.push<float>(2);
-        sVa.addBuffer(vb, sLayout);
-
-        IndexBuffer sIb(sIndices, 6);
-
-        Shader sShader("res/shaders/basic.shader");
-        sShader.bind();
-
-        /***TEXTURE*/
-        sShader.setUniform1i("u_UseTexture", 0);
-        //Texture sTexture("res/texture/Vader.png");
-        //sTexture.bind(/*0*/);
-        /***TEXTURE*/
-        /***SECOND***/
-
         va.unBind();
         shader.unBind();
         vb.unBind();
         ib.unBind();
-
-        /***SECOND***/
-        sVa.unBind();
-        sShader.unBind();
-        //sVb.unBind();
-        sIb.unBind();
-        /***SECOND***/
 
         Renderer renderer;
 
@@ -176,36 +110,46 @@ int main(void)
         ImGui_ImplOpenGL3_Init(glsl_version);
         ImGui::StyleColorsDark();
 
-        float r = 0.0f;
-        bool incR = true;
-
-        bool signX = false;
-        bool signY = false;
-        float translation = 0.01f;
-
         glm::vec3 translationA(-1.0f, 0.0f, 0);
         glm::vec3 translationB(1.0f, 0.0f, 0);
 
-        float viewX = 0.0f;
+        //float viewX = 0.0f;
 
         bool show_demo_window = true;
         bool show_another_window = false;
 
-        test::ClearColor& s_Instance = test::ClearColor::getInstance();
+        test::Test* currentTest = nullptr;
+        test::TestMenu* testMenu = new test::TestMenu(currentTest);
+        currentTest = testMenu;
+
+        testMenu->registerTest<test::ClearColor>("Clear Color");
+
+        test::ScreenSaver* s_ScreenSaverInstance = test::ScreenSaver::getInstance();
+        s_ScreenSaverInstance->setScreenSaver(vb);
+        s_ScreenSaverInstance->unBind();
         /* Loop until the user closes the window */
         while (!glfwWindowShouldClose(window))
         {
-            /* Render here */
+            GL_ASSERT(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
             renderer.clear();
-
-            s_Instance.onUpdate(0.0f);
-            s_Instance.onRender();
 
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
 
-            s_Instance.onImGuiRender();
+            if (currentTest)
+            {
+                currentTest->onUpdate(0.0f);
+                currentTest->onRender();
+                ImGui::Begin("Test");
+                if (currentTest != testMenu && ImGui::Button("<--"))
+                {
+                    delete currentTest;
+                    currentTest = testMenu;
+                }
+                currentTest->onImGuiRender();
+                ImGui::End();
+            }
 
             /***CAMERA***/
             /*
@@ -230,26 +174,7 @@ int main(void)
                 renderer.draw(va, ib, shader);
             }
 
-            /***SECOND***/
-            sShader.bind();
-            sShader.setUniform4f("u_Color", r, 0.0f, 1.0f, 1.0f);
-            renderer.draw(sVa, sIb, sShader);
-
-            screenSaverLogic(translation, signX, signY, x, y);
-            glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(x, y, 0));
-            glm::mat4 mvp = proj * view * model;
-            sShader.setUniformMat4f("u_MVP", mvp);
-
-            if (r < 1.0f && incR) {
-                r += 0.01f;
-            }
-            else if (r > 0 && !incR) {
-                r -= 0.01f;
-            }
-            else {
-                incR = !incR;
-            }
-            /***SECOND***/
+            s_ScreenSaverInstance->updateScreenSaver(renderer, proj, view);
 
             {
                 ImGui::SliderFloat3("Translation A", &translationA.x, -3.0f, 3.0f);
@@ -266,9 +191,16 @@ int main(void)
             /* Poll for and process events */
             glfwPollEvents();
         }
+        s_ScreenSaverInstance->destroyScreenSaver();
+        delete currentTest;
+        if (currentTest != testMenu) 
+            delete testMenu;
     }
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
+
+    glfwDestroyWindow(window);
     glfwTerminate();
     return 0;
 }

@@ -2,6 +2,8 @@
 *.idb
 *.ini
 *.ilk
+*.iobj
+*.ipdb
 *.ipch
 *.log
 *.obj
@@ -11,3 +13,6 @@
 *.tlog
 
 vengine.vcxproj.FileListAbsolute.txt
+
+Debug/res/
+Release/res/
