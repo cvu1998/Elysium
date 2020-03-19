@@ -154,6 +154,7 @@
     <ClCompile Include="src\Application.cpp" />
     <ClCompile Include="src\IndexBuffer.cpp" />
     <ClCompile Include="src\Renderer.cpp" />
+    <ClCompile Include="src\test\BatchRendering_Test.cpp" />
     <ClCompile Include="src\test\ClearColor_Test.cpp" />
     <ClCompile Include="src\test\ScreenSaver_Test.cpp" />
     <ClCompile Include="src\test\Test.cpp" />
@@ -178,6 +179,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\basic.shader" />
+    <None Include="res\shaders\batch_rendering.shader" />
     <None Include="src\vendor\glm\detail\func_common.inl" />
     <None Include="src\vendor\glm\detail\func_common_simd.inl" />
     <None Include="src\vendor\glm\detail\func_exponential.inl" />
@@ -317,6 +319,7 @@
     <ClInclude Include="src\Shader.h" />
     <ClInclude Include="src\IndexBuffer.h" />
     <ClInclude Include="src\Renderer.h" />
+    <ClInclude Include="src\test\BatchRendering_Test.h" />
     <ClInclude Include="src\test\ClearColor_Test.h" />
     <ClInclude Include="src\test\ScreenSaver_Test.h" />
     <ClInclude Include="src\test\Test.h" />

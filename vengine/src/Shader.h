@@ -2,7 +2,9 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <unordered_map>
-#include<string>
+#include <string>
+
+#include "Utility.h"
 
 struct ShaderProgramSource
 {
@@ -13,25 +15,32 @@ struct ShaderProgramSource
 class Shader
 {
 private:
-    std::string m_FilePath;
+    const char* m_FilePath;
     unsigned int m_RendererID;
-    std::unordered_map<std::string, int> m_UniformLocationCache;
+    mutable std::unordered_map<std::string, int> m_UniformLocationCache;
 
 public:
-    Shader(const std::string& filepath);
+    Shader(const char* filepath);
     ~Shader();
 
     void bind() const;
     void unBind() const;
 
-    void setUniform1i(const std::string& name, int value);
-    void setUniform4f(const std::string& name, float v0, float v1, float v2, float v3);
-    void setUniformMat4f(const std::string& name, const glm::mat4& matrix);
+    void setUniform1i(const char* name, int value);
+
+    template <size_t T>
+    void setUniform1iv(const char* name, int value, int(&sampler)[T])
+    {
+        GL_ASSERT(glUniform1iv(getUniformLocation(name), value, sampler));
+    }
+
+    void setUniform4f(const char* name, float v0, float v1, float v2, float v3);
+    void setUniformMat4f(const char* name, const glm::mat4& matrix);
 
 private:
-    ShaderProgramSource parseShader(const std::string& filepath);
+    int getUniformLocation(const char* name) const;
+    ShaderProgramSource parseShader(const char* filepath);
     unsigned int compileShader(unsigned int type, const std::string& source);
     unsigned int createShader(const std::string& vertexShader, const std::string fragmentShader);
-    int getUniformLocation(const std::string& name);
 };
 

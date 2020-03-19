@@ -4,8 +4,6 @@
 #include <iostream>
 #include <sstream>
 
-#include "Utility.h"
-
 enum class ShaderType
 {
     NONE = -1,
@@ -13,7 +11,7 @@ enum class ShaderType
     FRAGMENT = 1
 };
 
-Shader::Shader(const std::string& filepath) : m_FilePath(filepath), m_RendererID(0)
+Shader::Shader(const char* filepath) : m_FilePath(filepath), m_RendererID(0)
 {
     ShaderProgramSource source = parseShader(filepath);
     m_RendererID = createShader(source.vertexSource, source.fragmentSource);
@@ -34,22 +32,35 @@ void Shader::unBind() const
     GL_ASSERT(glUseProgram(0));
 }
 
-void Shader::setUniform1i(const std::string& name, int value)
+void Shader::setUniform1i(const char* name, int value)
 {
     GL_ASSERT(glUniform1i(getUniformLocation(name), value));
 }
 
-void Shader::setUniform4f(const std::string& name, float v0, float v1, float v2, float v3)
+void Shader::setUniform4f(const char* name, float v0, float v1, float v2, float v3)
 {
     GL_ASSERT(glUniform4f(getUniformLocation(name), v0, v1, v2 ,v3));
 }
 
-void Shader::setUniformMat4f(const std::string& name, const glm::mat4& matrix)
+void Shader::setUniformMat4f(const char* name, const glm::mat4& matrix)
 {
     GL_ASSERT(glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, &matrix[0][0]));
 }
 
-ShaderProgramSource Shader::parseShader(const std::string& filepath)
+int Shader::getUniformLocation(const char* name) const
+{
+    if (m_UniformLocationCache.find(name) != m_UniformLocationCache.end())
+        return m_UniformLocationCache[name];
+
+    GL_ASSERT(int location = glGetUniformLocation(m_RendererID, name));
+    if (location == -1)
+        std::cout << "Warning: Uniform " << name << " doesn't exist!" << std::endl;
+
+    m_UniformLocationCache[name] = location;
+    return location;
+}
+
+ShaderProgramSource Shader::parseShader(const char* filepath)
 {
     std::ifstream stream(filepath);
     std::string line;
@@ -116,17 +127,4 @@ unsigned int Shader::createShader(const std::string& vertexShader, const std::st
     glDeleteShader(fS);
 
     return program;
-}
-
-int Shader::getUniformLocation(const std::string& name)
-{
-    if (m_UniformLocationCache.find(name) != m_UniformLocationCache.end())
-        return m_UniformLocationCache[name];
-
-    GL_ASSERT(int location = glGetUniformLocation(m_RendererID, name.c_str()));
-    if (location == -1)
-        std::cout << "Warning: Uniform " << name << " doesn't exist!" << std::endl;
-
-    m_UniformLocationCache[name] = location;
-    return location;
 }

@@ -12,8 +12,9 @@
 #include "VertexBufferLayout.h"
 
 #include "test/ClearColor_Test.h"
-#include "test/ScreenSaver_Test.h"
 #include "test/Texture2D_Test.h"
+#include "test/ScreenSaver_Test.h"
+#include "test/BatchRendering_Test.h"
 
 int main(void)
 {
@@ -69,8 +70,9 @@ int main(void)
         currentTest = testMenu;
 
         testMenu->registerTest<test::ClearColor_Test>("Clear Color");
-        testMenu->registerTest<test::ScreenSaver_Test>("Screen Saver");
         testMenu->registerTest<test::Texture2D_Test>("2D Texture");
+        testMenu->registerTest<test::ScreenSaver_Test>("Screen Saver");
+        testMenu->registerTest<test::BatchRendering_Test>("Batch Rendering");
         /* Loop until the user closes the window */
         while (!glfwWindowShouldClose(window))
         {

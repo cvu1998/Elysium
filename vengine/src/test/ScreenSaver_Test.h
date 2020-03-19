@@ -3,10 +3,10 @@
 #include "Test.h"
 
 enum class OutOfBounds{
-    INBOUNDS = -1,
-    XY = 0,
-    XONLY = 1,
-    YONLY = 2,
+    IN_BOUNDS = 0,
+    XY = 1,
+    X_ONLY = 2,
+    Y_ONLY = 3,
 };
 
 namespace test {
@@ -31,6 +31,7 @@ namespace test {
         float y;
         bool m_SignX;
         bool m_SignY;
+        bool m_Inside;
         OutOfBounds m_Case;
 
     public:

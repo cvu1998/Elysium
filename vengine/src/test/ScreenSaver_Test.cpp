@@ -8,7 +8,7 @@ namespace test {
         m_Shader("res/shaders/basic.shader"),
         m_Height(1.0f), m_Width(1.0f),
         r(0.0f), inc(true),
-        m_Translation(0.01f), x(0.0f), y(0.0f), m_SignX(false), m_SignY(false)
+        m_Translation(0.01f), x(0.0f), y(0.0f), m_SignX(false), m_SignY(false), m_Inside(true)
     {
         float positions[] = {
            -m_Height, -m_Width, 0.0f, 0.0f,    // 0
@@ -45,23 +45,23 @@ namespace test {
     {
         /***CHECK WITHIN BORDERS***/
         if (!(x > -3.0f && x < 3.0f) &&
-            !(y > -2.0f && y < 2.0f)) {
+            !(y > -2.0f && y < 2.0f) && m_Case != OutOfBounds::XY) {
             m_SignX = !m_SignX;
             m_SignY = !m_SignY;
             m_Case = OutOfBounds::XY;
         }
         else if (!(x > -3.0f && x < 3.0f) &&
-            (y > -2.0f && y < 2.0f) && m_Case != OutOfBounds::XONLY) {
+            (y > -2.0f && y < 2.0f) && m_Case != OutOfBounds::X_ONLY) {
             m_SignX = !m_SignX;
-            m_Case = OutOfBounds::XONLY;
+            m_Case = OutOfBounds::X_ONLY;
         }
         else if ((x > -3.0f && x < 3.0f) &&
-            !(y > -2.0f && y < 2.0f) && m_Case != OutOfBounds::YONLY) {
+            !(y > -2.0f && y < 2.0f) && m_Case != OutOfBounds::Y_ONLY) {
             m_SignY = !m_SignY;
-            m_Case = OutOfBounds::YONLY;
+            m_Case = OutOfBounds::Y_ONLY;
         } 
         else {
-            m_Case = OutOfBounds::INBOUNDS;
+            m_Case = OutOfBounds::IN_BOUNDS;
         }
         /***CHECK WITHIN BORDERS***/
         /***BOUNCE LOGIC***/
@@ -97,7 +97,6 @@ namespace test {
         glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(x, y, 0));
         glm::mat4 mvp = proj * view * model;
 
-        m_Shader.bind();
         m_Shader.setUniform4f("u_Color", r, 0.0f, 1.0f, 1.0f);
         m_Shader.setUniformMat4f("u_MVP", mvp);
 

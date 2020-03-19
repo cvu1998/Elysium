@@ -36,6 +36,8 @@ namespace test {
 
         m_Shader.bind();
         m_Shader.setUniform1i("u_UseTexture", 1);
+
+        m_Texture.bind(/*0*/);
     }
 
     Texture2D_Test::~Texture2D_Test()
@@ -53,12 +55,9 @@ namespace test {
         GL_ASSERT(glClear(GL_COLOR_BUFFER_BIT));
 
         Renderer& s_Renderer = Renderer::getInstance();
-
-        m_Texture.bind(/*0*/);
         {
             glm::mat4 modelT = glm::translate(glm::mat4(1.0f), m_TranslationA);
             glm::mat4 mvpT = proj * view * modelT;
-            m_Shader.bind();
             m_Shader.setUniformMat4f("u_MVP", mvpT);
             s_Renderer.draw(m_va, *m_ib, m_Shader);
         }
@@ -66,7 +65,6 @@ namespace test {
         {
             glm::mat4 modelT = glm::translate(glm::mat4(1.0f), m_TranslationB);
             glm::mat4 mvpT = proj * view * modelT;
-            m_Shader.bind();
             m_Shader.setUniformMat4f("u_MVP", mvpT);
             s_Renderer.draw(m_va, *m_ib, m_Shader);
         }

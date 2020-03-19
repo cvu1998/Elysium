@@ -19,6 +19,7 @@ public:
     void bind(unsigned int slot = 0) const;
     void unBind() const;
 
+    inline unsigned int getRendererID() const { return m_RendererID; }
     inline int getHeight() const { return m_Height; }
     inline int getWidth() const { return m_Width; }
 };
