@@ -2,6 +2,7 @@
 #include <vector>
 
 #include "Utility.h"
+#include "Shape.h"
 
 struct VertexBufferElement 
 {
@@ -16,6 +17,7 @@ struct VertexBufferElement
             case GL_FLOAT:          return 4;
             case GL_UNSIGNED_INT:   return 4;
             case GL_UNSIGNED_BYTE:  return 1;
+            case 0:                 return sizeof(Vertex);
         }
         ASSERT(false);
         return 0;
@@ -42,6 +44,13 @@ public:
    {
        m_Elements.push_back({ count, GL_FLOAT, GL_FALSE });
        m_Stride += count * VertexBufferElement::getSizeOfType(GL_FLOAT);
+   }
+
+   template<>
+   void push<Vertex>(unsigned int count)
+   {
+       m_Elements.push_back({ count, GL_FLOAT, GL_FALSE });
+       m_Stride = VertexBufferElement::getSizeOfType(0);
    }
 
    template<>

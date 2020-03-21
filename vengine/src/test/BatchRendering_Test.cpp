@@ -4,20 +4,26 @@
 
 namespace test {
 
-    BatchRendering_Test::BatchRendering_Test(): m_TranslationA(-1.0f, 0.0f, 0.0f), m_TranslationB(1.0f, 0.0f, 0.0f),
-        m_Shader("res/shaders/batch_rendering.shader")
+    BatchRendering_Test::BatchRendering_Test(): 
+        m_Shader("res/shaders/batch_rendering.shader"), 
+        m_Translation(0.0f, 0.0f, 0.0f)
     {
-        float positions[] = {
-/*         x      y     R     G     B   TextureCoord TextureID     */
-         -1.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-         -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-         -0.5f,  0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
-         -1.5f,  0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+        float vertices[] = {
+/*         x      y     R     G     B   Alpha TextureCoord TextureID     */
+         -1.5f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
+         -0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f,
+         -0.5f,  0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f,
+         -1.5f,  0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
 
-          0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-          1.5f, -0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f,
-          1.5f,  0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-          0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f
+          0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+          1.5f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f,
+          1.5f,  0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f,
+          0.5f,  0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
+
+         -0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, -1.0f,
+          0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, -1.0f,
+          0.5f,  1.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, -1.0f,
+         -0.5f,  1.5f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, -1.0f
         };
 
         unsigned int indices[] = {
@@ -25,22 +31,23 @@ namespace test {
             2, 3, 0,
             4, 5, 6,
             6, 7, 4,
-
+            8, 9, 10,
+            10, 11, 8
         };
 
         GL_ASSERT(glEnable(GL_BLEND));
         GL_ASSERT(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
-        m_vb = std::make_unique<VertexBuffer>(positions, 8 * 8 * sizeof(float));
+        m_vb = std::make_unique<VertexBuffer>(vertices, 12 * 9 * sizeof(float));
 
         VertexBufferLayout layout;
         layout.push<float>(2);
-        layout.push<float>(3);
+        layout.push<float>(4);
         layout.push<float>(2);
         layout.push<float>(1);
         m_va.addBuffer(*m_vb, layout);
 
-        m_ib = std::make_unique<IndexBuffer>(indices, 12);
+        m_ib = std::make_unique<IndexBuffer>(indices, 18);
 
         m_Shader.bind();
         m_Textures.reserve(2);
@@ -71,7 +78,7 @@ namespace test {
         GL_ASSERT(glClear(GL_COLOR_BUFFER_BIT));
 
         Renderer& s_Renderer = Renderer::getInstance();
-        glm::mat4 modelT = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+        glm::mat4 modelT = glm::translate(glm::mat4(1.0f), m_Translation);
         glm::mat4 mvpT = proj * view * modelT;
         m_Shader.setUniformMat4f("u_MVP", mvpT);
         s_Renderer.draw(m_va, *m_ib, m_Shader);
@@ -79,10 +86,7 @@ namespace test {
 
     void BatchRendering_Test::onImGuiRender()
     {
-        /*
-        ImGui::SliderFloat3("Translation A", &m_TranslationA.x, -3.0f, 3.0f);
-        ImGui::SliderFloat3("Translation B", &m_TranslationB.x, -3.0f, 3.0f);
+        ImGui::SliderFloat3("Translation", &m_Translation.x, -3.0f, 3.0f);
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-        */
     }
 }

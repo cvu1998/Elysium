@@ -8,21 +8,26 @@
 
 namespace test {
 
-    class BatchRendering_Test : public Test 
+    class DynamicBatchRendering_Test : public Test 
     {
     private:
+        //unsigned int m_VertexRendererID;
+        //unsigned int m_IndexRendererID;
+        
         VertexArray m_va;
-        std::unique_ptr<VertexBuffer> m_vb;
+        VertexBuffer m_vb;
         VertexBufferLayout m_Layout;
-        std::unique_ptr<IndexBuffer> m_ib;
+        IndexBuffer m_ib;
+        
         Shader m_Shader;
         std::vector<Texture> m_Textures;
 
         glm::vec3 m_Translation;
+        float m_QuadPosition[2] = { -1.5f, -1.0f };
 
     public:
-        BatchRendering_Test();
-        ~BatchRendering_Test();
+        DynamicBatchRendering_Test();
+        ~DynamicBatchRendering_Test();
 
         virtual void onUpdate(float deltaTime) override;
         virtual void onRender(const glm::mat4& proj, const glm::mat4& view) override;

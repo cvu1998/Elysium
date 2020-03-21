@@ -96,7 +96,8 @@
       <AdditionalDependencies>user32.lib;gdi32.lib;shell32.lib;glfw3.lib;opengl32.lib;glew32s.lib</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /E /Y "$(ProjectDir)res" "$(TargetDir)res"</Command>
+      <Command>mkdir -p "$(TargetDir)res"
+xcopy /E /Y "$(ProjectDir)res" "$(TargetDir)res"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -130,7 +131,8 @@
       <AdditionalDependencies>user32.lib;gdi32.lib;shell32.lib;glfw3.lib;opengl32.lib;glew32s.lib</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /E /Y "$(ProjectDir)res" "$(TargetDir)res"</Command>
+      <Command>mkdir -p "$(TargetDir)res"
+xcopy /E /Y "$(ProjectDir)res" "$(TargetDir)res"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -154,8 +156,10 @@
     <ClCompile Include="src\Application.cpp" />
     <ClCompile Include="src\IndexBuffer.cpp" />
     <ClCompile Include="src\Renderer.cpp" />
+    <ClCompile Include="src\Shape.cpp" />
     <ClCompile Include="src\test\BatchRendering_Test.cpp" />
     <ClCompile Include="src\test\ClearColor_Test.cpp" />
+    <ClCompile Include="src\test\DynamicBatchRendering_Test.cpp" />
     <ClCompile Include="src\test\ScreenSaver_Test.cpp" />
     <ClCompile Include="src\test\Test.cpp" />
     <ClCompile Include="src\test\Texture2D_Test.cpp" />
@@ -319,8 +323,10 @@
     <ClInclude Include="src\Shader.h" />
     <ClInclude Include="src\IndexBuffer.h" />
     <ClInclude Include="src\Renderer.h" />
+    <ClInclude Include="src\Shape.h" />
     <ClInclude Include="src\test\BatchRendering_Test.h" />
     <ClInclude Include="src\test\ClearColor_Test.h" />
+    <ClInclude Include="src\test\DynamicBatchRendering_Test.h" />
     <ClInclude Include="src\test\ScreenSaver_Test.h" />
     <ClInclude Include="src\test\Test.h" />
     <ClInclude Include="src\test\Texture2D_Test.h" />

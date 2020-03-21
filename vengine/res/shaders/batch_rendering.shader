@@ -36,6 +36,8 @@ uniform sampler2D u_Textures[2];
 void main()
 {
     int id = int(v_TextureID);
-    o_Output = texture(u_Textures[id], v_TextureCoord);
-    //o_Output = vec4(v_TextureID, v_TextureID, v_TextureID, 1.0);
+    if (id >= 0)
+        o_Output = texture(u_Textures[id], v_TextureCoord);
+    else
+        o_Output = v_Color;
 };

@@ -8,9 +8,9 @@ namespace test {
         m_Shader("res/shaders/basic.shader"),
         m_Height(1.0f), m_Width(1.0f),
         r(0.0f), inc(true),
-        m_Translation(0.01f), x(0.0f), y(0.0f), m_SignX(false), m_SignY(false), m_Inside(true)
+        m_Translation(0.01f), x(0.0f), y(0.0f), m_SignX(false), m_SignY(false)
     {
-        float positions[] = {
+        float vertices[] = {
            -m_Height, -m_Width, 0.0f, 0.0f,    // 0
             m_Height, -m_Width, 1.0f, 0.0f,    // 1
             m_Height,  m_Width, 1.0f, 1.0f,    // 2
@@ -22,7 +22,7 @@ namespace test {
             2, 3, 0
         };
 
-        m_vb = std::make_unique<VertexBuffer>(positions, 4 * 4 * sizeof(float));
+        m_vb = std::make_unique<VertexBuffer>(vertices, 4 * 4 * sizeof(float));
         m_Layout.push<float>(2);
         m_Layout.push<float>(2);
         m_va.addBuffer(*m_vb, m_Layout);
@@ -39,27 +39,26 @@ namespace test {
 
     void ScreenSaver_Test::onUpdate(float deltaTime)
     {
-    }
-
-    void ScreenSaver_Test::onRender(const glm::mat4& proj, const glm::mat4& view)
-    {
         /***CHECK WITHIN BORDERS***/
-        if (!(x > -3.0f && x < 3.0f) &&
-            !(y > -2.0f && y < 2.0f) && m_Case != OutOfBounds::XY) {
-            m_SignX = !m_SignX;
-            m_SignY = !m_SignY;
-            m_Case = OutOfBounds::XY;
+        if (!(x > -3.0f && x < 3.0f) ||
+            !(y > -2.0f && y < 2.0f)) {
+            if (!(x > -3.0f && x < 3.0f) &&
+                !(y > -2.0f && y < 2.0f) && m_Case != OutOfBounds::XY) {
+                m_SignX = !m_SignX;
+                m_SignY = !m_SignY;
+                m_Case = OutOfBounds::XY;
+            }
+            else if (!(x > -3.0f && x < 3.0f) &&
+                (y > -2.0f && y < 2.0f) && m_Case != OutOfBounds::X_ONLY) {
+                m_SignX = !m_SignX;
+                m_Case = OutOfBounds::X_ONLY;
+            }
+            else if ((x > -3.0f && x < 3.0f) &&
+                !(y > -2.0f && y < 2.0f) && m_Case != OutOfBounds::Y_ONLY) {
+                m_SignY = !m_SignY;
+                m_Case = OutOfBounds::Y_ONLY;
+            }
         }
-        else if (!(x > -3.0f && x < 3.0f) &&
-            (y > -2.0f && y < 2.0f) && m_Case != OutOfBounds::X_ONLY) {
-            m_SignX = !m_SignX;
-            m_Case = OutOfBounds::X_ONLY;
-        }
-        else if ((x > -3.0f && x < 3.0f) &&
-            !(y > -2.0f && y < 2.0f) && m_Case != OutOfBounds::Y_ONLY) {
-            m_SignY = !m_SignY;
-            m_Case = OutOfBounds::Y_ONLY;
-        } 
         else {
             m_Case = OutOfBounds::IN_BOUNDS;
         }
@@ -93,7 +92,10 @@ namespace test {
             inc = !inc;
         }
         /***COLOR CHANGE***/
+    }
 
+    void ScreenSaver_Test::onRender(const glm::mat4& proj, const glm::mat4& view)
+    {
         glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(x, y, 0));
         glm::mat4 mvp = proj * view * model;
 

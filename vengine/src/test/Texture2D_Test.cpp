@@ -7,7 +7,7 @@ namespace test {
     Texture2D_Test::Texture2D_Test(): m_TranslationA(-1.0f, 0.0f, 0.0f), m_TranslationB(1.0f, 0.0f, 0.0f),
         m_Shader("res/shaders/basic.shader"), m_Texture("res/texture/meadow.png")
     {
-        float positions[] = {
+        float vertices[] = {
          -0.5f, -0.5f, 0.0f, 0.0f,    // 0
           0.5f, -0.5f, 1.0f, 0.0f,    // 1
           0.5f,  0.5f, 1.0f, 1.0f,    // 2
@@ -25,7 +25,7 @@ namespace test {
         GL_ASSERT(glEnable(GL_BLEND));
         GL_ASSERT(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
-        m_vb = std::make_unique<VertexBuffer>(positions, 5 * 4 * sizeof(float));
+        m_vb = std::make_unique<VertexBuffer>(vertices, 5 * 4 * sizeof(float));
 
         VertexBufferLayout layout;
         layout.push<float>(2);

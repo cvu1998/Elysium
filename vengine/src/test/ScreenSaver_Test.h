@@ -31,7 +31,6 @@ namespace test {
         float y;
         bool m_SignX;
         bool m_SignY;
-        bool m_Inside;
         OutOfBounds m_Case;
 
     public:

@@ -2,7 +2,7 @@
 #version 330 core
 
 //index of attribute in glVertexAttribPointer
-layout(location = 0) in vec4 position;
+layout(location = 0) in vec4 positions;
 layout(location = 1) in vec4 a_Color;
 layout(location = 2) in vec2 a_TextureCoord;
 layout(location = 3) in float a_TextureID;
@@ -15,7 +15,7 @@ out float v_TextureID;
 
 void main()
 {
-   gl_Position = u_MVP * position;
+   gl_Position = u_MVP * positions;
    v_Color = a_Color;
    v_TextureCoord = a_TextureCoord;
    v_TextureID = a_TextureID;
@@ -36,6 +36,8 @@ uniform sampler2D u_Textures[2];
 void main()
 {
     int id = int(v_TextureID);
-    o_Output = texture(u_Textures[id], v_TextureCoord);
-    //o_Output = vec4(v_TextureID, v_TextureID, v_TextureID, 1.0);
+    if (id >= 0)
+        o_Output = texture(u_Textures[id], v_TextureCoord);
+    else
+        o_Output = v_Color;
 };
