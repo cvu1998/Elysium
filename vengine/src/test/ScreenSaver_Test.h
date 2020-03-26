@@ -19,7 +19,6 @@ namespace test {
 
         VertexArray m_va;
         std::unique_ptr<VertexBuffer> m_vb;
-        VertexBufferLayout m_Layout;
         std::unique_ptr<IndexBuffer> m_ib; 
         Shader m_Shader;
 

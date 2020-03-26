@@ -54,19 +54,20 @@ namespace test {
         GL_ASSERT(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
         GL_ASSERT(glClear(GL_COLOR_BUFFER_BIT));
 
-        Renderer& s_Renderer = Renderer::getInstance();
         {
-            glm::mat4 modelT = glm::translate(glm::mat4(1.0f), m_TranslationA);
-            glm::mat4 mvpT = proj * view * modelT;
-            m_Shader.setUniformMat4f("u_MVP", mvpT);
-            s_Renderer.draw(m_va, *m_ib, m_Shader);
+            glm::mat4 model = glm::translate(glm::mat4(1.0f), m_TranslationA);
+            glm::mat4 mvp = proj * view * model;
+            m_Shader.setUniformMat4f("u_MVP", mvp);
+
+            Renderer::draw(m_va, *m_ib, m_Shader);
         }
 
         {
-            glm::mat4 modelT = glm::translate(glm::mat4(1.0f), m_TranslationB);
-            glm::mat4 mvpT = proj * view * modelT;
-            m_Shader.setUniformMat4f("u_MVP", mvpT);
-            s_Renderer.draw(m_va, *m_ib, m_Shader);
+            glm::mat4 model = glm::translate(glm::mat4(1.0f), m_TranslationB);
+            glm::mat4 mvp = proj * view * model;
+            m_Shader.setUniformMat4f("u_MVP", mvp);
+
+            Renderer::draw(m_va, *m_ib, m_Shader);
         }
     }
 

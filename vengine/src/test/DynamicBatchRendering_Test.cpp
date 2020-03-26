@@ -4,10 +4,13 @@
 
 namespace test {
 
+    static const size_t MaxQuadCount = 1000;
+    static const size_t MaxVertexCount = MaxQuadCount * 4;
+    static const size_t MaxIndexCount = MaxQuadCount * 6;
+
     DynamicBatchRendering_Test::DynamicBatchRendering_Test(): 
-        m_vb(1000), m_ib(100),
-        m_Shader("res/shaders/batch_rendering.shader"),
-        m_Translation(0.0f, 0.0f, 0.0f)
+        m_vb(MaxVertexCount),
+        m_Shader("res/shaders/batch_rendering.shader")
     {
         GL_ASSERT(glEnable(GL_BLEND));
         GL_ASSERT(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
@@ -19,27 +22,22 @@ namespace test {
         layout.push<Vertex>(1);
         m_va.addBuffer(m_vb, layout);
 
-       /*
-       glGenBuffers(1, &m_VertexRendererID);
-       glBindBuffer(GL_ARRAY_BUFFER, m_VertexRendererID);
-       glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * 1000, nullptr, GL_DYNAMIC_DRAW);
+        unsigned int offset = 0;
+        unsigned int indices[MaxIndexCount];
+        for (size_t i = 0; i < MaxIndexCount; i += 6)
+        {
+            indices[i + 0] = 0 + offset;
+            indices[i + 1] = 1 + offset;
+            indices[i + 2] = 2 + offset;
+            indices[i + 3] = 2 + offset;
+            indices[i + 4] = 3 + offset;
+            indices[i + 5] = 0 + offset;
 
-       glGenBuffers(1, &m_IndexRendererID);
-       glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IndexRendererID);
-       glBufferData(GL_ELEMENT_ARRAY_BUFFER, 24 * sizeof(GLuint), indices, GL_STATIC_DRAW);
+            offset += 4;
+        }
 
-       glEnableVertexAttribArray(0);
-       glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, position));
-
-       glEnableVertexAttribArray(1);
-       glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, color));
-
-       glEnableVertexAttribArray(2);
-       glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, textureCoord));
-
-       glEnableVertexAttribArray(3);
-       glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, textureID));
-       */
+        /*m_ib = std::make_unique<IndexBuffer>(m_MaxIndexCount);*/
+        m_ib = std::make_unique<IndexBuffer>(indices, MaxIndexCount);
 
         m_Shader.bind();
         m_Textures.reserve(2);
@@ -51,8 +49,6 @@ namespace test {
 
         m_Textures[0].bind(0);
         m_Textures[1].bind(1);
-        //glBindTextureUnit(0, m_Textures[0].getRendererID());
-        //glBindTextureUnit(1, m_Textures[1].getRendererID());
     }
 
     DynamicBatchRendering_Test::~DynamicBatchRendering_Test()
@@ -62,35 +58,50 @@ namespace test {
 
     void DynamicBatchRendering_Test::onUpdate(float deltaTime)
     {
-        m_vb.bind();
-        Vec4 color = { 0.0f, 1.0f, 1.0f, 1.0f };
-        auto sq0 = Shape::createSquare({ m_QuadPosition[0], m_QuadPosition[1] }, 1.0f, color,  0.0f);
-        auto sq1 = Shape::createSquare({  0.5f, -1.0f }, 1.0f, color,  1.0f);
-        auto sq2 = Shape::createSquare({ -1.5f,  1.0f }, 1.0f, color, -1.0f);
-        auto sq3 = Shape::createSquare({  0.5f,  1.0f }, 1.0f, { 1.0f, 0.0f, 1.0f, 1.0f }, -1.0f);
+        m_IndexCount = 0;
+        std::array<Vertex, MaxVertexCount> vertices;
+        Vertex* buffer = vertices.data();
 
-        Vertex vertices[16];
-        void* destination = vertices;
-        memcpy(destination, sq0.data(), sq0.size() * sizeof(Vertex));
-        destination = vertices + sq0.size();
-        memcpy(destination, sq1.data(), sq1.size() * sizeof(Vertex));
-        destination = vertices + sq0.size() + sq1.size();
-        memcpy(destination, sq2.data(), sq2.size() * sizeof(Vertex));
-        destination = vertices + sq0.size() + sq1.size() + sq2.size();
-        memcpy(destination, sq3.data(), sq3.size() * sizeof(Vertex));
+        bool checked = false;
+        glm::vec4 black = { 0.0f, 0.0f, 0.0f, 1.0f };
+        glm::vec4 white = { 1.0f, 1.0f, 1.0f, 1.0f };
 
-        GL_ASSERT(glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices));
+        for (float x = -4.0f; x < 4.0f; ++x)
+        {   
+            for (float y = -3.0f; y < 4.0f; ++y)
+            {
+                if (checked) {
+                    buffer = Shape::createSquare(buffer, { x, y }, 1.0f, black, -1.0f);
+                    checked = false;
+                }
+                else {
+                    buffer = Shape::createSquare(buffer, { x, y }, 1.0f, white, -1.0f);
+                    checked = true;
+                }
+                m_IndexCount += 6;
+            }
+        }
+        
+        glm::vec4 color = { 0.0f, 1.0f, 1.0f, 1.0f };
+        buffer = Shape::createSquare(buffer, { m_QuadPosition[0], m_QuadPosition[1] }, 1.0f, color,  0.0f);
+        buffer = Shape::createSquare(buffer, {  1.0f, -1.0f }, 1.0f, color,  1.0f);
+        buffer = Shape::createSquare(buffer, { -2.0f,  1.0f }, 1.0f, color, -1.0f);
+        buffer = Shape::createSquare(buffer, {  1.0f,  1.0f }, 1.0f, { 1.0f, 0.0f, 1.0f, 1.0f }, -1.0f);
+        m_IndexCount += 24;
 
-        m_ib.bind();
+        GL_ASSERT(glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(Vertex), vertices.data()));
+        /*
+        m_ib->bind();
         unsigned int indices[] = {
             0, 1, 2, 2, 3, 0,
             4, 5, 6, 6, 7, 4,
             8, 9, 10, 10, 11, 8,
             12, 13, 14, 14, 15, 12,
-            1, 2, 4, 4, 7, 2
+            9, 10, 12, 12, 15, 10
         };
 
         GL_ASSERT(glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, sizeof(indices), indices));
+        */
     }
 
     void DynamicBatchRendering_Test::onRender(const glm::mat4& proj, const glm::mat4& view)
@@ -98,22 +109,19 @@ namespace test {
         GL_ASSERT(glClearColor(0.1f, 0.1f, 0.1f, 1.0f));
         GL_ASSERT(glClear(GL_COLOR_BUFFER_BIT));
 
-        Renderer& s_Renderer = Renderer::getInstance();
-        glm::mat4 modelT = glm::translate(glm::mat4(1.0f), m_Translation);
-        glm::mat4 mvpT = proj * view * modelT;
-        m_Shader.setUniformMat4f("u_MVP", mvpT);
+        glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+        glm::mat4 mvp = proj * view * model;
+        m_Shader.setUniformMat4f("u_MVP", mvp);
         m_Shader.bind();
-        s_Renderer.draw(m_va, m_ib, m_Shader);
-        //GL_ASSERT(glDrawElements(GL_TRIANGLES, 24, GL_UNSIGNED_INT, nullptr));
+        
+        Renderer::draw(m_va, *m_ib, m_Shader, m_IndexCount);
     }
 
     void DynamicBatchRendering_Test::onImGuiRender()
     {
-        ImGui::SliderFloat3("Translation", &m_Translation.x, -3.0f, 3.0f);
-        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-
         ImGui::Begin("First Quad Controls");
-        ImGui::DragFloat2("Quad Position", m_QuadPosition, 0.1f);
+        ImGui::DragFloat2("First Quad Position", m_QuadPosition, 0.1f);
+        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
         ImGui::End();
     }
 }

@@ -31,13 +31,10 @@ in vec4 v_Color;
 in vec2 v_TextureCoord;
 in float v_TextureID;
 
-uniform sampler2D u_Textures[2];
+uniform sampler2D u_Textures[32];
 
 void main()
 {
     int id = int(v_TextureID);
-    if (id >= 0)
-        o_Output = texture(u_Textures[id], v_TextureCoord);
-    else
-        o_Output = v_Color;
+    o_Output = texture(u_Textures[id], v_TextureCoord) * v_Color;
 };

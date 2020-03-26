@@ -6,10 +6,10 @@ private:
     unsigned int m_Count;
 
 public:
-    /*STATIC RENDERING*/
-    IndexBuffer(const unsigned int* data, unsigned int count);
     /*DYNAMIC BATCH RENDERING*/
     IndexBuffer(unsigned int count);
+    /*STATIC RENDERING*/
+    IndexBuffer(const unsigned int* data, unsigned int count);
     ~IndexBuffer();
 
     void bind() const;

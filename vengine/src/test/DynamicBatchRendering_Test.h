@@ -10,20 +10,16 @@ namespace test {
 
     class DynamicBatchRendering_Test : public Test 
     {
-    private:
-        //unsigned int m_VertexRendererID;
-        //unsigned int m_IndexRendererID;
-        
+    private: 
         VertexArray m_va;
         VertexBuffer m_vb;
-        VertexBufferLayout m_Layout;
-        IndexBuffer m_ib;
+        std::unique_ptr<IndexBuffer> m_ib;
         
         Shader m_Shader;
         std::vector<Texture> m_Textures;
 
-        glm::vec3 m_Translation;
-        float m_QuadPosition[2] = { -1.5f, -1.0f };
+        unsigned int m_IndexCount = 0;
+        float m_QuadPosition[2] = { -2.0f, -1.0f };
 
     public:
         DynamicBatchRendering_Test();

@@ -23,9 +23,10 @@ namespace test {
         };
 
         m_vb = std::make_unique<VertexBuffer>(vertices, 4 * 4 * sizeof(float));
-        m_Layout.push<float>(2);
-        m_Layout.push<float>(2);
-        m_va.addBuffer(*m_vb, m_Layout);
+        VertexBufferLayout layout;
+        layout.push<float>(2);
+        layout.push<float>(2);
+        m_va.addBuffer(*m_vb, layout);
 
         m_ib = std::make_unique<IndexBuffer>(indices, 6);
 
@@ -102,8 +103,7 @@ namespace test {
         m_Shader.setUniform4f("u_Color", r, 0.0f, 1.0f, 1.0f);
         m_Shader.setUniformMat4f("u_MVP", mvp);
 
-        Renderer& s_Renderer = Renderer::getInstance();
-        s_Renderer.draw(m_va, *m_ib, m_Shader);
+        Renderer::draw(m_va, *m_ib, m_Shader);
     }
 
     void ScreenSaver_Test::onImGuiRender()

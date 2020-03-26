@@ -10,20 +10,20 @@ namespace test {
     {
         float vertices[] = {
 /*         x      y     R     G     B   Alpha TextureCoord TextureID     */
-         -1.5f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
-         -0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-         -0.5f,  0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-         -1.5f,  0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+         -1.5f, -1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+         -0.5f, -1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
+         -0.5f,  0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
+         -1.5f,  0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f,
 
-          0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-          1.5f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f,
-          1.5f,  0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-          0.5f,  0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
+          0.5f, -1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 2.0f,
+          1.5f, -1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 2.0f,
+          1.5f,  0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 2.0f,
+          0.5f,  0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 2.0f,
 
-         -0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, -1.0f,
-          0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, -1.0f,
-          0.5f,  1.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, -1.0f,
-         -0.5f,  1.5f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, -1.0f
+         -0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f,
+          0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
+          0.5f,  1.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
+         -0.5f,  1.5f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f
         };
 
         unsigned int indices[] = {
@@ -50,17 +50,17 @@ namespace test {
         m_ib = std::make_unique<IndexBuffer>(indices, 18);
 
         m_Shader.bind();
-        m_Textures.reserve(2);
+        m_Textures.reserve(3);
+        m_Textures.emplace_back();
         m_Textures.emplace_back("res/texture/meadow.png");
         m_Textures.emplace_back("res/texture/Vader.png");
 
-        int sampler[2] = { 0, 1 };
-        m_Shader.setUniform1iv<2>("u_Textures", 2, sampler);
+        int sampler[3] = { 0, 1, 2 };
+        m_Shader.setUniform1iv<3>("u_Textures", 3, sampler);
 
         m_Textures[0].bind(0);
         m_Textures[1].bind(1);
-        //glBindTextureUnit(0, m_Textures[0].getRendererID());
-        //glBindTextureUnit(1, m_Textures[1].getRendererID());
+        m_Textures[2].bind(2);
     }
 
     BatchRendering_Test::~BatchRendering_Test()
@@ -77,11 +77,11 @@ namespace test {
         GL_ASSERT(glClearColor(0.1f, 0.1f, 0.1f, 1.0f));
         GL_ASSERT(glClear(GL_COLOR_BUFFER_BIT));
 
-        Renderer& s_Renderer = Renderer::getInstance();
-        glm::mat4 modelT = glm::translate(glm::mat4(1.0f), m_Translation);
-        glm::mat4 mvpT = proj * view * modelT;
-        m_Shader.setUniformMat4f("u_MVP", mvpT);
-        s_Renderer.draw(m_va, *m_ib, m_Shader);
+        glm::mat4 model = glm::translate(glm::mat4(1.0f), m_Translation);
+        glm::mat4 mvp = proj * view * model;
+        m_Shader.setUniformMat4f("u_MVP", mvp);
+
+        Renderer::draw(m_va, *m_ib, m_Shader);
     }
 
     void BatchRendering_Test::onImGuiRender()
