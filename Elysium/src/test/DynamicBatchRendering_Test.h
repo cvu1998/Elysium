@@ -4,21 +4,17 @@
 
 #include <vector>
 
-#include "Texture.h"
+#include "Renderer2D.h"
 
 namespace test {
 
     class DynamicBatchRendering_Test : public Test 
     {
     private: 
-        VertexArray m_va;
-        VertexBuffer m_vb;
-        std::unique_ptr<IndexBuffer> m_ib;
-        
         Shader m_Shader;
+
         std::vector<Texture> m_Textures;
 
-        unsigned int m_IndexCount = 0;
         float m_QuadPosition[2] = { -2.0f, -1.0f };
 
     public:

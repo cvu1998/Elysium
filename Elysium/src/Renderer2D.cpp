@@ -1,7 +1,5 @@
 #include "Renderer2D.h"
 
-#include <iostream>
-
 static const size_t MaxQuadCount = 10000;
 static const size_t MaxVertexCount = MaxQuadCount * 4;
 static const size_t MaxIndexCount = MaxQuadCount * 6;
@@ -82,6 +80,7 @@ void Renderer2D::init()
 
     unsigned int white = 0xffffffff;
     GL_ASSERT(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, &white));
+    //std::cout << "WhiteTexture:  " << s_Data.WhiteTexture << std::endl;
 
     s_Data.TextureSlots[0] = s_Data.WhiteTexture;
     for (size_t i = 1; i < MaxTextureCount; i++)
@@ -97,7 +96,7 @@ void Renderer2D::shutdown()
     GL_ASSERT(glDeleteBuffers(1, &s_Data.VertexBufferID));
     GL_ASSERT(glDeleteBuffers(1, &s_Data.IndexBufferID));
 
-    glDeleteTextures(1, &s_Data.WhiteTexture);
+    GL_ASSERT(glDeleteTextures(1, &s_Data.WhiteTexture));
     delete[] s_Data.buffer;
 }
 
@@ -117,7 +116,7 @@ void Renderer2D::flush()
 {
     for (unsigned int i = 0; i < s_Data.TextureSlotIndex; i++) {
         glBindTextureUnit(i, s_Data.TextureSlots[i]);
-        std::cout << i << " " << s_Data.TextureSlots[i] << std::endl;
+        //std::cout << i << " " << s_Data.TextureSlots[i] << std::endl;
     }
     
     GL_ASSERT(glBindVertexArray(s_Data.VertexArrayID));
@@ -195,8 +194,8 @@ void Renderer2D::drawQuad(const glm::vec2& position, const glm::vec2& size, unsi
         s_Data.TextureSlots[s_Data.TextureSlotIndex] = textureID;
         s_Data.TextureSlotIndex++;
     }
-    std::cout << "textureIndex:  " << textureIndex << std::endl;
-    std::cout << "TextureSlotIndex:  " << s_Data.TextureSlotIndex << std::endl;
+    //std::cout << "textureIndex:  " << textureIndex << std::endl;
+    //std::cout << "TextureSlotIndex:  " << s_Data.TextureSlotIndex << std::endl;
 
     s_Data.BufferPtr->position = { position.x, position.y };
     s_Data.BufferPtr->color = color;

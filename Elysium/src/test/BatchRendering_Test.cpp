@@ -8,22 +8,31 @@ namespace test {
         m_Shader("res/shaders/batch_rendering.shader"), 
         m_Translation(0.0f, 0.0f, 0.0f)
     {
+        m_Textures.reserve(3);
+        m_Textures.emplace_back();
+        m_Textures.emplace_back("res/texture/meadow.png");
+        m_Textures.emplace_back("res/texture/Vader.png");
+
+        unsigned int white = m_Textures[0].getRendererID();
+        unsigned int meadow = m_Textures[1].getRendererID();
+        unsigned int vader = m_Textures[2].getRendererID();
+
         float vertices[] = {
 /*         x      y     R     G     B   Alpha TextureCoord TextureID     */
-         -1.5f, -1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-         -0.5f, -1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
-         -0.5f,  0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-         -1.5f,  0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f,
+         -1.5f, -1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, float(meadow),
+         -0.5f, -1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, float(meadow),
+         -0.5f,  0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, float(meadow),
+         -1.5f,  0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f, float(meadow),
 
-          0.5f, -1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 2.0f,
-          1.5f, -1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 2.0f,
-          1.5f,  0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 2.0f,
-          0.5f,  0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 2.0f,
+          0.5f, -1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, float(vader),
+          1.5f, -1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, float(vader),
+          1.5f,  0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, float(vader),
+          0.5f,  0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f, float(vader),
 
-         -0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f,
-          0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-          0.5f,  1.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-         -0.5f,  1.5f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f
+         -0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, float(white),
+          0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, float(white),
+          0.5f,  1.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, float(white),
+         -0.5f,  1.5f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, float(white)
         };
 
         unsigned int indices[] = {
@@ -50,17 +59,15 @@ namespace test {
         m_ib = std::make_unique<IndexBuffer>(indices, 18);
 
         m_Shader.bind();
-        m_Textures.reserve(3);
-        m_Textures.emplace_back();
-        m_Textures.emplace_back("res/texture/meadow.png");
-        m_Textures.emplace_back("res/texture/Vader.png");
 
-        int sampler[3] = { 0, 1, 2 };
-        m_Shader.setUniform1iv<3>("u_Textures", 3, sampler);
+        int sampler[32];
+        for (int i = 0; i < 32; i++)
+            sampler[i] = i;
+        m_Shader.setUniform1iv<32>("u_Textures", 32, sampler);
 
-        m_Textures[0].bind(0);
-        m_Textures[1].bind(1);
-        m_Textures[2].bind(2);
+        m_Textures[0].bind();
+        m_Textures[1].bind();
+        m_Textures[2].bind();
     }
 
     BatchRendering_Test::~BatchRendering_Test()

@@ -71,60 +71,10 @@ int main(void)
         testMenu->registerTest<test::ScreenSaver_Test>("Screen Saver");
         testMenu->registerTest<test::BatchRendering_Test>("Batch Rendering");
         testMenu->registerTest<test::DynamicBatchRendering_Test>("Dynamic Batch Rendering");
-
-        Renderer2D::init();
-        Shader shader("res/shaders/batch_rendering.shader");
-        shader.bind();
-        glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
-        glm::mat4 mvp = proj * view * model;
-        shader.setUniformMat4f("u_MVP", mvp);
-
-        Texture meadow("res/texture/meadow.png");
-        Texture vader("res/texture/Vader.png");
-
-        int sampler[32];
-        for (int i = 0; i < 32; i++)
-            sampler[i] = i;
-        shader.setUniform1iv<32>("u_Textures", 32, sampler);
-
-        meadow.bind(2);
-        vader.bind(3);
-
-        float QuadPosition[2] = { -2.0f, -1.0f };
-
         /* Loop until the user closes the window */
         while (!glfwWindowShouldClose(window))
         {
             Renderer::clear();
-
-            Renderer2D::beginBatch();
-            bool checked = false;
-            glm::vec4 black = { 0.0f, 0.0f, 0.0f, 1.0f };
-            glm::vec4 white = { 1.0f, 1.0f, 1.0f, 1.0f };
-
-            for (float x = -4.0f; x < 4.0f; ++x)
-            {
-                for (float y = -3.0f; y < 4.0f; ++y)
-                {
-                    if (checked) {
-                        Renderer2D::drawQuad({ x, y }, { 1.0f, 1.0f }, black);
-                        checked = false;
-                    }
-                    else {
-                        Renderer2D::drawQuad({ x, y }, { 1.0f, 1.0f }, white);
-                        checked = true;
-                    }
-                }
-            }
-            glm::vec4 color = { 0.0f, 1.0f, 1.0f, 1.0f };
-            Renderer2D::drawQuad({ -2.0f, 1.0f }, { 1.0f, 1.0f }, color);
-            Renderer2D::drawQuad({ 1.0f, 1.0f }, { 1.0f, 1.0f }, color);
-
-            Renderer2D::drawQuad({ QuadPosition[0], QuadPosition[1] }, { 1.0f, 1.0f }, 2.0f);
-            Renderer2D::drawQuad({ 1.0f, -1.0f }, { 1.0f, 1.0f }, 3.0f);
-
-            Renderer2D::endBatch();
-            Renderer2D::flush();
 
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplGlfw_NewFrame();
@@ -163,7 +113,6 @@ int main(void)
         if (currentTest != testMenu) 
             delete testMenu;
     }
-    Renderer2D::shutdown();
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();

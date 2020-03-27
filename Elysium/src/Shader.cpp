@@ -84,6 +84,7 @@ ShaderProgramSource Shader::parseShader(const char* filepath)
             ss[(int)type] << line << '\n';
         }
     }
+    stream.close();
     return { ss[0].str(), ss[1].str() };
 }
 
