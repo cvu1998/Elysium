@@ -1,5 +1,7 @@
 #include "Renderer2D.h"
 
+#include <array>
+
 static const size_t MaxQuadCount = 10000;
 static const size_t MaxVertexCount = MaxQuadCount * 4;
 static const size_t MaxIndexCount = MaxQuadCount * 6;
@@ -30,7 +32,7 @@ static Renderer2DData s_Data;
 
 void Renderer2D::init()
 {
-    s_Data.buffer = new Vertex[MaxQuadCount];
+    s_Data.buffer = new Vertex[MaxVertexCount];
 
     glCreateVertexArrays(1, &s_Data.VertexArrayID);
     glBindVertexArray(s_Data.VertexArrayID);
@@ -108,7 +110,7 @@ void Renderer2D::beginBatch()
 void Renderer2D::endBatch()
 {
     GLsizeiptr size = (uint8_t*)s_Data.BufferPtr - (uint8_t*)s_Data.buffer;
-    glBindBuffer(GL_ARRAY_BUFFER, s_Data.VertexBufferID);
+    GL_ASSERT(glBindBuffer(GL_ARRAY_BUFFER, s_Data.VertexBufferID));
     GL_ASSERT(glBufferSubData(GL_ARRAY_BUFFER, 0, size, s_Data.buffer));
 }
 
@@ -129,7 +131,7 @@ void Renderer2D::flush()
 
 void Renderer2D::drawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color)
 {
-    if (s_Data.IndexCount > MaxIndexCount)
+    if (s_Data.IndexCount >= MaxIndexCount)
     {
         endBatch();
         flush();
@@ -169,7 +171,7 @@ void Renderer2D::drawQuad(const glm::vec2& position, const glm::vec2& size, cons
 
 void Renderer2D::drawQuad(const glm::vec2& position, const glm::vec2& size, unsigned int textureID)
 {
-    if (s_Data.IndexCount > MaxIndexCount || s_Data.TextureSlotIndex > 32)
+    if (s_Data.IndexCount >= MaxIndexCount || s_Data.TextureSlotIndex > 32)
     {
         endBatch();
         flush();
@@ -194,8 +196,60 @@ void Renderer2D::drawQuad(const glm::vec2& position, const glm::vec2& size, unsi
         s_Data.TextureSlots[s_Data.TextureSlotIndex] = textureID;
         s_Data.TextureSlotIndex++;
     }
-    //std::cout << "textureIndex:  " << textureIndex << std::endl;
-    //std::cout << "TextureSlotIndex:  " << s_Data.TextureSlotIndex << std::endl;
+
+    s_Data.BufferPtr->position = { position.x, position.y };
+    s_Data.BufferPtr->color = color;
+    s_Data.BufferPtr->TextureCoordinates = { 0.0f, 0.0f };
+    s_Data.BufferPtr->TextureID = textureIndex;
+    s_Data.BufferPtr++;
+
+    s_Data.BufferPtr->position = { position.x + size.x, position.y };
+    s_Data.BufferPtr->color = color;
+    s_Data.BufferPtr->TextureCoordinates = { 1.0f, 0.0f };
+    s_Data.BufferPtr->TextureID = textureIndex;
+    s_Data.BufferPtr++;
+
+    s_Data.BufferPtr->position = { position.x + size.x, position.y + size.y };
+    s_Data.BufferPtr->color = color;
+    s_Data.BufferPtr->TextureCoordinates = { 1.0f, 1.0f };
+    s_Data.BufferPtr->TextureID = textureIndex;
+    s_Data.BufferPtr++;
+
+    s_Data.BufferPtr->position = { position.x, position.y + size.y };
+    s_Data.BufferPtr->color = color;
+    s_Data.BufferPtr->TextureCoordinates = { 0.0f, 1.0f };
+    s_Data.BufferPtr->TextureID = textureIndex;
+    s_Data.BufferPtr++;
+
+    s_Data.IndexCount += 6;
+    s_Data.RendererStats.QuadCount++;
+}
+
+void Renderer2D::drawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color, unsigned int textureID)
+{
+    if (s_Data.IndexCount >= MaxIndexCount || s_Data.TextureSlotIndex > 32)
+    {
+        endBatch();
+        flush();
+        beginBatch();
+    }
+
+    float textureIndex = 0.0f;
+    for (unsigned int i = 1; i < s_Data.TextureSlotIndex; i++)
+    {
+        if (s_Data.TextureSlots[i] == textureID)
+        {
+            textureIndex = float(i);
+            break;
+        }
+    }
+
+    if (textureIndex == 0.0f)
+    {
+        textureIndex = (float)s_Data.TextureSlotIndex;
+        s_Data.TextureSlots[s_Data.TextureSlotIndex] = textureID;
+        s_Data.TextureSlotIndex++;
+    }
 
     s_Data.BufferPtr->position = { position.x, position.y };
     s_Data.BufferPtr->color = color;

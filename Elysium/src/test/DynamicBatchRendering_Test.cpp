@@ -21,10 +21,8 @@ namespace test {
         m_Textures.reserve(2);
         m_Textures.emplace_back("res/texture/meadow.png");
         m_Textures.emplace_back("res/texture/Vader.png");
-        m_Textures[0].bind();
-        m_Textures[1].bind();
-        std::cout << m_Textures[0].getRendererID() << std::endl;
-        std::cout << m_Textures[1].getRendererID() << std::endl;
+        m_Textures[0].bind(m_Textures[0].getRendererID());
+        m_Textures[1].bind(m_Textures[1].getRendererID());
     }
 
     DynamicBatchRendering_Test::~DynamicBatchRendering_Test()
@@ -35,45 +33,48 @@ namespace test {
 
     void DynamicBatchRendering_Test::onUpdate(float deltaTime)
     {
+        Renderer2D::resetStats();
         Renderer2D::beginBatch();
-        bool checked = false;
+
+        for (float x = -4.0f; x < 4.0f; x += 0.1f)
+        {
+            for (float y = -3.0f; y < 3.0f; y += 0.1f)
+            {
+                glm::vec4 gradient = { (x + 4.0f) / 8.0f, (y + 3.0f) / 12.0f, 1.0f, 1.0f };
+                Renderer2D::drawQuad({ x , y  }, { 0.05f, 0.05f }, gradient);
+            }
+        }
+
         glm::vec4 black = { 0.0f, 0.0f, 0.0f, 1.0f };
         glm::vec4 white = { 1.0f, 1.0f, 1.0f, 1.0f };
 
-        for (float x = -4.0f; x < 4.0f; ++x)
+        for (int x = -2; x < 2; x++)
         {
-            for (float y = -3.0f; y < 4.0f; ++y)
+            for (int y = -2; y < 2; y++)
             {
-                if (checked) {
-                    Renderer2D::drawQuad({ x, y }, { 1.0f, 1.0f }, black);
-                    checked = false;
-                }
-                else {
-                    Renderer2D::drawQuad({ x, y }, { 1.0f, 1.0f }, white);
-                    checked = true;
-                }
+                glm::vec4 color = (x + y) % 2 == 0 ? white : black;
+                Renderer2D::drawQuad({ x , y }, { 1.0f, 1.0f }, color);
             }
         }
         glm::vec4 color = { 0.0f, 1.0f, 1.0f, 1.0f };
         Renderer2D::drawQuad({ -2.0f, 1.0f }, { 1.0f, 1.0f }, color);
         Renderer2D::drawQuad({ 1.0f, 1.0f }, { 1.0f, 1.0f }, color);
 
-        Renderer2D::drawQuad({ 1.0f, -1.0f }, { 1.0f, 1.0f }, m_Textures[0].getRendererID());
-        Renderer2D::drawQuad({ m_QuadPosition[0], m_QuadPosition[1] }, { 1.0f, 1.0f }, m_Textures[1].getRendererID());
+        Renderer2D::drawQuad({ 1.0f, -2.0f }, { 1.0f, 1.0f }, m_Textures[1].getRendererID());
+        Renderer2D::drawQuad({ m_QuadPosition[0], m_QuadPosition[1] }, { 1.0f, 1.0f }, m_Textures[0].getRendererID());
 
         Renderer2D::endBatch();
     }
 
     void DynamicBatchRendering_Test::onRender(const glm::mat4& proj, const glm::mat4& view)
     {
-        GL_ASSERT(glClearColor(0.1f, 0.1f, 0.1f, 1.0f));
-        GL_ASSERT(glClear(GL_COLOR_BUFFER_BIT));
-
         glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
         glm::mat4 mvp = proj * view * model;
         m_Shader.setUniformMat4f("u_MVP", mvp);
 
         Renderer2D::flush();
+        
+        GL_ASSERT(glClearColor(0.1f, 0.1f, 0.1f, 1.0f));
     }
 
     void DynamicBatchRendering_Test::onImGuiRender()
@@ -81,6 +82,8 @@ namespace test {
         ImGui::Begin("First Quad Controls");
         ImGui::DragFloat2("First Quad Position", m_QuadPosition, 0.1f);
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+        ImGui::Text("Number of Draw Calls: %d", Renderer2D::getStats().DrawCount);
+        ImGui::Text("Number of Quads: %d", Renderer2D::getStats().QuadCount);
         ImGui::End();
     }
 }

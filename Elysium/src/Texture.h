@@ -17,7 +17,7 @@ public:
     Texture(const char* filepath);
     ~Texture();
 
-    void bind() const;
+    void bind(unsigned int slot=0) const;
     void unBind() const;
 
     inline unsigned int getRendererID() const { return m_RendererID; }

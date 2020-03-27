@@ -65,9 +65,9 @@ namespace test {
             sampler[i] = i;
         m_Shader.setUniform1iv<32>("u_Textures", 32, sampler);
 
-        m_Textures[0].bind();
-        m_Textures[1].bind();
-        m_Textures[2].bind();
+        m_Textures[0].bind(white);
+        m_Textures[1].bind(meadow);
+        m_Textures[2].bind(vader);
     }
 
     BatchRendering_Test::~BatchRendering_Test()

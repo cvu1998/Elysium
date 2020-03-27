@@ -15,7 +15,7 @@ namespace test {
 
         std::vector<Texture> m_Textures;
 
-        float m_QuadPosition[2] = { -2.0f, -1.0f };
+        float m_QuadPosition[2] = { -2.0f, -2.0f };
 
     public:
         DynamicBatchRendering_Test();

@@ -42,9 +42,9 @@ Texture::~Texture()
     GL_ASSERT(glDeleteTextures(1, &m_RendererID));
 }
 
-void Texture::bind() const
+void Texture::bind(unsigned int slot) const
 {
-    GL_ASSERT(glActiveTexture(GL_TEXTURE0 + m_RendererID));
+    GL_ASSERT(glActiveTexture(GL_TEXTURE0 + slot));
     GL_ASSERT(glBindTexture(GL_TEXTURE_2D, m_RendererID));
 }
 
