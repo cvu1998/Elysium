@@ -11,8 +11,6 @@ namespace test {
     class DynamicBatchRendering_Test : public Test 
     {
     private: 
-        Shader m_Shader;
-
         std::vector<Texture> m_Textures;
 
         float m_QuadPosition[2] = { -2.0f, -2.0f };

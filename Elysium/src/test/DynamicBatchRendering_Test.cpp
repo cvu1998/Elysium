@@ -4,19 +4,12 @@
 
 namespace test {
 
-    DynamicBatchRendering_Test::DynamicBatchRendering_Test(): 
-        m_Shader("res/shaders/batch_rendering.shader")
+    DynamicBatchRendering_Test::DynamicBatchRendering_Test()
     {
         GL_ASSERT(glEnable(GL_BLEND));
         GL_ASSERT(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
         Renderer2D::init();
-        m_Shader.bind();
-
-        int sampler[32];
-        for (int i = 0; i < 32; i++)
-            sampler[i] = i;
-        m_Shader.setUniform1iv<32>("u_Textures", 32, sampler);
 
         m_Textures.reserve(2);
         m_Textures.emplace_back("res/texture/meadow.png");
@@ -68,10 +61,6 @@ namespace test {
 
     void DynamicBatchRendering_Test::onRender(const glm::mat4& proj, const glm::mat4& view)
     {
-        glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
-        glm::mat4 mvp = proj * view * model;
-        m_Shader.setUniformMat4f("u_MVP", mvp);
-
         Renderer2D::flush();
         
         GL_ASSERT(glClearColor(0.1f, 0.1f, 0.1f, 1.0f));

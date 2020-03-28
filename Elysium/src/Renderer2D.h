@@ -19,8 +19,6 @@ public:
     static void drawQuad(const glm::vec2& position, const glm::vec2& size, unsigned int textureID);
     static void drawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color, unsigned int textureID);
 
-    //static void bindTextures(std::vector<Texture>& textures);
-
     struct Stats {
         unsigned int DrawCount = 0;
         unsigned int QuadCount = 0;
