@@ -137,25 +137,25 @@ void Renderer2D::drawQuad(const glm::vec2& position, const glm::vec2& size, cons
     float halfLength = size.x / 2;
     float halfWidth = size.y / 2;
 
-    s_Data->BufferPtr->position = { position.x, position.y };
+    s_Data->BufferPtr->position = { position.x - halfLength, position.y - halfWidth };
     s_Data->BufferPtr->color = color;
     s_Data->BufferPtr->TextureCoordinates = { 0.0f, 0.0f };
     s_Data->BufferPtr->TextureID = textureIndex;
     s_Data->BufferPtr++;
 
-    s_Data->BufferPtr->position = { position.x + size.x, position.y };
+    s_Data->BufferPtr->position = { position.x + halfLength , position.y - halfWidth};
     s_Data->BufferPtr->color = color;
     s_Data->BufferPtr->TextureCoordinates = { 1.0f, 0.0f };
     s_Data->BufferPtr->TextureID = textureIndex;
     s_Data->BufferPtr++;
 
-    s_Data->BufferPtr->position = { position.x + size.x, position.y + size.y };
+    s_Data->BufferPtr->position = { position.x + halfLength , position.y + halfWidth };
     s_Data->BufferPtr->color = color;
     s_Data->BufferPtr->TextureCoordinates = { 1.0f, 1.0f };
     s_Data->BufferPtr->TextureID = textureIndex;
     s_Data->BufferPtr++;
 
-    s_Data->BufferPtr->position = { position.x, position.y + size.y };
+    s_Data->BufferPtr->position = { position.x - halfLength , position.y + halfWidth };
     s_Data->BufferPtr->color = color;
     s_Data->BufferPtr->TextureCoordinates = { 0.0f, 1.0f };
     s_Data->BufferPtr->TextureID = textureIndex;
@@ -194,25 +194,28 @@ void Renderer2D::drawQuad(const glm::vec2& position, const glm::vec2& size, unsi
         s_Data->TextureSlotIndex++;
     }
 
-    s_Data->BufferPtr->position = { position.x, position.y };
+    float halfLength = size.x / 2;
+    float halfWidth = size.y / 2;
+
+    s_Data->BufferPtr->position = { position.x - halfLength, position.y - halfWidth };
     s_Data->BufferPtr->color = color;
     s_Data->BufferPtr->TextureCoordinates = { 0.0f, 0.0f };
     s_Data->BufferPtr->TextureID = textureIndex;
     s_Data->BufferPtr++;
 
-    s_Data->BufferPtr->position = { position.x + size.x, position.y };
+    s_Data->BufferPtr->position = { position.x + halfLength , position.y - halfWidth };
     s_Data->BufferPtr->color = color;
     s_Data->BufferPtr->TextureCoordinates = { 1.0f, 0.0f };
     s_Data->BufferPtr->TextureID = textureIndex;
     s_Data->BufferPtr++;
 
-    s_Data->BufferPtr->position = { position.x + size.x, position.y + size.y };
+    s_Data->BufferPtr->position = { position.x + halfLength , position.y + halfWidth };
     s_Data->BufferPtr->color = color;
     s_Data->BufferPtr->TextureCoordinates = { 1.0f, 1.0f };
     s_Data->BufferPtr->TextureID = textureIndex;
     s_Data->BufferPtr++;
 
-    s_Data->BufferPtr->position = { position.x, position.y + size.y };
+    s_Data->BufferPtr->position = { position.x - halfLength , position.y + halfWidth };
     s_Data->BufferPtr->color = color;
     s_Data->BufferPtr->TextureCoordinates = { 0.0f, 1.0f };
     s_Data->BufferPtr->TextureID = textureIndex;
@@ -248,25 +251,28 @@ void Renderer2D::drawQuad(const glm::vec2& position, const glm::vec2& size, cons
         s_Data->TextureSlotIndex++;
     }
 
-    s_Data->BufferPtr->position = { position.x, position.y };
+    float halfLength = size.x / 2;
+    float halfWidth = size.y / 2;
+
+    s_Data->BufferPtr->position = { position.x - halfLength, position.y - halfWidth };
     s_Data->BufferPtr->color = color;
     s_Data->BufferPtr->TextureCoordinates = { 0.0f, 0.0f };
     s_Data->BufferPtr->TextureID = textureIndex;
     s_Data->BufferPtr++;
 
-    s_Data->BufferPtr->position = { position.x + size.x, position.y };
+    s_Data->BufferPtr->position = { position.x + halfLength , position.y - halfWidth };
     s_Data->BufferPtr->color = color;
     s_Data->BufferPtr->TextureCoordinates = { 1.0f, 0.0f };
     s_Data->BufferPtr->TextureID = textureIndex;
     s_Data->BufferPtr++;
 
-    s_Data->BufferPtr->position = { position.x + size.x, position.y + size.y };
+    s_Data->BufferPtr->position = { position.x + halfLength , position.y + halfWidth };
     s_Data->BufferPtr->color = color;
     s_Data->BufferPtr->TextureCoordinates = { 1.0f, 1.0f };
     s_Data->BufferPtr->TextureID = textureIndex;
     s_Data->BufferPtr++;
 
-    s_Data->BufferPtr->position = { position.x, position.y + size.y };
+    s_Data->BufferPtr->position = { position.x - halfLength , position.y + halfWidth };
     s_Data->BufferPtr->color = color;
     s_Data->BufferPtr->TextureCoordinates = { 0.0f, 1.0f };
     s_Data->BufferPtr->TextureID = textureIndex;

@@ -162,6 +162,7 @@ xcopy /E /Y "$(ProjectDir)res" "$(TargetDir)res"</Command>
     <ClCompile Include="src\test\BatchRendering_Test.cpp" />
     <ClCompile Include="src\test\ClearColor_Test.cpp" />
     <ClCompile Include="src\test\DynamicBatchRendering_Test.cpp" />
+    <ClCompile Include="src\test\Sandbox.cpp" />
     <ClCompile Include="src\test\ScreenSaver_Test.cpp" />
     <ClCompile Include="src\test\Test.cpp" />
     <ClCompile Include="src\test\Texture2D_Test.cpp" />
@@ -330,6 +331,7 @@ xcopy /E /Y "$(ProjectDir)res" "$(TargetDir)res"</Command>
     <ClInclude Include="src\test\BatchRendering_Test.h" />
     <ClInclude Include="src\test\ClearColor_Test.h" />
     <ClInclude Include="src\test\DynamicBatchRendering_Test.h" />
+    <ClInclude Include="src\test\Sandbox.h" />
     <ClInclude Include="src\test\ScreenSaver_Test.h" />
     <ClInclude Include="src\test\Test.h" />
     <ClInclude Include="src\test\Texture2D_Test.h" />

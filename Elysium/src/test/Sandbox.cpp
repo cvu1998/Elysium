@@ -1,10 +1,10 @@
-#include "DynamicBatchRendering_Test.h"
+#include "Sandbox.h"
 
 #include <imgui/imgui.h>
 
 namespace test {
 
-    DynamicBatchRendering_Test::DynamicBatchRendering_Test()
+    Sandbox::Sandbox()
     {
         GL_ASSERT(glEnable(GL_BLEND));
         GL_ASSERT(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
@@ -18,13 +18,13 @@ namespace test {
         m_Textures[1].bind(m_Textures[1].getRendererID());
     }
 
-    DynamicBatchRendering_Test::~DynamicBatchRendering_Test()
+    Sandbox::~Sandbox()
     {
         Renderer2D::shutdown();
         GL_ASSERT(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
     }
 
-    void DynamicBatchRendering_Test::onUpdate(float deltaTime)
+    void Sandbox::onUpdate(float deltaTime)
     {
         Renderer2D::resetStats();
         Renderer2D::beginBatch();
@@ -34,7 +34,7 @@ namespace test {
             for (float y = -3.0f; y < 3.0f; y += 0.1f)
             {
                 glm::vec4 gradient = { (x + 4.0f) / 8.0f, (y + 3.0f) / 12.0f, 1.0f, 1.0f };
-                Renderer2D::drawQuad({ x + 0.025f , y + 0.025f  }, { 0.05f, 0.05f }, gradient);
+                Renderer2D::drawQuad({ x + 0.025f , y + 0.025f }, { 0.05f, 0.05f }, gradient);
             }
         }
 
@@ -59,14 +59,14 @@ namespace test {
         Renderer2D::endBatch();
     }
 
-    void DynamicBatchRendering_Test::onRender(const glm::mat4& proj, const glm::mat4& view)
+    void Sandbox::onRender(const glm::mat4& proj, const glm::mat4& view)
     {
         Renderer2D::flush();
-        
+
         GL_ASSERT(glClearColor(0.1f, 0.1f, 0.1f, 1.0f));
     }
 
-    void DynamicBatchRendering_Test::onImGuiRender()
+    void Sandbox::onImGuiRender()
     {
         ImGui::Begin("First Quad Controls");
         ImGui::DragFloat2("First Quad Position", m_QuadPosition, 0.1f);

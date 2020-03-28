@@ -8,20 +8,19 @@
 
 namespace test {
 
-    class DynamicBatchRendering_Test : public Test 
+    class Sandbox : public Test 
     {
-    private: 
+    private:
         std::vector<Texture> m_Textures;
 
         float m_QuadPosition[2] = { -1.5f, -1.5f };
 
     public:
-        DynamicBatchRendering_Test();
-        ~DynamicBatchRendering_Test();
+        Sandbox();
+        ~Sandbox();
 
         virtual void onUpdate(float deltaTime) override;
         virtual void onRender(const glm::mat4& proj, const glm::mat4& view) override;
         virtual void onImGuiRender() override;
-
     };
 }

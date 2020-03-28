@@ -11,6 +11,7 @@
 #include "test/ScreenSaver_Test.h"
 #include "test/BatchRendering_Test.h"
 #include "test/DynamicBatchRendering_Test.h"
+#include "test/Sandbox.h"
 
 int main(void)
 {
@@ -63,6 +64,7 @@ int main(void)
         test::TestMenu* testMenu = new test::TestMenu(currentTest);
         currentTest = testMenu;
 
+        testMenu->registerTest<test::Sandbox>("Sandbox");
         testMenu->registerTest<test::ClearColor_Test>("Clear Color");
         testMenu->registerTest<test::Texture2D_Test>("2D Texture");
         testMenu->registerTest<test::ScreenSaver_Test>("Screen Saver");
