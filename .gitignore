@@ -1,17 +1,21 @@
 *.db
+*.db-shm
+*.db-wal
+*FileListAbsolute.txt
 *.idb
 *.ini
 *.ilk
 *.iobj
 *.ipdb
 *.ipch
+*.lib
 *.log
+*.ninja
 *.obj
 *.opendb
 *.pdb
+*.sqlite
 *.suo
 *.tlog
 
-vengine.vcxproj.FileListAbsolute.txt
-
-Debug
+bin/Debug-Win32/
