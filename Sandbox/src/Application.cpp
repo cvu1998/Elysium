@@ -1,11 +1,3 @@
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-#include <imgui/imgui.h>
-#include <imgui/imgui_impl_glfw.h>
-#include <imgui/imgui_impl_opengl3.h>
-
-#include "Renderer2D.h"
-
 #include "test/ClearColor_Test.h"
 #include "test/Texture2D_Test.h"
 #include "test/ScreenSaver_Test.h"
@@ -13,55 +5,20 @@
 #include "test/DynamicBatchRendering_Test.h"
 #include "test/Sandbox.h"
 
-int main(void)
+class Application : public Elysium::Application
 {
-    GLFWwindow* window;
+private:
+    test::Test* currentTest;
+    test::TestMenu* testMenu;
 
-    /* Initialize the library */
-    if (!glfwInit())
-        return -1;
+    glm::mat4 view;
+    glm::mat4 proj;
 
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
+public:
 
-    /* Create a windowed mode window and its OpenGL context */  
-    window = glfwCreateWindow(800, 600, "OpenGL", NULL, NULL);
-    if (!window)
+    Application(bool imgui=false) : Elysium::Application(imgui)
     {
-        glfwTerminate();
-        return -1;
-    }
-
-    /* Make the window's context current */
-    glfwMakeContextCurrent(window);
-
-    glfwSwapInterval(1);
-
-    if (glewInit() != GLEW_OK)
-        std::cout << "Glew Init Error!" << std::endl;
-    std::cout << glGetString(GL_VERSION) << std::endl;
-
-    glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
-    glm::mat4 proj = glm::ortho(-4.0f, 4.0f, -3.0f, 3.0f, -1.0f, 1.0f);
-    {
-        const char* glsl_version = "#version 130";
-        ImGui::CreateContext();
-        ImGui_ImplGlfw_InitForOpenGL(window, true);
-        ImGui_ImplOpenGL3_Init(glsl_version);
-        ImGui::StyleColorsDark();
-
-        bool show_demo_window = true;
-        bool show_another_window = false;
-
-        /***CAMERA***/
-        /*
-        float viewX = 0.0f;
-        */
-        /***CAMERA***/
-
-        test::Test* currentTest = nullptr;
-        test::TestMenu* testMenu = new test::TestMenu(currentTest);
+        testMenu = new test::TestMenu(currentTest);
         currentTest = testMenu;
 
         testMenu->registerTest<test::Sandbox>("Sandbox");
@@ -70,53 +27,40 @@ int main(void)
         testMenu->registerTest<test::ScreenSaver_Test>("Screen Saver");
         testMenu->registerTest<test::BatchRendering_Test>("Batch Rendering");
         testMenu->registerTest<test::DynamicBatchRendering_Test>("Dynamic Batch Rendering");
-        /* Loop until the user closes the window */
-        while (!glfwWindowShouldClose(window))
-        {
-            Renderer::clear();
 
-            ImGui_ImplOpenGL3_NewFrame();
-            ImGui_ImplGlfw_NewFrame();
-            ImGui::NewFrame();
+        view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+        proj = glm::ortho(-4.0f, 4.0f, -3.0f, 3.0f, -1.0f, 1.0f);
+    }
 
-            if (currentTest)
-            {
-                currentTest->onUpdate(0.0f);
-                currentTest->onRender(proj, view);
-                ImGui::Begin("Test");
-                if (currentTest != testMenu && ImGui::Button("<--"))
-                {
-                    delete currentTest;
-                    currentTest = testMenu;
-                }
-                currentTest->onImGuiRender();
-                ImGui::End();
-            }
-
-            /***CAMERA***/
-            /*
-            viewX -= 0.01f;
-            view = glm::translate(glm::mat4(1.0f), glm::vec3(viewX, 0.0f, 0.0f));
-            */
-            /***CAMERA***/
-
-            ImGui::Render();
-            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-            /* Swap front and back buffers */
-            glfwSwapBuffers(window);
-            /* Poll for and process events */
-            glfwPollEvents();
-        }
+    ~Application()
+    {
         delete currentTest;
-        if (currentTest != testMenu) 
+        if (currentTest != testMenu)
             delete testMenu;
     }
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
 
-    glfwDestroyWindow(window);
-    glfwTerminate();
+    void ApplicationLogic() override
+    {
+        if (currentTest)
+        {
+            currentTest->onUpdate(0.0f);
+            currentTest->onRender(proj, view);
+            ImGui::Begin("Test");
+            if (currentTest != testMenu && ImGui::Button("<--"))
+            {
+                delete currentTest;
+                currentTest = testMenu;
+            }
+            currentTest->onImGuiRender();
+            ImGui::End();
+        }
+    }
+};
+
+int main(void)
+{
+    Application* application = new Application(true);
+    application->Run();
+    delete application;
     return 0;
 }

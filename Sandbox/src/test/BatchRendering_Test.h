@@ -4,8 +4,6 @@
 
 #include <vector>
 
-#include "Texture.h"
-
 namespace test {
 
     class BatchRendering_Test : public Test 

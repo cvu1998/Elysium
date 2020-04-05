@@ -92,7 +92,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>GLEW_STATIC</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;src/vendor;src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(ProjectDir)src\Elysium\;$(ProjectDir)src\vendor\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -123,7 +123,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>GLEW_STATIC</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;src/vendor;src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(ProjectDir)src\Elysium\;$(ProjectDir)src\vendor\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -153,11 +153,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\Renderer2D.cpp" />
-    <ClCompile Include="src\Shader.cpp" />
-    <ClCompile Include="src\IndexBuffer.cpp" />
-    <ClCompile Include="src\Renderer.cpp" />
-    <ClCompile Include="src\Shape.cpp" />
+    <ClCompile Include="src\Elysium\Application.cpp" />
+    <ClCompile Include="src\Elysium\Renderer2D.cpp" />
+    <ClCompile Include="src\Elysium\Shader.cpp" />
+    <ClCompile Include="src\Elysium\IndexBuffer.cpp" />
+    <ClCompile Include="src\Elysium\Renderer.cpp" />
+    <ClCompile Include="src\Elysium\Shape.cpp" />
     <ClCompile Include="src\vendor\glm\detail\glm.cpp" />
     <ClCompile Include="src\vendor\imgui\imgui.cpp" />
     <ClCompile Include="src\vendor\imgui\imgui_demo.cpp" />
@@ -171,10 +172,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
       </ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="src\VertexBuffer.cpp" />
-    <ClCompile Include="src\VertexArray.cpp" />
-    <ClCompile Include="src\Utility.cpp" />
-    <ClCompile Include="src\Texture.cpp" />
+    <ClCompile Include="src\Elysium\VertexBuffer.cpp" />
+    <ClCompile Include="src\Elysium\VertexArray.cpp" />
+    <ClCompile Include="src\Elysium\Utility.cpp" />
+    <ClCompile Include="src\Elysium\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\basic.shader" />
@@ -315,11 +316,13 @@
     <None Include="src\vendor\glm\gtx\wrap.inl" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Renderer2D.h" />
-    <ClInclude Include="src\Shader.h" />
-    <ClInclude Include="src\IndexBuffer.h" />
-    <ClInclude Include="src\Renderer.h" />
-    <ClInclude Include="src\Shape.h" />
+    <ClInclude Include="src\Elysium\Application.h" />
+    <ClInclude Include="src\Elysium.h" />
+    <ClInclude Include="src\Elysium\Renderer2D.h" />
+    <ClInclude Include="src\Elysium\Shader.h" />
+    <ClInclude Include="src\Elysium\IndexBuffer.h" />
+    <ClInclude Include="src\Elysium\Renderer.h" />
+    <ClInclude Include="src\Elysium\Shape.h" />
     <ClInclude Include="src\vendor\glm\common.hpp" />
     <ClInclude Include="src\vendor\glm\detail\compute_common.hpp" />
     <ClInclude Include="src\vendor\glm\detail\compute_vector_relational.hpp" />
@@ -578,11 +581,11 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
       </ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="src\VertexBuffer.h" />
-    <ClInclude Include="src\VertexArray.h" />
-    <ClInclude Include="src\VertexBufferLayout.h" />
-    <ClInclude Include="src\Utility.h" />
-    <ClInclude Include="src\Texture.h" />
+    <ClInclude Include="src\Elysium\VertexBuffer.h" />
+    <ClInclude Include="src\Elysium\VertexArray.h" />
+    <ClInclude Include="src\Elysium\VertexBufferLayout.h" />
+    <ClInclude Include="src\Elysium\Utility.h" />
+    <ClInclude Include="src\Elysium\Texture.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

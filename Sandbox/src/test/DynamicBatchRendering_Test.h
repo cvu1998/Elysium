@@ -4,8 +4,6 @@
 
 #include <vector>
 
-#include "Renderer2D.h"
-
 namespace test {
 
     class DynamicBatchRendering_Test : public Test 

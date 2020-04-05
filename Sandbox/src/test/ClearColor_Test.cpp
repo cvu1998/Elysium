@@ -1,7 +1,5 @@
 #include "ClearColor_Test.h"
 
-#include <imgui/imgui.h>
-
 namespace test {
 
     ClearColor_Test::ClearColor_Test() : m_Color { (20.0f / 255.0f), (220.0f / 255.0f), 1.0f, 0.0f }

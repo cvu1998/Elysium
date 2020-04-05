@@ -1,7 +1,5 @@
 #include "Texture2D_Test.h"
 
-#include <imgui/imgui.h>
-
 namespace test {
 
     Texture2D_Test::Texture2D_Test(): m_TranslationA(-1.0f, 0.0f, 0.0f), m_TranslationB(1.0f, 0.0f, 0.0f),

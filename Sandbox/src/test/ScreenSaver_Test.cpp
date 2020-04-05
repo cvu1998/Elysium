@@ -1,7 +1,5 @@
 #include "ScreenSaver_Test.h"
 
-#include <imgui/imgui.h>
-
 namespace test {
 
     ScreenSaver_Test::ScreenSaver_Test() :

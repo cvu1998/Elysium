@@ -1,7 +1,5 @@
 #include "BatchRendering_Test.h"
 
-#include <imgui/imgui.h>
-
 namespace test {
 
     BatchRendering_Test::BatchRendering_Test(): 

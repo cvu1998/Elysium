@@ -1,7 +1,5 @@
 #include "Sandbox.h"
 
-#include <imgui/imgui.h>
-
 namespace test {
 
     Sandbox::Sandbox()

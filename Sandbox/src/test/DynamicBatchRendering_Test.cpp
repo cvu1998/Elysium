@@ -1,7 +1,5 @@
 #include "DynamicBatchRendering_Test.h"
 
-#include <imgui/imgui.h>
-
 namespace test {
 
     DynamicBatchRendering_Test::DynamicBatchRendering_Test()

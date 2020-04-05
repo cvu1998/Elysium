@@ -19,3 +19,4 @@
 *.tlog
 
 bin/Debug-Win32/
+.vs/

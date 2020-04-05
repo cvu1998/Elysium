@@ -2,8 +2,6 @@
 
 #include "Test.h"
 
-#include "Texture.h"
-
 namespace test {
 
     class Texture2D_Test : public Test 
