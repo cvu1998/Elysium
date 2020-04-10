@@ -17,11 +17,11 @@ namespace Elysium
         Application(bool imgui=false);
         ~Application();
 
-    public:
-        void Run();
+        virtual void ApplicationLogic() = 0;
 
-    protected:
-        virtual void ApplicationLogic();
+    public:
+        virtual void Run() final;
+        virtual void RunWithImGui() final;
     };
 }
 

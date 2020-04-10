@@ -58,28 +58,30 @@ namespace Elysium
         {
             Renderer::clear();
 
-            if (m_ImGui)
-            {
-                ImGui_ImplOpenGL3_NewFrame();
-                ImGui_ImplGlfw_NewFrame();
-                ImGui::NewFrame();
-            }
-
             this->ApplicationLogic();
-
-            if (m_ImGui)
-            {
-                ImGui::Render();
-                ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-            }
 
             glfwSwapBuffers(m_Window);
             glfwPollEvents();
         }
     }
 
-    void Application::ApplicationLogic()
+    void Application::RunWithImGui()
     {
+        while (!glfwWindowShouldClose(m_Window))
+        {
+            Renderer::clear();
 
+            ImGui_ImplOpenGL3_NewFrame();
+            ImGui_ImplGlfw_NewFrame();
+            ImGui::NewFrame();
+
+            this->ApplicationLogic();
+
+            ImGui::Render();
+            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+            glfwSwapBuffers(m_Window);
+            glfwPollEvents();
+        }
     }
 }

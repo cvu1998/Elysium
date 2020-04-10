@@ -7,7 +7,7 @@ namespace test {
         GL_ASSERT(glEnable(GL_BLEND));
         GL_ASSERT(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
-        Renderer2D::init();
+        Renderer2D::Init();
 
         m_Textures.reserve(2);
         m_Textures.emplace_back("res/texture/meadow.png");
@@ -18,7 +18,7 @@ namespace test {
 
     Sandbox::~Sandbox()
     {
-        Renderer2D::shutdown();
+        Renderer2D::Shutdown();
         GL_ASSERT(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
     }
 

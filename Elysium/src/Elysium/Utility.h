@@ -1,4 +1,5 @@
 #include<GL/glew.h>
+
 #ifdef _DEBUG
  #define ASSERT(x) if (!x) __debugbreak();
  #define GL_ASSERT(x) glClearError(); \
@@ -8,6 +9,8 @@ ASSERT( glLogCall(#x, __FILE__, __LINE__) )
  #define ASSERT(x) x;
  #define GL_ASSERT(x) x;
 #endif
+
+#define BIT(x) (1 << x)
 
 void glClearError();
 bool glLogCall(const char* function, const char* file, int line);

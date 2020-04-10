@@ -8,50 +8,57 @@
 class Application : public Elysium::Application
 {
 private:
-    test::Test* currentTest;
-    test::TestMenu* testMenu;
+    test::Test* m_CurrentTest;
+    test::TestMenu* m_TestMenu;
 
-    glm::mat4 view;
-    glm::mat4 proj;
+    glm::mat4 m_ProjectionMatrix;
+    glm::mat4 m_ViewMatrix;
 
 public:
-
     Application(bool imgui=false) : Elysium::Application(imgui)
     {
-        testMenu = new test::TestMenu(currentTest);
-        currentTest = testMenu;
+        m_TestMenu = new test::TestMenu(m_CurrentTest);
+        m_CurrentTest = m_TestMenu;
 
-        testMenu->registerTest<test::Sandbox>("Sandbox");
-        testMenu->registerTest<test::ClearColor_Test>("Clear Color");
-        testMenu->registerTest<test::Texture2D_Test>("2D Texture");
-        testMenu->registerTest<test::ScreenSaver_Test>("Screen Saver");
-        testMenu->registerTest<test::BatchRendering_Test>("Batch Rendering");
-        testMenu->registerTest<test::DynamicBatchRendering_Test>("Dynamic Batch Rendering");
+        m_TestMenu->registerTest<test::Sandbox>("Sandbox");
+        m_TestMenu->registerTest<test::ClearColor_Test>("Clear Color");
+        m_TestMenu->registerTest<test::Texture2D_Test>("2D Texture");
+        m_TestMenu->registerTest<test::ScreenSaver_Test>("Screen Saver");
+        m_TestMenu->registerTest<test::BatchRendering_Test>("Batch Rendering");
+        m_TestMenu->registerTest<test::DynamicBatchRendering_Test>("Dynamic Batch Rendering");
 
-        view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
-        proj = glm::ortho(-4.0f, 4.0f, -3.0f, 3.0f, -1.0f, 1.0f);
+        m_ProjectionMatrix = glm::ortho(-4.0f, 4.0f, -3.0f, 3.0f, -1.0f, 1.0f);
+        m_ViewMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+
+        Elysium::WindowResizeEvent event(800, 600);
+        if (event.isInCategory(Elysium::EventCategory::EVENT_APPLICATION))
+            std::cout << event << std::endl;
+        if (event.isInCategory(Elysium::EventCategory::EVENT_INPUT))
+            std::cout << event << std::endl;
+        if (event.getEventType() == Elysium::EventType::WINDOW_RESIZE)
+            std::cout << event << std::endl;
     }
 
     ~Application()
     {
-        delete currentTest;
-        if (currentTest != testMenu)
-            delete testMenu;
+        delete m_CurrentTest;
+        if (m_CurrentTest != m_TestMenu)
+            delete m_TestMenu;
     }
 
     void ApplicationLogic() override
     {
-        if (currentTest)
+        if (m_CurrentTest)
         {
-            currentTest->onUpdate(0.0f);
-            currentTest->onRender(proj, view);
+            m_CurrentTest->onUpdate(0.0f);
+            m_CurrentTest->onRender(m_ProjectionMatrix, m_ViewMatrix);
             ImGui::Begin("Test");
-            if (currentTest != testMenu && ImGui::Button("<--"))
+            if (m_CurrentTest != m_TestMenu && ImGui::Button("<--"))
             {
-                delete currentTest;
-                currentTest = testMenu;
+                delete m_CurrentTest;
+                m_CurrentTest = m_TestMenu;
             }
-            currentTest->onImGuiRender();
+            m_CurrentTest->onImGuiRender();
             ImGui::End();
         }
     }
@@ -60,7 +67,7 @@ public:
 int main(void)
 {
     Application* application = new Application(true);
-    application->Run();
+    application->RunWithImGui();
     delete application;
     return 0;
 }

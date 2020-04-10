@@ -8,8 +8,8 @@
 class Renderer2D
 {
 public:
-    static void init();
-    static void shutdown();
+    static void Init();
+    static void Shutdown();
 
     static void beginBatch();
     static void endBatch();

@@ -318,6 +318,10 @@
   <ItemGroup>
     <ClInclude Include="src\Elysium\Application.h" />
     <ClInclude Include="src\Elysium.h" />
+    <ClInclude Include="src\Elysium\Event\ApplicationEvent.h" />
+    <ClInclude Include="src\Elysium\Event\Event.h" />
+    <ClInclude Include="src\Elysium\Event\KeyEvent.h" />
+    <ClInclude Include="src\Elysium\Event\MouseEvent.h" />
     <ClInclude Include="src\Elysium\Renderer2D.h" />
     <ClInclude Include="src\Elysium\Shader.h" />
     <ClInclude Include="src\Elysium\IndexBuffer.h" />

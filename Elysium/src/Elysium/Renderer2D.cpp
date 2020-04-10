@@ -34,7 +34,7 @@ struct Renderer2DData {
 /*To Destroy Object on Shutdown*/
 static Renderer2DData* s_Data;
 
-void Renderer2D::init()
+void Renderer2D::Init()
 {
     s_Data = new Renderer2DData;
     s_Data->buffer = new Vertex[MaxVertexCount];
@@ -85,7 +85,7 @@ void Renderer2D::init()
     
 }
 
-void Renderer2D::shutdown()
+void Renderer2D::Shutdown()
 {
     delete[] s_Data->buffer;
     delete s_Data;
