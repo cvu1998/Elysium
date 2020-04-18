@@ -1,21 +1,28 @@
 #pragma once
 
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
+#include <memory>
+
 #include <imgui/imgui.h>
 #include <imgui/imgui_impl_glfw.h>
 #include <imgui/imgui_impl_opengl3.h>
+
+#include "Window.h"
 
 namespace Elysium 
 {
     class Application
     {
     protected:
-        GLFWwindow* m_Window;
+        std::unique_ptr<Window> m_Window;
         bool m_ImGui;
+        bool m_Running = true;
 
         Application(bool imgui=false);
         ~Application();
+
+        virtual void onEvent(Event& event) final;
+
+        bool onWindowCloseEvent(WindowCloseEvent& event);
 
         virtual void ApplicationLogic() = 0;
 

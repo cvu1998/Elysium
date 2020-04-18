@@ -6,34 +6,22 @@
 
 namespace Elysium
 {
+#define BIND_EVENT_FUNCTION(x) std::bind(&Application::x, this, std::placeholders::_1)
+
     Application::Application(bool imgui) : m_ImGui(imgui)
     {
-        if (!glfwInit())
-            std::cout << "Error: glfwInit" << std::endl;
-
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
-
-        m_Window = glfwCreateWindow(800, 600, "OpenGL", NULL, NULL);
-        if (!m_Window)
-        {
-            glfwTerminate();
-            std::cout << "Error: glfwCreateWindow" << std::endl;
-        }
-
-        glfwMakeContextCurrent(m_Window);
-        glfwSwapInterval(1);
+        m_Window = std::unique_ptr<Window>(Window::Create());
+        m_Window->setEventCallback(BIND_EVENT_FUNCTION(onEvent));
 
         if (glewInit() != GLEW_OK)
-            std::cout << "Glew Init Error!" << std::endl;
-        std::cout << glGetString(GL_VERSION) << std::endl;
+            std::cout << "Glew Init Error!" << "\n";
+        std::cout << glGetString(GL_VERSION) << "\n";
 
         if (m_ImGui)
         {
             const char* glsl_version = "#version 130";
             ImGui::CreateContext();
-            ImGui_ImplGlfw_InitForOpenGL(m_Window, true);
+            ImGui_ImplGlfw_InitForOpenGL(m_Window->getGLFWWindow(), true);
             ImGui_ImplOpenGL3_Init(glsl_version);
             ImGui::StyleColorsDark();
         }
@@ -47,27 +35,39 @@ namespace Elysium
             ImGui_ImplGlfw_Shutdown();
             ImGui::DestroyContext();
         }
+    }
 
-        glfwDestroyWindow(m_Window);
-        glfwTerminate();
+    void Application::onEvent(Event& event)
+    {
+        #ifdef _DEBUG
+        std::cout << event << "\n";
+        #endif
+
+        EventDispatcher dispatcher(event);
+        dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FUNCTION(onWindowCloseEvent));
+    }
+
+    bool Application::onWindowCloseEvent(WindowCloseEvent& event)
+    {
+        m_Running = false;
+        return true;
     }
 
     void Application::Run()
     {
-        while (!glfwWindowShouldClose(m_Window))
+        while (m_Running)
         {
             Renderer::clear();
 
             this->ApplicationLogic();
 
-            glfwSwapBuffers(m_Window);
-            glfwPollEvents();
+            m_Window->onUpdate();
         }
     }
 
     void Application::RunWithImGui()
     {
-        while (!glfwWindowShouldClose(m_Window))
+        while (m_Running)
         {
             Renderer::clear();
 
@@ -80,8 +80,7 @@ namespace Elysium
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-            glfwSwapBuffers(m_Window);
-            glfwPollEvents();
+            m_Window->onUpdate();
         }
     }
 }

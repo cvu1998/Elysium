@@ -12,7 +12,7 @@ namespace Elysium
         unsigned int m_Height, m_Width;
 
     public:
-        WindowResizeEvent(unsigned int width, unsigned int height) : m_Height(height), m_Width(width) { }
+        WindowResizeEvent(unsigned int width, unsigned int height) : m_Width(width), m_Height(height) { }
 
         static EventType getStaticType() { return EventType::WINDOW_RESIZE; }
         virtual EventType getEventType() const override { return getStaticType(); }
@@ -41,6 +41,15 @@ namespace Elysium
         virtual EventType getEventType() const override { return getStaticType(); }
         virtual const char* getName() const override { return "WINDOWS_CLOSE"; }
         virtual int getCategoryFlags() const override { return EventCategory::EVENT_APPLICATION; }
+
+        #ifdef _DEBUG
+        std::string toString() const override
+        {
+            std::stringstream ss;
+            ss << "WindowCloseEvent";
+            return ss.str();
+        }
+        #endif  
     };
 
     class AppRenderEvent : public Event

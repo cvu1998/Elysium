@@ -54,7 +54,7 @@ int Shader::getUniformLocation(const char* name) const
 
     GL_ASSERT(int location = glGetUniformLocation(m_RendererID, name));
     if (location == -1)
-        std::cout << "Warning: Uniform " << name << " doesn't exist!" << std::endl;
+        std::cout << "Warning: Uniform " << name << " doesn't exist!\n";
 
     m_UniformLocationCache[name] = location;
     return location;
@@ -104,8 +104,8 @@ unsigned int Shader::compileShader(unsigned int type, const std::string& source)
         char* message = (char*)alloca(length * sizeof(char));
         glGetShaderInfoLog(id, length, &length, message);
         std::cout << "Failed to compile " <<
-            (type == GL_VERTEX_SHADER ? "vertex" : "fragment") << " shader!" << std::endl;
-        std::cout << message << std::endl;
+            (type == GL_VERTEX_SHADER ? "vertex" : "fragment") << " shader!\n";
+        std::cout << message << "\n";
         glDeleteShader(id);
 
         return 0;

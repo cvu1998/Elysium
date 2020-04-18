@@ -69,7 +69,6 @@ void Renderer2D::Init()
     s_Data->iBuffer = std::make_unique<IndexBuffer>(indices, MaxIndexCount);
 
     s_Data->TextureSlots[0] = s_Data->white.getRendererID();
-    //std::cout << "WhiteTexture:  " << s_Data->white.getRendererID() << std::endl;
     for (size_t i = 1; i < MaxTextureCount; i++)
     {
         s_Data->TextureSlots[i] = 0;
@@ -113,7 +112,6 @@ void Renderer2D::flush()
 
     for (unsigned int i = 0; i < s_Data->TextureSlotIndex; i++) {
         GL_ASSERT(glBindTextureUnit(i, s_Data->TextureSlots[i]));
-        //std::cout << i << " " << s_Data->TextureSlots[i] << std::endl;
     }
     
     s_Data->vArray->bind();

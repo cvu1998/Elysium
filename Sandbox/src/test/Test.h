@@ -33,7 +33,7 @@ namespace test {
         template <typename T>
         void registerTest(const char* name)
         {
-            std::cout << "Registering test " << name << std::endl;
+            std::cout << "Registering test " << name << "\n";
             m_Tests.push_back(std::make_pair(name, []() { return new T(); }));
         }
     };

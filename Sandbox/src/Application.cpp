@@ -29,14 +29,6 @@ public:
 
         m_ProjectionMatrix = glm::ortho(-4.0f, 4.0f, -3.0f, 3.0f, -1.0f, 1.0f);
         m_ViewMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
-
-        Elysium::WindowResizeEvent event(800, 600);
-        if (event.isInCategory(Elysium::EventCategory::EVENT_APPLICATION))
-            std::cout << event << std::endl;
-        if (event.isInCategory(Elysium::EventCategory::EVENT_INPUT))
-            std::cout << event << std::endl;
-        if (event.getEventType() == Elysium::EventType::WINDOW_RESIZE)
-            std::cout << event << std::endl;
     }
 
     ~Application()
