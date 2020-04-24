@@ -2,14 +2,16 @@
 
 #include <array>
 
+#include <glm/gtc/matrix_transform.hpp>
+
 static const size_t MaxQuadCount = 10000;
 static const size_t MaxVertexCount = MaxQuadCount * 4;
 static const size_t MaxIndexCount = MaxQuadCount * 6;
 static const size_t MaxTextureCount = 32;
 
-struct Renderer2DData {
+struct Renderer2DData 
+{
 
-    //unsigned int VertexBufferID;
     std::unique_ptr<VertexBuffer> vBuffer;
     std::unique_ptr<IndexBuffer> iBuffer;
     std::unique_ptr<VertexArray> vArray;
@@ -26,6 +28,10 @@ struct Renderer2DData {
 
     std::array<unsigned int, MaxTextureCount> TextureSlots;
     unsigned int TextureSlotIndex = 1;
+
+    glm::vec2 PositionSign[4];
+    glm::vec2 TextureCoordinates[4];
+    glm::vec4 QuadVertexPositions[4];
 
     Renderer2D::Stats RendererStats;
 
@@ -81,13 +87,39 @@ void Renderer2D::Init()
     for (int i = 0; i < 32; i++)
         sampler[i] = i;
     s_Data->shader->setUniform1iv<32>("u_Textures", 32, sampler);
-    
+
+    s_Data->PositionSign[0] = { -1.0f, -1.0f };
+    s_Data->PositionSign[1] = {  1.0f, -1.0f };
+    s_Data->PositionSign[2] = {  1.0f,  1.0f };
+    s_Data->PositionSign[3] = { -1.0f,  1.0f };
+
+    s_Data->TextureCoordinates[0] = { 0.0f, 0.0f };
+    s_Data->TextureCoordinates[1] = { 1.0f, 0.0f };
+    s_Data->TextureCoordinates[2] = { 1.0f, 1.0f };
+    s_Data->TextureCoordinates[3] = { 0.0f, 1.0f };
+
+    s_Data->QuadVertexPositions[0] = { -0.5, -0.5, 0.0f, 1.0f };
+    s_Data->QuadVertexPositions[1] = {  0.5, -0.5, 0.0f, 1.0f };
+    s_Data->QuadVertexPositions[2] = {  0.5,  0.5, 0.0f, 1.0f };
+    s_Data->QuadVertexPositions[3] = { -0.5,  0.5, 0.0f, 1.0f };
 }
 
 void Renderer2D::Shutdown()
 {
     delete[] s_Data->buffer;
     delete s_Data;
+}
+
+void Renderer2D::beginScene()
+{
+    Renderer2D::resetStats();
+    Renderer2D::beginBatch();
+}
+
+void Renderer2D::endScene()
+{
+    Renderer2D::endBatch();
+    Renderer2D::flush();
 }
 
 void Renderer2D::beginBatch()
@@ -133,97 +165,24 @@ void Renderer2D::drawQuad(const glm::vec2& position, const glm::vec2& size, cons
 
     float textureIndex = 0.0f;
     float halfLength = size.x / 2;
-    float halfWidth = size.y / 2;
+    float halfWidth  = size.y / 2;
 
-    s_Data->BufferPtr->position = { position.x - halfLength, position.y - halfWidth };
-    s_Data->BufferPtr->color = color;
-    s_Data->BufferPtr->TextureCoordinates = { 0.0f, 0.0f };
-    s_Data->BufferPtr->TextureID = textureIndex;
-    s_Data->BufferPtr++;
+    for (size_t i = 0; i < 4; i++)
+    {
+        s_Data->BufferPtr->position = { position.x + halfLength * s_Data->PositionSign[i].x,
+            position.y + halfLength * s_Data->PositionSign[i].y };
 
-    s_Data->BufferPtr->position = { position.x + halfLength , position.y - halfWidth};
-    s_Data->BufferPtr->color = color;
-    s_Data->BufferPtr->TextureCoordinates = { 1.0f, 0.0f };
-    s_Data->BufferPtr->TextureID = textureIndex;
-    s_Data->BufferPtr++;
-
-    s_Data->BufferPtr->position = { position.x + halfLength , position.y + halfWidth };
-    s_Data->BufferPtr->color = color;
-    s_Data->BufferPtr->TextureCoordinates = { 1.0f, 1.0f };
-    s_Data->BufferPtr->TextureID = textureIndex;
-    s_Data->BufferPtr++;
-
-    s_Data->BufferPtr->position = { position.x - halfLength , position.y + halfWidth };
-    s_Data->BufferPtr->color = color;
-    s_Data->BufferPtr->TextureCoordinates = { 0.0f, 1.0f };
-    s_Data->BufferPtr->TextureID = textureIndex;
-    s_Data->BufferPtr++;
+        s_Data->BufferPtr->color = color;
+        s_Data->BufferPtr->TextureCoordinates = s_Data->TextureCoordinates[i];
+        s_Data->BufferPtr->TextureID = textureIndex;
+        s_Data->BufferPtr++;
+    }
 
     s_Data->IndexCount += 6;
     s_Data->RendererStats.QuadCount++;
 }
 
-
-void Renderer2D::drawQuad(const glm::vec2& position, const glm::vec2& size, unsigned int textureID)
-{
-    if (s_Data->IndexCount >= MaxIndexCount || s_Data->TextureSlotIndex > 32)
-    {
-        endBatch();
-        flush();
-        beginBatch();
-    }
-
-    constexpr glm::vec4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
-
-    float textureIndex = 0.0f;
-    for (unsigned int i = 1; i < s_Data->TextureSlotIndex; i++)
-    {
-        if (s_Data->TextureSlots[i] == textureID)
-        {
-            textureIndex = float(i);
-            break;
-        }
-    }
-
-    if (textureIndex == 0.0f)
-    {
-        textureIndex = (float)s_Data->TextureSlotIndex;
-        s_Data->TextureSlots[s_Data->TextureSlotIndex] = textureID;
-        s_Data->TextureSlotIndex++;
-    }
-
-    float halfLength = size.x / 2;
-    float halfWidth = size.y / 2;
-
-    s_Data->BufferPtr->position = { position.x - halfLength, position.y - halfWidth };
-    s_Data->BufferPtr->color = color;
-    s_Data->BufferPtr->TextureCoordinates = { 0.0f, 0.0f };
-    s_Data->BufferPtr->TextureID = textureIndex;
-    s_Data->BufferPtr++;
-
-    s_Data->BufferPtr->position = { position.x + halfLength , position.y - halfWidth };
-    s_Data->BufferPtr->color = color;
-    s_Data->BufferPtr->TextureCoordinates = { 1.0f, 0.0f };
-    s_Data->BufferPtr->TextureID = textureIndex;
-    s_Data->BufferPtr++;
-
-    s_Data->BufferPtr->position = { position.x + halfLength , position.y + halfWidth };
-    s_Data->BufferPtr->color = color;
-    s_Data->BufferPtr->TextureCoordinates = { 1.0f, 1.0f };
-    s_Data->BufferPtr->TextureID = textureIndex;
-    s_Data->BufferPtr++;
-
-    s_Data->BufferPtr->position = { position.x - halfLength , position.y + halfWidth };
-    s_Data->BufferPtr->color = color;
-    s_Data->BufferPtr->TextureCoordinates = { 0.0f, 1.0f };
-    s_Data->BufferPtr->TextureID = textureIndex;
-    s_Data->BufferPtr++;
-
-    s_Data->IndexCount += 6;
-    s_Data->RendererStats.QuadCount++;
-}
-
-void Renderer2D::drawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color, unsigned int textureID)
+void Renderer2D::drawQuad(const glm::vec2& position, const glm::vec2& size, unsigned int textureID, const glm::vec4& color)
 {
     if (s_Data->IndexCount >= MaxIndexCount || s_Data->TextureSlotIndex > 32)
     {
@@ -250,31 +209,90 @@ void Renderer2D::drawQuad(const glm::vec2& position, const glm::vec2& size, cons
     }
 
     float halfLength = size.x / 2;
-    float halfWidth = size.y / 2;
+    float halfWidth  = size.y / 2;
 
-    s_Data->BufferPtr->position = { position.x - halfLength, position.y - halfWidth };
-    s_Data->BufferPtr->color = color;
-    s_Data->BufferPtr->TextureCoordinates = { 0.0f, 0.0f };
-    s_Data->BufferPtr->TextureID = textureIndex;
-    s_Data->BufferPtr++;
+    for (size_t i = 0; i < 4; i++)
+    {
+        s_Data->BufferPtr->position = { position.x + halfLength * s_Data->PositionSign[i].x,
+            position.y + halfLength * s_Data->PositionSign[i].y };
 
-    s_Data->BufferPtr->position = { position.x + halfLength , position.y - halfWidth };
-    s_Data->BufferPtr->color = color;
-    s_Data->BufferPtr->TextureCoordinates = { 1.0f, 0.0f };
-    s_Data->BufferPtr->TextureID = textureIndex;
-    s_Data->BufferPtr++;
+        s_Data->BufferPtr->color = color;
+        s_Data->BufferPtr->TextureCoordinates = s_Data->TextureCoordinates[i];
+        s_Data->BufferPtr->TextureID = textureIndex;
+        s_Data->BufferPtr++;
+    }
 
-    s_Data->BufferPtr->position = { position.x + halfLength , position.y + halfWidth };
-    s_Data->BufferPtr->color = color;
-    s_Data->BufferPtr->TextureCoordinates = { 1.0f, 1.0f };
-    s_Data->BufferPtr->TextureID = textureIndex;
-    s_Data->BufferPtr++;
+    s_Data->IndexCount += 6;
+    s_Data->RendererStats.QuadCount++;
+}
 
-    s_Data->BufferPtr->position = { position.x - halfLength , position.y + halfWidth };
-    s_Data->BufferPtr->color = color;
-    s_Data->BufferPtr->TextureCoordinates = { 0.0f, 1.0f };
-    s_Data->BufferPtr->TextureID = textureIndex;
-    s_Data->BufferPtr++;
+void Renderer2D::drawQuadWithRotation(const glm::vec2& position, const glm::vec2& size, float rotation, const glm::vec4& color)
+{
+    if (s_Data->IndexCount >= MaxIndexCount)
+    {
+        endBatch();
+        flush();
+        beginBatch();
+    }
+
+    float textureIndex = 0.0f;
+
+    glm::mat4 tranform = glm::translate(glm::mat4(1.0f), { position.x, position.y, 0.0f })
+        * glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f })
+        * glm::scale(glm::mat4(1.0f), { size.x , size.y, 1.0f });
+
+    for (size_t i = 0; i < 4; i++)
+    {
+
+        s_Data->BufferPtr->position = tranform * s_Data->QuadVertexPositions[i];
+        s_Data->BufferPtr->color = color;
+        s_Data->BufferPtr->TextureCoordinates = s_Data->TextureCoordinates[i];
+        s_Data->BufferPtr->TextureID = textureIndex;
+        s_Data->BufferPtr++;
+    }
+
+    s_Data->IndexCount += 6;
+    s_Data->RendererStats.QuadCount++;
+}
+
+void Renderer2D::drawQuadWithRotation(const glm::vec2& position, const glm::vec2& size, float rotation, unsigned int textureID, const glm::vec4& color)
+{
+    if (s_Data->IndexCount >= MaxIndexCount || s_Data->TextureSlotIndex > 32)
+    {
+        endBatch();
+        flush();
+        beginBatch();
+    }
+
+    float textureIndex = 0.0f;
+    for (unsigned int i = 1; i < s_Data->TextureSlotIndex; i++)
+    {
+        if (s_Data->TextureSlots[i] == textureID)
+        {
+            textureIndex = float(i);
+            break;
+        }
+    }
+
+    if (textureIndex == 0.0f)
+    {
+        textureIndex = (float)s_Data->TextureSlotIndex;
+        s_Data->TextureSlots[s_Data->TextureSlotIndex] = textureID;
+        s_Data->TextureSlotIndex++;
+    }
+
+    glm::mat4 tranform = glm::translate(glm::mat4(1.0f), { position.x, position.y, 0.0f })
+        * glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f })
+        * glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
+
+    for (size_t i = 0; i < 4; i++)
+    {
+        s_Data->BufferPtr->position = tranform * s_Data->QuadVertexPositions[i];
+        s_Data->BufferPtr->color = color;
+        s_Data->BufferPtr->TextureCoordinates = s_Data->TextureCoordinates[i];
+        s_Data->BufferPtr->TextureID = textureIndex;
+        s_Data->BufferPtr++;
+    }
 
     s_Data->IndexCount += 6;
     s_Data->RendererStats.QuadCount++;

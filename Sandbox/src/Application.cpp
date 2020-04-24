@@ -17,6 +17,7 @@ private:
 public:
     Application(bool imgui=false) : Elysium::Application(imgui)
     {
+        //m_Window->setVSync(false);
         m_TestMenu = new test::TestMenu(m_CurrentTest);
         m_CurrentTest = m_TestMenu;
 

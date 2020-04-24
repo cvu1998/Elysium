@@ -12,8 +12,6 @@ namespace test {
         m_Textures.reserve(2);
         m_Textures.emplace_back("res/texture/meadow.png");
         m_Textures.emplace_back("res/texture/Vader.png");
-        m_Textures[0].bind(m_Textures[0].getRendererID());
-        m_Textures[1].bind(m_Textures[1].getRendererID());
     }
 
     DynamicBatchRendering_Test::~DynamicBatchRendering_Test()
@@ -24,8 +22,7 @@ namespace test {
 
     void DynamicBatchRendering_Test::onUpdate(float deltaTime)
     {
-        Renderer2D::resetStats();
-        Renderer2D::beginBatch();
+        Renderer2D::beginScene();
 
         for (float x = -4.0f; x < 4.0f; x += 0.1f)
         {
@@ -54,13 +51,11 @@ namespace test {
         Renderer2D::drawQuad({ 1.5f, -1.5f }, { 1.0f, 1.0f }, m_Textures[1].getRendererID());
         Renderer2D::drawQuad({ m_QuadPosition[0], m_QuadPosition[1] }, { 1.0f, 1.0f }, m_Textures[0].getRendererID());
 
-        Renderer2D::endBatch();
+        Renderer2D::endScene();
     }
 
     void DynamicBatchRendering_Test::onRender(const glm::mat4& proj, const glm::mat4& view)
-    {
-        Renderer2D::flush();
-        
+    {   
         GL_ASSERT(glClearColor(0.1f, 0.1f, 0.1f, 1.0f));
     }
 
