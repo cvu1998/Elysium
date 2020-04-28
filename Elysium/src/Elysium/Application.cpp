@@ -45,6 +45,23 @@ namespace Elysium
 
         EventDispatcher dispatcher(event);
         dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FUNCTION(onWindowCloseEvent));
+
+        for (auto it = m_LayerStack.end(); it != m_LayerStack.begin();)
+        {
+            (*--it)->onEvent(event);
+            if (event.Handled)
+                break;
+        }
+    }
+
+    void Application::pushLayer(Layer* layer)
+    {
+        m_LayerStack.pushLayer(layer);
+    }
+
+    void Application::pushOverlay(Layer* overlay)
+    {
+        m_LayerStack.pushOverlay(overlay);
     }
 
     bool Application::onWindowCloseEvent(WindowCloseEvent& event)
@@ -60,6 +77,9 @@ namespace Elysium
             Renderer::clear();
 
             this->ApplicationLogic();
+
+            for (Layer* layer : m_LayerStack)
+                layer->onUpdate();
 
             m_Window->onUpdate();
         }

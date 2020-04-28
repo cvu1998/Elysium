@@ -12,6 +12,7 @@ namespace test {
         std::vector<Texture> m_Textures;
 
         float m_QuadPosition[2] = { -1.5f, -1.5f };
+        float rotation = 0;
 
     public:
         Sandbox();

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <functional>
+#include <iostream>
 #include <string>
 
 #include "Utility.h"
@@ -43,8 +44,8 @@ namespace Elysium
     class Event
     {
         friend class EventDispatcher;
-    protected:
-        bool m_Handled = false;
+    public:
+        bool Handled = false;
 
     public:
         virtual EventType getEventType() const = 0;
@@ -77,7 +78,7 @@ namespace Elysium
         {
             if (m_Event.getEventType() == T::getStaticType())
             {
-                m_Event.m_Handled = function(*(T*)&m_Event);
+                m_Event.Handled = function(*(T*)&m_Event);
                 return true;
             }
             return false;

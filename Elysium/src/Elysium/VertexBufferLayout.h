@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 
-#include "Shape.h"
+#include "Math/Shape.h"
 #include "Utility.h"
 
 enum class DataType {

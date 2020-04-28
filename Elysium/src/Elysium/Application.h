@@ -6,6 +6,7 @@
 #include <imgui/imgui_impl_glfw.h>
 #include <imgui/imgui_impl_opengl3.h>
 
+#include "LayerStack.h"
 #include "Window.h"
 
 namespace Elysium 
@@ -16,11 +17,15 @@ namespace Elysium
         std::unique_ptr<Window> m_Window;
         bool m_ImGui;
         bool m_Running = true;
+        LayerStack m_LayerStack;
 
         Application(bool imgui=false);
         ~Application();
 
         virtual void onEvent(Event& event) final;
+
+        void pushLayer(Layer* layer);
+        void pushOverlay(Layer* overlay);
 
         bool onWindowCloseEvent(WindowCloseEvent& event);
 

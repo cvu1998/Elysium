@@ -29,7 +29,7 @@ namespace test {
             for (float y = -3.0f; y < 3.0f; y += 0.1f)
             {
                 glm::vec4 gradient = { (x + 4.0f) / 8.0f, (y + 3.0f) / 12.0f, 1.0f, 1.0f };
-                Renderer2D::drawQuad({ x + 0.025f , y + 0.025f }, { 0.05f, 0.05f }, gradient);
+                Renderer2D::drawQuadWithRotation({ x + 0.025f , y + 0.025f }, { 0.05f, 0.05f }, rotation, gradient);
             }
         }
 
@@ -45,12 +45,15 @@ namespace test {
             }
         }
         glm::vec4 color = { 0.0f, 1.0f, 1.0f, 1.0f };
-        Renderer2D::drawQuadWithRotation({ -1.5f, 1.5f }, { 1.0f, 1.0f }, 45.0f, color);
+        Renderer2D::drawQuadWithRotation({ -1.5f, 1.5f }, { 1.0f, 1.0f }, rotation, color);
         Renderer2D::drawQuad({ 1.5f, 1.5f }, { 1.0f, 1.0f }, color);
 
-        Renderer2D::drawQuadWithRotation({ 1.5f, -1.5f }, { 1.0f, 1.0f }, 45.0f, m_Textures[1].getRendererID());
+        Renderer2D::drawQuadWithRotation({ 1.5f, -1.5f }, { 1.0f, 1.0f }, rotation, m_Textures[1].getRendererID());
         Renderer2D::drawQuad({ m_QuadPosition[0], m_QuadPosition[1] }, { 1.0f, 1.0f }, m_Textures[0].getRendererID());
 
+        Renderer2D::drawQuadWithRotation({ 0.0f, 0.0f }, { 2.0f, 1.0f }, rotation, color);
+
+        rotation += 1.5f;
         Renderer2D::endScene();
     }
 

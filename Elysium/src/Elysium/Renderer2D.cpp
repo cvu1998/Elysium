@@ -2,14 +2,14 @@
 
 #include <array>
 
-#include <glm/gtc/matrix_transform.hpp>
+#include "Math/Math.h"
 
 static const size_t MaxQuadCount = 10000;
 static const size_t MaxVertexCount = MaxQuadCount * 4;
 static const size_t MaxIndexCount = MaxQuadCount * 6;
 static const size_t MaxTextureCount = 32;
 
-struct Renderer2DData 
+struct Renderer2DData
 {
 
     std::unique_ptr<VertexBuffer> vBuffer;
@@ -31,7 +31,7 @@ struct Renderer2DData
 
     glm::vec2 PositionSign[4];
     glm::vec2 TextureCoordinates[4];
-    glm::vec4 QuadVertexPositions[4];
+    glm::vec2 QuadVertexPositions[4];
 
     Renderer2D::Stats RendererStats;
 
@@ -88,20 +88,20 @@ void Renderer2D::Init()
         sampler[i] = i;
     s_Data->shader->setUniform1iv<32>("u_Textures", 32, sampler);
 
-    s_Data->PositionSign[0] = { -1.0f, -1.0f };
-    s_Data->PositionSign[1] = {  1.0f, -1.0f };
-    s_Data->PositionSign[2] = {  1.0f,  1.0f };
-    s_Data->PositionSign[3] = { -1.0f,  1.0f };
+    s_Data->PositionSign[0] = {-1.0f, -1.0f };
+    s_Data->PositionSign[1] = { 1.0f, -1.0f };
+    s_Data->PositionSign[2] = { 1.0f,  1.0f };
+    s_Data->PositionSign[3] = {-1.0f,  1.0f };
 
     s_Data->TextureCoordinates[0] = { 0.0f, 0.0f };
     s_Data->TextureCoordinates[1] = { 1.0f, 0.0f };
     s_Data->TextureCoordinates[2] = { 1.0f, 1.0f };
     s_Data->TextureCoordinates[3] = { 0.0f, 1.0f };
 
-    s_Data->QuadVertexPositions[0] = { -0.5, -0.5, 0.0f, 1.0f };
-    s_Data->QuadVertexPositions[1] = {  0.5, -0.5, 0.0f, 1.0f };
-    s_Data->QuadVertexPositions[2] = {  0.5,  0.5, 0.0f, 1.0f };
-    s_Data->QuadVertexPositions[3] = { -0.5,  0.5, 0.0f, 1.0f };
+    s_Data->QuadVertexPositions[0] = {-0.5, -0.5 };
+    s_Data->QuadVertexPositions[1] = { 0.5, -0.5 };
+    s_Data->QuadVertexPositions[2] = { 0.5,  0.5 };
+    s_Data->QuadVertexPositions[3] = {-0.5,  0.5 };
 }
 
 void Renderer2D::Shutdown()
@@ -145,7 +145,7 @@ void Renderer2D::flush()
     for (unsigned int i = 0; i < s_Data->TextureSlotIndex; i++) {
         GL_ASSERT(glBindTextureUnit(i, s_Data->TextureSlots[i]));
     }
-    
+
     s_Data->vArray->bind();
     GL_ASSERT(glDrawElements(GL_TRIANGLES, s_Data->IndexCount, GL_UNSIGNED_INT, nullptr));
     s_Data->RendererStats.DrawCount++;
@@ -165,12 +165,13 @@ void Renderer2D::drawQuad(const glm::vec2& position, const glm::vec2& size, cons
 
     float textureIndex = 0.0f;
     float halfLength = size.x / 2;
-    float halfWidth  = size.y / 2;
+    float halfWidth = size.y / 2;
 
     for (size_t i = 0; i < 4; i++)
     {
+
         s_Data->BufferPtr->position = { position.x + halfLength * s_Data->PositionSign[i].x,
-            position.y + halfLength * s_Data->PositionSign[i].y };
+            position.y + halfWidth * s_Data->PositionSign[i].y };
 
         s_Data->BufferPtr->color = color;
         s_Data->BufferPtr->TextureCoordinates = s_Data->TextureCoordinates[i];
@@ -209,12 +210,12 @@ void Renderer2D::drawQuad(const glm::vec2& position, const glm::vec2& size, unsi
     }
 
     float halfLength = size.x / 2;
-    float halfWidth  = size.y / 2;
+    float halfWidth = size.y / 2;
 
     for (size_t i = 0; i < 4; i++)
     {
         s_Data->BufferPtr->position = { position.x + halfLength * s_Data->PositionSign[i].x,
-            position.y + halfLength * s_Data->PositionSign[i].y };
+            position.y + halfWidth * s_Data->PositionSign[i].y };
 
         s_Data->BufferPtr->color = color;
         s_Data->BufferPtr->TextureCoordinates = s_Data->TextureCoordinates[i];
@@ -237,14 +238,16 @@ void Renderer2D::drawQuadWithRotation(const glm::vec2& position, const glm::vec2
 
     float textureIndex = 0.0f;
 
-    glm::mat4 tranform = glm::translate(glm::mat4(1.0f), { position.x, position.y, 0.0f })
-        * glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f })
-        * glm::scale(glm::mat4(1.0f), { size.x , size.y, 1.0f });
+    Elysium::Complex transform(glm::cos(glm::radians(rotation)), glm::sin(glm::radians(rotation)));
+    Elysium::Complex translation(position.x, position.y);
 
     for (size_t i = 0; i < 4; i++)
     {
+        s_Data->BufferPtr->position = (glm::vec2) (Elysium::Complex::scaleXY(
+            Elysium::Complex(s_Data->QuadVertexPositions[i].x, s_Data->QuadVertexPositions[i].y), size.x, size.y)
+            * transform
+            + translation);
 
-        s_Data->BufferPtr->position = tranform * s_Data->QuadVertexPositions[i];
         s_Data->BufferPtr->color = color;
         s_Data->BufferPtr->TextureCoordinates = s_Data->TextureCoordinates[i];
         s_Data->BufferPtr->TextureID = textureIndex;
@@ -281,13 +284,16 @@ void Renderer2D::drawQuadWithRotation(const glm::vec2& position, const glm::vec2
         s_Data->TextureSlotIndex++;
     }
 
-    glm::mat4 tranform = glm::translate(glm::mat4(1.0f), { position.x, position.y, 0.0f })
-        * glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f })
-        * glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
+    Elysium::Complex transform(glm::cos(glm::radians(rotation)), glm::sin(glm::radians(rotation)));
+    Elysium::Complex translation(position.x, position.y);
 
     for (size_t i = 0; i < 4; i++)
     {
-        s_Data->BufferPtr->position = tranform * s_Data->QuadVertexPositions[i];
+        s_Data->BufferPtr->position = (glm::vec2) (Elysium::Complex::scaleXY(
+            Elysium::Complex(s_Data->QuadVertexPositions[i].x, s_Data->QuadVertexPositions[i].y), size.x, size.y)
+            * transform
+            + translation);
+
         s_Data->BufferPtr->color = color;
         s_Data->BufferPtr->TextureCoordinates = s_Data->TextureCoordinates[i];
         s_Data->BufferPtr->TextureID = textureIndex;
