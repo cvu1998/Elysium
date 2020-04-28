@@ -13,8 +13,8 @@ namespace Elysium
         m_Window = std::unique_ptr<Window>(Window::Create());
         m_Window->setEventCallback(BIND_EVENT_FUNCTION(onEvent));
 
-        if (glewInit() != GLEW_OK)
-            std::cout << "Glew Init Error!" << "\n";
+        if (m_Window->getStatus() == 0)
+            std::cout << "Glad Init Error!" << "\n";
         std::cout << glGetString(GL_VERSION) << "\n";
 
         if (m_ImGui)

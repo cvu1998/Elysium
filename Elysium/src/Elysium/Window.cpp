@@ -41,6 +41,7 @@ namespace Elysium
         }
 
         glfwMakeContextCurrent(m_Window);
+        m_Data.Status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
         glfwSetWindowUserPointer(m_Window, &m_Data);
         setVSync(true);
 

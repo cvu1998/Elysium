@@ -1,4 +1,4 @@
-#include<GL/glew.h>
+#include <glad/glad.h>
 
 #ifdef _DEBUG
  #define ASSERT(x) if (!x) __debugbreak();

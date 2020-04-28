@@ -1,6 +1,7 @@
 *.db
 *.db-shm
 *.db-wal
+*.filters
 *FileListAbsolute.txt
 *.idb
 *.ini
@@ -17,6 +18,8 @@
 *.sqlite
 *.suo
 *.tlog
+*.user
 
 bin/Debug-Win32/
+bin/Debug-x64/
 .vs/

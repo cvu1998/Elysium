@@ -1,6 +1,6 @@
 #pragma once
 
-#include <GL/glew.h>
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 #include "Events/ApplicationEvent.h"
@@ -29,6 +29,8 @@ namespace Elysium
         {
             std::string Title;
             unsigned int Width, Height;
+
+            int Status;
             bool VSync;
                 
             EventCallbackFunction EventCallback;
@@ -45,6 +47,7 @@ namespace Elysium
 
         inline unsigned int getWidth() const { return m_Data.Width; }
         inline unsigned int getHeight() const { return m_Data.Height; }
+        inline int getStatus() const { return m_Data.Status; }
         inline GLFWwindow* getGLFWWindow() const { return m_Window; }
 
         void setEventCallback(const EventCallbackFunction& callback) { m_Data.EventCallback = callback; }
