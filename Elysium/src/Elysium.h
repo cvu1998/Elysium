@@ -1,6 +1,18 @@
 #pragma once
 
-#include "Application.h"
-#include "Layer.h"
-#include "Renderer2D.h"
-#include "Texture.h"
+// ---Application---
+#include "Elysium/Application.h"
+#include "Elysium/Layer.h"
+#include "Elysium/Window.h"
+
+#include "Elysium/Input.h"
+#include "Elysium/KeyCodes.h"
+#include "Elysium/MouseCodes.h"
+
+// ---Renderer---
+#include "Elysium/Camera.h"
+
+#include "Elysium/Math/Math.h"
+
+#include "Elysium/Renderer2D.h"
+#include "Elysium/Texture.h"

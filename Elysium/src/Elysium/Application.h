@@ -13,6 +13,9 @@ namespace Elysium
 {
     class Application
     {
+    private:
+        static Application* s_Instance;
+
     protected:
         std::unique_ptr<Window> m_Window;
         bool m_ImGui;
@@ -24,14 +27,18 @@ namespace Elysium
 
         virtual void onEvent(Event& event) final;
 
-        void pushLayer(Layer* layer);
-        void pushOverlay(Layer* overlay);
+        virtual void pushLayer(Layer* layer) final;
+        virtual void pushOverlay(Layer* overlay) final;
 
         bool onWindowCloseEvent(WindowCloseEvent& event);
 
         virtual void ApplicationLogic() = 0;
 
     public:
+        static Application& Get() { return *s_Instance; }
+
+        virtual Window& getWindow() final { return *m_Window; }
+
         virtual void Run() final;
         virtual void RunWithImGui() final;
     };

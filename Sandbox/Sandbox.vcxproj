@@ -20,19 +20,19 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Application.cpp" />
+    <ClCompile Include="src\SandboxLayer.cpp" />
     <ClCompile Include="src\test\BatchRendering_Test.cpp" />
     <ClCompile Include="src\test\ClearColor_Test.cpp" />
     <ClCompile Include="src\test\DynamicBatchRendering_Test.cpp" />
-    <ClCompile Include="src\test\Sandbox.cpp" />
     <ClCompile Include="src\test\ScreenSaver_Test.cpp" />
     <ClCompile Include="src\test\Test.cpp" />
     <ClCompile Include="src\test\Texture2D_Test.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\SandboxLayer.h" />
     <ClInclude Include="src\test\BatchRendering_Test.h" />
     <ClInclude Include="src\test\ClearColor_Test.h" />
     <ClInclude Include="src\test\DynamicBatchRendering_Test.h" />
-    <ClInclude Include="src\test\Sandbox.h" />
     <ClInclude Include="src\test\ScreenSaver_Test.h" />
     <ClInclude Include="src\test\Test.h" />
     <ClInclude Include="src\test\Texture2D_Test.h" />
@@ -120,7 +120,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)Elysium\src\;$(SolutionDir)Elysium\src\Elysium\;$(SolutionDir)Elysium\src\vendor\;$(SolutionDir)Glad\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)Elysium\src\;$(SolutionDir)Elysium\src\vendor\;$(SolutionDir)Glad\include\</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -141,7 +142,8 @@ xcopy /E /Y "$(ProjectDir)res" "$(SolutionDir)bin\$(Configuration)-$(Platform)\S
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)Elysium\src\;$(SolutionDir)Elysium\src\Elysium\;$(SolutionDir)Elysium\src\vendor\;$(SolutionDir)Glad\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)Elysium\src\;$(SolutionDir)Elysium\src\vendor\;$(SolutionDir)Glad\include\</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -160,7 +162,8 @@ xcopy /E /Y "$(ProjectDir)res" "$(SolutionDir)bin\$(Configuration)-$(Platform)\S
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)Elysium\src\;$(SolutionDir)Elysium\src\Elysium\;$(SolutionDir)Elysium\src\vendor\;$(SolutionDir)Glad\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)Elysium\src\;$(SolutionDir)Elysium\src\vendor\;$(SolutionDir)Glad\include\</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -181,7 +184,8 @@ xcopy /E /Y "$(ProjectDir)res" "$(SolutionDir)bin\$(Configuration)-$(Platform)\S
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)Elysium\src\;$(SolutionDir)Elysium\src\Elysium\;$(SolutionDir)Elysium\src\vendor\;$(SolutionDir)Glad\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)Elysium\src\;$(SolutionDir)Elysium\src\vendor\;$(SolutionDir)Glad\include\</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

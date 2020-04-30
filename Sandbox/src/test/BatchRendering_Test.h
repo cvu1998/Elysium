@@ -22,7 +22,7 @@ namespace test {
         ~BatchRendering_Test();
 
         virtual void onUpdate(float deltaTime) override;
-        virtual void onRender(const glm::mat4& proj, const glm::mat4& view) override;
+        virtual void onRender() override;
         virtual void onImGuiRender() override;
 
     };

@@ -77,14 +77,14 @@ namespace test {
     {
     }
 
-    void BatchRendering_Test::onRender(const glm::mat4& proj, const glm::mat4& view)
+    void BatchRendering_Test::onRender()
     {
         GL_ASSERT(glClearColor(0.1f, 0.1f, 0.1f, 1.0f));
         GL_ASSERT(glClear(GL_COLOR_BUFFER_BIT));
 
         glm::mat4 model = glm::translate(glm::mat4(1.0f), m_Translation);
-        glm::mat4 mvp = proj * view * model;
-        m_Shader.setUniformMat4f("u_MVP", mvp);
+        glm::mat4 mvp = m_ProjectionMatrix * m_ViewMatrix * model;
+        m_Shader.setUniformMat4f("u_ViewProjection", mvp);
 
         Renderer::draw(m_va, *m_ib, m_Shader);
     }

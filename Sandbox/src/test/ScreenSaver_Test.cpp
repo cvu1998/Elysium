@@ -93,13 +93,14 @@ namespace test {
         /***COLOR CHANGE***/
     }
 
-    void ScreenSaver_Test::onRender(const glm::mat4& proj, const glm::mat4& view)
+    void ScreenSaver_Test::onRender()
     {
         glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(x, y, 0));
-        glm::mat4 mvp = proj * view * model;
+        glm::mat4 mvp = m_ProjectionMatrix * m_ViewMatrix * model;
 
+        m_Shader.bind();
         m_Shader.setUniform4f("u_Color", r, 0.0f, 1.0f, 1.0f);
-        m_Shader.setUniformMat4f("u_MVP", mvp);
+        m_Shader.setUniformMat4f("u_ViewProjection", mvp);
 
         Renderer::draw(m_va, *m_ib, m_Shader);
     }

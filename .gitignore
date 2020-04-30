@@ -9,7 +9,6 @@
 *.iobj
 *.ipdb
 *.ipch
-*.lib
 *.log
 *.ninja
 *.obj

@@ -4,7 +4,7 @@
 #include "Shader.h"
 #include "VertexArray.h"
 
-class Renderer 
+class Renderer
 {
 public:
     static void clear();

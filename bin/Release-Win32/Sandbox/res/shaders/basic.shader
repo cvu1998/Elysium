@@ -7,11 +7,11 @@ layout(location = 1) in vec2 a_TextureCoord;
 
 out vec2 v_TexCoord;
 
-uniform mat4 u_MVP;
+uniform mat4 u_ViewProjection;
 
 void main()
 {
-   gl_Position = u_MVP * positions;
+   gl_Position = u_ViewProjection * positions;
    v_TexCoord = a_TextureCoord;
 };
 

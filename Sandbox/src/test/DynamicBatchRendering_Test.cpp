@@ -2,12 +2,10 @@
 
 namespace test {
 
-    DynamicBatchRendering_Test::DynamicBatchRendering_Test()
+    DynamicBatchRendering_Test::DynamicBatchRendering_Test() : m_Camera(-4.0f, 4.0f, -3.0f, 3.0f)
     {
         GL_ASSERT(glEnable(GL_BLEND));
         GL_ASSERT(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
-
-        Renderer2D::Init();
 
         m_Textures.reserve(2);
         m_Textures.emplace_back("res/texture/meadow.png");
@@ -16,13 +14,12 @@ namespace test {
 
     DynamicBatchRendering_Test::~DynamicBatchRendering_Test()
     {
-        Renderer2D::Shutdown();
         GL_ASSERT(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
     }
 
     void DynamicBatchRendering_Test::onUpdate(float deltaTime)
     {
-        Renderer2D::beginScene();
+        Renderer2D::beginScene(m_Camera);
 
         for (float x = -4.0f; x < 4.0f; x += 0.1f)
         {
@@ -54,7 +51,7 @@ namespace test {
         Renderer2D::endScene();
     }
 
-    void DynamicBatchRendering_Test::onRender(const glm::mat4& proj, const glm::mat4& view)
+    void DynamicBatchRendering_Test::onRender()
     {   
         GL_ASSERT(glClearColor(0.1f, 0.1f, 0.1f, 1.0f));
     }

@@ -110,8 +110,11 @@ void Renderer2D::Shutdown()
     delete s_Data;
 }
 
-void Renderer2D::beginScene()
+void Renderer2D::beginScene(const Elysium::OrthographicCamera& camera)
 {
+    s_Data->shader->bind();
+    s_Data->shader->setUniformMat4f("u_ViewProjection", camera.getViewProjectionMatrix());
+
     Renderer2D::resetStats();
     Renderer2D::beginBatch();
 }
@@ -136,12 +139,6 @@ void Renderer2D::endBatch()
 
 void Renderer2D::flush()
 {
-    glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
-    glm::mat4 proj = glm::ortho(-4.0f, 4.0f, -3.0f, 3.0f, -1.0f, 1.0f);
-    glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
-    glm::mat4 mvp = proj * view * model;
-    s_Data->shader->setUniformMat4f("u_MVP", mvp);
-
     for (unsigned int i = 0; i < s_Data->TextureSlotIndex; i++) {
         GL_ASSERT(glBindTextureUnit(i, s_Data->TextureSlots[i]));
     }

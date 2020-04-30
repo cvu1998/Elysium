@@ -1,9 +1,9 @@
+#include "SandboxLayer.h"
 #include "test/ClearColor_Test.h"
 #include "test/Texture2D_Test.h"
 #include "test/ScreenSaver_Test.h"
 #include "test/BatchRendering_Test.h"
 #include "test/DynamicBatchRendering_Test.h"
-#include "test/Sandbox.h"
 
 class Application : public Elysium::Application
 {
@@ -11,8 +11,7 @@ private:
     test::Test* m_CurrentTest;
     test::TestMenu* m_TestMenu;
 
-    glm::mat4 m_ProjectionMatrix;
-    glm::mat4 m_ViewMatrix;
+    SandboxLayer* m_Sandbox;
 
 public:
     Application(bool imgui=false) : Elysium::Application(imgui)
@@ -21,15 +20,15 @@ public:
         m_TestMenu = new test::TestMenu(m_CurrentTest);
         m_CurrentTest = m_TestMenu;
 
-        m_TestMenu->registerTest<test::Sandbox>("Sandbox");
         m_TestMenu->registerTest<test::ClearColor_Test>("Clear Color");
         m_TestMenu->registerTest<test::Texture2D_Test>("2D Texture");
         m_TestMenu->registerTest<test::ScreenSaver_Test>("Screen Saver");
         m_TestMenu->registerTest<test::BatchRendering_Test>("Batch Rendering");
         m_TestMenu->registerTest<test::DynamicBatchRendering_Test>("Dynamic Batch Rendering");
 
-        m_ProjectionMatrix = glm::ortho(-4.0f, 4.0f, -3.0f, 3.0f, -1.0f, 1.0f);
-        m_ViewMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+        m_Sandbox = new SandboxLayer(m_Window->getWidth(), m_Window->getHeight());
+
+        m_LayerStack.pushOverlay(m_Sandbox);
     }
 
     ~Application()
@@ -43,13 +42,22 @@ public:
     {
         if (m_CurrentTest)
         {
+            if (m_CurrentTest == m_TestMenu && m_LayerStack.begin() == m_LayerStack.end())
+                m_LayerStack.pushOverlay(m_Sandbox);
+
             m_CurrentTest->onUpdate(0.0f);
-            m_CurrentTest->onRender(m_ProjectionMatrix, m_ViewMatrix);
+            m_CurrentTest->onRender();
             ImGui::Begin("Test");
-            if (m_CurrentTest != m_TestMenu && ImGui::Button("<--"))
+            if (m_CurrentTest != m_TestMenu)
             {
-                delete m_CurrentTest;
-                m_CurrentTest = m_TestMenu;
+                if (m_LayerStack.begin() != m_LayerStack.end())
+                    m_LayerStack.popOverlay(m_Sandbox);
+
+                if (ImGui::Button("<--"))
+                {
+                    delete m_CurrentTest;
+                    m_CurrentTest = m_TestMenu;
+                }
             }
             m_CurrentTest->onImGuiRender();
             ImGui::End();

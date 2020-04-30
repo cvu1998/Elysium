@@ -15,7 +15,7 @@ namespace test {
     {
     }
 
-    void ClearColor_Test::onRender(const glm::mat4& proj, const glm::mat4& view)
+    void ClearColor_Test::onRender()
     {
         GL_ASSERT(glClearColor(m_Color[0], m_Color[1], m_Color[2] , m_Color[3]));
         GL_ASSERT(glClear(GL_COLOR_BUFFER_BIT))

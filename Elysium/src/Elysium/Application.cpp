@@ -6,16 +6,22 @@
 
 namespace Elysium
 {
-#define BIND_EVENT_FUNCTION(x) std::bind(&Application::x, this, std::placeholders::_1)
+    Application* Application::s_Instance = nullptr;
 
     Application::Application(bool imgui) : m_ImGui(imgui)
     {
+        LOG_ASSERT(!s_Instance, "Application already exists!");
+        s_Instance = this;
+
         m_Window = std::unique_ptr<Window>(Window::Create());
-        m_Window->setEventCallback(BIND_EVENT_FUNCTION(onEvent));
+        m_Window->setEventCallback(BIND_EVENT_FUNCTION(Application::onEvent));
 
         if (m_Window->getStatus() == 0)
             std::cout << "Glad Init Error!" << "\n";
+        
+        #ifdef _DEBUG
         std::cout << glGetString(GL_VERSION) << "\n";
+        #endif
 
         if (m_ImGui)
         {
@@ -44,7 +50,7 @@ namespace Elysium
         #endif
 
         EventDispatcher dispatcher(event);
-        dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FUNCTION(onWindowCloseEvent));
+        dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FUNCTION(Application::onWindowCloseEvent));
 
         for (auto it = m_LayerStack.end(); it != m_LayerStack.begin();)
         {
@@ -96,6 +102,9 @@ namespace Elysium
             ImGui::NewFrame();
 
             this->ApplicationLogic();
+
+            for (Layer* layer : m_LayerStack)
+                layer->onUpdate();
 
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

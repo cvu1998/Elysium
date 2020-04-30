@@ -94,10 +94,10 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>
-      </PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLFW_INCLUDE_NONE</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(ProjectDir)src\Elysium\;$(ProjectDir)src\vendor\;$(SolutionDir)\Glad\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -118,10 +118,10 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>
-      </PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLFW_INCLUDE_NONE</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(ProjectDir)src\Elysium\;$(ProjectDir)src\vendor\;$(SolutionDir)\Glad\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -140,10 +140,10 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>
-      </PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLFW_INCLUDE_NONE</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(ProjectDir)src\Elysium\;$(ProjectDir)src\vendor\;$(SolutionDir)\Glad\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -168,10 +168,10 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>
-      </PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLFW_INCLUDE_NONE</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(ProjectDir)src\Elysium\;$(ProjectDir)src\vendor\;$(SolutionDir)\Glad\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -187,9 +187,11 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Elysium\Input.cpp" />
     <ClCompile Include="src\Elysium\LayerStack.cpp" />
     <ClCompile Include="src\Elysium\Layer.cpp" />
     <ClCompile Include="src\Elysium\Application.cpp" />
+    <ClCompile Include="src\Elysium\Camera.cpp" />
     <ClCompile Include="src\Elysium\Renderer2D.cpp" />
     <ClCompile Include="src\Elysium\Shader.cpp" />
     <ClCompile Include="src\Elysium\IndexBuffer.cpp" />
@@ -352,6 +354,8 @@
     <None Include="src\vendor\glm\gtx\wrap.inl" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Elysium\Input.h" />
+    <ClInclude Include="src\Elysium\KeyCodes.h" />
     <ClInclude Include="src\Elysium\LayerStack.h" />
     <ClInclude Include="src\Elysium\Layer.h" />
     <ClInclude Include="src\Elysium\Application.h" />
@@ -361,6 +365,8 @@
     <ClInclude Include="src\Elysium\Events\KeyEvent.h" />
     <ClInclude Include="src\Elysium\Events\MouseEvent.h" />
     <ClInclude Include="src\Elysium\Math\Math.h" />
+    <ClInclude Include="src\Elysium\Camera.h" />
+    <ClInclude Include="src\Elysium\MouseCodes.h" />
     <ClInclude Include="src\Elysium\Renderer2D.h" />
     <ClInclude Include="src\Elysium\Shader.h" />
     <ClInclude Include="src\Elysium\IndexBuffer.h" />

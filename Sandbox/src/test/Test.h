@@ -10,12 +10,21 @@ namespace test {
 
     class Test
     {
+    protected:
+        glm::mat4 m_ProjectionMatrix;
+        glm::mat4 m_ViewMatrix;
+
     public:
-        Test() {}
+        Test()
+        {
+            m_ProjectionMatrix = glm::ortho(-4.0f, 4.0f, -3.0f, 3.0f, -1.0f, 1.0f);
+            m_ViewMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+        }
+
         virtual ~Test() {}
 
         virtual void onUpdate(float deltaTime) {}
-        virtual void onRender(const glm::mat4& proj, const glm::mat4& view) {}
+        virtual void onRender() {}
         virtual void onImGuiRender() {}
     };
 
