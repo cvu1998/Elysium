@@ -35,7 +35,7 @@ namespace test {
 
     Texture2D_Test::~Texture2D_Test()
     {
-        GL_ASSERT(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
+        Renderer::Clear();
     }
 
     void Texture2D_Test::onUpdate(float deltaTime)
@@ -44,9 +44,6 @@ namespace test {
 
     void Texture2D_Test::onRender()
     {
-        GL_ASSERT(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
-        GL_ASSERT(glClear(GL_COLOR_BUFFER_BIT));
-
         m_Shader.bind();
         m_Shader.setUniform1i("u_UseTexture", 1);
         m_Texture.bind();
@@ -55,7 +52,7 @@ namespace test {
             glm::mat4 mvp = m_ProjectionMatrix * m_ViewMatrix * model;
             m_Shader.setUniformMat4f("u_ViewProjection", mvp);
 
-            Renderer::draw(m_va, *m_ib, m_Shader);
+            Renderer::Draw(m_va, *m_ib, m_Shader);
         }
 
         {
@@ -63,7 +60,7 @@ namespace test {
             glm::mat4 mvp = m_ProjectionMatrix * m_ViewMatrix * model;
             m_Shader.setUniformMat4f("u_ViewProjection", mvp);
 
-            Renderer::draw(m_va, *m_ib, m_Shader);
+            Renderer::Draw(m_va, *m_ib, m_Shader);
         }
     }
 

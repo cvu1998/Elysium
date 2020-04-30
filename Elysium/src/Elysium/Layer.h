@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Timestep.h"
+
 #include "Events/Event.h"
 
 namespace Elysium
@@ -15,7 +17,7 @@ namespace Elysium
 
         virtual void onAttach() { }
         virtual void onDetach() { }
-        virtual void onUpdate() = 0;
+        virtual void onUpdate(Timestep ts) = 0;
         virtual void onEvent(Event& event) { }
     };
 }

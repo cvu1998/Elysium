@@ -18,25 +18,25 @@ SandboxLayer::SandboxLayer(unsigned int width, unsigned int height) : Layer("San
 SandboxLayer::~SandboxLayer()
 {
     Renderer2D::Shutdown();
-    Renderer::clear();
+    Renderer::Clear();
 }
 
-void SandboxLayer::onUpdate()
+void SandboxLayer::onUpdate(Elysium::Timestep ts)
 {
     if (Elysium::Input::isKeyPressed(ELY_KEY_UP))
-        m_CameraPosition.y += m_CameraSpeed;
+        m_CameraPosition.y += m_CameraSpeed * ts;
     else if (Elysium::Input::isKeyPressed(ELY_KEY_DOWN))
-        m_CameraPosition.y -= m_CameraSpeed;
+        m_CameraPosition.y -= m_CameraSpeed * ts;
 
     if (Elysium::Input::isKeyPressed(ELY_KEY_LEFT))
-        m_CameraPosition.x -= m_CameraSpeed;
+        m_CameraPosition.x -= m_CameraSpeed * ts;
     else if (Elysium::Input::isKeyPressed(ELY_KEY_RIGHT))
-        m_CameraPosition.x += m_CameraSpeed;
+        m_CameraPosition.x += m_CameraSpeed * ts;
 
     if (Elysium::Input::isKeyPressed(ELY_KEY_R))
-        m_CameraRotation += m_CameraRotationSpeed;
+        m_CameraRotation += m_CameraRotationSpeed * ts;
     else if (Elysium::Input::isKeyPressed(ELY_KEY_T))
-        m_CameraRotation -= m_CameraRotationSpeed;
+        m_CameraRotation -= m_CameraRotationSpeed * ts;
 
     m_Camera.setPosition(m_CameraPosition);
     m_Camera.setRotation(m_CameraRotation);
@@ -48,7 +48,7 @@ void SandboxLayer::onUpdate()
         for (float y = -3.0f; y < 3.0f; y += 0.1f)
         {
             glm::vec4 gradient = { (x + 4.0f) / 8.0f, (y + 3.0f) / 12.0f, 1.0f, 1.0f };
-            Renderer2D::drawQuadWithRotation({ x + 0.025f , y + 0.025f }, { 0.05f, 0.05f }, m_RotationSpeed, gradient);
+            Renderer2D::drawQuadWithRotation({ x + 0.025f , y + 0.025f }, { 0.05f, 0.05f }, glm::radians(m_RotationSpeed), gradient);
         }
     }
 
@@ -64,13 +64,13 @@ void SandboxLayer::onUpdate()
         }
     }
     glm::vec4 color = { 0.0f, 1.0f, 1.0f, 1.0f };
-    Renderer2D::drawQuadWithRotation({ -1.5f, 1.5f }, { 1.0f, 1.0f }, m_RotationSpeed, color);
+    Renderer2D::drawQuadWithRotation({ -1.5f, 1.5f }, { 1.0f, 1.0f }, glm::radians(m_RotationSpeed), color);
     Renderer2D::drawQuad({ 1.5f, 1.5f }, { 1.0f, 1.0f }, color);
 
-    Renderer2D::drawQuadWithRotation({ 1.5f, -1.5f }, { 1.0f, 1.0f }, m_RotationSpeed, m_Textures[1].getRendererID());
+    Renderer2D::drawQuadWithRotation({ 1.5f, -1.5f }, { 1.0f, 1.0f }, glm::radians(m_RotationSpeed), m_Textures[1].getRendererID());
     Renderer2D::drawQuad({ m_QuadPosition[0], m_QuadPosition[1] }, { 1.0f, 1.0f }, m_Textures[0].getRendererID());
 
-    Renderer2D::drawQuadWithRotation({ 0.0f, 0.0f }, { 2.0f, 1.0f }, m_RotationSpeed, color);
+    Renderer2D::drawQuadWithRotation({ 0.0f, 0.0f }, { 2.0f, 1.0f }, glm::radians(m_RotationSpeed), color);
 
     m_RotationSpeed += 1.0f;
     Renderer2D::endScene();
@@ -87,9 +87,17 @@ void SandboxLayer::onEvent(Elysium::Event& event)
 {
     Elysium::EventDispatcher dispatcher(event);
     dispatcher.Dispatch<Elysium::KeyPressedEvent>(BIND_EVENT_FUNCTION(SandboxLayer::onKeyPressedEvent));
+    dispatcher.Dispatch<Elysium::WindowResizeEvent>(BIND_EVENT_FUNCTION(SandboxLayer::onWindowResizeEvent));
 }
 
 bool SandboxLayer::onKeyPressedEvent(Elysium::KeyPressedEvent& event)
 {
+    return false;
+}
+
+bool SandboxLayer::onWindowResizeEvent(Elysium::WindowResizeEvent& event)
+{
+    m_Camera.setProjection(-(float)event.getWidth() / 320, (float)event.getWidth() / 320,
+        -(float)event.getHeight() / 320, (float)event.getHeight() / 320);
     return false;
 }

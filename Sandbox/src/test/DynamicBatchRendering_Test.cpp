@@ -14,7 +14,7 @@ namespace test {
 
     DynamicBatchRendering_Test::~DynamicBatchRendering_Test()
     {
-        GL_ASSERT(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
+        Renderer::Clear();
     }
 
     void DynamicBatchRendering_Test::onUpdate(float deltaTime)
@@ -53,7 +53,6 @@ namespace test {
 
     void DynamicBatchRendering_Test::onRender()
     {   
-        GL_ASSERT(glClearColor(0.1f, 0.1f, 0.1f, 1.0f));
     }
 
     void DynamicBatchRendering_Test::onImGuiRender()

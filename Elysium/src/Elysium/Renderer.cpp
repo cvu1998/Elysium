@@ -2,12 +2,12 @@
 
 #include "Utility.h"
 
-void Renderer::clear()
+void Renderer::Clear()
 {
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
-void Renderer::draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader, unsigned int count)
+void Renderer::Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader, unsigned int count)
 {
     shader.bind();
     va.bind();
@@ -17,4 +17,9 @@ void Renderer::draw(const VertexArray& va, const IndexBuffer& ib, const Shader& 
         count = ib.getCount();
 
     GL_ASSERT(glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr));
+}
+
+void Renderer::setViewport(unsigned int x, unsigned int y, unsigned int width, unsigned int height)
+{
+   GL_ASSERT(glViewport(x, y, width, height));
 }

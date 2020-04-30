@@ -20,6 +20,8 @@ namespace Elysium
         std::unique_ptr<Window> m_Window;
         bool m_ImGui;
         bool m_Running = true;
+        bool m_Minimized = false;
+        float m_LastFrameTime = 0.0f;
         LayerStack m_LayerStack;
 
         Application(bool imgui=false);
@@ -31,6 +33,7 @@ namespace Elysium
         virtual void pushOverlay(Layer* overlay) final;
 
         bool onWindowCloseEvent(WindowCloseEvent& event);
+        bool onWindowResizeEvent(WindowResizeEvent& event);
 
         virtual void ApplicationLogic() = 0;
 

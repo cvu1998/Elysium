@@ -39,4 +39,12 @@ namespace Elysium
         if (it != m_Layers.end())
             m_Layers.erase(it);
     }
+
+    bool LayerStack::contains(Layer* layer)
+    {
+        auto it = std::find(m_Layers.begin(), m_Layers.end(), layer);
+        if (it != m_Layers.end())
+            return true;
+        return false;
+    }
 }

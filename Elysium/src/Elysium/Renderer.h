@@ -7,7 +7,8 @@
 class Renderer
 {
 public:
-    static void clear();
-    static void draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader, unsigned int count=0);
+    static void Clear();
+    static void Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader, unsigned int count=0);
+    static void setViewport(unsigned int x, unsigned int y, unsigned int width, unsigned int height);
 };
 

@@ -28,6 +28,7 @@ public:
     static void drawQuad(const glm::vec2& position, const glm::vec2& size, unsigned int textureID,
         const glm::vec4& color = { 1.0f, 1.0f, 1.0f, 1.0f });
 
+    // ---Rotation in radians---
     static void drawQuadWithRotation(const glm::vec2& position, const glm::vec2& size, float rotation, const glm::vec4& color);
     static void drawQuadWithRotation(const glm::vec2& position, const glm::vec2& size, float rotation, unsigned int textureID,
         const glm::vec4& color = { 1.0f, 1.0f, 1.0f, 1.0f });

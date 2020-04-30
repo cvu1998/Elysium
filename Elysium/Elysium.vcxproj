@@ -373,6 +373,7 @@
     <ClInclude Include="src\Elysium\Renderer.h" />
     <ClInclude Include="src\Elysium\Math\Shape.h" />
     <ClInclude Include="src\Elysium\Window.h" />
+    <ClInclude Include="src\Elysium\Timestep.h" />
     <ClInclude Include="src\vendor\glm\common.hpp" />
     <ClInclude Include="src\vendor\glm\detail\compute_common.hpp" />
     <ClInclude Include="src\vendor\glm\detail\compute_vector_relational.hpp" />

@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "Renderer.h"
+#include "Timestep.h"
 
 namespace Elysium
 {
@@ -51,6 +52,7 @@ namespace Elysium
 
         EventDispatcher dispatcher(event);
         dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FUNCTION(Application::onWindowCloseEvent));
+        dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FUNCTION(Application::onWindowResizeEvent));
 
         for (auto it = m_LayerStack.end(); it != m_LayerStack.begin();)
         {
@@ -76,16 +78,37 @@ namespace Elysium
         return true;
     }
 
+    bool Application::onWindowResizeEvent(WindowResizeEvent& event)
+    {
+        if (event.getWidth() == 0 || event.getHeight() == 0)
+        {
+            m_Minimized = true;
+            return false;
+        }
+        m_Minimized = false;
+
+        Renderer::setViewport(0, 0, event.getWidth(), event.getHeight());
+
+        return false;
+    }
+
     void Application::Run()
     {
         while (m_Running)
         {
-            Renderer::clear();
+            Renderer::Clear();
 
-            this->ApplicationLogic();
+            float time = (float)glfwGetTime();
+            Timestep timestep = time - m_LastFrameTime;
+            m_LastFrameTime = time;
 
-            for (Layer* layer : m_LayerStack)
-                layer->onUpdate();
+            if (!m_Minimized) 
+            {
+                this->ApplicationLogic();
+
+                for (Layer* layer : m_LayerStack)
+                    layer->onUpdate(timestep);
+            }
 
             m_Window->onUpdate();
         }
@@ -95,16 +118,23 @@ namespace Elysium
     {
         while (m_Running)
         {
-            Renderer::clear();
+            Renderer::Clear();
+
+            float time = (float)glfwGetTime();
+            Timestep timestep = time - m_LastFrameTime;
+            m_LastFrameTime = time;
 
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
 
-            this->ApplicationLogic();
+            if (!m_Minimized)
+            {
+                this->ApplicationLogic();
 
-            for (Layer* layer : m_LayerStack)
-                layer->onUpdate();
+                for (Layer* layer : m_LayerStack)
+                    layer->onUpdate(timestep);
+            }
 
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

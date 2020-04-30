@@ -5,6 +5,8 @@
 #include "Elysium/Layer.h"
 #include "Elysium/Window.h"
 
+#include "Elysium/Timestep.h"
+
 #include "Elysium/Input.h"
 #include "Elysium/KeyCodes.h"
 #include "Elysium/MouseCodes.h"

@@ -34,6 +34,7 @@ namespace test {
 
     ScreenSaver_Test::~ScreenSaver_Test()
     {
+        Renderer::Clear();
     }
 
     void ScreenSaver_Test::onUpdate(float deltaTime)
@@ -102,7 +103,7 @@ namespace test {
         m_Shader.setUniform4f("u_Color", r, 0.0f, 1.0f, 1.0f);
         m_Shader.setUniformMat4f("u_ViewProjection", mvp);
 
-        Renderer::draw(m_va, *m_ib, m_Shader);
+        Renderer::Draw(m_va, *m_ib, m_Shader);
     }
 
     void ScreenSaver_Test::onImGuiRender()

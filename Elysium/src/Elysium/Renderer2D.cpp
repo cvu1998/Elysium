@@ -235,7 +235,7 @@ void Renderer2D::drawQuadWithRotation(const glm::vec2& position, const glm::vec2
 
     float textureIndex = 0.0f;
 
-    Elysium::Complex transform(glm::cos(glm::radians(rotation)), glm::sin(glm::radians(rotation)));
+    Elysium::Complex transform(glm::cos(rotation), glm::sin(rotation));
     Elysium::Complex translation(position.x, position.y);
 
     for (size_t i = 0; i < 4; i++)
@@ -281,7 +281,7 @@ void Renderer2D::drawQuadWithRotation(const glm::vec2& position, const glm::vec2
         s_Data->TextureSlotIndex++;
     }
 
-    Elysium::Complex transform(glm::cos(glm::radians(rotation)), glm::sin(glm::radians(rotation)));
+    Elysium::Complex transform(glm::cos(rotation), glm::sin(rotation));
     Elysium::Complex translation(position.x, position.y);
 
     for (size_t i = 0; i < 4; i++)
