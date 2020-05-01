@@ -15,6 +15,7 @@ TestLayer::TestLayer(bool* runSandbox) : Layer("Tests"), m_RunSandbox(runSandbox
 TestLayer::~TestLayer()
 {
     delete m_CurrentTest;
+    test::Test::destoryCamera();
     if (m_CurrentTest != m_TestMenu)
         delete m_TestMenu;
 }
@@ -41,4 +42,9 @@ void TestLayer::onUpdate(Elysium::Timestep ts)
         m_CurrentTest->onImGuiRender();
         ImGui::End();
     }
+}
+
+void TestLayer::onEvent(Elysium::Event& event)
+{
+    m_CurrentTest->onEvent(event);
 }

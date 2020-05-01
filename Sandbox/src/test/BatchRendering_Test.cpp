@@ -42,9 +42,6 @@ namespace test {
             10, 11, 8
         };
 
-        GL_ASSERT(glEnable(GL_BLEND));
-        GL_ASSERT(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
-
         m_vb = std::make_unique<VertexBuffer>(vertices, 12 * 9 * sizeof(float));
 
         VertexBufferLayout layout;
@@ -70,17 +67,17 @@ namespace test {
 
     BatchRendering_Test::~BatchRendering_Test()
     {
-        Renderer::Clear();
     }
 
     void BatchRendering_Test::onUpdate(float deltaTime)
     {
+        s_CameraController->onUpdate(deltaTime);
     }
 
     void BatchRendering_Test::onRender()
     {
         glm::mat4 model = glm::translate(glm::mat4(1.0f), m_Translation);
-        glm::mat4 mvp = m_ProjectionMatrix * m_ViewMatrix * model;
+        glm::mat4 mvp = s_CameraController->getCamera().getViewProjectionMatrix() * model;
         m_Shader.setUniformMat4f("u_ViewProjection", mvp);
 
         Renderer::Draw(m_va, *m_ib, m_Shader);

@@ -191,11 +191,12 @@
     <ClCompile Include="src\Elysium\LayerStack.cpp" />
     <ClCompile Include="src\Elysium\Layer.cpp" />
     <ClCompile Include="src\Elysium\Application.cpp" />
-    <ClCompile Include="src\Elysium\Camera.cpp" />
-    <ClCompile Include="src\Elysium\Renderer2D.cpp" />
-    <ClCompile Include="src\Elysium\Shader.cpp" />
-    <ClCompile Include="src\Elysium\IndexBuffer.cpp" />
-    <ClCompile Include="src\Elysium\Renderer.cpp" />
+    <ClCompile Include="src\Elysium\OrthographicCameraController.cpp" />
+    <ClCompile Include="src\Elysium\Renderer\Camera.cpp" />
+    <ClCompile Include="src\Elysium\Renderer\Renderer2D.cpp" />
+    <ClCompile Include="src\Elysium\Renderer\Shader.cpp" />
+    <ClCompile Include="src\Elysium\Renderer\IndexBuffer.cpp" />
+    <ClCompile Include="src\Elysium\Renderer\Renderer.cpp" />
     <ClCompile Include="src\Elysium\Window.cpp" />
     <ClCompile Include="src\vendor\glm\detail\glm.cpp" />
     <ClCompile Include="src\vendor\imgui\imgui.cpp" />
@@ -210,10 +211,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
       </ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="src\Elysium\VertexBuffer.cpp" />
-    <ClCompile Include="src\Elysium\VertexArray.cpp" />
+    <ClCompile Include="src\Elysium\Renderer\VertexBuffer.cpp" />
+    <ClCompile Include="src\Elysium\Renderer\VertexArray.cpp" />
     <ClCompile Include="src\Elysium\Utility.cpp" />
-    <ClCompile Include="src\Elysium\Texture.cpp" />
+    <ClCompile Include="src\Elysium\Renderer\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\basic.shader" />
@@ -364,14 +365,15 @@
     <ClInclude Include="src\Elysium\Events\Event.h" />
     <ClInclude Include="src\Elysium\Events\KeyEvent.h" />
     <ClInclude Include="src\Elysium\Events\MouseEvent.h" />
-    <ClInclude Include="src\Elysium\Math\Math.h" />
-    <ClInclude Include="src\Elysium\Camera.h" />
+    <ClInclude Include="src\Elysium\OrthographicCameraController.h" />
+    <ClInclude Include="src\Elysium\Renderer\Math.h" />
+    <ClInclude Include="src\Elysium\Renderer\Camera.h" />
     <ClInclude Include="src\Elysium\MouseCodes.h" />
-    <ClInclude Include="src\Elysium\Renderer2D.h" />
-    <ClInclude Include="src\Elysium\Shader.h" />
-    <ClInclude Include="src\Elysium\IndexBuffer.h" />
-    <ClInclude Include="src\Elysium\Renderer.h" />
-    <ClInclude Include="src\Elysium\Math\Shape.h" />
+    <ClInclude Include="src\Elysium\Renderer\Renderer2D.h" />
+    <ClInclude Include="src\Elysium\Renderer\Shader.h" />
+    <ClInclude Include="src\Elysium\Renderer\IndexBuffer.h" />
+    <ClInclude Include="src\Elysium\Renderer\Renderer.h" />
+    <ClInclude Include="src\Elysium\Renderer\Shape.h" />
     <ClInclude Include="src\Elysium\Window.h" />
     <ClInclude Include="src\Elysium\Timestep.h" />
     <ClInclude Include="src\vendor\glm\common.hpp" />
@@ -632,11 +634,11 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
       </ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="src\Elysium\VertexBuffer.h" />
-    <ClInclude Include="src\Elysium\VertexArray.h" />
-    <ClInclude Include="src\Elysium\VertexBufferLayout.h" />
+    <ClInclude Include="src\Elysium\Renderer\VertexBuffer.h" />
+    <ClInclude Include="src\Elysium\Renderer\VertexArray.h" />
+    <ClInclude Include="src\Elysium\Renderer\VertexBufferLayout.h" />
     <ClInclude Include="src\Elysium\Utility.h" />
-    <ClInclude Include="src\Elysium\Texture.h" />
+    <ClInclude Include="src\Elysium\Renderer\Texture.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

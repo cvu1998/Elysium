@@ -8,11 +8,11 @@ namespace test {
 
     ClearColor_Test::~ClearColor_Test()
     {
-        GL_ASSERT(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
     }
 
     void ClearColor_Test::onUpdate(float deltaTime)
     {
+        s_CameraController->onUpdate(deltaTime);
     }
 
     void ClearColor_Test::onRender()

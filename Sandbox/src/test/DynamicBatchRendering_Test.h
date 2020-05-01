@@ -9,7 +9,6 @@ namespace test {
     class DynamicBatchRendering_Test : public Test 
     {
     private: 
-        Elysium::OrthographicCamera m_Camera;
         std::vector<Texture> m_Textures;
 
         float m_QuadPosition[2] = { -1.5f, -1.5f };
@@ -21,6 +20,5 @@ namespace test {
         virtual void onUpdate(float deltaTime) override;
         virtual void onRender() override;
         virtual void onImGuiRender() override;
-
     };
 }

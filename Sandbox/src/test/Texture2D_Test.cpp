@@ -20,9 +20,6 @@ namespace test {
             2, 4, 3
         };
 
-        GL_ASSERT(glEnable(GL_BLEND));
-        GL_ASSERT(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
-
         m_vb = std::make_unique<VertexBuffer>(vertices, 5 * 4 * sizeof(float));
 
         VertexBufferLayout layout;
@@ -35,11 +32,11 @@ namespace test {
 
     Texture2D_Test::~Texture2D_Test()
     {
-        Renderer::Clear();
     }
 
     void Texture2D_Test::onUpdate(float deltaTime)
     {
+        s_CameraController->onUpdate(deltaTime);
     }
 
     void Texture2D_Test::onRender()
@@ -49,7 +46,7 @@ namespace test {
         m_Texture.bind();
         {
             glm::mat4 model = glm::translate(glm::mat4(1.0f), m_TranslationA);
-            glm::mat4 mvp = m_ProjectionMatrix * m_ViewMatrix * model;
+            glm::mat4 mvp = s_CameraController->getCamera().getViewProjectionMatrix() * model;
             m_Shader.setUniformMat4f("u_ViewProjection", mvp);
 
             Renderer::Draw(m_va, *m_ib, m_Shader);
@@ -57,7 +54,7 @@ namespace test {
 
         {
             glm::mat4 model = glm::translate(glm::mat4(1.0f), m_TranslationB);
-            glm::mat4 mvp = m_ProjectionMatrix * m_ViewMatrix * model;
+            glm::mat4 mvp = s_CameraController->getCamera().getViewProjectionMatrix() * model;
             m_Shader.setUniformMat4f("u_ViewProjection", mvp);
 
             Renderer::Draw(m_va, *m_ib, m_Shader);

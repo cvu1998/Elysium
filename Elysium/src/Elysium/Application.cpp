@@ -2,14 +2,14 @@
 
 #include <iostream>
 
-#include "Renderer.h"
+#include "Renderer/Renderer.h"
 #include "Timestep.h"
 
 namespace Elysium
 {
     Application* Application::s_Instance = nullptr;
 
-    Application::Application(bool imgui) : m_ImGui(imgui)
+    Application::Application(bool imgui) : m_ImGui(imgui), m_ClearColor{ 0.0f, 0.0f, 0.0f, 0.0f }
     {
         LOG_ASSERT(!s_Instance, "Application already exists!");
         s_Instance = this;
@@ -96,7 +96,7 @@ namespace Elysium
     {
         while (m_Running)
         {
-            Renderer::Clear();
+            Renderer::Clear({ m_ClearColor[0], m_ClearColor[1], m_ClearColor[2], m_ClearColor[3] });
 
             float time = (float)glfwGetTime();
             Timestep timestep = time - m_LastFrameTime;
@@ -118,7 +118,7 @@ namespace Elysium
     {
         while (m_Running)
         {
-            Renderer::Clear();
+            Renderer::Clear({ m_ClearColor[0], m_ClearColor[1], m_ClearColor[2], m_ClearColor[3] });
 
             float time = (float)glfwGetTime();
             Timestep timestep = time - m_LastFrameTime;
@@ -141,5 +141,13 @@ namespace Elysium
 
             m_Window->onUpdate();
         }
+    }
+
+    void Application::setClearColor(float r, float g, float b, float a)
+    {
+        m_ClearColor[0] = r;
+        m_ClearColor[1] = g;
+        m_ClearColor[2] = b;
+        m_ClearColor[3] = a;
     }
 }

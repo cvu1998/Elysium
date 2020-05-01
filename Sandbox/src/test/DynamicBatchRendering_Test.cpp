@@ -2,11 +2,8 @@
 
 namespace test {
 
-    DynamicBatchRendering_Test::DynamicBatchRendering_Test() : m_Camera(-4.0f, 4.0f, -3.0f, 3.0f)
+    DynamicBatchRendering_Test::DynamicBatchRendering_Test()
     {
-        GL_ASSERT(glEnable(GL_BLEND));
-        GL_ASSERT(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
-
         m_Textures.reserve(2);
         m_Textures.emplace_back("res/texture/meadow.png");
         m_Textures.emplace_back("res/texture/Vader.png");
@@ -14,12 +11,13 @@ namespace test {
 
     DynamicBatchRendering_Test::~DynamicBatchRendering_Test()
     {
-        Renderer::Clear();
     }
 
     void DynamicBatchRendering_Test::onUpdate(float deltaTime)
     {
-        Renderer2D::beginScene(m_Camera);
+        s_CameraController->onUpdate(deltaTime);
+
+        Renderer2D::beginScene(s_CameraController->getCamera());
 
         for (float x = -4.0f; x < 4.0f; x += 0.1f)
         {

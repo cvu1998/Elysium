@@ -22,6 +22,7 @@ namespace Elysium
         bool m_Running = true;
         bool m_Minimized = false;
         float m_LastFrameTime = 0.0f;
+        float m_ClearColor[4];
         LayerStack m_LayerStack;
 
         Application(bool imgui=false);
@@ -41,6 +42,8 @@ namespace Elysium
         static Application& Get() { return *s_Instance; }
 
         virtual Window& getWindow() final { return *m_Window; }
+
+        void setClearColor(float r, float g, float b, float a);
 
         virtual void Run() final;
         virtual void RunWithImGui() final;

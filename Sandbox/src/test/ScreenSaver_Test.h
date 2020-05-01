@@ -32,6 +32,12 @@ namespace test {
         bool m_SignY;
         OutOfBounds m_Case;
 
+        float m_BoxWidth = 4.0f;
+        float m_BoxHeight = 3.0f;
+
+        float m_CornerWidth = 3.0f;
+        float m_CornerHeight = 2.0f;
+
     public:
         ScreenSaver_Test();
         ~ScreenSaver_Test();

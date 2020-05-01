@@ -1,6 +1,9 @@
 #include "Test.h"
 
-namespace test {
+namespace test 
+{
+    Elysium::OrthographicCameraController* test::Test::s_CameraController = nullptr;
+
     TestMenu::TestMenu(Test*& currentTestPointer) : m_CurrentTest(currentTestPointer)
     {
     }
@@ -14,5 +17,15 @@ namespace test {
                 m_CurrentTest = test.second();
             }
         }
+    }
+
+    void Test::onEvent(Elysium::Event& event)
+    {
+        s_CameraController->onEvent(event);
+    }
+
+    void Test::destoryCamera()
+    {
+        delete s_CameraController;
     }
 }

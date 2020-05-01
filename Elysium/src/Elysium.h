@@ -8,13 +8,12 @@
 #include "Elysium/Timestep.h"
 
 #include "Elysium/Input.h"
+#include "Elysium/OrthographicCameraController.h"
 #include "Elysium/KeyCodes.h"
 #include "Elysium/MouseCodes.h"
 
 // ---Renderer---
-#include "Elysium/Camera.h"
+#include "Elysium/Renderer/Camera.h"
 
-#include "Elysium/Math/Math.h"
-
-#include "Elysium/Renderer2D.h"
-#include "Elysium/Texture.h"
+#include "Elysium/Renderer/Renderer2D.h"
+#include "Elysium/Renderer/Texture.h"

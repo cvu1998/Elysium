@@ -21,4 +21,5 @@ public:
     ~TestLayer();
 
     void onUpdate(Elysium::Timestep ts) override;
+    void onEvent(Elysium::Event& event) override;
 };

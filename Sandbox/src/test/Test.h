@@ -11,14 +11,13 @@ namespace test {
     class Test
     {
     protected:
-        glm::mat4 m_ProjectionMatrix;
-        glm::mat4 m_ViewMatrix;
+        static Elysium::OrthographicCameraController* s_CameraController;
 
     public:
         Test()
         {
-            m_ProjectionMatrix = glm::ortho(-4.0f, 4.0f, -3.0f, 3.0f, -1.0f, 1.0f);
-            m_ViewMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+            if (!s_CameraController)
+                s_CameraController = new Elysium::OrthographicCameraController(1280.0f / 720.0f, 3.0f);
         }
 
         virtual ~Test() {}
@@ -26,6 +25,9 @@ namespace test {
         virtual void onUpdate(float deltaTime) {}
         virtual void onRender() {}
         virtual void onImGuiRender() {}
+        virtual void onEvent(Elysium::Event& event);
+
+        static void destoryCamera();
     };
 
     class TestMenu : public Test

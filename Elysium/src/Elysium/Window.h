@@ -14,7 +14,7 @@ namespace Elysium
         std::string Title;
         unsigned int Width, Height;
 
-        WindowProperties(const std::string& title = "Elysium Engine", unsigned int width = 1280, unsigned int height = 960) :
+        WindowProperties(const std::string& title = "Elysium Engine", unsigned int width = 1280, unsigned int height = 720) :
             Title(title), Width(width), Height(height) { }
     };
 

@@ -24,6 +24,5 @@ namespace test {
         virtual void onUpdate(float deltaTime) override;
         virtual void onRender() override;
         virtual void onImGuiRender() override;
-
     };
 }
