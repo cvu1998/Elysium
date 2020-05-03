@@ -13,8 +13,6 @@ private:
     static void endBatch();
     static void flush();
 
-    static void resetStats();
-
 public:
     /***ONLY CALL ONCE***/
     static void Init();
@@ -39,5 +37,6 @@ public:
     };
 
     static Stats& getStats();
+    static void resetStats();
 };
 

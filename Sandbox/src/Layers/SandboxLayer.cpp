@@ -2,13 +2,43 @@
 
 SandboxLayer::SandboxLayer(bool* runSandbox, unsigned int width, unsigned int height) : Layer("Sandbox"),
     m_RunSandbox(runSandbox),
-    m_CameraController((float)width / (float)height, 3.0f)
+    m_CameraController((float)width / (float)height, 3.0f),
+    m_ParticleSystem(10000, m_CameraController.getCamera())
 {
     Renderer2D::Init();
 
-    m_Textures.reserve(2);
+    m_Textures.reserve(3);
     m_Textures.emplace_back("res/texture/meadow.png");
     m_Textures.emplace_back("res/texture/Vader.png");
+    m_Textures.emplace_back("res/texture/alec.png");
+
+    m_Particle.Position = { 0.0f, 0.0f };
+    m_Particle.Velocity = { 0.0f, 0.0f };
+    m_Particle.VelocityVariation = { 1.0f, 1.0f };
+    m_Particle.RotationSpeed = 180.0f;
+
+    m_Particle.ColorBegin = { 0.0f, 0.0f, 1.0f, 1.0f };
+    m_Particle.ColorEnd = { 0.0f, 0.0f, 0.0f, 1.0f };
+    //m_Particle.TextureID = m_Textures[2].getRendererID();
+
+    m_Particle.SizeBegin = 0.5f, m_Particle.SizeEnd = 0.0f, m_Particle.SizeVariation = 0.3f;
+
+    m_Particle.LifeTime = 3.0f;
+
+    // ----------------------------------------------------------------------------- //
+
+    m_Particle2.Position = { 0.0f, 0.0f };
+    m_Particle2.Velocity = { 0.0f, 0.0f };
+    m_Particle2.VelocityVariation = { 1.0f, 1.0f };
+    m_Particle2.RotationSpeed = 180.0f;
+
+    //m_Particle2.ColorBegin = { 0.0f, 0.0f, 1.0f, 1.0f };
+    m_Particle2.ColorEnd = { 0.0f, 0.0f, 0.0f, 1.0f };
+    m_Particle2.TextureID = m_Textures[2].getRendererID();
+
+    m_Particle2.SizeBegin = 0.5f, m_Particle.SizeEnd = 0.0f, m_Particle.SizeVariation = 0.3f;
+
+    m_Particle2.LifeTime = 3.0f;
 }
 
 SandboxLayer::~SandboxLayer()
@@ -49,19 +79,41 @@ void SandboxLayer::onUpdate(Elysium::Timestep ts)
         Renderer2D::drawQuad({ 1.5f, 1.5f }, { 1.0f, 1.0f }, color);
 
         Renderer2D::drawQuadWithRotation({ 1.5f, -1.5f }, { 1.0f, 1.0f }, glm::radians(m_RotationSpeed), m_Textures[1].getRendererID());
-        Renderer2D::drawQuad({ m_QuadPosition[0], m_QuadPosition[1] }, { 1.0f, 1.0f }, m_Textures[0].getRendererID(), {0.75f, 0.0f, 0.75f, 1.0f});
+        Renderer2D::drawQuad({ m_QuadPosition[0], m_QuadPosition[1] }, { 1.0f, 1.0f }, m_Textures[0].getRendererID(), 
+            { m_QuadColor[0], m_QuadColor[1], m_QuadColor[2], m_QuadColor[3] });
 
         Renderer2D::drawQuadWithRotation({ 0.0f, 0.0f }, { 2.0f, 1.0f }, glm::radians(m_RotationSpeed), color);
 
         m_RotationSpeed += 120.0f * ts;
         Renderer2D::endScene();
 
+        auto [x, y] = Elysium::Input::getMousePosition();
+        auto width = Elysium::Application::Get().getWindow().getWidth();
+        auto height = Elysium::Application::Get().getWindow().getHeight();
+
+        auto pos = m_CameraController.getCamera().getPosition();
+        x = (x / width) * m_CameraController.getBoundsWidth() - m_CameraController.getBoundsWidth() * 0.5f;
+        y = m_CameraController.getBoundsHeight() * 0.5f - (y / height) * m_CameraController.getBoundsHeight();
+        m_Particle.Position = { x + pos.x, y + pos.y };
+        m_Particle2.Position = { x + pos.x, y + pos.y };
+            
+
+        for (int i = 0; i < 5; i++)
+        {
+            m_ParticleSystem.Emit(m_Particle); 
+            m_ParticleSystem.Emit(m_Particle2);
+        }
+        m_ParticleSystem.OnUpdate(ts);
+
         ImGui::Begin("First Quad Controls");
         ImGui::DragFloat2("First Quad Position", m_QuadPosition, 0.1f);
+        ImGui::ColorEdit4("Quad Color", m_QuadColor);
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
         ImGui::Text("Number of Draw Calls: %d", Renderer2D::getStats().DrawCount);
         ImGui::Text("Number of Quads: %d", Renderer2D::getStats().QuadCount);
         ImGui::End();
+
+        Renderer2D::resetStats();
     }
 }
 

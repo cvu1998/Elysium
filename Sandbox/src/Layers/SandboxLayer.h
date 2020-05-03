@@ -10,6 +10,11 @@ private:
     Elysium::OrthographicCameraController m_CameraController;
     std::vector<Texture> m_Textures;
 
+    Elysium::ParticleProperties m_Particle;
+    Elysium::ParticleProperties m_Particle2;
+    Elysium::ParticleSystem m_ParticleSystem;
+
+    float m_QuadColor[4] = { 0.75f, 0.0f, 0.75f, 1.0f };
     float m_QuadPosition[2] = { -1.5f, -1.5f };
     float m_RotationSpeed = 0.0f;
 

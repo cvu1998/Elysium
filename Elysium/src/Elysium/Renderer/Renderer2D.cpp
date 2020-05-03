@@ -19,7 +19,6 @@ struct Renderer2DData
     std::unique_ptr<Shader> shader;
 
     Texture white;
-    unsigned int WhiteTextureSlot = 0;
 
     unsigned int IndexCount = 0;
 
@@ -118,7 +117,6 @@ void Renderer2D::beginScene(const Elysium::OrthographicCamera& camera)
     s_Data->shader->bind();
     s_Data->shader->setUniformMat4f("u_ViewProjection", camera.getViewProjectionMatrix());
 
-    Renderer2D::resetStats();
     Renderer2D::beginBatch();
 }
 

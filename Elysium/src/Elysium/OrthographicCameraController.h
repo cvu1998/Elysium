@@ -27,7 +27,10 @@ namespace Elysium
     public:
         OrthographicCameraController(float aspectRatio, float zoomLevel=1.0f);
 
-        inline const OrthographicCamera& getCamera() const { return m_Camera; }
+        inline float getBoundsWidth() { return 2 * m_AspectRatio * m_ZoomLevel; }
+        inline float getBoundsHeight() { return 2 * m_ZoomLevel; }
+        OrthographicCamera& getCamera() { return m_Camera; }
+        const OrthographicCamera& getCamera() const { return m_Camera; }
 
         inline const void setCameraTranslationSpeed(float translationSpeed) { m_CameraTranslationSpeed = translationSpeed; }
         inline const void setCameraRotationSpeed(float rotationSpeed) { m_CameraRotationSpeed = rotationSpeed; }
