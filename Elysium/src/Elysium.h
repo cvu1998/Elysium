@@ -15,6 +15,9 @@
 #include "Elysium/ParticleSystem.h"
 #include "Elysium/Random.h"
 
+#include "Elysium/Physics/PhysicalObject.h"
+#include "Elysium/Physics/PhysicsSystem.h"
+
 // ---Renderer---
 #include "Elysium/Renderer/Camera.h"
 

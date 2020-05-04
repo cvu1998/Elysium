@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "../Utility.h"
+#include "Utility.h"
 
 class Texture
 {

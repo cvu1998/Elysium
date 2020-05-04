@@ -2,7 +2,7 @@
 #include <vector>
 
 #include "Shape.h"
-#include "../Utility.h"
+#include "Utility.h"
 
 enum class DataType {
     FLOAT = GL_FLOAT,

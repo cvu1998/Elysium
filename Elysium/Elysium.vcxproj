@@ -96,7 +96,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>GLFW_INCLUDE_NONE</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(ProjectDir)src\Elysium\;$(ProjectDir)src\vendor\;$(SolutionDir)\Glad\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)\Glad\include\;$(ProjectDir)src\Elysium\;$(ProjectDir)src\;$(ProjectDir)src\vendor\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -120,7 +120,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>GLFW_INCLUDE_NONE</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(ProjectDir)src\Elysium\;$(ProjectDir)src\vendor\;$(SolutionDir)\Glad\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)\Glad\include\;$(ProjectDir)src\Elysium\;$(ProjectDir)src\;$(ProjectDir)src\vendor\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -142,7 +142,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>GLFW_INCLUDE_NONE</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(ProjectDir)src\Elysium\;$(ProjectDir)src\vendor\;$(SolutionDir)\Glad\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)\Glad\include\;$(ProjectDir)src\Elysium\;$(ProjectDir)src\;$(ProjectDir)src\vendor\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -170,7 +170,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>GLFW_INCLUDE_NONE</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(ProjectDir)src\Elysium\;$(ProjectDir)src\vendor\;$(SolutionDir)\Glad\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)\Glad\include\;$(ProjectDir)src\Elysium\;$(ProjectDir)src\;$(ProjectDir)src\vendor\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -193,6 +193,8 @@
     <ClCompile Include="src\Elysium\Application.cpp" />
     <ClCompile Include="src\Elysium\OrthographicCameraController.cpp" />
     <ClCompile Include="src\Elysium\ParticleSystem.cpp" />
+    <ClCompile Include="src\Elysium\Physics\PhysicalObject.cpp" />
+    <ClCompile Include="src\Elysium\Physics\PhysicsSystem.cpp" />
     <ClCompile Include="src\Elysium\Random.cpp" />
     <ClCompile Include="src\Elysium\Renderer\Camera.cpp" />
     <ClCompile Include="src\Elysium\Renderer\Renderer2D.cpp" />
@@ -369,6 +371,8 @@
     <ClInclude Include="src\Elysium\Events\MouseEvent.h" />
     <ClInclude Include="src\Elysium\OrthographicCameraController.h" />
     <ClInclude Include="src\Elysium\ParticleSystem.h" />
+    <ClInclude Include="src\Elysium\Physics\PhysicalObject.h" />
+    <ClInclude Include="src\Elysium\Physics\PhysicsSystem.h" />
     <ClInclude Include="src\Elysium\Random.h" />
     <ClInclude Include="src\Elysium\Renderer\Math.h" />
     <ClInclude Include="src\Elysium\Renderer\Camera.h" />

@@ -1,7 +1,7 @@
 #include "VertexBuffer.h"
 
 #include "Shape.h"
-#include "../Utility.h"
+#include "Utility.h"
 
 VertexBuffer::VertexBuffer(unsigned int numberofVertices)
 {

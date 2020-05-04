@@ -28,12 +28,11 @@ struct Renderer2DData
     std::array<unsigned int, MaxTextureCount> TextureSlots;
     unsigned int TextureSlotIndex = 1;
 
-    glm::vec2 PositionSign[4];
-    glm::vec2 TextureCoordinates[4];
-    glm::vec2 QuadVertexPositions[4];
+    glm::vec2 PositionSign[4] = { { -1.0f, -1.0f }, { 1.0f, -1.0f }, { 1.0f,  1.0f }, {-1.0f, 1.0f } };
+    glm::vec2 TextureCoordinates[4] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f,  1.0f }, { 0.0f, 1.0f } };
+    glm::vec2 QuadVertexPositions[4] = { {-0.5, -0.5 }, { 0.5, -0.5 }, { 0.5,  0.5 }, {-0.5,  0.5 } };
 
     Renderer2D::Stats RendererStats;
-
 };
 
 /*To Destroy Object on Shutdown*/
@@ -47,7 +46,7 @@ void Renderer2D::Init()
     s_Data->vArray = std::make_unique<VertexArray>();
     s_Data->vArray->bind();
 
-    s_Data->vBuffer = std::make_unique<VertexBuffer>(MaxVertexCount);
+    s_Data->vBuffer = std::make_unique<VertexBuffer>((unsigned int)MaxVertexCount);
 
     VertexBufferLayout layout;
     layout.push<float>(2);
@@ -71,7 +70,7 @@ void Renderer2D::Init()
         offset += 4;
     }
 
-    s_Data->iBuffer = std::make_unique<IndexBuffer>(indices, MaxIndexCount);
+    s_Data->iBuffer = std::make_unique<IndexBuffer>(indices, (unsigned int)MaxIndexCount);
 
     GL_ASSERT(glEnable(GL_BLEND));
     GL_ASSERT(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
@@ -89,21 +88,6 @@ void Renderer2D::Init()
     for (int i = 0; i < 32; i++)
         sampler[i] = i;
     s_Data->shader->setUniform1iv<32>("u_Textures", 32, sampler);
-
-    s_Data->PositionSign[0] = {-1.0f, -1.0f };
-    s_Data->PositionSign[1] = { 1.0f, -1.0f };
-    s_Data->PositionSign[2] = { 1.0f,  1.0f };
-    s_Data->PositionSign[3] = {-1.0f,  1.0f };
-
-    s_Data->TextureCoordinates[0] = { 0.0f, 0.0f };
-    s_Data->TextureCoordinates[1] = { 1.0f, 0.0f };
-    s_Data->TextureCoordinates[2] = { 1.0f, 1.0f };
-    s_Data->TextureCoordinates[3] = { 0.0f, 1.0f };
-
-    s_Data->QuadVertexPositions[0] = {-0.5, -0.5 };
-    s_Data->QuadVertexPositions[1] = { 0.5, -0.5 };
-    s_Data->QuadVertexPositions[2] = { 0.5,  0.5 };
-    s_Data->QuadVertexPositions[3] = {-0.5,  0.5 };
 }
 
 void Renderer2D::Shutdown()

@@ -8,10 +8,15 @@
 
 namespace Elysium
 {
-	ParticleSystem::ParticleSystem(uint32_t poolSize, OrthographicCamera& camera) : m_ParticlePoolSize(poolSize), m_PoolIndex(poolSize - 1),
+	ParticleSystem::ParticleSystem(uint32_t poolSize, OrthographicCamera& camera) : m_InitialParticlePoolSize(poolSize), m_ParticlePoolSize(poolSize),
+		m_PoolIndex(0),
 		m_Camera(&camera)
 	{
 		m_ParticlePool.resize(poolSize);
+	}
+
+	ParticleSystem::~ParticleSystem()
+	{
 	}
 
 	void ParticleSystem::addParticle(const ParticleProperties& particleProperties, Particle& particle)
@@ -46,15 +51,17 @@ namespace Elysium
 		}
 		else
 		{
-			m_ParticlePoolSize += m_ParticlePoolSize;
+			m_PoolIndex = m_ParticlePoolSize;
+			m_ParticlePoolSize += m_InitialParticlePoolSize * m_NumberOfResize;
 			m_ParticlePool.resize(m_ParticlePoolSize);
-			m_PoolIndex = m_ParticlePoolSize - 1;
 
 			Particle& particle = m_ParticlePool[m_PoolIndex];
 
 			addParticle(particleProperties, particle);
+
+			m_NumberOfResize++;
 		}
-		m_PoolIndex = --m_PoolIndex % m_ParticlePool.size();
+		m_PoolIndex = ++m_PoolIndex % m_ParticlePool.size();
 	}
 
 	void ParticleSystem::OnUpdate(Timestep ts)

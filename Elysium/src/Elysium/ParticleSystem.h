@@ -50,6 +50,8 @@ namespace Elysium
 			bool Active = false;
 		};
 
+		uint32_t m_NumberOfResize = 1;
+		uint32_t m_InitialParticlePoolSize;
 		uint32_t m_ParticlePoolSize;
 		uint32_t m_PoolIndex;
 		std::vector<Particle> m_ParticlePool;
@@ -63,7 +65,9 @@ namespace Elysium
 		// Initial ParticlePoolSize
 		// Which is resized to a larger value in respect to the number of particled the user wants to emit
 		ParticleSystem(uint32_t poolSize, OrthographicCamera& camera);
+		~ParticleSystem();
 
+		// Emit a new particle
 		void Emit(const ParticleProperties& particleProperties);
 
 		void OnUpdate(Timestep ts);

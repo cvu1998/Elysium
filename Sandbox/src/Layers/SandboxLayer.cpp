@@ -3,7 +3,8 @@
 SandboxLayer::SandboxLayer(bool* runSandbox, unsigned int width, unsigned int height) : Layer("Sandbox"),
     m_RunSandbox(runSandbox),
     m_CameraController((float)width / (float)height, 3.0f),
-    m_ParticleSystem(10000, m_CameraController.getCamera())
+    m_ParticleSystem(100, m_CameraController.getCamera()),
+    m_PhysicsSystem(0.1f, m_CameraController.getCamera())
 {
     Renderer2D::Init();
 
@@ -25,20 +26,30 @@ SandboxLayer::SandboxLayer(bool* runSandbox, unsigned int width, unsigned int he
 
     m_Particle.LifeTime = 3.0f;
 
-    // ----------------------------------------------------------------------------- //
+    // ---------------------------------------------------------------------------------- //
 
     m_Particle2.Position = { 0.0f, 0.0f };
     m_Particle2.Velocity = { 0.0f, 0.0f };
     m_Particle2.VelocityVariation = { 1.0f, 1.0f };
     m_Particle2.RotationSpeed = 180.0f;
 
-    //m_Particle2.ColorBegin = { 0.0f, 0.0f, 1.0f, 1.0f };
+    m_Particle2.ColorBegin = { 1.0f, 0.0f, 1.0f, 1.0f };
     m_Particle2.ColorEnd = { 0.0f, 0.0f, 0.0f, 1.0f };
-    m_Particle2.TextureID = m_Textures[2].getRendererID();
+    //m_Particle.TextureID = m_Textures[2].getRendererID();
 
     m_Particle2.SizeBegin = 0.5f, m_Particle.SizeEnd = 0.0f, m_Particle.SizeVariation = 0.3f;
 
     m_Particle2.LifeTime = 3.0f;
+
+    m_Object.InitialPosition = { 0.0f, 5.0f };
+    m_Object.Size = { 1.0f, 2.0f };
+    m_Object.InitialVelocity = { 0.0f, 0.0f };
+    m_Object.Acceleration = { 0.0f, 0.0f };
+
+    m_Object.Color = { 0.0f, 0.0f, 1.0f, 1.0f };
+    //m_Object.TextureID = m_Textures[2].getRendererID();
+
+    m_PhysicsSystem.addPhysicalObject(&m_Object);
 }
 
 SandboxLayer::~SandboxLayer()
@@ -96,14 +107,16 @@ void SandboxLayer::onUpdate(Elysium::Timestep ts)
         y = m_CameraController.getBoundsHeight() * 0.5f - (y / height) * m_CameraController.getBoundsHeight();
         m_Particle.Position = { x + pos.x, y + pos.y };
         m_Particle2.Position = { x + pos.x, y + pos.y };
-            
 
         for (int i = 0; i < 5; i++)
         {
-            m_ParticleSystem.Emit(m_Particle); 
+            m_ParticleSystem.Emit(m_Particle);
             m_ParticleSystem.Emit(m_Particle2);
         }
         m_ParticleSystem.OnUpdate(ts);
+
+        m_Object.Rotation = m_RotationSpeed / ts;
+        m_PhysicsSystem.onUpdate(ts);
 
         ImGui::Begin("First Quad Controls");
         ImGui::DragFloat2("First Quad Position", m_QuadPosition, 0.1f);
