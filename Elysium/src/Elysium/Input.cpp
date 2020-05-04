@@ -2,7 +2,7 @@
 
 #include <GLFW/glfw3.h>
 
-#include "Application.h"
+#include "Elysium/Application.h"
 
 namespace Elysium
 {

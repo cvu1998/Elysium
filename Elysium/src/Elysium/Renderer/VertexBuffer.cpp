@@ -1,7 +1,7 @@
 #include "VertexBuffer.h"
 
-#include "Shape.h"
-#include "Utility.h"
+#include "Elysium/Renderer/Shape.h"
+#include "Elysium/Utility.h"
 
 VertexBuffer::VertexBuffer(unsigned int numberofVertices)
 {

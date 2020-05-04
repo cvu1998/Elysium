@@ -1,8 +1,8 @@
 #pragma once
 #include <vector>
 
-#include "Shape.h"
-#include "Utility.h"
+#include "Elysium/Renderer/Shape.h"
+#include "Elysium/Utility.h"
 
 enum class DataType {
     FLOAT = GL_FLOAT,

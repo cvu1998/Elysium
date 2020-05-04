@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Timestep.h"
-#include "Events/ApplicationEvent.h"
-#include "Events/MouseEvent.h"
-#include "Renderer/Camera.h"
+#include "Elysium/Timestep.h"
+#include "Elysium/Events/ApplicationEvent.h"
+#include "Elysium/Events/MouseEvent.h"
+#include "Elysium/Renderer/Camera.h"
 
 namespace Elysium
 {

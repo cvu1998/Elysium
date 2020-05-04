@@ -1,6 +1,6 @@
 #include "IndexBuffer.h"
 
-#include "Utility.h"
+#include "Elysium/Utility.h"
 
 IndexBuffer::IndexBuffer(unsigned int count) : m_Count(count) {
 

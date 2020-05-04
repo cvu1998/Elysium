@@ -1,4 +1,4 @@
-#include "Elysium/Physics/PhysicsSystem.h"
+#include "PhysicsSystem.h"
 
 namespace Elysium
 {

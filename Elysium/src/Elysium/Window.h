@@ -3,9 +3,9 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "Events/ApplicationEvent.h"
-#include "Events/KeyEvent.h"
-#include "Events/MouseEvent.h"
+#include "Elysium/Events/ApplicationEvent.h"
+#include "Elysium/Events/KeyEvent.h"
+#include "Elysium/Events/MouseEvent.h"
 
 namespace Elysium
 {

@@ -6,8 +6,8 @@
 #include <imgui/imgui_impl_glfw.h>
 #include <imgui/imgui_impl_opengl3.h>
 
-#include "LayerStack.h"
-#include "Window.h"
+#include "Elysium/LayerStack.h"
+#include "Elysium/Window.h"
 
 namespace Elysium 
 {

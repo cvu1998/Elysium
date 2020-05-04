@@ -2,8 +2,8 @@
 
 #include <iostream>
 
-#include "Renderer/Renderer.h"
-#include "Timestep.h"
+#include "Elysium/Renderer/Renderer.h"
+#include "Elysium/Timestep.h"
 
 namespace Elysium
 {

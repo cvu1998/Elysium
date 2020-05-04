@@ -5,10 +5,10 @@
 
 #include <glm/glm.hpp>
 
-#include "Timestep.h"
+#include "Elysium/Timestep.h"
 
-#include "Renderer/Camera.h"
-#include "Renderer/Renderer2D.h"
+#include "Elysium/Renderer/Camera.h"
+#include "Elysium/Renderer/Renderer2D.h"
 
 namespace Elysium
 {

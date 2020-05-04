@@ -1,7 +1,7 @@
 #include "VertexArray.h"
 
 #include "VertexBufferLayout.h"
-#include "Utility.h"
+#include "Elysium/Utility.h"
 
 VertexArray::VertexArray()
 {
