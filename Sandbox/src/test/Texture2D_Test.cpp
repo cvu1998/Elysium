@@ -20,7 +20,7 @@ namespace test {
             2, 4, 3
         };
 
-        m_vb = std::make_unique<VertexBuffer>(vertices, 5 * 4 * sizeof(float));
+        m_vb = std::make_unique<VertexBuffer>(vertices, (unsigned int)(5 * 4 * sizeof(float)));
 
         VertexBufferLayout layout;
         layout.push<float>(2);

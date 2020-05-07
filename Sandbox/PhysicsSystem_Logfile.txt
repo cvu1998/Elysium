@@ -1,0 +1,3984 @@
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 10 }
+Velocity: 0
+In Air, No Collision!
+Position: { 0, 10 }
+Velocity: 0
+In Air, No Collision!
+Position: { 0, 10 }
+Velocity: 0
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: -9.8
+Velocity: -7.17875
+Timestep: 0.0245529
+Velocity Compensator: -292.379
+Acceleration: 292.379
+--------------------
+In Air, No Collision!
+Position: { 0, 2.11208 }
+Velocity: -7.17875
+In Air, No Collision!
+Position: { 0, 2.11208 }
+Velocity: -7.17875
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.20021 }
+Velocity: 4.76837e-07
+In Air, No Collision!
+Position: { 0, 2.20021 }
+Velocity: 4.76837e-07
+In Air, No Collision!
+Position: { 0, 2.20021 }
+Velocity: 4.76837e-07
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.19657 }
+Velocity: -0.154056
+In Air, No Collision!
+Position: { 0, 2.19657 }
+Velocity: -0.154056
+In Air, No Collision!
+Position: { 0, 2.19657 }
+Velocity: -0.154056
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.19049 }
+Velocity: -0.308564
+In Air, No Collision!
+Position: { 0, 2.19049 }
+Velocity: -0.308564
+In Air, No Collision!
+Position: { 0, 2.19049 }
+Velocity: -0.308564
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.18173 }
+Velocity: -0.466152
+In Air, No Collision!
+Position: { 0, 2.18173 }
+Velocity: -0.466152
+In Air, No Collision!
+Position: { 0, 2.18173 }
+Velocity: -0.466152
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.16972 }
+Velocity: -0.63113
+In Air, No Collision!
+Position: { 0, 2.16972 }
+Velocity: -0.63113
+In Air, No Collision!
+Position: { 0, 2.16972 }
+Velocity: -0.63113
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.15411 }
+Velocity: -0.803163
+In Air, No Collision!
+Position: { 0, 2.15411 }
+Velocity: -0.803163
+In Air, No Collision!
+Position: { 0, 2.15411 }
+Velocity: -0.803163
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.13776 }
+Velocity: -0.957938
+In Air, No Collision!
+Position: { 0, 2.13776 }
+Velocity: -0.957938
+In Air, No Collision!
+Position: { 0, 2.13776 }
+Velocity: -0.957938
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.11596 }
+Velocity: -1.13292
+In Air, No Collision!
+Position: { 0, 2.11596 }
+Velocity: -1.13292
+In Air, No Collision!
+Position: { 0, 2.11596 }
+Velocity: -1.13292
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.09394 }
+Velocity: -1.29053
+In Air, No Collision!
+Position: { 0, 2.09394 }
+Velocity: -1.29053
+In Air, No Collision!
+Position: { 0, 2.09394 }
+Velocity: -1.29053
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.06969 }
+Velocity: -1.44642
+In Air, No Collision!
+Position: { 0, 2.06969 }
+Velocity: -1.44642
+In Air, No Collision!
+Position: { 0, 2.06969 }
+Velocity: -1.44642
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.04084 }
+Velocity: -1.6131
+In Air, No Collision!
+Position: { 0, 2.04084 }
+Velocity: -1.6131
+In Air, No Collision!
+Position: { 0, 2.04084 }
+Velocity: -1.6131
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: -9.8
+Velocity: -1.77211
+Timestep: 0.016807
+Velocity Compensator: -105.439
+Acceleration: 105.439
+--------------------
+In Air, No Collision!
+Position: { 0, 2.0108 }
+Velocity: -1.77211
+In Air, No Collision!
+Position: { 0, 2.0108 }
+Velocity: -1.77211
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.02569 }
+Velocity: 0
+In Air, No Collision!
+Position: { 0, 2.02569 }
+Velocity: 0
+In Air, No Collision!
+Position: { 0, 2.02569 }
+Velocity: 0
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.02169 }
+Velocity: -0.161735
+In Air, No Collision!
+Position: { 0, 2.02169 }
+Velocity: -0.161735
+In Air, No Collision!
+Position: { 0, 2.02169 }
+Velocity: -0.161735
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.01484 }
+Velocity: -0.326043
+In Air, No Collision!
+Position: { 0, 2.01484 }
+Velocity: -0.326043
+In Air, No Collision!
+Position: { 0, 2.01484 }
+Velocity: -0.326043
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: -9.8
+Velocity: -0.487971
+Timestep: 0.0170531
+Velocity Compensator: -28.6148
+Acceleration: 28.6148
+--------------------
+In Air, No Collision!
+Position: { 0, 2.00544 }
+Velocity: -0.487971
+In Air, No Collision!
+Position: { 0, 2.00544 }
+Velocity: -0.487971
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.0096 }
+Velocity: 2.98023e-08
+In Air, No Collision!
+Position: { 0, 2.0096 }
+Velocity: 2.98023e-08
+In Air, No Collision!
+Position: { 0, 2.0096 }
+Velocity: 2.98023e-08
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: -9.8
+Velocity: -0.161533
+Timestep: 0.016711
+Velocity Compensator: -9.66626
+Acceleration: 9.66626
+--------------------
+In Air, No Collision!
+Position: { 0, 2.00561 }
+Velocity: -0.161533
+In Air, No Collision!
+Position: { 0, 2.00561 }
+Velocity: -0.161533
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.00696 }
+Velocity: 0
+In Air, No Collision!
+Position: { 0, 2.00696 }
+Velocity: 0
+In Air, No Collision!
+Position: { 0, 2.00696 }
+Velocity: 0
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: -9.8
+Velocity: -0.168701
+Timestep: 0.018775
+Velocity Compensator: -8.98543
+Acceleration: 8.98543
+--------------------
+In Air, No Collision!
+Position: { 0, 2.0026 }
+Velocity: -0.168701
+In Air, No Collision!
+Position: { 0, 2.0026 }
+Velocity: -0.168701
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.00419 }
+Velocity: -2.98023e-08
+In Air, No Collision!
+Position: { 0, 2.00419 }
+Velocity: -2.98023e-08
+In Air, No Collision!
+Position: { 0, 2.00419 }
+Velocity: -2.98023e-08
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: -9.8
+Velocity: -0.153083
+Timestep: 0.0167865
+Velocity Compensator: -9.11943
+Acceleration: 9.11943
+--------------------
+In Air, No Collision!
+Position: { 0, 2.0006 }
+Velocity: -0.153083
+In Air, No Collision!
+Position: { 0, 2.0006 }
+Velocity: -0.153083
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.00188 }
+Velocity: -1.49012e-08
+In Air, No Collision!
+Position: { 0, 2.00188 }
+Velocity: -1.49012e-08
+In Air, No Collision!
+Position: { 0, 2.00188 }
+Velocity: -1.49012e-08
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: -9.8
+Velocity: -0.147809
+Timestep: 0.0176898
+Velocity Compensator: -8.35562
+Acceleration: 8.35562
+--------------------
+In Air, No Collision!
+Position: { 0, 1.99854 }
+Velocity: -0.147809
+In Air, No Collision!
+Position: { 0, 1.99854 }
+Velocity: -0.147809
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 1.99985 }
+Velocity: -1.49012e-08
+In Air, No Collision!
+Position: { 0, 1.99985 }
+Velocity: -1.49012e-08
+In Air, No Collision!
+Position: { 0, 1.99985 }
+Velocity: -1.49012e-08
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: -9.8
+Velocity: -0.153505
+Timestep: 0.0163909
+Velocity Compensator: -9.36523
+Acceleration: 9.36523
+--------------------
+In Air, No Collision!
+Position: { 0, 1.99624 }
+Velocity: -0.153505
+In Air, No Collision!
+Position: { 0, 1.99624 }
+Velocity: -0.153505
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 1.9975 }
+Velocity: 0
+In Air, No Collision!
+Position: { 0, 1.9975 }
+Velocity: 0
+In Air, No Collision!
+Position: { 0, 1.9975 }
+Velocity: 0
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: -9.8
+Velocity: -0.163449
+Timestep: 0.0167733
+Velocity Compensator: -9.74456
+Acceleration: 9.74456
+--------------------
+In Air, No Collision!
+Position: { 0, 1.99341 }
+Velocity: -0.163449
+In Air, No Collision!
+Position: { 0, 1.99341 }
+Velocity: -0.163449
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: 9.74456
+Velocity: 0
+Timestep: 0.0162686
+Velocity Compensator: 0
+Acceleration: -19.5446
+--------------------
+In Air, No Collision!
+Position: { 0, 1.99478 }
+Velocity: 0
+In Air, No Collision!
+Position: { 0, 1.99478 }
+Velocity: 0
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: -19.5446
+Velocity: -0.317963
+Timestep: 0.0166341
+Velocity Compensator: -19.1151
+Acceleration: 28.8597
+--------------------
+In Air, No Collision!
+Position: { 0, 1.98702 }
+Velocity: -0.317963
+In Air, No Collision!
+Position: { 0, 1.98702 }
+Velocity: -0.317963
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 1.99371 }
+Velocity: 0.162092
+In Air, No Collision!
+Position: { 0, 1.99371 }
+Velocity: 0.162092
+In Air, No Collision!
+Position: { 0, 1.99371 }
+Velocity: 0.162092
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: -9.8
+Velocity: -0.00297947
+Timestep: 0.0165517
+Velocity Compensator: -0.18001
+Acceleration: 0.18001
+--------------------
+In Air, No Collision!
+Position: { 0, 1.99227 }
+Velocity: -0.00297947
+In Air, No Collision!
+Position: { 0, 1.99227 }
+Velocity: -0.00297947
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: 0.18001
+Velocity: 2.56114e-09
+Timestep: 0.0169147
+Velocity Compensator: 1.51415e-07
+Acceleration: -9.98001
+--------------------
+In Air, No Collision!
+Position: { 0, 1.99229 }
+Velocity: 2.56114e-09
+In Air, No Collision!
+Position: { 0, 1.99229 }
+Velocity: 2.56114e-09
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: -9.98001
+Velocity: -0.168809
+Timestep: 0.0168787
+Velocity Compensator: -10.0013
+Acceleration: 10.1813
+--------------------
+In Air, No Collision!
+Position: { 0, 1.98801 }
+Velocity: -0.168809
+In Air, No Collision!
+Position: { 0, 1.98801 }
+Velocity: -0.168809
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: 10.1813
+Velocity: 0.00303836
+Timestep: 0.0168121
+Velocity Compensator: 0.180725
+Acceleration: -20.162
+--------------------
+In Air, No Collision!
+Position: { 0, 1.98951 }
+Velocity: 0.00303836
+In Air, No Collision!
+Position: { 0, 1.98951 }
+Velocity: 0.00303836
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: -20.162
+Velocity: -0.335927
+Timestep: 0.0179714
+Velocity Compensator: -18.6923
+Acceleration: 29.0544
+--------------------
+In Air, No Collision!
+Position: { 0, 1.98102 }
+Velocity: -0.335927
+In Air, No Collision!
+Position: { 0, 1.98102 }
+Velocity: -0.335927
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 1.98905 }
+Velocity: 0.18622
+In Air, No Collision!
+Position: { 0, 1.98905 }
+Velocity: 0.18622
+In Air, No Collision!
+Position: { 0, 1.98905 }
+Velocity: 0.18622
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: -9.8
+Velocity: 0.040349
+Timestep: 0.0165081
+Velocity Compensator: 2.44419
+Acceleration: -2.44419
+--------------------
+In Air, No Collision!
+Position: { 0, 1.98857 }
+Velocity: 0.040349
+In Air, No Collision!
+Position: { 0, 1.98857 }
+Velocity: 0.040349
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: -2.44419
+Velocity: 0
+Timestep: 0.017529
+Velocity Compensator: 0
+Acceleration: -7.35581
+--------------------
+In Air, No Collision!
+Position: { 0, 1.98824 }
+Velocity: 0
+In Air, No Collision!
+Position: { 0, 1.98824 }
+Velocity: 0
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: -7.35581
+Velocity: -0.12894
+Timestep: 0.0160729
+Velocity Compensator: -8.02222
+Acceleration: 5.57802
+--------------------
+In Air, No Collision!
+Position: { 0, 1.98485 }
+Velocity: -0.12894
+In Air, No Collision!
+Position: { 0, 1.98485 }
+Velocity: -0.12894
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: 5.57802
+Velocity: -0.0392852
+Timestep: 0.0164583
+Velocity Compensator: -2.38696
+Acceleration: -12.9911
+--------------------
+In Air, No Collision!
+Position: { 0, 1.98493 }
+Velocity: -0.0392852
+In Air, No Collision!
+Position: { 0, 1.98493 }
+Velocity: -0.0392852
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: -12.9911
+Velocity: -0.253096
+Timestep: 0.0170014
+Velocity Compensator: -14.8868
+Acceleration: 18.0778
+--------------------
+In Air, No Collision!
+Position: { 0, 1.97901 }
+Velocity: -0.253096
+In Air, No Collision!
+Position: { 0, 1.97901 }
+Velocity: -0.253096
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: 18.0778
+Velocity: 0.0542526
+Timestep: 0.0171316
+Velocity Compensator: 3.16682
+Acceleration: -31.0447
+--------------------
+In Air, No Collision!
+Position: { 0, 1.98254 }
+Velocity: 0.0542526
+In Air, No Collision!
+Position: { 0, 1.98254 }
+Velocity: 0.0542526
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: -31.0447
+Velocity: -0.477591
+Timestep: 0.0163
+Velocity Compensator: -29.3001
+Acceleration: 50.5448
+--------------------
+In Air, No Collision!
+Position: { 0, 1.96981 }
+Velocity: -0.477591
+In Air, No Collision!
+Position: { 0, 1.96981 }
+Velocity: -0.477591
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 1.98217 }
+Velocity: 0.346287
+In Air, No Collision!
+Position: { 0, 1.98217 }
+Velocity: 0.346287
+In Air, No Collision!
+Position: { 0, 1.98217 }
+Velocity: 0.346287
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: -9.8
+Velocity: 0.1846
+Timestep: 0.0166214
+Velocity Compensator: 11.1062
+Acceleration: -11.1062
+--------------------
+In Air, No Collision!
+Position: { 0, 1.98388 }
+Velocity: 0.1846
+In Air, No Collision!
+Position: { 0, 1.98388 }
+Velocity: 0.1846
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: -11.1062
+Velocity: 0
+Timestep: 0.0164801
+Velocity Compensator: 0
+Acceleration: 1.3062
+--------------------
+In Air, No Collision!
+Position: { 0, 1.98234 }
+Velocity: 0
+In Air, No Collision!
+Position: { 0, 1.98234 }
+Velocity: 0
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: 1.3062
+Velocity: 0.0215262
+Timestep: 0.016964
+Velocity Compensator: 1.26894
+Acceleration: -12.3751
+--------------------
+In Air, No Collision!
+Position: { 0, 1.98288 }
+Velocity: 0.0215262
+In Air, No Collision!
+Position: { 0, 1.98288 }
+Velocity: 0.0215262
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: -12.3751
+Velocity: -0.188405
+Timestep: 0.016697
+Velocity Compensator: -11.2837
+Acceleration: 13.8589
+--------------------
+In Air, No Collision!
+Position: { 0, 1.9779 }
+Velocity: -0.188405
+In Air, No Collision!
+Position: { 0, 1.9779 }
+Velocity: -0.188405
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: 13.8589
+Velocity: 0.0429971
+Timestep: 0.0184742
+Velocity Compensator: 2.32741
+Acceleration: -25.9863
+--------------------
+In Air, No Collision!
+Position: { 0, 1.98055 }
+Velocity: 0.0429971
+In Air, No Collision!
+Position: { 0, 1.98055 }
+Velocity: 0.0429971
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: -25.9863
+Velocity: -0.437079
+Timestep: 0.016858
+Velocity Compensator: -25.9271
+Acceleration: 42.1134
+--------------------
+In Air, No Collision!
+Position: { 0, 1.96804 }
+Velocity: -0.437079
+In Air, No Collision!
+Position: { 0, 1.96804 }
+Velocity: -0.437079
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: 42.1134
+Velocity: 0.272868
+Timestep: 0.0149645
+Velocity Compensator: 18.2344
+Acceleration: -70.1478
+--------------------
+In Air, No Collision!
+Position: { 0, 1.97862 }
+Velocity: 0.272868
+In Air, No Collision!
+Position: { 0, 1.97862 }
+Velocity: 0.272868
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: -70.1478
+Velocity: -0.776856
+Timestep: 0.0165949
+Velocity Compensator: -46.813
+Acceleration: 107.161
+--------------------
+In Air, No Collision!
+Position: { 0, 1.95914 }
+Velocity: -0.776856
+In Air, No Collision!
+Position: { 0, 1.95914 }
+Velocity: -0.776856
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 1.99052 }
+Velocity: 1.00147
+In Air, No Collision!
+Position: { 0, 1.99052 }
+Velocity: 1.00147
+In Air, No Collision!
+Position: { 0, 1.99052 }
+Velocity: 1.00147
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.00418 }
+Velocity: 0.816508
+In Air, No Collision!
+Position: { 0, 2.00418 }
+Velocity: 0.816508
+In Air, No Collision!
+Position: { 0, 2.00418 }
+Velocity: 0.816508
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.0127 }
+Velocity: 0.680079
+In Air, No Collision!
+Position: { 0, 2.0127 }
+Velocity: 0.680079
+In Air, No Collision!
+Position: { 0, 2.0127 }
+Velocity: 0.680079
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.01994 }
+Velocity: 0.517322
+In Air, No Collision!
+Position: { 0, 2.01994 }
+Velocity: 0.517322
+In Air, No Collision!
+Position: { 0, 2.01994 }
+Velocity: 0.517322
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.02448 }
+Velocity: 0.353252
+In Air, No Collision!
+Position: { 0, 2.02448 }
+Velocity: 0.353252
+In Air, No Collision!
+Position: { 0, 2.02448 }
+Velocity: 0.353252
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.02622 }
+Velocity: 0.185368
+In Air, No Collision!
+Position: { 0, 2.02622 }
+Velocity: 0.185368
+In Air, No Collision!
+Position: { 0, 2.02622 }
+Velocity: 0.185368
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.02526 }
+Velocity: 0.0229954
+In Air, No Collision!
+Position: { 0, 2.02526 }
+Velocity: 0.0229954
+In Air, No Collision!
+Position: { 0, 2.02526 }
+Velocity: 0.0229954
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.02165 }
+Velocity: -0.138306
+In Air, No Collision!
+Position: { 0, 2.02165 }
+Velocity: -0.138306
+In Air, No Collision!
+Position: { 0, 2.02165 }
+Velocity: -0.138306
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.01528 }
+Velocity: -0.301381
+In Air, No Collision!
+Position: { 0, 2.01528 }
+Velocity: -0.301381
+In Air, No Collision!
+Position: { 0, 2.01528 }
+Velocity: -0.301381
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: -9.8
+Velocity: -0.461944
+Timestep: 0.0167065
+Velocity Compensator: -27.6506
+Acceleration: 27.6506
+--------------------
+In Air, No Collision!
+Position: { 0, 2.0064 }
+Velocity: -0.461944
+In Air, No Collision!
+Position: { 0, 2.0064 }
+Velocity: -0.461944
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.01026 }
+Velocity: 5.96046e-08
+In Air, No Collision!
+Position: { 0, 2.01026 }
+Velocity: 5.96046e-08
+In Air, No Collision!
+Position: { 0, 2.01026 }
+Velocity: 5.96046e-08
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: -9.8
+Velocity: -0.161708
+Timestep: 0.0167918
+Velocity Compensator: -9.63017
+Acceleration: 9.63017
+--------------------
+In Air, No Collision!
+Position: { 0, 2.00625 }
+Velocity: -0.161708
+In Air, No Collision!
+Position: { 0, 2.00625 }
+Velocity: -0.161708
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.00761 }
+Velocity: 0
+In Air, No Collision!
+Position: { 0, 2.00761 }
+Velocity: 0
+In Air, No Collision!
+Position: { 0, 2.00761 }
+Velocity: 0
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: -9.8
+Velocity: -0.164065
+Timestep: 0.0172689
+Velocity Compensator: -9.50058
+Acceleration: 9.50058
+--------------------
+In Air, No Collision!
+Position: { 0, 2.00349 }
+Velocity: -0.164065
+In Air, No Collision!
+Position: { 0, 2.00349 }
+Velocity: -0.164065
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.00491 }
+Velocity: 0
+In Air, No Collision!
+Position: { 0, 2.00491 }
+Velocity: 0
+In Air, No Collision!
+Position: { 0, 2.00491 }
+Velocity: 0
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: -9.8
+Velocity: -0.158452
+Timestep: 0.0178164
+Velocity Compensator: -8.8936
+Acceleration: 8.8936
+--------------------
+In Air, No Collision!
+Position: { 0, 2.00106 }
+Velocity: -0.158452
+In Air, No Collision!
+Position: { 0, 2.00106 }
+Velocity: -0.158452
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.00248 }
+Velocity: -1.49012e-08
+In Air, No Collision!
+Position: { 0, 2.00248 }
+Velocity: -1.49012e-08
+In Air, No Collision!
+Position: { 0, 2.00248 }
+Velocity: -1.49012e-08
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: -9.8
+Velocity: -0.149341
+Timestep: 0.0167904
+Velocity Compensator: -8.89444
+Acceleration: 8.89443
+--------------------
+In Air, No Collision!
+Position: { 0, 1.99906 }
+Velocity: -0.149341
+In Air, No Collision!
+Position: { 0, 1.99906 }
+Velocity: -0.149341
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.00032 }
+Velocity: -1.49012e-08
+In Air, No Collision!
+Position: { 0, 2.00032 }
+Velocity: -1.49012e-08
+In Air, No Collision!
+Position: { 0, 2.00032 }
+Velocity: -1.49012e-08
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: -9.8
+Velocity: -0.964806
+Timestep: 0.0189767
+Velocity Compensator: -50.8416
+Acceleration: 50.8416
+--------------------
+In Air, No Collision!
+Position: { 0, 1.85784 }
+Velocity: -0.964806
+In Air, No Collision!
+Position: { 0, 1.85784 }
+Velocity: -0.964806
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: 50.8416
+Velocity: 0
+Timestep: 0.0164154
+Velocity Compensator: 0
+Acceleration: -60.6416
+--------------------
+In Air, No Collision!
+Position: { 0, 1.86699 }
+Velocity: 0
+In Air, No Collision!
+Position: { 0, 1.86699 }
+Velocity: 0
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: -60.6416
+Velocity: -0.995454
+Timestep: 0.0162923
+Velocity Compensator: -61.0995
+Acceleration: 111.941
+--------------------
+In Air, No Collision!
+Position: { 0, 1.84248 }
+Velocity: -0.995454
+In Air, No Collision!
+Position: { 0, 1.84248 }
+Velocity: -0.995454
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: 111.941
+Velocity: 0.828329
+Timestep: 0.0199966
+Velocity Compensator: 41.4234
+Acceleration: -163.165
+--------------------
+In Air, No Collision!
+Position: { 0, 1.87083 }
+Velocity: 0.828329
+In Air, No Collision!
+Position: { 0, 1.87083 }
+Velocity: 0.828329
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: -163.165
+Velocity: -2.43442
+Timestep: 0.013535
+Velocity Compensator: -179.86
+Acceleration: 333.225
+--------------------
+In Air, No Collision!
+Position: { 0, 1.78953 }
+Velocity: -2.43442
+In Air, No Collision!
+Position: { 0, 1.78953 }
+Velocity: -2.43442
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 1.84815 }
+Velocity: 2.07579
+In Air, No Collision!
+Position: { 0, 1.84815 }
+Velocity: 2.07579
+In Air, No Collision!
+Position: { 0, 1.84815 }
+Velocity: 2.07579
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: -9.8
+Velocity: 1.90136
+Timestep: 0.0174315
+Velocity Compensator: 109.076
+Acceleration: -109.076
+--------------------
+In Air, No Collision!
+Position: { 0, 1.88044 }
+Velocity: 1.90136
+In Air, No Collision!
+Position: { 0, 1.88044 }
+Velocity: 1.90136
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: -109.076
+Velocity: 0
+Timestep: 0.0150359
+Velocity Compensator: 0
+Acceleration: 99.276
+--------------------
+In Air, No Collision!
+Position: { 0, 1.86387 }
+Velocity: 0
+In Air, No Collision!
+Position: { 0, 1.86387 }
+Velocity: 0
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: 99.276
+Velocity: 1.4927
+Timestep: 0.0163293
+Velocity Compensator: 91.4124
+Acceleration: -200.488
+--------------------
+In Air, No Collision!
+Position: { 0, 1.89754 }
+Velocity: 1.4927
+In Air, No Collision!
+Position: { 0, 1.89754 }
+Velocity: 1.4927
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: -200.488
+Velocity: -1.78113
+Timestep: 0.0173359
+Velocity Compensator: -102.742
+Acceleration: 293.431
+--------------------
+In Air, No Collision!
+Position: { 0, 1.84172 }
+Velocity: -1.78113
+In Air, No Collision!
+Position: { 0, 1.84172 }
+Velocity: -1.78113
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 1.94312 }
+Velocity: 3.30575
+In Air, No Collision!
+Position: { 0, 1.94312 }
+Velocity: 3.30575
+In Air, No Collision!
+Position: { 0, 1.94312 }
+Velocity: 3.30575
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 1.99232 }
+Velocity: 3.14872
+In Air, No Collision!
+Position: { 0, 1.99232 }
+Velocity: 3.14872
+In Air, No Collision!
+Position: { 0, 1.99232 }
+Velocity: 3.14872
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.04132 }
+Velocity: 2.98316
+In Air, No Collision!
+Position: { 0, 2.04132 }
+Velocity: 2.98316
+In Air, No Collision!
+Position: { 0, 2.04132 }
+Velocity: 2.98316
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.08635 }
+Velocity: 2.82218
+In Air, No Collision!
+Position: { 0, 2.08635 }
+Velocity: 2.82218
+In Air, No Collision!
+Position: { 0, 2.08635 }
+Velocity: 2.82218
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.12827 }
+Velocity: 2.66319
+In Air, No Collision!
+Position: { 0, 2.12827 }
+Velocity: 2.66319
+In Air, No Collision!
+Position: { 0, 2.12827 }
+Velocity: 2.66319
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.16882 }
+Velocity: 2.49877
+In Air, No Collision!
+Position: { 0, 2.16882 }
+Velocity: 2.49877
+In Air, No Collision!
+Position: { 0, 2.16882 }
+Velocity: 2.49877
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.2066 }
+Velocity: 2.33434
+In Air, No Collision!
+Position: { 0, 2.2066 }
+Velocity: 2.33434
+In Air, No Collision!
+Position: { 0, 2.2066 }
+Velocity: 2.33434
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.24108 }
+Velocity: 2.17284
+In Air, No Collision!
+Position: { 0, 2.24108 }
+Velocity: 2.17284
+In Air, No Collision!
+Position: { 0, 2.24108 }
+Velocity: 2.17284
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.27354 }
+Velocity: 2.00758
+In Air, No Collision!
+Position: { 0, 2.27354 }
+Velocity: 2.00758
+In Air, No Collision!
+Position: { 0, 2.27354 }
+Velocity: 2.00758
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.3025 }
+Velocity: 1.84691
+In Air, No Collision!
+Position: { 0, 2.3025 }
+Velocity: 1.84691
+In Air, No Collision!
+Position: { 0, 2.3025 }
+Velocity: 1.84691
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.32932 }
+Velocity: 1.68274
+In Air, No Collision!
+Position: { 0, 2.32932 }
+Velocity: 1.68274
+In Air, No Collision!
+Position: { 0, 2.32932 }
+Velocity: 1.68274
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.35338 }
+Velocity: 1.5186
+In Air, No Collision!
+Position: { 0, 2.35338 }
+Velocity: 1.5186
+In Air, No Collision!
+Position: { 0, 2.35338 }
+Velocity: 1.5186
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.37562 }
+Velocity: 1.34548
+In Air, No Collision!
+Position: { 0, 2.37562 }
+Velocity: 1.34548
+In Air, No Collision!
+Position: { 0, 2.37562 }
+Velocity: 1.34548
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.39294 }
+Velocity: 1.19362
+In Air, No Collision!
+Position: { 0, 2.39294 }
+Velocity: 1.19362
+In Air, No Collision!
+Position: { 0, 2.39294 }
+Velocity: 1.19362
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.40875 }
+Velocity: 1.03026
+In Air, No Collision!
+Position: { 0, 2.40875 }
+Velocity: 1.03026
+In Air, No Collision!
+Position: { 0, 2.40875 }
+Velocity: 1.03026
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.42198 }
+Velocity: 0.864303
+In Air, No Collision!
+Position: { 0, 2.42198 }
+Velocity: 0.864303
+In Air, No Collision!
+Position: { 0, 2.42198 }
+Velocity: 0.864303
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.4322 }
+Velocity: 0.703482
+In Air, No Collision!
+Position: { 0, 2.4322 }
+Velocity: 0.703482
+In Air, No Collision!
+Position: { 0, 2.4322 }
+Velocity: 0.703482
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.43983 }
+Velocity: 0.540924
+In Air, No Collision!
+Position: { 0, 2.43983 }
+Velocity: 0.540924
+In Air, No Collision!
+Position: { 0, 2.43983 }
+Velocity: 0.540924
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.44476 }
+Velocity: 0.377364
+In Air, No Collision!
+Position: { 0, 2.44476 }
+Velocity: 0.377364
+In Air, No Collision!
+Position: { 0, 2.44476 }
+Velocity: 0.377364
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.44695 }
+Velocity: 0.212218
+In Air, No Collision!
+Position: { 0, 2.44695 }
+Velocity: 0.212218
+In Air, No Collision!
+Position: { 0, 2.44695 }
+Velocity: 0.212218
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.44638 }
+Velocity: 0.048081
+In Air, No Collision!
+Position: { 0, 2.44638 }
+Velocity: 0.048081
+In Air, No Collision!
+Position: { 0, 2.44638 }
+Velocity: 0.048081
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.4432 }
+Velocity: -0.113004
+In Air, No Collision!
+Position: { 0, 2.4432 }
+Velocity: -0.113004
+In Air, No Collision!
+Position: { 0, 2.4432 }
+Velocity: -0.113004
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.43722 }
+Velocity: -0.276525
+In Air, No Collision!
+Position: { 0, 2.43722 }
+Velocity: -0.276525
+In Air, No Collision!
+Position: { 0, 2.43722 }
+Velocity: -0.276525
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.42844 }
+Velocity: -0.44093
+In Air, No Collision!
+Position: { 0, 2.42844 }
+Velocity: -0.44093
+In Air, No Collision!
+Position: { 0, 2.42844 }
+Velocity: -0.44093
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.41723 }
+Velocity: -0.601899
+In Air, No Collision!
+Position: { 0, 2.41723 }
+Velocity: -0.601899
+In Air, No Collision!
+Position: { 0, 2.41723 }
+Velocity: -0.601899
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.4031 }
+Velocity: -0.765442
+In Air, No Collision!
+Position: { 0, 2.4031 }
+Velocity: -0.765442
+In Air, No Collision!
+Position: { 0, 2.4031 }
+Velocity: -0.765442
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.38592 }
+Velocity: -0.931355
+In Air, No Collision!
+Position: { 0, 2.38592 }
+Velocity: -0.931355
+In Air, No Collision!
+Position: { 0, 2.38592 }
+Velocity: -0.931355
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.36672 }
+Velocity: -1.09187
+In Air, No Collision!
+Position: { 0, 2.36672 }
+Velocity: -1.09187
+In Air, No Collision!
+Position: { 0, 2.36672 }
+Velocity: -1.09187
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.34441 }
+Velocity: -1.25542
+In Air, No Collision!
+Position: { 0, 2.34441 }
+Velocity: -1.25542
+In Air, No Collision!
+Position: { 0, 2.34441 }
+Velocity: -1.25542
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.31939 }
+Velocity: -1.41884
+In Air, No Collision!
+Position: { 0, 2.31939 }
+Velocity: -1.41884
+In Air, No Collision!
+Position: { 0, 2.31939 }
+Velocity: -1.41884
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.29092 }
+Velocity: -1.58594
+In Air, No Collision!
+Position: { 0, 2.29092 }
+Velocity: -1.58594
+In Air, No Collision!
+Position: { 0, 2.29092 }
+Velocity: -1.58594
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.26062 }
+Velocity: -1.74826
+In Air, No Collision!
+Position: { 0, 2.26062 }
+Velocity: -1.74826
+In Air, No Collision!
+Position: { 0, 2.26062 }
+Velocity: -1.74826
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.22605 }
+Velocity: -1.91745
+In Air, No Collision!
+Position: { 0, 2.22605 }
+Velocity: -1.91745
+In Air, No Collision!
+Position: { 0, 2.22605 }
+Velocity: -1.91745
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.19187 }
+Velocity: -2.07318
+In Air, No Collision!
+Position: { 0, 2.19187 }
+Velocity: -2.07318
+In Air, No Collision!
+Position: { 0, 2.19187 }
+Velocity: -2.07318
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.15319 }
+Velocity: -2.23669
+In Air, No Collision!
+Position: { 0, 2.15319 }
+Velocity: -2.23669
+In Air, No Collision!
+Position: { 0, 2.15319 }
+Velocity: -2.23669
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.11232 }
+Velocity: -2.39826
+In Air, No Collision!
+Position: { 0, 2.11232 }
+Velocity: -2.39826
+In Air, No Collision!
+Position: { 0, 2.11232 }
+Velocity: -2.39826
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.06806 }
+Velocity: -2.56228
+In Air, No Collision!
+Position: { 0, 2.06806 }
+Velocity: -2.56228
+In Air, No Collision!
+Position: { 0, 2.06806 }
+Velocity: -2.56228
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: -9.8
+Velocity: -2.72577
+Timestep: 0.0168908
+Velocity Compensator: -161.376
+Acceleration: 161.376
+--------------------
+In Air, No Collision!
+Position: { 0, 2.02122 }
+Velocity: -2.72577
+In Air, No Collision!
+Position: { 0, 2.02122 }
+Velocity: -2.72577
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.04424 }
+Velocity: 0
+In Air, No Collision!
+Position: { 0, 2.04424 }
+Velocity: 0
+In Air, No Collision!
+Position: { 0, 2.04424 }
+Velocity: 0
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.04017 }
+Velocity: -0.16316
+In Air, No Collision!
+Position: { 0, 2.04017 }
+Velocity: -0.16316
+In Air, No Collision!
+Position: { 0, 2.04017 }
+Velocity: -0.16316
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.03337 }
+Velocity: -0.326435
+In Air, No Collision!
+Position: { 0, 2.03337 }
+Velocity: -0.326435
+In Air, No Collision!
+Position: { 0, 2.03337 }
+Velocity: -0.326435
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.02353 }
+Velocity: -0.49353
+In Air, No Collision!
+Position: { 0, 2.02353 }
+Velocity: -0.49353
+In Air, No Collision!
+Position: { 0, 2.02353 }
+Velocity: -0.49353
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: -9.8
+Velocity: -0.654655
+Timestep: 0.0163701
+Velocity Compensator: -39.991
+Acceleration: 39.991
+--------------------
+In Air, No Collision!
+Position: { 0, 2.01144 }
+Velocity: -0.654655
+In Air, No Collision!
+Position: { 0, 2.01144 }
+Velocity: -0.654655
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.0168 }
+Velocity: 0
+In Air, No Collision!
+Position: { 0, 2.0168 }
+Velocity: 0
+In Air, No Collision!
+Position: { 0, 2.0168 }
+Velocity: 0
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0, 2.01262 }
+Velocity: -0.165268
+In Air, No Collision!
+Position: { 0, 2.01262 }
+Velocity: -0.165268
+In Air, No Collision!
+Position: { 0, 2.01262 }
+Velocity: -0.165268
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: -9.8
+Velocity: -0.335384
+Timestep: 0.017673
+Velocity Compensator: -18.9772
+Acceleration: 18.9772
+--------------------
+In Air, No Collision!
+Position: { 0, 2.00532 }
+Velocity: -0.335384
+In Air, No Collision!
+Position: { 0, 2.00532 }
+Velocity: -0.335384
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0.00234252, 2.00829 }
+Velocity: 0
+In Air, No Collision!
+Position: { 0.00234252, 2.00829 }
+Velocity: 0
+In Air, No Collision!
+Position: { 0.00234252, 2.00829 }
+Velocity: 0
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: -9.8
+Velocity: -0.14533
+Timestep: 0.0177891
+Velocity Compensator: -8.16962
+Acceleration: 8.16962
+--------------------
+In Air, No Collision!
+Position: { 0.00530232, 2.00505 }
+Velocity: -0.14533
+In Air, No Collision!
+Position: { 0.00530232, 2.00505 }
+Velocity: -0.14533
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0.00961733, 2.00635 }
+Velocity: -1.49012e-08
+In Air, No Collision!
+Position: { 0.00961733, 2.00635 }
+Velocity: -1.49012e-08
+In Air, No Collision!
+Position: { 0.00961733, 2.00635 }
+Velocity: -1.49012e-08
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: -9.8
+Velocity: -0.152723
+Timestep: 0.0166645
+Velocity Compensator: -9.16458
+Acceleration: 9.16458
+--------------------
+In Air, No Collision!
+Position: { 0.0148031, 2.00278 }
+Velocity: -0.152723
+In Air, No Collision!
+Position: { 0.0148031, 2.00278 }
+Velocity: -0.152723
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0.0209488, 2.00405 }
+Velocity: 0
+In Air, No Collision!
+Position: { 0.0209488, 2.00405 }
+Velocity: 0
+In Air, No Collision!
+Position: { 0.0209488, 2.00405 }
+Velocity: 0
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: -9.8
+Velocity: -0.163186
+Timestep: 0.0166438
+Velocity Compensator: -9.80463
+Acceleration: 9.80463
+--------------------
+In Air, No Collision!
+Position: { 0.0287531, 1.99997 }
+Velocity: -0.163186
+In Air, No Collision!
+Position: { 0.0287531, 1.99997 }
+Velocity: -0.163186
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0.0371074, 2.00133 }
+Velocity: 0
+In Air, No Collision!
+Position: { 0.0371074, 2.00133 }
+Velocity: 0
+In Air, No Collision!
+Position: { 0.0371074, 2.00133 }
+Velocity: 0
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: -9.8
+Velocity: -0.165088
+Timestep: 0.0164707
+Velocity Compensator: -10.0231
+Acceleration: 10.0231
+--------------------
+In Air, No Collision!
+Position: { 0.0472709, 1.99716 }
+Velocity: -0.165088
+In Air, No Collision!
+Position: { 0.0472709, 1.99716 }
+Velocity: -0.165088
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0.0577352, 1.99852 }
+Velocity: -1.49012e-08
+In Air, No Collision!
+Position: { 0.0577352, 1.99852 }
+Velocity: -1.49012e-08
+In Air, No Collision!
+Position: { 0.0577352, 1.99852 }
+Velocity: -1.49012e-08
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: -9.8
+Velocity: -0.163957
+Timestep: 0.0184779
+Velocity Compensator: -8.87313
+Acceleration: 8.87313
+--------------------
+In Air, No Collision!
+Position: { 0.0700504, 1.9944 }
+Velocity: -0.163957
+In Air, No Collision!
+Position: { 0.0700504, 1.9944 }
+Velocity: -0.163957
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: 8.87313
+Velocity: -1.49012e-08
+Timestep: 0.0148807
+Velocity Compensator: -1.00138e-06
+Acceleration: -18.6731
+--------------------
+In Air, No Collision!
+Position: { 0.0844156, 1.99592 }
+Velocity: -1.49012e-08
+In Air, No Collision!
+Position: { 0.0844156, 1.99592 }
+Velocity: -1.49012e-08
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: -18.6731
+Velocity: -0.277869
+Timestep: 0.0164585
+Velocity Compensator: -16.883
+Acceleration: 25.7561
+--------------------
+In Air, No Collision!
+Position: { 0.0972325, 1.98972 }
+Velocity: -0.277869
+In Air, No Collision!
+Position: { 0.0972325, 1.98972 }
+Velocity: -0.277869
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0.112015, 1.99561 }
+Velocity: 0.146039
+In Air, No Collision!
+Position: { 0.112015, 1.99561 }
+Velocity: 0.146039
+In Air, No Collision!
+Position: { 0.112015, 1.99561 }
+Velocity: 0.146039
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: -9.8
+Velocity: -0.0189629
+Timestep: 0.0163479
+Velocity Compensator: -1.15996
+Acceleration: 1.15996
+--------------------
+In Air, No Collision!
+Position: { 0.128848, 1.9939 }
+Velocity: -0.0189629
+In Air, No Collision!
+Position: { 0.128848, 1.9939 }
+Velocity: -0.0189629
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: 1.15996
+Velocity: -1.86265e-09
+Timestep: 0.0168076
+Velocity Compensator: -1.10822e-07
+Acceleration: -10.96
+--------------------
+In Air, No Collision!
+Position: { 0.145707, 1.99406 }
+Velocity: -1.86265e-09
+In Air, No Collision!
+Position: { 0.145707, 1.99406 }
+Velocity: -1.86265e-09
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: -10.96
+Velocity: -0.18421
+Timestep: 0.0167499
+Velocity Compensator: -10.9977
+Acceleration: 12.1577
+--------------------
+In Air, No Collision!
+Position: { 0.163898, 1.98941 }
+Velocity: -0.18421
+In Air, No Collision!
+Position: { 0.163898, 1.98941 }
+Velocity: -0.18421
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: 12.1577
+Velocity: 0.0194292
+Timestep: 0.0165789
+Velocity Compensator: 1.17192
+Acceleration: -23.1296
+--------------------
+In Air, No Collision!
+Position: { 0.182868, 1.99144 }
+Velocity: 0.0194292
+In Air, No Collision!
+Position: { 0.182868, 1.99144 }
+Velocity: 0.0194292
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: -23.1296
+Velocity: -0.364034
+Timestep: 0.0166566
+Velocity Compensator: -21.8552
+Acceleration: 35.1848
+--------------------
+In Air, No Collision!
+Position: { 0.202464, 1.98223 }
+Velocity: -0.364034
+In Air, No Collision!
+Position: { 0.202464, 1.98223 }
+Velocity: -0.364034
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0.222986, 1.99081 }
+Velocity: 0.222026
+In Air, No Collision!
+Position: { 0.222986, 1.99081 }
+Velocity: 0.222026
+In Air, No Collision!
+Position: { 0.222986, 1.99081 }
+Velocity: 0.222026
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: -9.8
+Velocity: 0.058908
+Timestep: 0.01665
+Velocity Compensator: 3.53803
+Acceleration: -3.53803
+--------------------
+In Air, No Collision!
+Position: { 0.245156, 1.99043 }
+Velocity: 0.058908
+In Air, No Collision!
+Position: { 0.245156, 1.99043 }
+Velocity: 0.058908
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: -3.53803
+Velocity: 0
+Timestep: 0.0169094
+Velocity Compensator: 0
+Acceleration: -6.26197
+--------------------
+In Air, No Collision!
+Position: { 0.267887, 1.98994 }
+Velocity: 0
+In Air, No Collision!
+Position: { 0.267887, 1.98994 }
+Velocity: 0
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: -6.26197
+Velocity: -0.105886
+Timestep: 0.0165322
+Velocity Compensator: -6.40484
+Acceleration: 2.86681
+--------------------
+In Air, No Collision!
+Position: { 0.291837, 1.98725 }
+Velocity: -0.105886
+In Air, No Collision!
+Position: { 0.291837, 1.98725 }
+Velocity: -0.105886
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: 2.86681
+Velocity: -0.0584913
+Timestep: 0.0168166
+Velocity Compensator: -3.47819
+Acceleration: -9.18863
+--------------------
+In Air, No Collision!
+Position: { 0.316063, 1.98668 }
+Velocity: -0.0584913
+In Air, No Collision!
+Position: { 0.316063, 1.98668 }
+Velocity: -0.0584913
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: -9.18863
+Velocity: -0.213013
+Timestep: 0.0165758
+Velocity Compensator: -12.8508
+Acceleration: 12.2395
+--------------------
+In Air, No Collision!
+Position: { 0.341561, 1.9818 }
+Velocity: -0.213013
+In Air, No Collision!
+Position: { 0.341561, 1.9818 }
+Velocity: -0.213013
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: 12.2395
+Velocity: -0.010134
+Timestep: 0.0171285
+Velocity Compensator: -0.591646
+Acceleration: -21.4478
+--------------------
+In Air, No Collision!
+Position: { 0.367513, 1.98331 }
+Velocity: -0.010134
+In Air, No Collision!
+Position: { 0.367513, 1.98331 }
+Velocity: -0.010134
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: -21.4478
+Velocity: -0.377502
+Timestep: 0.0163138
+Velocity Compensator: -23.1401
+Acceleration: 34.7879
+--------------------
+In Air, No Collision!
+Position: { 0.395224, 1.9737 }
+Velocity: -0.377502
+In Air, No Collision!
+Position: { 0.395224, 1.9737 }
+Velocity: -0.377502
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: 34.7879
+Velocity: 0.19002
+Timestep: 0.0167592
+Velocity Compensator: 11.3383
+Acceleration: -55.9261
+--------------------
+In Air, No Collision!
+Position: { 0.422396, 1.98143 }
+Velocity: 0.19002
+In Air, No Collision!
+Position: { 0.422396, 1.98143 }
+Velocity: 0.19002
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: -55.9261
+Velocity: -0.747255
+Timestep: 0.0164726
+Velocity Compensator: -45.3636
+Acceleration: 91.4897
+--------------------
+In Air, No Collision!
+Position: { 0.451163, 1.96105 }
+Velocity: -0.747255
+In Air, No Collision!
+Position: { 0.451163, 1.96105 }
+Velocity: -0.747255
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0.480246, 1.98598 }
+Velocity: 0.759816
+In Air, No Collision!
+Position: { 0.480246, 1.98598 }
+Velocity: 0.759816
+In Air, No Collision!
+Position: { 0.480246, 1.98598 }
+Velocity: 0.759816
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0.511367, 1.99456 }
+Velocity: 0.596362
+In Air, No Collision!
+Position: { 0.511367, 1.99456 }
+Velocity: 0.596362
+In Air, No Collision!
+Position: { 0.511367, 1.99456 }
+Velocity: 0.596362
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0.546399, 2.00053 }
+Velocity: 0.421056
+In Air, No Collision!
+Position: { 0.546399, 2.00053 }
+Velocity: 0.421056
+In Air, No Collision!
+Position: { 0.546399, 2.00053 }
+Velocity: 0.421056
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0.577339, 2.00353 }
+Velocity: 0.271544
+In Air, No Collision!
+Position: { 0.577339, 2.00353 }
+Velocity: 0.271544
+In Air, No Collision!
+Position: { 0.577339, 2.00353 }
+Velocity: 0.271544
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0.613039, 2.00393 }
+Velocity: 0.106236
+In Air, No Collision!
+Position: { 0.613039, 2.00393 }
+Velocity: 0.106236
+In Air, No Collision!
+Position: { 0.613039, 2.00393 }
+Velocity: 0.106236
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: -9.8
+Velocity: -0.0550877
+Timestep: 0.0183566
+Velocity Compensator: -3.00098
+Acceleration: 3.00098
+--------------------
+In Air, No Collision!
+Position: { 0.649217, 2.00169 }
+Velocity: -0.0550877
+In Air, No Collision!
+Position: { 0.649217, 2.00169 }
+Velocity: -0.0550877
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0.690321, 2.0022 }
+Velocity: 7.45058e-09
+In Air, No Collision!
+Position: { 0.690321, 2.0022 }
+Velocity: 7.45058e-09
+In Air, No Collision!
+Position: { 0.690321, 2.0022 }
+Velocity: 7.45058e-09
+--------------------
+Index: 0
+Gravity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: -9.8
+Velocity: -0.149489
+Timestep: 0.0165155
+Velocity Compensator: -9.05146
+Acceleration: 9.05146
+--------------------
+In Air, No Collision!
+Position: { 0.725802, 1.99878 }
+Velocity: -0.149489
+In Air, No Collision!
+Position: { 0.725802, 1.99878 }
+Velocity: -0.149489
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0.764815, 2.00001 }
+Velocity: -2.98023e-08
+In Air, No Collision!
+Position: { 0.764815, 2.00001 }
+Velocity: -2.98023e-08
+In Air, No Collision!
+Position: { 0.764815, 2.00001 }
+Velocity: -2.98023e-08
+--------------------
+Index: 0
+Gravity: 299.966
+--------------------
+Gravity: 290.166
+LastAcceleration: -9.8
+Velocity: -0.163352
+Timestep: 0.0166969
+Velocity Compensator: -9.78335
+Acceleration: 309.749
+--------------------
+In Air, No Collision!
+Position: { 0.805861, 1.99593 }
+Velocity: -0.163352
+In Air, No Collision!
+Position: { 0.805861, 1.99593 }
+Velocity: -0.163352
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0.847535, 2.12273 }
+Velocity: 5.00851
+In Air, No Collision!
+Position: { 0.847535, 2.12273 }
+Velocity: 5.00851
+In Air, No Collision!
+Position: { 0.847535, 2.12273 }
+Velocity: 5.00851
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0.891945, 2.20402 }
+Velocity: 4.84106
+In Air, No Collision!
+Position: { 0.891945, 2.20402 }
+Velocity: 4.84106
+In Air, No Collision!
+Position: { 0.891945, 2.20402 }
+Velocity: 4.84106
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0.936412, 2.28028 }
+Velocity: 4.6785
+In Air, No Collision!
+Position: { 0.936412, 2.28028 }
+Velocity: 4.6785
+In Air, No Collision!
+Position: { 0.936412, 2.28028 }
+Velocity: 4.6785
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 0.98198, 2.35344 }
+Velocity: 4.51687
+In Air, No Collision!
+Position: { 0.98198, 2.35344 }
+Velocity: 4.51687
+In Air, No Collision!
+Position: { 0.98198, 2.35344 }
+Velocity: 4.51687
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 1.02854, 2.42344 }
+Velocity: 4.35645
+In Air, No Collision!
+Position: { 1.02854, 2.42344 }
+Velocity: 4.35645
+In Air, No Collision!
+Position: { 1.02854, 2.42344 }
+Velocity: 4.35645
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 1.07721, 2.49178 }
+Velocity: 4.19358
+In Air, No Collision!
+Position: { 1.07721, 2.49178 }
+Velocity: 4.19358
+In Air, No Collision!
+Position: { 1.07721, 2.49178 }
+Velocity: 4.19358
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 1.12775, 2.558 }
+Velocity: 4.02917
+In Air, No Collision!
+Position: { 1.12775, 2.558 }
+Velocity: 4.02917
+In Air, No Collision!
+Position: { 1.12775, 2.558 }
+Velocity: 4.02917
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 1.17946, 2.62119 }
+Velocity: 3.86548
+In Air, No Collision!
+Position: { 1.17946, 2.62119 }
+Velocity: 3.86548
+In Air, No Collision!
+Position: { 1.17946, 2.62119 }
+Velocity: 3.86548
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 1.23234, 2.68143 }
+Velocity: 3.70246
+In Air, No Collision!
+Position: { 1.23234, 2.68143 }
+Velocity: 3.70246
+In Air, No Collision!
+Position: { 1.23234, 2.68143 }
+Velocity: 3.70246
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 1.28738, 2.73969 }
+Velocity: 3.53718
+In Air, No Collision!
+Position: { 1.28738, 2.73969 }
+Velocity: 3.53718
+In Air, No Collision!
+Position: { 1.28738, 2.73969 }
+Velocity: 3.53718
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 1.34237, 2.79387 }
+Velocity: 3.37606
+In Air, No Collision!
+Position: { 1.34237, 2.79387 }
+Velocity: 3.37606
+In Air, No Collision!
+Position: { 1.34237, 2.79387 }
+Velocity: 3.37606
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 1.40083, 2.84712 }
+Velocity: 3.2091
+In Air, No Collision!
+Position: { 1.40083, 2.84712 }
+Velocity: 3.2091
+In Air, No Collision!
+Position: { 1.40083, 2.84712 }
+Velocity: 3.2091
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 1.45824, 2.89565 }
+Velocity: 3.0489
+In Air, No Collision!
+Position: { 1.45824, 2.89565 }
+Velocity: 3.0489
+In Air, No Collision!
+Position: { 1.45824, 2.89565 }
+Velocity: 3.0489
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 1.51737, 2.94184 }
+Velocity: 2.88766
+In Air, No Collision!
+Position: { 1.51737, 2.94184 }
+Velocity: 2.88766
+In Air, No Collision!
+Position: { 1.51737, 2.94184 }
+Velocity: 2.88766
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 1.57874, 2.98593 }
+Velocity: 2.72414
+In Air, No Collision!
+Position: { 1.57874, 2.98593 }
+Velocity: 2.72414
+In Air, No Collision!
+Position: { 1.57874, 2.98593 }
+Velocity: 2.72414
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 1.64145, 3.02725 }
+Velocity: 2.56077
+In Air, No Collision!
+Position: { 1.64145, 3.02725 }
+Velocity: 2.56077
+In Air, No Collision!
+Position: { 1.64145, 3.02725 }
+Velocity: 2.56077
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 1.70544, 3.0658 }
+Velocity: 2.39766
+In Air, No Collision!
+Position: { 1.70544, 3.0658 }
+Velocity: 2.39766
+In Air, No Collision!
+Position: { 1.70544, 3.0658 }
+Velocity: 2.39766
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 1.77128, 3.10186 }
+Velocity: 2.23342
+In Air, No Collision!
+Position: { 1.77128, 3.10186 }
+Velocity: 2.23342
+In Air, No Collision!
+Position: { 1.77128, 3.10186 }
+Velocity: 2.23342
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 1.83838, 3.1351 }
+Velocity: 2.0695
+In Air, No Collision!
+Position: { 1.83838, 3.1351 }
+Velocity: 2.0695
+In Air, No Collision!
+Position: { 1.83838, 3.1351 }
+Velocity: 2.0695
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 1.90598, 3.16526 }
+Velocity: 1.9077
+In Air, No Collision!
+Position: { 1.90598, 3.16526 }
+Velocity: 1.9077
+In Air, No Collision!
+Position: { 1.90598, 3.16526 }
+Velocity: 1.9077
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 1.97573, 3.19301 }
+Velocity: 1.74411
+In Air, No Collision!
+Position: { 1.97573, 3.19301 }
+Velocity: 1.74411
+In Air, No Collision!
+Position: { 1.97573, 3.19301 }
+Velocity: 1.74411
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 2.0466, 3.21795 }
+Velocity: 1.58111
+In Air, No Collision!
+Position: { 2.0466, 3.21795 }
+Velocity: 1.58111
+In Air, No Collision!
+Position: { 2.0466, 3.21795 }
+Velocity: 1.58111
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 2.11933, 3.2403 }
+Velocity: 1.41707
+In Air, No Collision!
+Position: { 2.11933, 3.2403 }
+Velocity: 1.41707
+In Air, No Collision!
+Position: { 2.11933, 3.2403 }
+Velocity: 1.41707
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 2.19331, 3.25987 }
+Velocity: 1.25336
+In Air, No Collision!
+Position: { 2.19331, 3.25987 }
+Velocity: 1.25336
+In Air, No Collision!
+Position: { 2.19331, 3.25987 }
+Velocity: 1.25336
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 2.2683, 3.27664 }
+Velocity: 1.09046
+In Air, No Collision!
+Position: { 2.2683, 3.27664 }
+Velocity: 1.09046
+In Air, No Collision!
+Position: { 2.2683, 3.27664 }
+Velocity: 1.09046
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 2.34522, 3.29078 }
+Velocity: 0.926422
+In Air, No Collision!
+Position: { 2.34522, 3.29078 }
+Velocity: 0.926422
+In Air, No Collision!
+Position: { 2.34522, 3.29078 }
+Velocity: 0.926422
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 2.423, 3.30212 }
+Velocity: 0.763493
+In Air, No Collision!
+Position: { 2.423, 3.30212 }
+Velocity: 0.763493
+In Air, No Collision!
+Position: { 2.423, 3.30212 }
+Velocity: 0.763493
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 2.50273, 3.31078 }
+Velocity: 0.599423
+In Air, No Collision!
+Position: { 2.50273, 3.31078 }
+Velocity: 0.599423
+In Air, No Collision!
+Position: { 2.50273, 3.31078 }
+Velocity: 0.599423
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 2.58245, 3.31666 }
+Velocity: 0.438144
+In Air, No Collision!
+Position: { 2.58245, 3.31666 }
+Velocity: 0.438144
+In Air, No Collision!
+Position: { 2.58245, 3.31666 }
+Velocity: 0.438144
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 2.66415, 3.31988 }
+Velocity: 0.275636
+In Air, No Collision!
+Position: { 2.66415, 3.31988 }
+Velocity: 0.275636
+In Air, No Collision!
+Position: { 2.66415, 3.31988 }
+Velocity: 0.275636
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 2.74857, 3.32036 }
+Velocity: 0.110562
+In Air, No Collision!
+Position: { 2.74857, 3.32036 }
+Velocity: 0.110562
+In Air, No Collision!
+Position: { 2.74857, 3.32036 }
+Velocity: 0.110562
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 2.8328, 3.31817 }
+Velocity: -0.051484
+In Air, No Collision!
+Position: { 2.8328, 3.31817 }
+Velocity: -0.051484
+In Air, No Collision!
+Position: { 2.8328, 3.31817 }
+Velocity: -0.051484
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 2.9193, 3.3132 }
+Velocity: -0.215203
+--------------------
+Gravity: -9.8
+LastAcceleration: -9.8
+Velocity: -0.215203
+Timestep: 0.0166783
+Velocity Compensator: -12.9031
+Acceleration: 12.9031
+--------------------
+In Air, No Collision!
+Position: { 2.9193, 3.3132 }
+Velocity: -0.215203
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 3.00621, 3.315 }
+Velocity: 0
+--------------------
+Gravity: -9.8
+LastAcceleration: 12.9031
+Velocity: 0
+Timestep: 0.0169539
+Velocity Compensator: 0
+Acceleration: -22.7031
+--------------------
+In Air, No Collision!
+Position: { 3.00621, 3.315 }
+Velocity: 0
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 3.09543, 3.30521 }
+Velocity: -0.384908
+--------------------
+Gravity: -9.8
+LastAcceleration: -22.7031
+Velocity: -0.384908
+Timestep: 0.0164781
+Velocity Compensator: -23.3588
+Acceleration: 36.2619
+--------------------
+In Air, No Collision!
+Position: { 3.09543, 3.30521 }
+Velocity: -0.384908
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 3.18295, 3.31364 }
+Velocity: 0.212619
+--------------------
+Gravity: -9.8
+LastAcceleration: 36.2619
+Velocity: 0.212619
+Timestep: 0.0166135
+Velocity Compensator: 12.798
+Acceleration: -58.8599
+--------------------
+In Air, No Collision!
+Position: { 3.18295, 3.31364 }
+Velocity: 0.212619
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 3.27201, 3.2928 }
+Velocity: -0.765249
+--------------------
+Gravity: -9.8
+LastAcceleration: -58.8599
+Velocity: -0.765249
+Timestep: 0.0166888
+Velocity Compensator: -45.854
+Acceleration: 94.9139
+--------------------
+In Air, No Collision!
+Position: { 3.27201, 3.2928 }
+Velocity: -0.765249
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 3.36232, 3.31968 }
+Velocity: 0.818752
+--------------------
+Gravity: -9.8
+LastAcceleration: 94.9139
+Velocity: 0.818752
+Timestep: 0.0166445
+Velocity Compensator: 49.1906
+Acceleration: -153.904
+--------------------
+In Air, No Collision!
+Position: { 3.36232, 3.31968 }
+Velocity: 0.818752
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 3.45322, 3.26935 }
+Velocity: -1.74291
+--------------------
+Gravity: -9.8
+LastAcceleration: -153.904
+Velocity: -1.74291
+Timestep: 0.0167136
+Velocity Compensator: -104.281
+Acceleration: 248.385
+--------------------
+In Air, No Collision!
+Position: { 3.45322, 3.26935 }
+Velocity: -1.74291
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 3.54534, 3.3443 }
+Velocity: 2.40851
+--------------------
+Gravity: -9.8
+LastAcceleration: 248.385
+Velocity: 2.40851
+Timestep: 0.016583
+Velocity Compensator: 145.24
+Acceleration: -403.425
+--------------------
+In Air, No Collision!
+Position: { 3.54534, 3.3443 }
+Velocity: 2.40851
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 3.63755, 3.21783 }
+Velocity: -4.28147
+--------------------
+Gravity: -9.8
+LastAcceleration: -403.425
+Velocity: -4.28147
+Timestep: 0.0166283
+Velocity Compensator: -257.482
+Acceleration: 651.107
+--------------------
+In Air, No Collision!
+Position: { 3.63755, 3.21783 }
+Velocity: -4.28147
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 3.73085, 3.41668 }
+Velocity: 6.5453
+--------------------
+Gravity: -9.8
+LastAcceleration: 651.107
+Velocity: 6.5453
+Timestep: 0.0167155
+Velocity Compensator: 391.57
+Acceleration: -1052.48
+--------------------
+In Air, No Collision!
+Position: { 3.73085, 3.41668 }
+Velocity: 6.5453
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 3.82548, 3.08498 }
+Velocity: -11.0474
+--------------------
+Gravity: -9.8
+LastAcceleration: -1052.48
+Velocity: -11.0474
+Timestep: 0.0166683
+Velocity Compensator: -662.778
+Acceleration: 1705.45
+--------------------
+In Air, No Collision!
+Position: { 3.82548, 3.08498 }
+Velocity: -11.0474
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 3.92068, 3.61159 }
+Velocity: 17.3797
+In Air, No Collision!
+Position: { 3.92068, 3.61159 }
+Velocity: 17.3797
+In Air, No Collision!
+Position: { 3.92068, 3.61159 }
+Velocity: 17.3797
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 4.01925, 3.90206 }
+Velocity: 17.2135
+In Air, No Collision!
+Position: { 4.01925, 3.90206 }
+Velocity: 17.2135
+In Air, No Collision!
+Position: { 4.01925, 3.90206 }
+Velocity: 17.2135
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 4.11821, 4.1868 }
+Velocity: 17.049
+In Air, No Collision!
+Position: { 4.11821, 4.1868 }
+Velocity: 17.049
+In Air, No Collision!
+Position: { 4.11821, 4.1868 }
+Velocity: 17.049
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 4.21686, 4.4641 }
+Velocity: 16.8873
+In Air, No Collision!
+Position: { 4.21686, 4.4641 }
+Velocity: 16.8873
+In Air, No Collision!
+Position: { 4.21686, 4.4641 }
+Velocity: 16.8873
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 4.31555, 4.74075 }
+Velocity: 16.7244
+In Air, No Collision!
+Position: { 4.31555, 4.74075 }
+Velocity: 16.7244
+In Air, No Collision!
+Position: { 4.31555, 4.74075 }
+Velocity: 16.7244
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 4.41362, 5.01299 }
+Velocity: 16.5626
+In Air, No Collision!
+Position: { 4.41362, 5.01299 }
+Velocity: 16.5626
+In Air, No Collision!
+Position: { 4.41362, 5.01299 }
+Velocity: 16.5626
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 4.51407, 5.28899 }
+Velocity: 16.3968
+In Air, No Collision!
+Position: { 4.51407, 5.28899 }
+Velocity: 16.3968
+In Air, No Collision!
+Position: { 4.51407, 5.28899 }
+Velocity: 16.3968
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 4.61262, 5.55709 }
+Velocity: 16.2341
+In Air, No Collision!
+Position: { 4.61262, 5.55709 }
+Velocity: 16.2341
+In Air, No Collision!
+Position: { 4.61262, 5.55709 }
+Velocity: 16.2341
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 4.72124, 5.84917 }
+Velocity: 16.0548
+In Air, No Collision!
+Position: { 4.72124, 5.84917 }
+Velocity: 16.0548
+In Air, No Collision!
+Position: { 4.72124, 5.84917 }
+Velocity: 16.0548
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 4.81035, 6.08683 }
+Velocity: 15.9077
+In Air, No Collision!
+Position: { 4.81035, 6.08683 }
+Velocity: 15.9077
+In Air, No Collision!
+Position: { 4.81035, 6.08683 }
+Velocity: 15.9077
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 4.90977, 6.34908 }
+Velocity: 15.7436
+In Air, No Collision!
+Position: { 4.90977, 6.34908 }
+Velocity: 15.7436
+In Air, No Collision!
+Position: { 4.90977, 6.34908 }
+Velocity: 15.7436
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 5.0089, 6.60783 }
+Velocity: 15.58
+In Air, No Collision!
+Position: { 5.0089, 6.60783 }
+Velocity: 15.58
+In Air, No Collision!
+Position: { 5.0089, 6.60783 }
+Velocity: 15.58
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 5.10619, 6.85918 }
+Velocity: 15.4194
+In Air, No Collision!
+Position: { 5.10619, 6.85918 }
+Velocity: 15.4194
+In Air, No Collision!
+Position: { 5.10619, 6.85918 }
+Velocity: 15.4194
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 5.20507, 7.11191 }
+Velocity: 15.2562
+In Air, No Collision!
+Position: { 5.20507, 7.11191 }
+Velocity: 15.2562
+In Air, No Collision!
+Position: { 5.20507, 7.11191 }
+Velocity: 15.2562
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 5.30581, 7.36652 }
+Velocity: 15.0899
+In Air, No Collision!
+Position: { 5.30581, 7.36652 }
+Velocity: 15.0899
+In Air, No Collision!
+Position: { 5.30581, 7.36652 }
+Velocity: 15.0899
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 5.40589, 7.61671 }
+Velocity: 14.9247
+In Air, No Collision!
+Position: { 5.40589, 7.61671 }
+Velocity: 14.9247
+In Air, No Collision!
+Position: { 5.40589, 7.61671 }
+Velocity: 14.9247
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 5.50632, 7.86496 }
+Velocity: 14.759
+In Air, No Collision!
+Position: { 5.50632, 7.86496 }
+Velocity: 14.759
+In Air, No Collision!
+Position: { 5.50632, 7.86496 }
+Velocity: 14.759
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 5.60758, 8.11239 }
+Velocity: 14.5918
+In Air, No Collision!
+Position: { 5.60758, 8.11239 }
+Velocity: 14.5918
+In Air, No Collision!
+Position: { 5.60758, 8.11239 }
+Velocity: 14.5918
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 5.70718, 8.35304 }
+Velocity: 14.4274
+In Air, No Collision!
+Position: { 5.70718, 8.35304 }
+Velocity: 14.4274
+In Air, No Collision!
+Position: { 5.70718, 8.35304 }
+Velocity: 14.4274
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 5.80079, 8.57685 }
+Velocity: 14.2729
+In Air, No Collision!
+Position: { 5.80079, 8.57685 }
+Velocity: 14.2729
+In Air, No Collision!
+Position: { 5.80079, 8.57685 }
+Velocity: 14.2729
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 5.89835, 8.8074 }
+Velocity: 14.1119
+In Air, No Collision!
+Position: { 5.89835, 8.8074 }
+Velocity: 14.1119
+In Air, No Collision!
+Position: { 5.89835, 8.8074 }
+Velocity: 14.1119
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 5.99901, 9.04243 }
+Velocity: 13.9457
+In Air, No Collision!
+Position: { 5.99901, 9.04243 }
+Velocity: 13.9457
+In Air, No Collision!
+Position: { 5.99901, 9.04243 }
+Velocity: 13.9457
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 6.09704, 9.26867 }
+Velocity: 13.7839
+In Air, No Collision!
+Position: { 6.09704, 9.26867 }
+Velocity: 13.7839
+In Air, No Collision!
+Position: { 6.09704, 9.26867 }
+Velocity: 13.7839
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 6.19463, 9.49126 }
+Velocity: 13.6229
+In Air, No Collision!
+Position: { 6.19463, 9.49126 }
+Velocity: 13.6229
+In Air, No Collision!
+Position: { 6.19463, 9.49126 }
+Velocity: 13.6229
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 6.29465, 9.71659 }
+Velocity: 13.4578
+In Air, No Collision!
+Position: { 6.29465, 9.71659 }
+Velocity: 13.4578
+In Air, No Collision!
+Position: { 6.29465, 9.71659 }
+Velocity: 13.4578
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 6.39467, 9.93911 }
+Velocity: 13.2927
+In Air, No Collision!
+Position: { 6.39467, 9.93911 }
+Velocity: 13.2927
+In Air, No Collision!
+Position: { 6.39467, 9.93911 }
+Velocity: 13.2927
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 6.49662, 10.163 }
+Velocity: 13.1244
+In Air, No Collision!
+Position: { 6.49662, 10.163 }
+Velocity: 13.1244
+In Air, No Collision!
+Position: { 6.49662, 10.163 }
+Velocity: 13.1244
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 6.59261, 10.3714 }
+Velocity: 12.966
+In Air, No Collision!
+Position: { 6.59261, 10.3714 }
+Velocity: 12.966
+In Air, No Collision!
+Position: { 6.59261, 10.3714 }
+Velocity: 12.966
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 6.69614, 10.593 }
+Velocity: 12.7951
+In Air, No Collision!
+Position: { 6.69614, 10.593 }
+Velocity: 12.7951
+In Air, No Collision!
+Position: { 6.69614, 10.593 }
+Velocity: 12.7951
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 6.79319, 10.7982 }
+Velocity: 12.6349
+In Air, No Collision!
+Position: { 6.79319, 10.7982 }
+Velocity: 12.6349
+In Air, No Collision!
+Position: { 6.79319, 10.7982 }
+Velocity: 12.6349
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 6.88994, 11.0002 }
+Velocity: 12.4752
+In Air, No Collision!
+Position: { 6.88994, 11.0002 }
+Velocity: 12.4752
+In Air, No Collision!
+Position: { 6.88994, 11.0002 }
+Velocity: 12.4752
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 6.98916, 11.2046 }
+Velocity: 12.3114
+In Air, No Collision!
+Position: { 6.98916, 11.2046 }
+Velocity: 12.3114
+In Air, No Collision!
+Position: { 6.98916, 11.2046 }
+Velocity: 12.3114
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 7.10864, 11.4464 }
+Velocity: 12.1142
+In Air, No Collision!
+Position: { 7.10864, 11.4464 }
+Velocity: 12.1142
+In Air, No Collision!
+Position: { 7.10864, 11.4464 }
+Velocity: 12.1142
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 7.18633, 11.6024 }
+Velocity: 11.986
+In Air, No Collision!
+Position: { 7.18633, 11.6024 }
+Velocity: 11.986
+In Air, No Collision!
+Position: { 7.18633, 11.6024 }
+Velocity: 11.986
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 7.28528, 11.798 }
+Velocity: 11.8227
+In Air, No Collision!
+Position: { 7.28528, 11.798 }
+Velocity: 11.8227
+In Air, No Collision!
+Position: { 7.28528, 11.798 }
+Velocity: 11.8227
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 7.38407, 11.9907 }
+Velocity: 11.6596
+In Air, No Collision!
+Position: { 7.38407, 11.9907 }
+Velocity: 11.6596
+In Air, No Collision!
+Position: { 7.38407, 11.9907 }
+Velocity: 11.6596
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 7.48226, 12.1795 }
+Velocity: 11.4975
+In Air, No Collision!
+Position: { 7.48226, 12.1795 }
+Velocity: 11.4975
+In Air, No Collision!
+Position: { 7.48226, 12.1795 }
+Velocity: 11.4975
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 7.57998, 12.3647 }
+Velocity: 11.3362
+In Air, No Collision!
+Position: { 7.57998, 12.3647 }
+Velocity: 11.3362
+In Air, No Collision!
+Position: { 7.57998, 12.3647 }
+Velocity: 11.3362
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 7.67852, 12.5488 }
+Velocity: 11.1736
+In Air, No Collision!
+Position: { 7.67852, 12.5488 }
+Velocity: 11.1736
+In Air, No Collision!
+Position: { 7.67852, 12.5488 }
+Velocity: 11.1736
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 7.77786, 12.7317 }
+Velocity: 11.0096
+In Air, No Collision!
+Position: { 7.77786, 12.7317 }
+Velocity: 11.0096
+In Air, No Collision!
+Position: { 7.77786, 12.7317 }
+Velocity: 11.0096
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 7.87734, 12.912 }
+Velocity: 10.8454
+In Air, No Collision!
+Position: { 7.87734, 12.912 }
+Velocity: 10.8454
+--------------------
+Gravity: -9.8
+LastAcceleration: -9.8
+Velocity: 10.8454
+Timestep: 0.0165796
+Velocity Compensator: 654.142
+Acceleration: -654.142
+--------------------
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 7.97578, 12.8221 }
+Velocity: 0
+In Air, No Collision!
+Position: { 7.97578, 12.8221 }
+Velocity: 0
+In Air, No Collision!
+Position: { 7.97578, 12.8221 }
+Velocity: 0
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 8.0753, 12.818 }
+Velocity: -0.164265
+In Air, No Collision!
+Position: { 8.0753, 12.818 }
+Velocity: -0.164265
+In Air, No Collision!
+Position: { 8.0753, 12.818 }
+Velocity: -0.164265
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 8.17388, 12.8112 }
+Velocity: -0.326984
+In Air, No Collision!
+Position: { 8.17388, 12.8112 }
+Velocity: -0.326984
+In Air, No Collision!
+Position: { 8.17388, 12.8112 }
+Velocity: -0.326984
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 8.27339, 12.8016 }
+Velocity: -0.491226
+In Air, No Collision!
+Position: { 8.27339, 12.8016 }
+Velocity: -0.491226
+In Air, No Collision!
+Position: { 8.27339, 12.8016 }
+Velocity: -0.491226
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 8.37237, 12.7893 }
+Velocity: -0.654604
+In Air, No Collision!
+Position: { 8.37237, 12.7893 }
+Velocity: -0.654604
+In Air, No Collision!
+Position: { 8.37237, 12.7893 }
+Velocity: -0.654604
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 8.47069, 12.7744 }
+Velocity: -0.816879
+In Air, No Collision!
+Position: { 8.47069, 12.7744 }
+Velocity: -0.816879
+In Air, No Collision!
+Position: { 8.47069, 12.7744 }
+Velocity: -0.816879
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 8.56941, 12.7568 }
+Velocity: -0.979826
+In Air, No Collision!
+Position: { 8.56941, 12.7568 }
+Velocity: -0.979826
+In Air, No Collision!
+Position: { 8.56941, 12.7568 }
+Velocity: -0.979826
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 8.66874, 12.7363 }
+Velocity: -1.14378
+In Air, No Collision!
+Position: { 8.66874, 12.7363 }
+Velocity: -1.14378
+In Air, No Collision!
+Position: { 8.66874, 12.7363 }
+Velocity: -1.14378
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 8.76689, 12.7134 }
+Velocity: -1.30579
+In Air, No Collision!
+Position: { 8.76689, 12.7134 }
+Velocity: -1.30579
+In Air, No Collision!
+Position: { 8.76689, 12.7134 }
+Velocity: -1.30579
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 8.8662, 12.6874 }
+Velocity: -1.4697
+In Air, No Collision!
+Position: { 8.8662, 12.6874 }
+Velocity: -1.4697
+In Air, No Collision!
+Position: { 8.8662, 12.6874 }
+Velocity: -1.4697
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 8.96633, 12.6584 }
+Velocity: -1.63497
+In Air, No Collision!
+Position: { 8.96633, 12.6584 }
+Velocity: -1.63497
+In Air, No Collision!
+Position: { 8.96633, 12.6584 }
+Velocity: -1.63497
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 9.06416, 12.6275 }
+Velocity: -1.79645
+In Air, No Collision!
+Position: { 9.06416, 12.6275 }
+Velocity: -1.79645
+In Air, No Collision!
+Position: { 9.06416, 12.6275 }
+Velocity: -1.79645
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 9.16533, 12.5926 }
+Velocity: -1.96343
+In Air, No Collision!
+Position: { 9.16533, 12.5926 }
+Velocity: -1.96343
+In Air, No Collision!
+Position: { 9.16533, 12.5926 }
+Velocity: -1.96343
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 9.26338, 12.5562 }
+Velocity: -2.12527
+In Air, No Collision!
+Position: { 9.26338, 12.5562 }
+Velocity: -2.12527
+In Air, No Collision!
+Position: { 9.26338, 12.5562 }
+Velocity: -2.12527
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 9.36276, 12.5165 }
+Velocity: -2.28932
+In Air, No Collision!
+Position: { 9.36276, 12.5165 }
+Velocity: -2.28932
+In Air, No Collision!
+Position: { 9.36276, 12.5165 }
+Velocity: -2.28932
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 9.46229, 12.474 }
+Velocity: -2.4536
+In Air, No Collision!
+Position: { 9.46229, 12.474 }
+Velocity: -2.4536
+In Air, No Collision!
+Position: { 9.46229, 12.474 }
+Velocity: -2.4536
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 9.56118, 12.4291 }
+Velocity: -2.61683
+In Air, No Collision!
+Position: { 9.56118, 12.4291 }
+Velocity: -2.61683
+In Air, No Collision!
+Position: { 9.56118, 12.4291 }
+Velocity: -2.61683
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 9.65817, 12.3824 }
+Velocity: -2.77692
+In Air, No Collision!
+Position: { 9.65817, 12.3824 }
+Velocity: -2.77692
+In Air, No Collision!
+Position: { 9.65817, 12.3824 }
+Velocity: -2.77692
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 9.75706, 12.3321 }
+Velocity: -2.94013
+In Air, No Collision!
+Position: { 9.75706, 12.3321 }
+Velocity: -2.94013
+In Air, No Collision!
+Position: { 9.75706, 12.3321 }
+Velocity: -2.94013
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 9.85652, 12.2787 }
+Velocity: -3.1043
+In Air, No Collision!
+Position: { 9.85652, 12.2787 }
+Velocity: -3.1043
+In Air, No Collision!
+Position: { 9.85652, 12.2787 }
+Velocity: -3.1043
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 9.95524, 12.223 }
+Velocity: -3.26724
+In Air, No Collision!
+Position: { 9.95524, 12.223 }
+Velocity: -3.26724
+In Air, No Collision!
+Position: { 9.95524, 12.223 }
+Velocity: -3.26724
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 10.0553, 12.1637 }
+Velocity: -3.43248
+In Air, No Collision!
+Position: { 10.0553, 12.1637 }
+Velocity: -3.43248
+In Air, No Collision!
+Position: { 10.0553, 12.1637 }
+Velocity: -3.43248
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 10.1548, 12.1021 }
+Velocity: -3.59661
+In Air, No Collision!
+Position: { 10.1548, 12.1021 }
+Velocity: -3.59661
+In Air, No Collision!
+Position: { 10.1548, 12.1021 }
+Velocity: -3.59661
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 10.2539, 12.038 }
+Velocity: -3.76021
+In Air, No Collision!
+Position: { 10.2539, 12.038 }
+Velocity: -3.76021
+In Air, No Collision!
+Position: { 10.2539, 12.038 }
+Velocity: -3.76021
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 10.3589, 11.9669 }
+Velocity: -3.93347
+In Air, No Collision!
+Position: { 10.3589, 11.9669 }
+Velocity: -3.93347
+In Air, No Collision!
+Position: { 10.3589, 11.9669 }
+Velocity: -3.93347
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 10.4541, 11.9001 }
+Velocity: -4.09058
+In Air, No Collision!
+Position: { 10.4541, 11.9001 }
+Velocity: -4.09058
+In Air, No Collision!
+Position: { 10.4541, 11.9001 }
+Velocity: -4.09058
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 10.55, 11.8301 }
+Velocity: -4.24895
+In Air, No Collision!
+Position: { 10.55, 11.8301 }
+Velocity: -4.24895
+In Air, No Collision!
+Position: { 10.55, 11.8301 }
+Velocity: -4.24895
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 10.6523, 11.7525 }
+Velocity: -4.41784
+In Air, No Collision!
+Position: { 10.6523, 11.7525 }
+Velocity: -4.41784
+In Air, No Collision!
+Position: { 10.6523, 11.7525 }
+Velocity: -4.41784
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 10.7496, 11.6762 }
+Velocity: -4.57841
+In Air, No Collision!
+Position: { 10.7496, 11.6762 }
+Velocity: -4.57841
+In Air, No Collision!
+Position: { 10.7496, 11.6762 }
+Velocity: -4.57841
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 10.8471, 11.597 }
+Velocity: -4.73938
+In Air, No Collision!
+Position: { 10.8471, 11.597 }
+Velocity: -4.73938
+In Air, No Collision!
+Position: { 10.8471, 11.597 }
+Velocity: -4.73938
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 10.9461, 11.5139 }
+Velocity: -4.90276
+In Air, No Collision!
+Position: { 10.9461, 11.5139 }
+Velocity: -4.90276
+In Air, No Collision!
+Position: { 10.9461, 11.5139 }
+Velocity: -4.90276
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 11.0443, 11.4288 }
+Velocity: -5.06483
+In Air, No Collision!
+Position: { 11.0443, 11.4288 }
+Velocity: -5.06483
+In Air, No Collision!
+Position: { 11.0443, 11.4288 }
+Velocity: -5.06483
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 11.1424, 11.3411 }
+Velocity: -5.22679
+In Air, No Collision!
+Position: { 11.1424, 11.3411 }
+Velocity: -5.22679
+In Air, No Collision!
+Position: { 11.1424, 11.3411 }
+Velocity: -5.22679
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 11.2416, 11.2498 }
+Velocity: -5.39042
+In Air, No Collision!
+Position: { 11.2416, 11.2498 }
+Velocity: -5.39042
+In Air, No Collision!
+Position: { 11.2416, 11.2498 }
+Velocity: -5.39042
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 11.3405, 11.1559 }
+Velocity: -5.55371
+In Air, No Collision!
+Position: { 11.3405, 11.1559 }
+Velocity: -5.55371
+In Air, No Collision!
+Position: { 11.3405, 11.1559 }
+Velocity: -5.55371
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 11.4405, 11.0582 }
+Velocity: -5.71872
+In Air, No Collision!
+Position: { 11.4405, 11.0582 }
+Velocity: -5.71872
+In Air, No Collision!
+Position: { 11.4405, 11.0582 }
+Velocity: -5.71872
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 11.5498, 10.9479 }
+Velocity: -5.89914
+In Air, No Collision!
+Position: { 11.5498, 10.9479 }
+Velocity: -5.89914
+In Air, No Collision!
+Position: { 11.5498, 10.9479 }
+Velocity: -5.89914
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 11.6396, 10.8553 }
+Velocity: -6.04739
+In Air, No Collision!
+Position: { 11.6396, 10.8553 }
+Velocity: -6.04739
+In Air, No Collision!
+Position: { 11.6396, 10.8553 }
+Velocity: -6.04739
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 11.7426, 10.746 }
+Velocity: -6.2174
+In Air, No Collision!
+Position: { 11.7426, 10.746 }
+Velocity: -6.2174
+In Air, No Collision!
+Position: { 11.7426, 10.746 }
+Velocity: -6.2174
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 11.8389, 10.6412 }
+Velocity: -6.37638
+In Air, No Collision!
+Position: { 11.8389, 10.6412 }
+Velocity: -6.37638
+In Air, No Collision!
+Position: { 11.8389, 10.6412 }
+Velocity: -6.37638
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 11.9358, 10.5332 }
+Velocity: -6.53635
+In Air, No Collision!
+Position: { 11.9358, 10.5332 }
+Velocity: -6.53635
+In Air, No Collision!
+Position: { 11.9358, 10.5332 }
+Velocity: -6.53635
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 12.0337, 10.4214 }
+Velocity: -6.69798
+In Air, No Collision!
+Position: { 12.0337, 10.4214 }
+Velocity: -6.69798
+In Air, No Collision!
+Position: { 12.0337, 10.4214 }
+Velocity: -6.69798
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 12.1326, 10.3059 }
+Velocity: -6.86109
+In Air, No Collision!
+Position: { 12.1326, 10.3059 }
+Velocity: -6.86109
+In Air, No Collision!
+Position: { 12.1326, 10.3059 }
+Velocity: -6.86109
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 12.2328, 10.1859 }
+Velocity: -7.02651
+In Air, No Collision!
+Position: { 12.2328, 10.1859 }
+Velocity: -7.02651
+In Air, No Collision!
+Position: { 12.2328, 10.1859 }
+Velocity: -7.02651
+--------------------
+Index: 0
+Gravity: 0
+In Air, No Collision!
+Position: { 12.3341, 10.0618 }
+Velocity: -7.19366
+In Air, No Collision!
+Position: { 12.3341, 10.0618 }
+Velocity: -7.19366
+In Air, No Collision!
+Position: { 12.3341, 10.0618 }
+Velocity: -7.19366

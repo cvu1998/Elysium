@@ -193,6 +193,7 @@
     <ClCompile Include="src\Elysium\Application.cpp" />
     <ClCompile Include="src\Elysium\OrthographicCameraController.cpp" />
     <ClCompile Include="src\Elysium\ParticleSystem.cpp" />
+    <ClCompile Include="src\Elysium\Physics\DynamicObject.cpp" />
     <ClCompile Include="src\Elysium\Physics\PhysicalObject.cpp" />
     <ClCompile Include="src\Elysium\Physics\PhysicsSystem.cpp" />
     <ClCompile Include="src\Elysium\Random.cpp" />
@@ -219,6 +220,7 @@
     <ClCompile Include="src\Elysium\Renderer\VertexArray.cpp" />
     <ClCompile Include="src\Elysium\Utility.cpp" />
     <ClCompile Include="src\Elysium\Renderer\Texture.cpp" />
+    <ClCompile Include="src\Elysium\Physics\StaticObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\basic.shader" />
@@ -371,6 +373,7 @@
     <ClInclude Include="src\Elysium\Events\MouseEvent.h" />
     <ClInclude Include="src\Elysium\OrthographicCameraController.h" />
     <ClInclude Include="src\Elysium\ParticleSystem.h" />
+    <ClInclude Include="src\Elysium\Physics\DynamicObject.h" />
     <ClInclude Include="src\Elysium\Physics\PhysicalObject.h" />
     <ClInclude Include="src\Elysium\Physics\PhysicsSystem.h" />
     <ClInclude Include="src\Elysium\Random.h" />
@@ -647,6 +650,7 @@
     <ClInclude Include="src\Elysium\Renderer\VertexBufferLayout.h" />
     <ClInclude Include="src\Elysium\Utility.h" />
     <ClInclude Include="src\Elysium\Renderer\Texture.h" />
+    <ClInclude Include="src\Elysium\Physics\StaticObject.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -4,7 +4,11 @@ SandboxLayer::SandboxLayer(bool* runSandbox, unsigned int width, unsigned int he
     m_RunSandbox(runSandbox),
     m_CameraController((float)width / (float)height, 3.0f),
     m_ParticleSystem(100, m_CameraController.getCamera()),
-    m_PhysicsSystem(0.1f, m_CameraController.getCamera())
+    m_PhysicsSystem(9.8f, m_CameraController.getCamera()),
+    m_Player({ 0.0f, 10.0f }),
+    m_Ground({ 0.0f, 0.0f }),
+    m_Box({ 5.0f, 2.0f }),
+    m_Ceiling({ 0.0f, 15.0f })
 {
     Renderer2D::Init();
 
@@ -20,7 +24,6 @@ SandboxLayer::SandboxLayer(bool* runSandbox, unsigned int width, unsigned int he
 
     m_Particle.ColorBegin = { 0.0f, 0.0f, 1.0f, 1.0f };
     m_Particle.ColorEnd = { 0.0f, 0.0f, 0.0f, 1.0f };
-    //m_Particle.TextureID = m_Textures[2].getRendererID();
 
     m_Particle.SizeBegin = 0.5f, m_Particle.SizeEnd = 0.0f, m_Particle.SizeVariation = 0.3f;
 
@@ -35,21 +38,31 @@ SandboxLayer::SandboxLayer(bool* runSandbox, unsigned int width, unsigned int he
 
     m_Particle2.ColorBegin = { 1.0f, 0.0f, 1.0f, 1.0f };
     m_Particle2.ColorEnd = { 0.0f, 0.0f, 0.0f, 1.0f };
-    //m_Particle.TextureID = m_Textures[2].getRendererID();
 
     m_Particle2.SizeBegin = 0.5f, m_Particle.SizeEnd = 0.0f, m_Particle.SizeVariation = 0.3f;
 
     m_Particle2.LifeTime = 3.0f;
 
-    m_Object.InitialPosition = { 0.0f, 5.0f };
-    m_Object.Size = { 1.0f, 2.0f };
-    m_Object.InitialVelocity = { 0.0f, 0.0f };
-    m_Object.Acceleration = { 0.0f, 0.0f };
+    // ---------------------------------------------------------------------------------- //
 
-    m_Object.Color = { 0.0f, 0.0f, 1.0f, 1.0f };
-    //m_Object.TextureID = m_Textures[2].getRendererID();
+    m_Player.Size = { 2.0f, 2.0f };
+    m_Player.Acceleration = { 0.0f, 0.0f };
+    m_Player.Color = { 1.0f, 1.0f, 1.0f, 1.0f };
+    m_Player.TextureID = m_Textures[2].getRendererID();
 
-    m_PhysicsSystem.addPhysicalObject(&m_Object);
+    m_Ground.Size = { 100000.0f, 2.0f };
+    m_Ground.Color = { 0.0f, 0.0f, 1.0f, 1.0f };
+
+    m_Box.Size = { 2.0f, 2.0f };
+    m_Box.Color = { 1.0f, 0.0f, 0.0f, 1.0f };
+
+    m_Ceiling.Size = { 10000.0f, 2.0f };
+    m_Ceiling.Color = { 0.0f, 1.0f, 1.0f, 1.0f };
+
+    m_PhysicsSystem.addPhysicalObject(&m_Ground);
+    m_PhysicsSystem.addPhysicalObject(&m_Player);
+    m_PhysicsSystem.addPhysicalObject(&m_Box);
+    m_PhysicsSystem.addPhysicalObject(&m_Ceiling);
 }
 
 SandboxLayer::~SandboxLayer()
@@ -106,7 +119,7 @@ void SandboxLayer::onUpdate(Elysium::Timestep ts)
         x = (x / width) * m_CameraController.getBoundsWidth() - m_CameraController.getBoundsWidth() * 0.5f;
         y = m_CameraController.getBoundsHeight() * 0.5f - (y / height) * m_CameraController.getBoundsHeight();
         m_Particle.Position = { x + pos.x, y + pos.y };
-        m_Particle2.Position = { x + pos.x, y + pos.y };
+        m_Particle2.Position = { m_Player.getPosition().x,  m_Player.getPosition().y };
 
         for (int i = 0; i < 5; i++)
         {
@@ -115,12 +128,38 @@ void SandboxLayer::onUpdate(Elysium::Timestep ts)
         }
         m_ParticleSystem.OnUpdate(ts);
 
-        m_Object.Rotation = m_RotationSpeed / ts;
         m_PhysicsSystem.onUpdate(ts);
 
-        ImGui::Begin("First Quad Controls");
-        ImGui::DragFloat2("First Quad Position", m_QuadPosition, 0.1f);
-        ImGui::ColorEdit4("Quad Color", m_QuadColor);
+        if (Elysium::Input::isKeyPressed(ELY_KEY_SPACE) && 
+            (m_PhysicsSystem.checkFutureBoxCollision(&m_Player, &m_Ground) ||
+                m_PhysicsSystem.checkFutureBoxCollision(&m_Player, &m_Box)))
+        {
+            m_Player.Acceleration.y += 5.0f * (1 / ts);
+        }
+
+        if (Elysium::Input::isKeyPressed(ELY_KEY_A))
+        {
+            m_Player.Acceleration.x = -5.0f;
+        }
+        else if (Elysium::Input::isKeyPressed(ELY_KEY_D))
+        {
+            m_Player.Acceleration.x = 5.0f;
+        }
+
+
+        if (m_PhysicsSystem.checkFutureBoxCollision(&m_Player, &m_Ground) || 
+            m_PhysicsSystem.checkFutureBoxCollision(&m_Player, &m_Box))
+        {
+            if (m_Player.Velocity.x != 0.0f)
+            {
+                if (m_Player.Velocity.x > 0.0f)
+                    m_Player.Acceleration.x -= 2.0f;
+                else
+                    m_Player.Acceleration.x += 2.0f;
+            }
+        }
+
+        ImGui::Begin("Statistics");
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
         ImGui::Text("Number of Draw Calls: %d", Renderer2D::getStats().DrawCount);
         ImGui::Text("Number of Quads: %d", Renderer2D::getStats().QuadCount);

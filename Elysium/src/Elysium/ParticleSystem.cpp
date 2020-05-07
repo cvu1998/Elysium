@@ -8,7 +8,8 @@
 
 namespace Elysium
 {
-	ParticleSystem::ParticleSystem(uint32_t poolSize, OrthographicCamera& camera) : m_InitialParticlePoolSize(poolSize), m_ParticlePoolSize(poolSize),
+	ParticleSystem::ParticleSystem(uint32_t poolSize, OrthographicCamera& camera) : 
+		m_InitialParticlePoolSize(poolSize), m_ParticlePoolSize(poolSize),
 		m_PoolIndex(0),
 		m_Camera(&camera)
 	{

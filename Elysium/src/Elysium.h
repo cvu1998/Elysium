@@ -15,7 +15,8 @@
 #include "Elysium/ParticleSystem.h"
 #include "Elysium/Random.h"
 
-#include "Elysium/Physics/PhysicalObject.h"
+#include "Elysium/Physics/DynamicObject.h"
+#include "Elysium/Physics/StaticObject.h"
 #include "Elysium/Physics/PhysicsSystem.h"
 
 // ---Renderer---
