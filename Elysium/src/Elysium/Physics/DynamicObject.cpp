@@ -2,7 +2,9 @@
 
 namespace Elysium
 {
-    DynamicObject::DynamicObject(glm::vec2&& position) : PhysicalObject(position, ObjectType::DYNAMIC)
+    DynamicObject::DynamicObject(glm::vec2&& position, float mass) : 
+        PhysicalObject(position, ObjectType::DYNAMIC),
+        Mass(mass)
     {
     }
 
@@ -29,9 +31,9 @@ namespace Elysium
         Position.y = Position.y + (Velocity.y * ts) + (0.5f * Acceleration.y * ts * ts);
 
         LastAcceleration.x = Acceleration.x;    // Force Applied
-        LastAcceleration.y = Acceleration.y;    // Gravity + Force Applied
+        LastAcceleration.y = GravitationalAccel;    // Gravity + Force Applied
         Acceleration = { 0.0f, 0.0f };
 
-        Renderer2D::drawQuadWithRotation(Position, Size, glm::radians(Rotation * ts), TextureID, Color);
+        Renderer2D::drawQuadWithRotation(Position, Size, glm::radians(Rotation), TextureID, Color);
     }
 }

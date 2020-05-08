@@ -17,6 +17,6 @@ namespace Elysium
 
     void StaticObject::onUpdate(Timestep ts)
     {
-        Renderer2D::drawQuadWithRotation(Position, Size, glm::radians(Rotation * ts), TextureID, Color);
+        Renderer2D::drawQuadWithRotation(Position, Size, glm::radians(Rotation), TextureID, Color);
     }
 }

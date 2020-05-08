@@ -2,32 +2,36 @@
 
 namespace Elysium
 {
-    PhysicalObject::PhysicalObject(glm::vec2& initialPosition, ObjectType type) : 
+    PhysicalObject::PhysicalObject(glm::vec2& initialPosition, ObjectType type) :
         Position(initialPosition),
         m_Type(type)
     {
     }
 
-    bool PhysicalObject::isBoxColliding(const PhysicalObject* object) const
+    void PhysicalObject::setElasticityCoefficient(float coefficient)
     {
-        float XObject = object->getPosition().x;
-        float XObjectHalfSize = object->Size.x / 2;
+        if (coefficient >= 0.0f && coefficient <= 1.0f)
+            ElasticityCoefficient = 1.0f + coefficient;
+    }
 
-        bool CollisionX =
-            (Position.x + Size.x >=
-                XObject - XObjectHalfSize &&
-                Position.x - Size.x <=
-                XObject + XObjectHalfSize);
+    void PhysicalObject::setFrictionCoefficient(float coefficient)
+    {
+        if (coefficient >= 0.0f && coefficient <= 1.0f)
+            FrictionCoefficient = coefficient;
+    }
 
-        float YObject = object->getPosition().y;
-        float YObjectHalfSize = object->Size.y / 2;
+    CollisionOccurence PhysicalObject::getCollisionOccurence(const PhysicalObject* object) const
+    {
+        if (object->getPosition().y - (object->Size.y / 2) * cos(glm::radians(Rotation)) >= Position.y + (Size.y / 2) * cos(glm::radians(Rotation)))
+            return CollisionOccurence::TOP;
 
-        bool CollisionY =
-            (Position.y + Size.y >=
-                YObject - YObjectHalfSize &&
-                Position.y - Size.y <=
-                YObject + YObjectHalfSize);
+        if (object->getPosition().y + (object->Size.y / 2) * cos(glm::radians(Rotation)) <= Position.y - (Size.y / 2) * cos(glm::radians(Rotation)))
+            return CollisionOccurence::BOTTOM;
 
-        return CollisionX && CollisionY;
+        if (object->getPosition().x > Position.x)
+            return CollisionOccurence::RIGHT;
+
+        if (object->getPosition().x < Position.x)
+            return CollisionOccurence::LEFT;
     }
 }

@@ -1,5 +1,6 @@
 #include "Application.h"
 
+#include <algorithm>
 #include <iostream>
 
 #include "Elysium/Renderer/Renderer.h"
@@ -99,7 +100,7 @@ namespace Elysium
             Renderer::Clear({ m_ClearColor[0], m_ClearColor[1], m_ClearColor[2], m_ClearColor[3] });
 
             float time = (float)glfwGetTime();
-            Timestep timestep = time - m_LastFrameTime;
+            Timestep timestep = std::min(0.0333f, time - m_LastFrameTime);
             m_LastFrameTime = time;
 
             if (!m_Minimized) 
@@ -121,7 +122,7 @@ namespace Elysium
             Renderer::Clear({ m_ClearColor[0], m_ClearColor[1], m_ClearColor[2], m_ClearColor[3] });
 
             float time = (float)glfwGetTime();
-            Timestep timestep = time - m_LastFrameTime;
+            Timestep timestep = std::min(0.0333f, time - m_LastFrameTime);
             m_LastFrameTime = time;
 
             ImGui_ImplOpenGL3_NewFrame();

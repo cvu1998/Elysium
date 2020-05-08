@@ -12,7 +12,7 @@ namespace Elysium
     {
     private:
         float m_Time = 0.0f;
-        float m_GravitationnalAccel;
+        float m_GravitationalAccel;
 
         Timestep m_CurrentTimestep;
 
@@ -21,16 +21,14 @@ namespace Elysium
 
         OrthographicCamera* m_Camera;
 
-        std::ofstream m_Logfile;
-
     public:
         PhysicsSystem(float acceleration, OrthographicCamera& camera);
         ~PhysicsSystem();
 
-        inline float getGravitaionnalAccel() const { return m_GravitationnalAccel; }
+        inline float getGravitaionnalAccel() const { return m_GravitationalAccel; }
         inline Timestep getTimeStep() const { return m_CurrentTimestep; }
 
-        inline void setGravitaionnalAccel(float acceleration) { m_GravitationnalAccel = acceleration; }
+        inline void setGravitaionnalAccel(float acceleration) { m_GravitationalAccel = acceleration; }
 
         void addPhysicalObject(PhysicalObject* object);
         void removePhysicalObject(PhysicalObject* object);

@@ -4,11 +4,11 @@ SandboxLayer::SandboxLayer(bool* runSandbox, unsigned int width, unsigned int he
     m_RunSandbox(runSandbox),
     m_CameraController((float)width / (float)height, 3.0f),
     m_ParticleSystem(100, m_CameraController.getCamera()),
-    m_PhysicsSystem(9.8f, m_CameraController.getCamera()),
-    m_Player({ 0.0f, 10.0f }),
+    m_PhysicsSystem(5.0f, m_CameraController.getCamera()),
+    m_Player({ 0.0f, 10.0f }, 1.0f),
     m_Ground({ 0.0f, 0.0f }),
     m_Box({ 5.0f, 2.0f }),
-    m_Ceiling({ 0.0f, 15.0f })
+    m_Ceiling({ 0.0f, 50.0f })
 {
     Renderer2D::Init();
 
@@ -46,21 +46,26 @@ SandboxLayer::SandboxLayer(bool* runSandbox, unsigned int width, unsigned int he
     // ---------------------------------------------------------------------------------- //
 
     m_Player.Size = { 2.0f, 2.0f };
-    m_Player.Acceleration = { 0.0f, 0.0f };
     m_Player.Color = { 1.0f, 1.0f, 1.0f, 1.0f };
-    m_Player.TextureID = m_Textures[2].getRendererID();
+    //m_Player.TextureID = m_Textures[2].getRendererID();
 
     m_Ground.Size = { 100000.0f, 2.0f };
     m_Ground.Color = { 0.0f, 0.0f, 1.0f, 1.0f };
+    //m_Ground.Rotation = 315.0f;
+    m_Ground.setElasticityCoefficient(0.0f);
+    m_Ground.setFrictionCoefficient(0.75f);
 
     m_Box.Size = { 2.0f, 2.0f };
     m_Box.Color = { 1.0f, 0.0f, 0.0f, 1.0f };
+    m_Box.setElasticityCoefficient(0.0f);
+    m_Box.setFrictionCoefficient(0.1f);
 
     m_Ceiling.Size = { 10000.0f, 2.0f };
     m_Ceiling.Color = { 0.0f, 1.0f, 1.0f, 1.0f };
+    m_Ceiling.setFrictionCoefficient(0.75f);
 
-    m_PhysicsSystem.addPhysicalObject(&m_Ground);
     m_PhysicsSystem.addPhysicalObject(&m_Player);
+    m_PhysicsSystem.addPhysicalObject(&m_Ground);
     m_PhysicsSystem.addPhysicalObject(&m_Box);
     m_PhysicsSystem.addPhysicalObject(&m_Ceiling);
 }
@@ -130,9 +135,11 @@ void SandboxLayer::onUpdate(Elysium::Timestep ts)
 
         m_PhysicsSystem.onUpdate(ts);
 
-        if (Elysium::Input::isKeyPressed(ELY_KEY_SPACE) && 
-            (m_PhysicsSystem.checkFutureBoxCollision(&m_Player, &m_Ground) ||
-                m_PhysicsSystem.checkFutureBoxCollision(&m_Player, &m_Box)))
+        if (Elysium::Input::isKeyPressed(ELY_KEY_SPACE) &&
+           ((m_PhysicsSystem.checkFutureBoxCollision(&m_Player, &m_Ground) && 
+                m_Ground.getCollisionOccurence(&m_Player) == CollisionOccurence::TOP) ||
+                m_PhysicsSystem.checkFutureBoxCollision(&m_Player, &m_Box) &&
+                m_Box.getCollisionOccurence(&m_Player) == CollisionOccurence::TOP))
         {
             m_Player.Acceleration.y += 5.0f * (1 / ts);
         }
@@ -144,19 +151,6 @@ void SandboxLayer::onUpdate(Elysium::Timestep ts)
         else if (Elysium::Input::isKeyPressed(ELY_KEY_D))
         {
             m_Player.Acceleration.x = 5.0f;
-        }
-
-
-        if (m_PhysicsSystem.checkFutureBoxCollision(&m_Player, &m_Ground) || 
-            m_PhysicsSystem.checkFutureBoxCollision(&m_Player, &m_Box))
-        {
-            if (m_Player.Velocity.x != 0.0f)
-            {
-                if (m_Player.Velocity.x > 0.0f)
-                    m_Player.Acceleration.x -= 2.0f;
-                else
-                    m_Player.Acceleration.x += 2.0f;
-            }
         }
 
         ImGui::Begin("Statistics");
