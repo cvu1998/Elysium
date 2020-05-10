@@ -6,7 +6,7 @@ SandboxLayer::SandboxLayer(bool* runSandbox, unsigned int width, unsigned int he
     m_ParticleSystem(100, m_CameraController.getCamera()),
     m_PhysicsSystem(5.0f, m_CameraController.getCamera()),
     m_Player({ 0.0f, 10.0f }, { 2.0f, 2.0f }, 1.0f),
-    m_Dynamic({ 0.0f, 15.0f }, { 2.0f, 2.0f }, 5.0f),
+    m_Dynamic({ 0.0f, 15.0f }, { 2.0f, 2.0f }, 1.25f),
     m_Ground({ 0.0f, 0.0f }, {1000.0f, 2.0f}),
     m_Box({ 5.0f, 2.0f }, { 2.0f, 2.0f }),
     m_Ceiling({ 0.0f, 20.0f }, {1000.0f, 2.0f})
@@ -49,9 +49,11 @@ SandboxLayer::SandboxLayer(bool* runSandbox, unsigned int width, unsigned int he
     m_Player.Color = { 1.0f, 1.0f, 1.0f, 1.0f };
     //m_Player.TextureID = m_Textures[2].getRendererID();
     m_Player.setElasticityCoefficient(1.0f);
+    m_Player.setFrictionCoefficient(1.0f);
 
     m_Dynamic.Color = { 0.0f, 1.0f, 1.0f, 1.0f };
     m_Dynamic.setElasticityCoefficient(0.0f);
+    m_Dynamic.setFrictionCoefficient(1.0f);
 
     m_Ground.Color = { 0.0f, 0.0f, 1.0f, 1.0f };
     m_Ground.setElasticityCoefficient(0.0f);

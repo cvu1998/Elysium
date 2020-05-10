@@ -6,12 +6,16 @@ namespace Elysium
         m_GravitationalAccel(acceleration),
         m_Camera(&camera)
     {
+        #ifdef _DEBUG
         Logfile.open("PhysicsSystem.log");
+        #endif
     }
 
     PhysicsSystem::~PhysicsSystem()
     {
+        #ifdef _DEBUG
         Logfile.close();
+        #endif
     }
 
     bool PhysicsSystem::checkFutureBoxCollision(const PhysicalObject* object1, const PhysicalObject* object2)
@@ -28,7 +32,6 @@ namespace Elysium
 
     void PhysicsSystem::addPhysicalObject(PhysicalObject* object)
     {
-        object->m_ID = m_Objects.size() - 1;
         if (object->getType() == ObjectType::DYNAMIC)
         {
             m_Objects.emplace(m_Objects.begin() + m_ObjectInsertIndex, object);
@@ -53,7 +56,7 @@ namespace Elysium
 
     bool PhysicsSystem::areColliding(PhysicalObject* object1, PhysicalObject* object2)
     {
-        auto it = m_CollisionMap.find(std::make_pair(object1->getSystemID(), object2->getSystemID()));
+        auto it = m_CollisionMap.find(std::make_pair(object1, object2));
         if (it != m_CollisionMap.end())
             return it->second;
         return false;
@@ -82,8 +85,8 @@ namespace Elysium
                 {
                     if (checkFutureBoxCollision(m_Objects[i], m_Objects[j]))
                     {
-                        m_CollisionMap[std::make_pair(m_Objects[i]->getSystemID(), m_Objects[j]->getSystemID())] = true;
-                        m_CollisionMap[std::make_pair(m_Objects[j]->getSystemID(), m_Objects[i]->getSystemID())] = true;
+                        m_CollisionMap[std::make_pair(m_Objects[i], m_Objects[j])] = true;
+                        m_CollisionMap[std::make_pair(m_Objects[j], m_Objects[i])] = true;
 
                         glm::vec2 normalI = -m_Objects[i]->Force;
                         m_Objects[i]->Force += normalI;
@@ -91,14 +94,17 @@ namespace Elysium
                         glm::vec2 normalJ = -m_Objects[j]->Force;
                         m_Objects[j]->Force += normalJ;
 
+                        #ifdef _DEBUG
                         Logfile << "---------------------" << '\n';
                         Logfile << "Indexes: " << i << ", " << j << '\n';
                         Logfile << "m_Objects[i]: " << m_Objects[i]->VerticesPosition[0].y << ", " << m_Objects[i]->VerticesPosition[2].y << '\n';
                         Logfile << "m_Objects[j]: " << m_Objects[j]->VerticesPosition[0].y << ", " << m_Objects[j]->VerticesPosition[2].y << '\n';
+                        #endif
 
                         if (m_Objects[j]->getCollisionOccurence(m_Objects[i]) == CollisionOccurence::TOP ||
                             m_Objects[j]->getCollisionOccurence(m_Objects[i]) == CollisionOccurence::BOTTOM)
                         {
+                            #ifdef _DEBUG
                             Logfile << "---------------------" << '\n';
                             Logfile << "Indexes: " << i << ", " << j << '\n';
                             Logfile << "Before Force: " << m_Objects[i]->Force.x << ", " << m_Objects[i]->Force.y << '\n';
@@ -106,9 +112,15 @@ namespace Elysium
                             Logfile << "Acceleration: " << m_Objects[i]->getAcceleration().x << ", " << m_Objects[i]->getAcceleration().y << '\n';
                             Logfile << "Velocity: " << m_Objects[i]->getVelocity().x << ", " << m_Objects[i]->getVelocity().y << '\n';
                             Logfile << "CollisionY\n";
+                            #endif
 
                             m_Objects[i]->Impulse.y = -m_Objects[i]->getVelocity().y * m_Objects[i]->Mass * m_Objects[j]->getElasticityCoefficient();
                             m_Objects[j]->Impulse.y = -m_Objects[j]->getVelocity().y * m_Objects[j]->Mass * m_Objects[i]->getElasticityCoefficient();
+
+                            if (abs(m_Objects[j]->getVelocity().y) > 0)
+                                m_Objects[i]->Impulse.y -= m_Objects[j]->Impulse.y;
+                            if (abs(m_Objects[i]->getVelocity().y) > 0)
+                                m_Objects[j]->Impulse.y -= m_Objects[i]->Impulse.y;
 
                             if (abs(m_Objects[i]->getVelocity().x) >= abs(m_Objects[i]->getVelocity().x) * m_Objects[j]->getFrictionCoefficient())
                                 m_Objects[i]->Impulse.x -= m_Objects[i]->getVelocity().x * m_Objects[i]->getMass() * m_Objects[j]->getFrictionCoefficient();
@@ -120,33 +132,45 @@ namespace Elysium
                             else
                                 m_Objects[j]->Impulse.x = -m_Objects[j]->getVelocity().x * m_Objects[j]->getMass();
 
+                            #ifdef _DEBUG
                             Logfile << "Force: " << m_Objects[i]->Force.x << ", " << m_Objects[i]->Force.y << '\n';
                             Logfile << "Impulse: " << m_Objects[i]->Impulse.x << ", " << m_Objects[i]->Impulse.y << '\n';
                             Logfile << "---------------------" << '\n';
+                            #endif
                         }
                         else if (m_Objects[j]->getCollisionOccurence(m_Objects[i]) == CollisionOccurence::RIGHT ||
                             m_Objects[j]->getCollisionOccurence(m_Objects[i]) == CollisionOccurence::LEFT)
                         {
+                            #ifdef _DEBUG
                             Logfile << "CollisionX\n";
                             Logfile << "Velocity: " << m_Objects[i]->getVelocity().x << ", " << m_Objects[i]->getVelocity().y << '\n';
+                            #endif
 
                             m_Objects[i]->Impulse.x = -m_Objects[i]->getVelocity().x * m_Objects[i]->Mass * m_Objects[j]->getElasticityCoefficient();
                             m_Objects[j]->Impulse.x = -m_Objects[j]->getVelocity().x * m_Objects[j]->Mass * m_Objects[i]->getElasticityCoefficient();
 
+                            if (abs(m_Objects[j]->getVelocity().x) > 0)
+                                m_Objects[i]->Impulse.x -= m_Objects[j]->Impulse.x;
+                            if (abs(m_Objects[i]->getVelocity().x) > 0)
+                                m_Objects[j]->Impulse.x -= m_Objects[i]->Impulse.x;
+
+                            #ifdef _DEBUG
                             Logfile << "Force: " << m_Objects[j]->Force.x << ", " << m_Objects[i]->Force.y << '\n';
                             Logfile << "Impulse: " << m_Objects[j]->Impulse.x << ", " << m_Objects[i]->Impulse.y << '\n';
                             Logfile << "---------------------" << '\n';
+                            #endif
                         }
                         m_Objects[i]->onCollision();
                         m_Objects[j]->onCollision();
                     }
                     else
                     {
-                        m_CollisionMap[std::make_pair(m_Objects[i]->getSystemID(), m_Objects[j]->getSystemID())] = false;
-                        m_CollisionMap[std::make_pair(m_Objects[j]->getSystemID(), m_Objects[i]->getSystemID())] = false;
+                        m_CollisionMap[std::make_pair(m_Objects[i], m_Objects[j])] = false;
+                        m_CollisionMap[std::make_pair(m_Objects[j], m_Objects[i])] = false;
                     }
                 }
             }
+            #ifdef _DEBUG
             if (m_Objects[i]->getType() == ObjectType::DYNAMIC)
             {
                 Logfile << "---------------------" << '\n';
@@ -154,9 +178,11 @@ namespace Elysium
                 Logfile << "Force: " << m_Objects[i]->Force.x << ", " << m_Objects[i]->Force.y << '\n';
                 Logfile << "Impulse: " << m_Objects[i]->Impulse.x << ", " << m_Objects[i]->Impulse.y << '\n';
             }
+            #endif
 
             m_Objects[i]->onUpdate(ts);
 
+            #ifdef _DEBUG
             if (m_Objects[i]->getType() == ObjectType::DYNAMIC)
             {
                 Logfile << "Position: " << m_Objects[i]->getPosition().x << ", " << m_Objects[i]->getPosition().y << '\n';
@@ -164,6 +190,7 @@ namespace Elysium
                 Logfile << "Acceleration: " << m_Objects[i]->getAcceleration().x << ", " << m_Objects[i]->getAcceleration().y << '\n';
                 Logfile << "---------------------" << '\n';
             }
+            #endif
         }
         Renderer2D::endScene();
     }

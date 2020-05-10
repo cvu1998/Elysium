@@ -1,7 +1,6 @@
 #pragma once
 
 #include <fstream>
-#include <map>
 #include <unordered_map>
 
 #include <glm/glm.hpp>
@@ -18,13 +17,26 @@ namespace Elysium
 
         Timestep m_CurrentTimestep;
 
+        struct Hash_ObjectPair
+        {
+            size_t operator()(const std::pair<PhysicalObject*, PhysicalObject*>& pair) const
+            {
+                auto hash1 = std::hash<PhysicalObject*>{}(pair.first);
+                auto hash2 = std::hash<PhysicalObject*>{}(pair.second);
+                return hash1 ^ hash2;
+            }
+        };
+
         unsigned int m_ObjectInsertIndex = 0;
         std::vector<PhysicalObject*> m_Objects;
-        std::map<std::pair<unsigned int, unsigned int>, bool> m_CollisionMap;
+        std::unordered_map<std::pair<PhysicalObject*, PhysicalObject*>, bool, Hash_ObjectPair> m_CollisionMap;
 
         OrthographicCamera* m_Camera;
 
+        #ifdef _DEBUG
         std::ofstream Logfile;
+        #endif
+
     private:
         bool checkFutureBoxCollision(const PhysicalObject* object1, const PhysicalObject* object2);
 

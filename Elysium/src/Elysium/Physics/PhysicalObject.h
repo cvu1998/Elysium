@@ -27,7 +27,6 @@ namespace Elysium
 
     protected:
         ObjectType m_Type;
-        unsigned int m_ID = -1;
 
         glm::vec2 Position;
         glm::vec2 Size = { 1.0f, 1.0f };
@@ -53,7 +52,6 @@ namespace Elysium
         PhysicalObject(const glm::vec2& initialPosition, const glm::vec2& size, ObjectType type);
 
         inline virtual ObjectType getType() const final { return m_Type; }
-        inline virtual unsigned int getSystemID() const final { return m_ID; }
 
         inline virtual const glm::vec2& getPosition() const final { return Position; }
         inline virtual const glm::vec2& getVelocity() const final { return Velocity; }
