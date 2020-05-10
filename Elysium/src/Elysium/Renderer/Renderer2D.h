@@ -4,6 +4,7 @@
 #include "Renderer.h"
 #include "Texture.h"
 
+#include <array>
 #include <memory>
 
 class Renderer2D
@@ -29,6 +30,15 @@ public:
     // ---Rotation in radians---
     static void drawQuadWithRotation(const glm::vec2& position, const glm::vec2& size, float rotation, const glm::vec4& color);
     static void drawQuadWithRotation(const glm::vec2& position, const glm::vec2& size, float rotation, unsigned int textureID,
+        const glm::vec4& color = { 1.0f, 1.0f, 1.0f, 1.0f });
+
+    // Positions
+    // v3----v2
+    // |      |
+    // |      |
+    // v0----v1
+    static void drawQuad(const std::array<glm::vec2, 4>& positions, const glm::vec2& size, const glm::vec4& color);
+    static void drawQuad(const std::array<glm::vec2, 4>& positions, const glm::vec2& size, unsigned int textureID,
         const glm::vec4& color = { 1.0f, 1.0f, 1.0f, 1.0f });
 
     struct Stats {

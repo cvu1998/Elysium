@@ -7,12 +7,11 @@ namespace Elysium
     class DynamicObject : public PhysicalObject
     {
     protected:
-        float Mass;
 
     public:
-        DynamicObject(glm::vec2&& initialPosition, float mass);
+        DynamicObject(const glm::vec2& initialPosition, const glm::vec2& size, float mass);
 
-        virtual glm::vec2 getFuturePosition(Timestep ts) const override final;
+        virtual glm::vec2 getFuturePosition(const glm::vec2& position, Timestep ts) const override final;
         virtual void onCollision() override;
         virtual void onUpdate(Timestep ts) override;
     };

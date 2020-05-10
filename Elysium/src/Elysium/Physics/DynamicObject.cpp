@@ -2,20 +2,17 @@
 
 namespace Elysium
 {
-    DynamicObject::DynamicObject(glm::vec2&& position, float mass) : 
-        PhysicalObject(position, ObjectType::DYNAMIC),
-        Mass(mass)
+    DynamicObject::DynamicObject(const glm::vec2& position, const glm::vec2& size, float mass) :
+        PhysicalObject(position, size, ObjectType::DYNAMIC)
     {
+        Mass = mass;
     }
 
-    glm::vec2 DynamicObject::getFuturePosition(Timestep ts) const
+    glm::vec2 DynamicObject::getFuturePosition(const glm::vec2& position, Timestep ts) const
     {
-        glm::vec2 futureVelocity;
-        futureVelocity.x = Velocity.x + (LastAcceleration.x * ts);
-        futureVelocity.y = Velocity.y + (LastAcceleration.y * ts);
-
-        return { Position.x + (futureVelocity.x * ts) + (0.5f * LastAcceleration.x * ts * ts),
-            Position.y + (futureVelocity.y * ts) + (0.5f * LastAcceleration.y * ts * ts) };
+        glm::vec2 futureAcceleration= Force / Mass;
+        glm::vec2 futureVelocity = Velocity + (Impulse / Mass) + (futureAcceleration * (float)ts);
+        return position + (futureVelocity * (float)ts);
     }
 
     void DynamicObject::onCollision()
@@ -24,16 +21,15 @@ namespace Elysium
 
     void DynamicObject::onUpdate(Timestep ts)
     {
-        Velocity.x = Velocity.x + (Acceleration.x * ts);
-        Velocity.y = Velocity.y + (Acceleration.y * ts);
+        Acceleration = Force / Mass;
+        Velocity = Velocity + (Impulse / Mass) + (Acceleration * (float)ts);
+        Position = Position + (Velocity * (float)ts);
 
-        Position.x = Position.x + (Velocity.x * ts) + (0.5f * Acceleration.x * ts * ts);
-        Position.y = Position.y + (Velocity.y * ts) + (0.5f * Acceleration.y * ts * ts);
+        VerticesPosition[0] = { Position.x - Size.x / 2, Position.y - Size.y / 2 };
+        VerticesPosition[1] = { Position.x + Size.x / 2, Position.y - Size.y / 2 };
+        VerticesPosition[2] = { Position.x + Size.x / 2, Position.y + Size.y / 2 };
+        VerticesPosition[3] = { Position.x - Size.x / 2, Position.y + Size.y / 2 };
 
-        LastAcceleration.x = Acceleration.x;    // Force Applied
-        LastAcceleration.y = GravitationalAccel;    // Gravity + Force Applied
-        Acceleration = { 0.0f, 0.0f };
-
-        Renderer2D::drawQuadWithRotation(Position, Size, glm::radians(Rotation), TextureID, Color);
+        Impulse = { 0.0f, 0.0f };
     }
 }

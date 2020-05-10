@@ -47,10 +47,6 @@ namespace Elysium
 
     void Application::onEvent(Event& event)
     {
-        #ifdef _DEBUG
-        std::cout << event << "\n";
-        #endif
-
         EventDispatcher dispatcher(event);
         dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FUNCTION(Application::onWindowCloseEvent));
         dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FUNCTION(Application::onWindowResizeEvent));

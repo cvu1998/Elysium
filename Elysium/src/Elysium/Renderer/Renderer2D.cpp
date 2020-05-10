@@ -286,6 +286,71 @@ void Renderer2D::drawQuadWithRotation(const glm::vec2& position, const glm::vec2
     s_Data->RendererStats.QuadCount++;
 }
 
+void Renderer2D::drawQuad(const std::array<glm::vec2, 4>& positions, const glm::vec2& size, const glm::vec4& color)
+{
+    if (s_Data->IndexCount >= MaxIndexCount)
+    {
+        endBatch();
+        flush();
+        beginBatch();
+    }
+
+    float textureIndex = 0.0f;
+    float halfLength = size.x / 2;
+    float halfWidth = size.y / 2;
+
+    for (size_t i = 0; i < 4; i++)
+    {
+        s_Data->BufferPtr->position = positions[i];
+        s_Data->BufferPtr->color = color;
+        s_Data->BufferPtr->TextureCoordinates = s_Data->TextureCoordinates[i];
+        s_Data->BufferPtr->TextureID = textureIndex;
+        s_Data->BufferPtr++;
+    }
+
+    s_Data->IndexCount += 6;
+    s_Data->RendererStats.QuadCount++;
+}
+
+void Renderer2D::drawQuad(const std::array<glm::vec2, 4>& positions, const glm::vec2& size, unsigned int textureID, const glm::vec4& color)
+{
+    if (s_Data->IndexCount >= MaxIndexCount || s_Data->TextureSlotIndex > 32)
+    {
+        endBatch();
+        flush();
+        beginBatch();
+    }
+
+    float textureIndex = 0.0f;
+    for (unsigned int i = 1; i < s_Data->TextureSlotIndex; i++)
+    {
+        if (s_Data->TextureSlots[i] == textureID)
+        {
+            textureIndex = float(i);
+            break;
+        }
+    }
+
+    if (textureIndex == 0.0f)
+    {
+        textureIndex = (float)s_Data->TextureSlotIndex;
+        s_Data->TextureSlots[s_Data->TextureSlotIndex] = textureID;
+        s_Data->TextureSlotIndex++;
+    }
+
+    for (size_t i = 0; i < 4; i++)
+    {
+        s_Data->BufferPtr->position = positions[i];
+        s_Data->BufferPtr->color = color;
+        s_Data->BufferPtr->TextureCoordinates = s_Data->TextureCoordinates[i];
+        s_Data->BufferPtr->TextureID = textureIndex;
+        s_Data->BufferPtr++;
+    }
+
+    s_Data->IndexCount += 6;
+    s_Data->RendererStats.QuadCount++;
+}
+
 Renderer2D::Stats& Renderer2D::getStats()
 {
     return s_Data->RendererStats;

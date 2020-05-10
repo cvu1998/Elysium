@@ -1,6 +1,8 @@
 #pragma once
 
 #include <fstream>
+#include <map>
+#include <unordered_map>
 
 #include <glm/glm.hpp>
 
@@ -16,10 +18,15 @@ namespace Elysium
 
         Timestep m_CurrentTimestep;
 
+        unsigned int m_ObjectInsertIndex = 0;
         std::vector<PhysicalObject*> m_Objects;
-        unsigned int m_ObjectInsertIndex = 0;;
+        std::map<std::pair<unsigned int, unsigned int>, bool> m_CollisionMap;
 
         OrthographicCamera* m_Camera;
+
+        std::ofstream Logfile;
+    private:
+        bool checkFutureBoxCollision(const PhysicalObject* object1, const PhysicalObject* object2);
 
     public:
         PhysicsSystem(float acceleration, OrthographicCamera& camera);
@@ -33,7 +40,7 @@ namespace Elysium
         void addPhysicalObject(PhysicalObject* object);
         void removePhysicalObject(PhysicalObject* object);
 
-        bool checkFutureBoxCollision(const PhysicalObject* object1, const PhysicalObject* object2);
+        bool areColliding(PhysicalObject* object1, PhysicalObject* object2);
 
         void onUpdate(Timestep ts);
     };

@@ -14,11 +14,12 @@ private:
     Elysium::ParticleProperties m_Particle2;
     Elysium::ParticleSystem m_ParticleSystem;
 
-    Elysium::PhysicsSystem m_PhysicsSystem;
     Elysium::DynamicObject m_Player;
+    Elysium::DynamicObject m_Dynamic;
     Elysium::StaticObject m_Ground;
     Elysium::StaticObject m_Box;
     Elysium::StaticObject m_Ceiling;
+    Elysium::PhysicsSystem m_PhysicsSystem;
 
     float m_QuadColor[4] = { 0.75f, 0.0f, 0.75f, 1.0f };
     float m_QuadPosition[2] = { -1.5f, -1.5f };

@@ -2,13 +2,13 @@
 
 namespace Elysium
 {
-    StaticObject::StaticObject(glm::vec2&& position) : PhysicalObject(position, ObjectType::STATIC)
+    StaticObject::StaticObject(const glm::vec2& position, const glm::vec2& size) : PhysicalObject(position, size, ObjectType::STATIC)
     {
     }
 
-    glm::vec2 StaticObject::getFuturePosition(Timestep ts) const
+    glm::vec2 StaticObject::getFuturePosition(const glm::vec2& position, Timestep ts) const
     {
-        return Position;
+        return position;
     }
 
     void StaticObject::onCollision()
@@ -17,6 +17,5 @@ namespace Elysium
 
     void StaticObject::onUpdate(Timestep ts)
     {
-        Renderer2D::drawQuadWithRotation(Position, Size, glm::radians(Rotation), TextureID, Color);
     }
 }
