@@ -32,38 +32,26 @@ namespace Elysium
 
     CollisionOccurence PhysicalObject::getCollisionOccurence(const PhysicalObject* object) const
     {
-        float distances[4];
-
-        glm::vec2 MiddlePoint = {Position.x, Position.y - Size.y / 2};
-        distances[0] = (MiddlePoint.x - object->getPosition().x) * (MiddlePoint.x - object->getPosition().x) +
-            (MiddlePoint.y - object->getPosition().y) * (MiddlePoint.y - object->getPosition().y);
-
-        MiddlePoint = { Position.x + Size.x / 2 , Position.y};
-        distances[1] = (MiddlePoint.x - object->getPosition().x) * (MiddlePoint.x - object->getPosition().x) +
-            (MiddlePoint.y - object->getPosition().y) * (MiddlePoint.y - object->getPosition().y);
-
-        MiddlePoint = { Position.x, Position.y + Size.y / 2 };
-        distances[2] = (MiddlePoint.x - object->getPosition().x) * (MiddlePoint.x - object->getPosition().x) +
-            (MiddlePoint.y - object->getPosition().y) * (MiddlePoint.y - object->getPosition().y);
-
-        MiddlePoint = { Position.x - Size.x / 2 , Position.y };
-        distances[3] = (MiddlePoint.x - object->getPosition().x) * (MiddlePoint.x - object->getPosition().x) +
-            (MiddlePoint.y - object->getPosition().y) * (MiddlePoint.y - object->getPosition().y);
-
-        unsigned int index = 0;
-        for (unsigned int i = 1; i < 4; i++)
-        {
-            if (distances[i] < distances[index])
-                index = i;
-        }
-
-        if (index == 2)
+        if ((object->getPosition().y - (object->Size.y / 2) <= Position.y + Size.y) && (
+            (VerticesPosition[3].x <= object->getVerticesPosition()[1].x && VerticesPosition[2].x >= object->getVerticesPosition()[1].x) ||
+            (VerticesPosition[3].x <= object->getVerticesPosition()[0].x && VerticesPosition[2].x >= object->getVerticesPosition()[0].x)))
             return CollisionOccurence::TOP;
-        else if (index == 0)
+
+        if ((object->getPosition().y + (object->Size.y / 2) >= Position.y - Size.y) && (
+            (VerticesPosition[0].x <= object->getVerticesPosition()[3].x && VerticesPosition[1].x >= object->getVerticesPosition()[3].x) ||
+            (VerticesPosition[0].x <= object->getVerticesPosition()[2].x && VerticesPosition[1].x >= object->getVerticesPosition()[2].x)))
             return CollisionOccurence::BOTTOM;
-        else if (index == 3)
-            return CollisionOccurence::LEFT;
-        else
+
+        if ((object->getPosition().x + (object->Size.x / 2) > Position.x - Size.x) && (
+            (VerticesPosition[1].y <= object->getVerticesPosition()[3].y && VerticesPosition[2].y >= object->getVerticesPosition()[3].y) ||
+            (VerticesPosition[1].y <= object->getVerticesPosition()[0].y && VerticesPosition[2].y >= object->getVerticesPosition()[0].y)))
             return CollisionOccurence::RIGHT;
+
+        if ((object->getPosition().x - (object->Size.x / 2) < Position.x + Size.x) && (
+            (VerticesPosition[0].y <= object->getVerticesPosition()[2].y && VerticesPosition[3].y >= object->getVerticesPosition()[2].y) ||
+            (VerticesPosition[0].y <= object->getVerticesPosition()[1].y && VerticesPosition[3].y >= object->getVerticesPosition()[1].y)))
+            return CollisionOccurence::LEFT;
+
+        return CollisionOccurence::NONE;
     }
 }

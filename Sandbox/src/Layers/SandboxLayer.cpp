@@ -5,8 +5,8 @@ SandboxLayer::SandboxLayer(bool* runSandbox, unsigned int width, unsigned int he
     m_CameraController((float)width / (float)height, 3.0f),
     m_ParticleSystem(100, m_CameraController.getCamera()),
     m_PhysicsSystem(5.0f, m_CameraController.getCamera()),
-    m_Player({ 0.0f, 10.0f }, { 2.0f, 2.0f }, 1.0f),
-    m_Dynamic({ 0.0f, 15.0f }, { 2.0f, 2.0f }, 1.25f),
+    m_Player({ 0.0f, 10.0f }, { 2.0f, 2.0f }, 10.0f),
+    m_Dynamic({ 0.0f, 15.0f }, { 2.0f, 2.0f }, 10.0f), 
     m_Ground({ 0.0f, 0.0f }, {1000.0f, 2.0f}),
     m_Box({ 5.0f, 2.0f }, { 2.0f, 2.0f }),
     m_Ceiling({ 0.0f, 20.0f }, {1000.0f, 2.0f})
@@ -48,7 +48,7 @@ SandboxLayer::SandboxLayer(bool* runSandbox, unsigned int width, unsigned int he
 
     m_Player.Color = { 1.0f, 1.0f, 1.0f, 1.0f };
     //m_Player.TextureID = m_Textures[2].getRendererID();
-    m_Player.setElasticityCoefficient(1.0f);
+    m_Player.setElasticityCoefficient(0.0f);
     m_Player.setFrictionCoefficient(1.0f);
 
     m_Dynamic.Color = { 0.0f, 1.0f, 1.0f, 1.0f };
@@ -57,7 +57,7 @@ SandboxLayer::SandboxLayer(bool* runSandbox, unsigned int width, unsigned int he
 
     m_Ground.Color = { 0.0f, 0.0f, 1.0f, 1.0f };
     m_Ground.setElasticityCoefficient(0.0f);
-    m_Ground.setFrictionCoefficient(0.05f);
+    m_Ground.setFrictionCoefficient(1.00f);
 
     m_Box.Color = { 1.0f, 0.0f, 0.0f, 1.0f };
     m_Box.setElasticityCoefficient(0.0f);
@@ -148,22 +148,22 @@ void SandboxLayer::onUpdate(Elysium::Timestep ts)
 
         if (Elysium::Input::isKeyPressed(ELY_KEY_SPACE) && SurfaceContact)
         {
-            m_Player.Impulse.y = 10.0f;
+            m_Player.Impulse.y = 50.0f;
         }
 
         if (Elysium::Input::isKeyPressed(ELY_KEY_A))
         {
             if (SurfaceContact)
-                m_Player.Impulse.x = -0.5f;
+                m_Player.Impulse.x = -10.0f;
             else
-                m_Player.Impulse.x = -0.1f;
+                m_Player.Impulse.x = -2.0f;
         }
         else if (Elysium::Input::isKeyPressed(ELY_KEY_D))
         {
             if (SurfaceContact)
-                m_Player.Impulse.x = 0.5f;
+                m_Player.Impulse.x = 10.0f;
             else
-                m_Player.Impulse.x = 0.1f;
+                m_Player.Impulse.x = 2.0f;
         }
 
         ImGui::Begin("Statistics");

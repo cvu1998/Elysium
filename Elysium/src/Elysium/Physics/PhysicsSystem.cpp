@@ -116,21 +116,29 @@ namespace Elysium
 
                             m_Objects[i]->Impulse.y = -m_Objects[i]->getVelocity().y * m_Objects[i]->Mass * m_Objects[j]->getElasticityCoefficient();
                             m_Objects[j]->Impulse.y = -m_Objects[j]->getVelocity().y * m_Objects[j]->Mass * m_Objects[i]->getElasticityCoefficient();
-
+                            
                             if (abs(m_Objects[j]->getVelocity().y) > 0)
                                 m_Objects[i]->Impulse.y -= m_Objects[j]->Impulse.y;
                             if (abs(m_Objects[i]->getVelocity().y) > 0)
                                 m_Objects[j]->Impulse.y -= m_Objects[i]->Impulse.y;
 
-                            if (abs(m_Objects[i]->getVelocity().x) >= abs(m_Objects[i]->getVelocity().x) * m_Objects[j]->getFrictionCoefficient())
-                                m_Objects[i]->Impulse.x -= m_Objects[i]->getVelocity().x * m_Objects[i]->getMass() * m_Objects[j]->getFrictionCoefficient();
+                            if (abs(m_Objects[i]->getVelocity().x) > abs(m_Objects[i]->getVelocity().x) * m_Objects[j]->getFrictionCoefficient() || abs(m_Objects[i]->Impulse.x) > 0.0f)
+                            {
+                                m_Objects[i]->Impulse.x -= m_Objects[i]->getVelocity().x * m_Objects[i]->getMass() * m_Objects[j]->getFrictionCoefficient() * ts;
+                            }
                             else
+                            {
                                 m_Objects[i]->Impulse.x = -m_Objects[i]->getVelocity().x * m_Objects[i]->getMass();
+                            }
 
-                            if (abs(m_Objects[j]->getVelocity().x) >= abs(m_Objects[j]->getVelocity().x) * m_Objects[i]->getFrictionCoefficient())
-                                m_Objects[j]->Impulse.x -= m_Objects[j]->getVelocity().x * m_Objects[j]->getMass() * m_Objects[i]->getFrictionCoefficient();
+                            if (abs(m_Objects[j]->getVelocity().x) > abs(m_Objects[j]->getVelocity().x) * m_Objects[i]->getFrictionCoefficient() || abs(m_Objects[j]->Impulse.x) > 0.0f)
+                            {
+                                m_Objects[j]->Impulse.x -= m_Objects[j]->getVelocity().x * m_Objects[j]->getMass() * m_Objects[i]->getFrictionCoefficient() * ts;
+                            }
                             else
+                            {
                                 m_Objects[j]->Impulse.x = -m_Objects[j]->getVelocity().x * m_Objects[j]->getMass();
+                            }
 
                             #ifdef _DEBUG
                             Logfile << "Force: " << m_Objects[i]->Force.x << ", " << m_Objects[i]->Force.y << '\n';

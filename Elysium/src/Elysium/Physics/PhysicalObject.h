@@ -13,6 +13,7 @@ enum class ObjectType
 
 enum class CollisionOccurence
 {
+    NONE = -1,
     TOP = 0,
     BOTTOM,
     LEFT,
