@@ -15,6 +15,8 @@ private:
     Elysium::ParticleSystem m_ParticleSystem;
 
     Elysium::DynamicObject m_Player;
+    bool m_PlayerLookingRight = true;
+
     Elysium::DynamicObject m_Dynamic;
     Elysium::StaticObject m_Ground;
     Elysium::StaticObject m_Box;

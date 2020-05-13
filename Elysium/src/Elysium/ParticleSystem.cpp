@@ -32,7 +32,7 @@ namespace Elysium
 
 		particle.ColorBegin = particleProperties.ColorBegin;
 		particle.ColorEnd = particleProperties.ColorEnd;
-		particle.TextureID = particleProperties.TextureID;
+		particle.texture = particleProperties.texture;
 
 		particle.SizeBegin = particleProperties.SizeBegin + particleProperties.SizeVariation * (Random::Float() - 0.5f);
 		particle.SizeEnd = particleProperties.SizeEnd;
@@ -96,7 +96,10 @@ namespace Elysium
 
 			float size = glm::lerp(particle.SizeEnd, particle.SizeBegin, lifeRatio);
 
-			Renderer2D::drawQuadWithRotation(particle.Position, { size, size }, glm::radians(particle.Rotation), particle.TextureID, color);
+			if (particle.texture)
+				Renderer2D::drawQuadWithRotation(particle.Position, { size, size }, glm::radians(particle.Rotation), *(particle.texture), color);
+			else
+				Renderer2D::drawQuadWithRotation(particle.Position, { size, size }, glm::radians(particle.Rotation), color);
 		}
 		Renderer2D::endScene();
 	}

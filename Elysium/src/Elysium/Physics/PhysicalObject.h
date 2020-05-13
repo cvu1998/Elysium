@@ -13,7 +13,6 @@ enum class ObjectType
 
 enum class CollisionOccurence
 {
-    NONE = -1,
     TOP = 0,
     BOTTOM,
     LEFT,
@@ -47,7 +46,7 @@ namespace Elysium
         glm::vec2 Impulse = { 0.0f, 0.0f };
 
         glm::vec4 Color = { 1.0f, 1.0f, 1.0f, 1.0f };
-        unsigned int TextureID = 1;
+        Texture* texture = NULL;
 
     public:
         PhysicalObject(const glm::vec2& initialPosition, const glm::vec2& size, ObjectType type);
@@ -57,6 +56,7 @@ namespace Elysium
         inline virtual const glm::vec2& getPosition() const final { return Position; }
         inline virtual const glm::vec2& getVelocity() const final { return Velocity; }
         inline virtual const glm::vec2& getAcceleration() const final { return Acceleration; }
+        inline virtual const glm::vec2 getSize() const final { return Size; }
         inline virtual float getMass() const final { return Mass; }
         inline virtual float getRotation() const final { return Rotation; }
         inline virtual float getElasticityCoefficient() const final { return ElasticityCoefficient; }

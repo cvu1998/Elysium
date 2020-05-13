@@ -11,12 +11,14 @@ SandboxLayer::SandboxLayer(bool* runSandbox, unsigned int width, unsigned int he
     m_Box({ 5.0f, 2.0f }, { 2.0f, 2.0f }),
     m_Ceiling({ 0.0f, 20.0f }, {1000.0f, 2.0f})
 {
-    Renderer2D::Init();
+    Elysium::Renderer2D::Init();
 
-    m_Textures.reserve(3);
+    m_Textures.reserve(5);
     m_Textures.emplace_back("res/texture/meadow.png");
     m_Textures.emplace_back("res/texture/Vader.png");
     m_Textures.emplace_back("res/texture/alec.png");
+    m_Textures.emplace_back("res/texture/player-sprite.png");
+    m_Textures.emplace_back("res/texture/RPGpack_sheet_2X.png");
 
     m_Particle.Position = { 0.0f, 0.0f };
     m_Particle.Velocity = { 0.0f, 0.0f };
@@ -47,7 +49,9 @@ SandboxLayer::SandboxLayer(bool* runSandbox, unsigned int width, unsigned int he
     // ---------------------------------------------------------------------------------- //
 
     m_Player.Color = { 1.0f, 1.0f, 1.0f, 1.0f };
-    //m_Player.TextureID = m_Textures[2].getRendererID();
+    m_Player.texture = &m_Textures[3];
+    m_Player.texture->subtextureCoordinates({ 7.5, 2.5 }, { 64, 128 });
+    //m_Player.texture->subtextureCoordinates({ 7, 6 }, { 128, 128 });
     m_Player.setElasticityCoefficient(0.0f);
     m_Player.setFrictionCoefficient(1.0f);
 
@@ -57,7 +61,7 @@ SandboxLayer::SandboxLayer(bool* runSandbox, unsigned int width, unsigned int he
 
     m_Ground.Color = { 0.0f, 0.0f, 1.0f, 1.0f };
     m_Ground.setElasticityCoefficient(0.0f);
-    m_Ground.setFrictionCoefficient(1.00f);
+    m_Ground.setFrictionCoefficient(0.20f);
 
     m_Box.Color = { 1.0f, 0.0f, 0.0f, 1.0f };
     m_Box.setElasticityCoefficient(0.0f);
@@ -75,7 +79,7 @@ SandboxLayer::SandboxLayer(bool* runSandbox, unsigned int width, unsigned int he
 
 SandboxLayer::~SandboxLayer()
 {
-    Renderer2D::Shutdown();
+    Elysium::Renderer2D::Shutdown();
 }
 
 void SandboxLayer::onUpdate(Elysium::Timestep ts)
@@ -84,14 +88,14 @@ void SandboxLayer::onUpdate(Elysium::Timestep ts)
     {
         m_CameraController.onUpdate(ts);
 
-        Renderer2D::beginScene(m_CameraController.getCamera());
+        Elysium::Renderer2D::beginScene(m_CameraController.getCamera());
 
         for (float x = -4.0f; x < 4.0f; x += 0.1f)
         {
             for (float y = -3.0f; y < 3.0f; y += 0.1f)
             {
                 glm::vec4 gradient = { (x + 4.0f) / 8.0f, (y + 3.0f) / 12.0f, 1.0f, 1.0f };
-                Renderer2D::drawQuadWithRotation({ x + 0.025f , y + 0.025f }, { 0.05f, 0.05f }, glm::radians(m_RotationSpeed), gradient);
+                Elysium::Renderer2D::drawQuadWithRotation({ x + 0.025f , y + 0.025f }, { 0.05f, 0.05f }, glm::radians(m_RotationSpeed), gradient);
             }
         }
 
@@ -103,21 +107,21 @@ void SandboxLayer::onUpdate(Elysium::Timestep ts)
             for (int y = -2; y < 2; y++)
             {
                 glm::vec4 color = (x + y) % 2 == 0 ? white : black;
-                Renderer2D::drawQuad({ x + 0.5f , y + 0.5f }, { 1.0f, 1.0f }, color);
+                Elysium::Renderer2D::drawQuad({ x + 0.5f , y + 0.5f }, { 1.0f, 1.0f }, color);
             }
         }
         glm::vec4 color = { 0.0f, 1.0f, 1.0f, 1.0f };
-        Renderer2D::drawQuadWithRotation({ -1.5f, 1.5f }, { 1.0f, 1.0f }, glm::radians(m_RotationSpeed), color);
-        Renderer2D::drawQuad({ 1.5f, 1.5f }, { 1.0f, 1.0f }, color);
+        Elysium::Renderer2D::drawQuadWithRotation({ -1.5f, 1.5f }, { 1.0f, 1.0f }, glm::radians(m_RotationSpeed), color);
+        Elysium::Renderer2D::drawQuad({ 1.5f, 1.5f }, { 1.0f, 1.0f }, color);
 
-        Renderer2D::drawQuadWithRotation({ 1.5f, -1.5f }, { 1.0f, 1.0f }, glm::radians(m_RotationSpeed), m_Textures[1].getRendererID());
-        Renderer2D::drawQuad({ m_QuadPosition[0], m_QuadPosition[1] }, { 1.0f, 1.0f }, m_Textures[0].getRendererID(), 
+        Elysium::Renderer2D::drawQuadWithRotation({ 1.5f, -1.5f }, { 1.0f, 1.0f }, glm::radians(m_RotationSpeed), m_Textures[1]);
+        Elysium::Renderer2D::drawQuad({ m_QuadPosition[0], m_QuadPosition[1] }, { 1.0f, 1.0f }, m_Textures[0], 
             { m_QuadColor[0], m_QuadColor[1], m_QuadColor[2], m_QuadColor[3] });
 
-        Renderer2D::drawQuadWithRotation({ 0.0f, 0.0f }, { 2.0f, 1.0f }, glm::radians(m_RotationSpeed), color);
+        Elysium::Renderer2D::drawQuadWithRotation({ 0.0f, 0.0f }, { 2.0f, 1.0f }, glm::radians(m_RotationSpeed), color);
 
         m_RotationSpeed += 120.0f * ts;
-        Renderer2D::endScene();
+        Elysium::Renderer2D::endScene();
 
         auto [x, y] = Elysium::Input::getMousePosition();
         auto width = Elysium::Application::Get().getWindow().getWidth();
@@ -154,25 +158,39 @@ void SandboxLayer::onUpdate(Elysium::Timestep ts)
         if (Elysium::Input::isKeyPressed(ELY_KEY_A))
         {
             if (SurfaceContact)
-                m_Player.Impulse.x = -10.0f;
+            {
+                if (m_PlayerLookingRight)
+                {
+                    m_Player.texture->reflectAroundYAxis();
+                    m_PlayerLookingRight = false;
+                }
+                m_Player.Impulse.x = -10.0f * m_Player.getMass() * ts;
+            }
             else
-                m_Player.Impulse.x = -2.0f;
+                m_Player.Impulse.x = -2.0f * m_Player.getMass() * ts;
         }
         else if (Elysium::Input::isKeyPressed(ELY_KEY_D))
         {
             if (SurfaceContact)
-                m_Player.Impulse.x = 10.0f;
+            {
+                if (!m_PlayerLookingRight)
+                {
+                    m_Player.texture->reflectAroundYAxis();
+                    m_PlayerLookingRight = true;
+                }
+                m_Player.Impulse.x = 10.0f * m_Player.getMass() * ts;
+            }
             else
-                m_Player.Impulse.x = 2.0f;
+                m_Player.Impulse.x = 2.0f * m_Player.getMass() * ts;
         }
 
         ImGui::Begin("Statistics");
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-        ImGui::Text("Number of Draw Calls: %d", Renderer2D::getStats().DrawCount);
-        ImGui::Text("Number of Quads: %d", Renderer2D::getStats().QuadCount);
+        ImGui::Text("Number of Draw Calls: %d", Elysium::Renderer2D::getStats().DrawCount);
+        ImGui::Text("Number of Quads: %d", Elysium::Renderer2D::getStats().QuadCount);
         ImGui::End();
 
-        Renderer2D::resetStats();
+        Elysium::Renderer2D::resetStats();
     }
 }
 

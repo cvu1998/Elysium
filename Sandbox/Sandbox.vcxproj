@@ -43,6 +43,9 @@
     <None Include="res\shaders\basic.shader" />
     <None Include="res\shaders\batch_rendering.shader" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\..\Pictures\player_sprite.jpg" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{0E8FFFC7-9F02-4099-BBF9-04D307F3DE8F}</ProjectGuid>

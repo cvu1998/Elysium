@@ -27,7 +27,10 @@ namespace Elysium
 
     void PhysicalObject::Draw()
     {
-        Renderer2D::drawQuad(VerticesPosition, Size, TextureID, Color);
+       if (texture)
+           Renderer2D::drawQuad(Position, Size, *texture, Color);
+       else
+           Renderer2D::drawQuad(Position, Size, Color);
     }
 
     CollisionOccurence PhysicalObject::getCollisionOccurence(const PhysicalObject* object) const
@@ -42,16 +45,10 @@ namespace Elysium
             (VerticesPosition[0].x <= object->getVerticesPosition()[2].x && VerticesPosition[1].x >= object->getVerticesPosition()[2].x)))
             return CollisionOccurence::BOTTOM;
 
-        if ((object->getPosition().x + (object->Size.x / 2) > Position.x - Size.x) && (
-            (VerticesPosition[1].y <= object->getVerticesPosition()[3].y && VerticesPosition[2].y >= object->getVerticesPosition()[3].y) ||
-            (VerticesPosition[1].y <= object->getVerticesPosition()[0].y && VerticesPosition[2].y >= object->getVerticesPosition()[0].y)))
+        if (object->getPosition().x > Position.x)
             return CollisionOccurence::RIGHT;
 
-        if ((object->getPosition().x - (object->Size.x / 2) < Position.x + Size.x) && (
-            (VerticesPosition[0].y <= object->getVerticesPosition()[2].y && VerticesPosition[3].y >= object->getVerticesPosition()[2].y) ||
-            (VerticesPosition[0].y <= object->getVerticesPosition()[1].y && VerticesPosition[3].y >= object->getVerticesPosition()[1].y)))
+        if (object->getPosition().x < Position.x)
             return CollisionOccurence::LEFT;
-
-        return CollisionOccurence::NONE;
     }
 }

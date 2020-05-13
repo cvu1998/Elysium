@@ -97,8 +97,8 @@ namespace Elysium
                         #ifdef _DEBUG
                         Logfile << "---------------------" << '\n';
                         Logfile << "Indexes: " << i << ", " << j << '\n';
-                        Logfile << "m_Objects[i]: " << m_Objects[i]->VerticesPosition[0].y << ", " << m_Objects[i]->VerticesPosition[2].y << '\n';
-                        Logfile << "m_Objects[j]: " << m_Objects[j]->VerticesPosition[0].y << ", " << m_Objects[j]->VerticesPosition[2].y << '\n';
+                        Logfile << "m_Objects[i]: " << m_Objects[i]->getPosition().x << ", " << m_Objects[i]->getPosition().y << '\n';
+                        Logfile << "m_Objects[j]: " << m_Objects[j]->getPosition().x << ", " << m_Objects[j]->getPosition().y << '\n';
                         #endif
 
                         if (m_Objects[j]->getCollisionOccurence(m_Objects[i]) == CollisionOccurence::TOP ||
@@ -117,10 +117,12 @@ namespace Elysium
                             m_Objects[i]->Impulse.y = -m_Objects[i]->getVelocity().y * m_Objects[i]->Mass * m_Objects[j]->getElasticityCoefficient();
                             m_Objects[j]->Impulse.y = -m_Objects[j]->getVelocity().y * m_Objects[j]->Mass * m_Objects[i]->getElasticityCoefficient();
                             
+                            float oldImpulseI = m_Objects[i]->Impulse.y;
+                            float oldImpulseJ = m_Objects[j]->Impulse.y;
                             if (abs(m_Objects[j]->getVelocity().y) > 0)
-                                m_Objects[i]->Impulse.y -= m_Objects[j]->Impulse.y;
+                                m_Objects[i]->Impulse.y -= oldImpulseJ;
                             if (abs(m_Objects[i]->getVelocity().y) > 0)
-                                m_Objects[j]->Impulse.y -= m_Objects[i]->Impulse.y;
+                                m_Objects[j]->Impulse.y -= oldImpulseI;
 
                             if (abs(m_Objects[i]->getVelocity().x) > abs(m_Objects[i]->getVelocity().x) * m_Objects[j]->getFrictionCoefficient() || abs(m_Objects[i]->Impulse.x) > 0.0f)
                             {
@@ -157,10 +159,12 @@ namespace Elysium
                             m_Objects[i]->Impulse.x = -m_Objects[i]->getVelocity().x * m_Objects[i]->Mass * m_Objects[j]->getElasticityCoefficient();
                             m_Objects[j]->Impulse.x = -m_Objects[j]->getVelocity().x * m_Objects[j]->Mass * m_Objects[i]->getElasticityCoefficient();
 
+                            float oldImpulseI = m_Objects[i]->Impulse.x;
+                            float oldImpulseJ = m_Objects[j]->Impulse.x;
                             if (abs(m_Objects[j]->getVelocity().x) > 0)
-                                m_Objects[i]->Impulse.x -= m_Objects[j]->Impulse.x;
+                                m_Objects[i]->Impulse.x -= oldImpulseJ;
                             if (abs(m_Objects[i]->getVelocity().x) > 0)
-                                m_Objects[j]->Impulse.x -= m_Objects[i]->Impulse.x;
+                                m_Objects[j]->Impulse.x -= oldImpulseI;
 
                             #ifdef _DEBUG
                             Logfile << "Force: " << m_Objects[j]->Force.x << ", " << m_Objects[i]->Force.y << '\n';
