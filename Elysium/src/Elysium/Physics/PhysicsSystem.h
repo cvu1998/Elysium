@@ -38,6 +38,7 @@ namespace Elysium
         #endif
 
     private:
+        bool areIntersecting(const PhysicalObject* object1, const PhysicalObject* object2);
         bool checkFutureBoxCollision(const PhysicalObject* object1, const PhysicalObject* object2);
 
     public:

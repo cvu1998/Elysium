@@ -13,6 +13,7 @@ enum class ObjectType
 
 enum class CollisionOccurence
 {
+    NONE = -1,
     TOP = 0,
     BOTTOM,
     LEFT,
@@ -62,6 +63,9 @@ namespace Elysium
         inline virtual float getElasticityCoefficient() const final { return ElasticityCoefficient; }
         inline virtual float getFrictionCoefficient() const final { return FrictionCoefficient; }
         inline virtual const std::array<glm::vec2, 4>& getVerticesPosition() const final { return VerticesPosition; }
+
+        virtual const glm::vec2& getMinVertex() const final;
+        virtual const glm::vec2& getMaxVertex() const final;
 
         virtual void setElasticityCoefficient(float coefficient) final;
         virtual void setFrictionCoefficient(float coefficient) final;

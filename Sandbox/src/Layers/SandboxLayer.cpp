@@ -5,10 +5,10 @@ SandboxLayer::SandboxLayer(bool* runSandbox, unsigned int width, unsigned int he
     m_CameraController((float)width / (float)height, 3.0f),
     m_ParticleSystem(100, m_CameraController.getCamera()),
     m_PhysicsSystem(5.0f, m_CameraController.getCamera()),
-    m_Player({ 0.0f, 10.0f }, { 2.0f, 2.0f }, 10.0f),
-    m_Dynamic({ 0.0f, 15.0f }, { 2.0f, 2.0f }, 10.0f), 
+    m_Player({ 0.0f, 10.0f }, { 1.0f, 2.0f }, 10.0f),
+    m_Dynamic({ 5.0f, 15.0f }, { 2.0f, 2.0f }, 10.0f), 
     m_Ground({ 0.0f, 0.0f }, {1000.0f, 2.0f}),
-    m_Box({ 5.0f, 2.0f }, { 2.0f, 2.0f }),
+    m_Box({ 2.5f, 2.0f }, { 2.0f, 2.0f }),
     m_Ceiling({ 0.0f, 20.0f }, {1000.0f, 2.0f})
 {
     Elysium::Renderer2D::Init();
@@ -51,21 +51,20 @@ SandboxLayer::SandboxLayer(bool* runSandbox, unsigned int width, unsigned int he
     m_Player.Color = { 1.0f, 1.0f, 1.0f, 1.0f };
     m_Player.texture = &m_Textures[3];
     m_Player.texture->subtextureCoordinates({ 7.5, 2.5 }, { 64, 128 });
-    //m_Player.texture->subtextureCoordinates({ 7, 6 }, { 128, 128 });
     m_Player.setElasticityCoefficient(0.0f);
     m_Player.setFrictionCoefficient(1.0f);
 
     m_Dynamic.Color = { 0.0f, 1.0f, 1.0f, 1.0f };
-    m_Dynamic.setElasticityCoefficient(0.0f);
+    m_Dynamic.setElasticityCoefficient(1.0f);
     m_Dynamic.setFrictionCoefficient(1.0f);
 
     m_Ground.Color = { 0.0f, 0.0f, 1.0f, 1.0f };
     m_Ground.setElasticityCoefficient(0.0f);
-    m_Ground.setFrictionCoefficient(0.20f);
+    m_Ground.setFrictionCoefficient(0.25f);
 
     m_Box.Color = { 1.0f, 0.0f, 0.0f, 1.0f };
     m_Box.setElasticityCoefficient(0.0f);
-    m_Box.setFrictionCoefficient(0.1f);
+    m_Box.setFrictionCoefficient(1.0f);
 
     m_Ceiling.Color = { 0.0f, 1.0f, 1.0f, 1.0f };
     m_Ceiling.setFrictionCoefficient(0.9f);
@@ -152,18 +151,19 @@ void SandboxLayer::onUpdate(Elysium::Timestep ts)
 
         if (Elysium::Input::isKeyPressed(ELY_KEY_SPACE) && SurfaceContact)
         {
-            m_Player.Impulse.y = 50.0f;
+            m_Player.Impulse.y = 5.0f * m_Player.getMass();
         }
 
         if (Elysium::Input::isKeyPressed(ELY_KEY_A))
         {
+            if (m_PlayerLookingRight)
+            {
+                m_Player.texture->reflectAroundYAxis();
+                m_PlayerLookingRight = false;
+            }
+
             if (SurfaceContact)
             {
-                if (m_PlayerLookingRight)
-                {
-                    m_Player.texture->reflectAroundYAxis();
-                    m_PlayerLookingRight = false;
-                }
                 m_Player.Impulse.x = -10.0f * m_Player.getMass() * ts;
             }
             else
@@ -171,13 +171,14 @@ void SandboxLayer::onUpdate(Elysium::Timestep ts)
         }
         else if (Elysium::Input::isKeyPressed(ELY_KEY_D))
         {
+            if (!m_PlayerLookingRight)
+            {
+                m_Player.texture->reflectAroundYAxis();
+                m_PlayerLookingRight = true;
+            }
+
             if (SurfaceContact)
             {
-                if (!m_PlayerLookingRight)
-                {
-                    m_Player.texture->reflectAroundYAxis();
-                    m_PlayerLookingRight = true;
-                }
                 m_Player.Impulse.x = 10.0f * m_Player.getMass() * ts;
             }
             else
