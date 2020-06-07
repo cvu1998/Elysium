@@ -33,10 +33,6 @@ namespace Elysium
 
         OrthographicCamera* m_Camera;
 
-        #ifdef _DEBUG
-        std::ofstream Logfile;
-        #endif
-
     private:
         bool areIntersecting(const PhysicalObject* object1, const PhysicalObject* object2);
         bool checkFutureBoxCollision(const PhysicalObject* object1, const PhysicalObject* object2);

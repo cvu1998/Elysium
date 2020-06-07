@@ -21,7 +21,7 @@ namespace Elysium
 
 		glm::vec4		ColorBegin = { 1.0f, 1.0f, 1.0f, 1.0f };
 		glm::vec4		ColorEnd = { 0.0f, 0.0f, 0.0f, 1.0f };
-		Texture*		texture = NULL;
+		TextureData		TextureData;
 
 		float			SizeBegin = 1.0f;
 		float			SizeEnd = 0.0f;
@@ -41,7 +41,7 @@ namespace Elysium
 			float RotationSpeed;
 
 			glm::vec4 ColorBegin, ColorEnd;
-			Texture* texture;
+			TextureData TextureData;
 
 			float SizeBegin, SizeEnd;
 

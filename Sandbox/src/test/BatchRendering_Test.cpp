@@ -11,9 +11,9 @@ namespace test {
         m_Textures.emplace_back("res/texture/meadow.png");
         m_Textures.emplace_back("res/texture/Vader.png");
 
-        unsigned int white = m_Textures[0].getRendererID();
-        unsigned int meadow = m_Textures[1].getRendererID();
-        unsigned int vader = m_Textures[2].getRendererID();
+        unsigned int white = m_Textures[0].getTextureData().getRendererID();
+        unsigned int meadow = m_Textures[1].getTextureData().getRendererID();
+        unsigned int vader = m_Textures[2].getTextureData().getRendererID();
 
         float vertices[] = {
 /*         x      y     R     G     B   Alpha TextureCoord TextureID     */

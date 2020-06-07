@@ -1,21 +1,41 @@
 #pragma once
 
-#include <string>
-
 #include <glm/glm.hpp>
 
 #include "Elysium/Utility.h"
 
+struct TextureData
+{
+    friend class Texture;
+
+private:
+    unsigned int m_RendererID;
+    int m_Width, m_Height;
+
+    bool m_Default = true;
+
+public:
+    bool CoordinatesInverted = false;
+    glm::vec2 TextureCoordinates[4] = { {0.0f, 0.0f}, {1.0f, 0.0f}, {1.0f, 1.0f}, {0.0f, 1.0f} };
+
+    inline unsigned int getRendererID() const { return m_RendererID; }
+    inline int getHeight() const { return m_Height; }
+    inline int getWidth() const { return m_Width; }
+    inline bool isDefault() const { return m_Default; }
+
+    void reflectAroundYAxis();
+    void repeatTexture(const glm::vec2& repetition);
+    void subtextureCoordinates(const glm::vec2& coordinates, const glm::vec2& size);
+};
+
 class Texture
 {
 private:
-    unsigned int m_RendererID;
     const char* m_FilePath;
     unsigned char* m_LocalBuffer;
-    int m_Width, m_Height, m_BPP;
+    int m_BPP;
 
-    bool m_CoordinatesInverted = false;
-    glm::vec2 m_TextureCoordinates[4] = { {0.0f, 0.0f}, {1.0f, 0.0f}, {1.0f, 1.0f}, {0.0f, 1.0f} };
+    TextureData m_Data;
 
 public:
     Texture();
@@ -25,13 +45,6 @@ public:
     void bind(unsigned int slot=0) const;
     void unBind() const;
 
-    inline unsigned int getRendererID() const { return m_RendererID; }
-    inline int getHeight() const { return m_Height; }
-    inline int getWidth() const { return m_Width; }
-
-    inline const glm::vec2* getTextureCoordinates() const { return m_TextureCoordinates; }
-
-    void reflectAroundYAxis();
-    void subtextureCoordinates(const glm::vec2& coordinates, const glm::vec2& size);
+    inline const TextureData& getTextureData() const { return m_Data; }
 };
 

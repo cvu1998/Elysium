@@ -2,6 +2,8 @@
 
 #include <Elysium.h>
 
+#include "Game/Ground.h"
+
 class SandboxLayer : public Elysium::Layer
 {
 private:
@@ -9,6 +11,7 @@ private:
 
     Elysium::OrthographicCameraController m_CameraController;
     std::vector<Texture> m_Textures;
+    TextureData m_Background;
 
     Elysium::ParticleProperties m_Particle;
     Elysium::ParticleProperties m_Particle2;
@@ -18,14 +21,9 @@ private:
     bool m_PlayerLookingRight = true;
 
     Elysium::DynamicObject m_Dynamic;
-    Elysium::StaticObject m_Ground;
+    Ground m_Ground;
     Elysium::StaticObject m_Box;
-    Elysium::StaticObject m_Ceiling;
     Elysium::PhysicsSystem m_PhysicsSystem;
-
-    float m_QuadColor[4] = { 0.75f, 0.0f, 0.75f, 1.0f };
-    float m_QuadPosition[2] = { -1.5f, -1.5f };
-    float m_RotationSpeed = 0.0f;
 
 public:
     SandboxLayer(bool* runSandbox, unsigned int height, unsigned int width);

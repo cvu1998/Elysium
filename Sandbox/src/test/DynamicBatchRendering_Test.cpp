@@ -24,7 +24,7 @@ namespace test {
             for (float y = -3.0f; y < 3.0f; y += 0.1f)
             {
                 glm::vec4 gradient = { (x + 4.0f) / 8.0f, (y + 3.0f) / 12.0f, 1.0f, 1.0f };
-                Elysium::Renderer2D::drawQuad({ x + 0.025f , y + 0.025f  }, { 0.05f, 0.05f }, gradient);
+                Elysium::Renderer2D::drawQuadWithRotation({ x + 0.025f , y + 0.025f }, { 0.05f, 0.05f }, glm::radians(m_RotationSpeed), gradient);
             }
         }
 
@@ -40,12 +40,16 @@ namespace test {
             }
         }
         glm::vec4 color = { 0.0f, 1.0f, 1.0f, 1.0f };
-        Elysium::Renderer2D::drawQuad({ -1.5f, 1.5f }, { 1.0f, 1.0f }, color);
+        Elysium::Renderer2D::drawQuadWithRotation({ -1.5f, 1.5f }, { 1.0f, 1.0f }, glm::radians(m_RotationSpeed), color);
         Elysium::Renderer2D::drawQuad({ 1.5f, 1.5f }, { 1.0f, 1.0f }, color);
 
-        Elysium::Renderer2D::drawQuad({ 1.5f, -1.5f }, { 1.0f, 1.0f }, m_Textures[1]);
-        Elysium::Renderer2D::drawQuad({ m_QuadPosition[0], m_QuadPosition[1] }, { 1.0f, 1.0f }, m_Textures[0]);
+        Elysium::Renderer2D::drawQuadWithRotation({ 1.5f, -1.5f }, { 1.0f, 1.0f }, glm::radians(m_RotationSpeed), m_Textures[1].getTextureData());
+        Elysium::Renderer2D::drawQuad({ m_QuadPosition[0], m_QuadPosition[1] }, { 1.0f, 1.0f }, m_Textures[0].getTextureData(),
+            { m_QuadColor[0], m_QuadColor[1], m_QuadColor[2], m_QuadColor[3] });
 
+        Elysium::Renderer2D::drawQuadWithRotation({ 0.0f, 0.0f }, { 2.0f, 1.0f }, glm::radians(m_RotationSpeed), color);
+
+        m_RotationSpeed += 120.0f * deltaTime;
         Elysium::Renderer2D::endScene();
     }
 
@@ -61,5 +65,7 @@ namespace test {
         ImGui::Text("Number of Draw Calls: %d", Elysium::Renderer2D::getStats().DrawCount);
         ImGui::Text("Number of Quads: %d", Elysium::Renderer2D::getStats().QuadCount);
         ImGui::End();
+
+        Elysium::Renderer2D::resetStats();
     }
 }

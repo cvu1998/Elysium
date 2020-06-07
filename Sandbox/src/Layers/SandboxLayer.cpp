@@ -6,19 +6,23 @@ SandboxLayer::SandboxLayer(bool* runSandbox, unsigned int width, unsigned int he
     m_ParticleSystem(100, m_CameraController.getCamera()),
     m_PhysicsSystem(5.0f, m_CameraController.getCamera()),
     m_Player({ 0.0f, 10.0f }, { 1.0f, 2.0f }, 10.0f),
-    m_Dynamic({ 5.0f, 15.0f }, { 2.0f, 2.0f }, 10.0f), 
-    m_Ground({ 0.0f, 0.0f }, {1000.0f, 2.0f}),
-    m_Box({ 2.5f, 2.0f }, { 2.0f, 2.0f }),
-    m_Ceiling({ 0.0f, 20.0f }, {1000.0f, 2.0f})
+    m_Dynamic({ 5.0f, 15.0f }, { 2.0f, 2.0f }, 10.0f),
+    m_Ground({ 0.0f, 0.0f }, { 1000.0f, 2.0f }),
+    m_Box({ 2.5f, 2.0f }, { 2.0f, 2.0f })
 {
     Elysium::Renderer2D::Init();
 
-    m_Textures.reserve(5);
+    m_Textures.reserve(7);
     m_Textures.emplace_back("res/texture/meadow.png");
     m_Textures.emplace_back("res/texture/Vader.png");
     m_Textures.emplace_back("res/texture/alec.png");
     m_Textures.emplace_back("res/texture/player-sprite.png");
     m_Textures.emplace_back("res/texture/RPGpack_sheet_2X.png");
+    m_Textures.emplace_back("res/texture/platformPack_tilesheet.png");
+    m_Textures.emplace_back("res/texture/background.png");
+
+    m_Background = m_Textures[6].getTextureData();
+    m_Background.repeatTexture({ 15.0f, 1.0f });
 
     m_Particle.Position = { 0.0f, 0.0f };
     m_Particle.Velocity = { 0.0f, 0.0f };
@@ -49,31 +53,30 @@ SandboxLayer::SandboxLayer(bool* runSandbox, unsigned int width, unsigned int he
     // ---------------------------------------------------------------------------------- //
 
     m_Player.Color = { 1.0f, 1.0f, 1.0f, 1.0f };
-    m_Player.texture = &m_Textures[3];
-    m_Player.texture->subtextureCoordinates({ 7.5, 2.5 }, { 64, 128 });
+    m_Player.TextureData = m_Textures[3].getTextureData();
+    m_Player.TextureData.subtextureCoordinates({ 7.5, 2.5 }, { 64, 128 });
     m_Player.setElasticityCoefficient(0.0f);
     m_Player.setFrictionCoefficient(1.0f);
 
-    m_Dynamic.Color = { 0.0f, 1.0f, 1.0f, 1.0f };
-    m_Dynamic.setElasticityCoefficient(1.0f);
+    m_Dynamic.TextureData = m_Textures[5].getTextureData();
+    m_Dynamic.TextureData.subtextureCoordinates({ 4, 1 }, { 128, 128 });
+    m_Dynamic.setElasticityCoefficient(0.0f);
     m_Dynamic.setFrictionCoefficient(1.0f);
 
-    m_Ground.Color = { 0.0f, 0.0f, 1.0f, 1.0f };
+    m_Ground.TextureData = m_Textures[5].getTextureData();
+    m_Ground.TextureData.subtextureCoordinates({ 0, 6 }, { 128, 128 });
     m_Ground.setElasticityCoefficient(0.0f);
-    m_Ground.setFrictionCoefficient(0.25f);
+    m_Ground.setFrictionCoefficient(0.5f);
 
-    m_Box.Color = { 1.0f, 0.0f, 0.0f, 1.0f };
+    m_Box.TextureData = m_Textures[5].getTextureData();
+    m_Box.TextureData.subtextureCoordinates({ 4, 1 }, { 128, 128 });
     m_Box.setElasticityCoefficient(0.0f);
     m_Box.setFrictionCoefficient(1.0f);
-
-    m_Ceiling.Color = { 0.0f, 1.0f, 1.0f, 1.0f };
-    m_Ceiling.setFrictionCoefficient(0.9f);
 
     m_PhysicsSystem.addPhysicalObject(&m_Dynamic);
     m_PhysicsSystem.addPhysicalObject(&m_Player);
     m_PhysicsSystem.addPhysicalObject(&m_Ground);
     m_PhysicsSystem.addPhysicalObject(&m_Box);
-    m_PhysicsSystem.addPhysicalObject(&m_Ceiling);
 }
 
 SandboxLayer::~SandboxLayer()
@@ -89,37 +92,8 @@ void SandboxLayer::onUpdate(Elysium::Timestep ts)
 
         Elysium::Renderer2D::beginScene(m_CameraController.getCamera());
 
-        for (float x = -4.0f; x < 4.0f; x += 0.1f)
-        {
-            for (float y = -3.0f; y < 3.0f; y += 0.1f)
-            {
-                glm::vec4 gradient = { (x + 4.0f) / 8.0f, (y + 3.0f) / 12.0f, 1.0f, 1.0f };
-                Elysium::Renderer2D::drawQuadWithRotation({ x + 0.025f , y + 0.025f }, { 0.05f, 0.05f }, glm::radians(m_RotationSpeed), gradient);
-            }
-        }
-
-        glm::vec4 black = { 0.0f, 0.0f, 0.0f, 1.0f };
-        glm::vec4 white = { 1.0f, 1.0f, 1.0f, 1.0f };
-
-        for (int x = -2; x < 2; x++)
-        {
-            for (int y = -2; y < 2; y++)
-            {
-                glm::vec4 color = (x + y) % 2 == 0 ? white : black;
-                Elysium::Renderer2D::drawQuad({ x + 0.5f , y + 0.5f }, { 1.0f, 1.0f }, color);
-            }
-        }
-        glm::vec4 color = { 0.0f, 1.0f, 1.0f, 1.0f };
-        Elysium::Renderer2D::drawQuadWithRotation({ -1.5f, 1.5f }, { 1.0f, 1.0f }, glm::radians(m_RotationSpeed), color);
-        Elysium::Renderer2D::drawQuad({ 1.5f, 1.5f }, { 1.0f, 1.0f }, color);
-
-        Elysium::Renderer2D::drawQuadWithRotation({ 1.5f, -1.5f }, { 1.0f, 1.0f }, glm::radians(m_RotationSpeed), m_Textures[1]);
-        Elysium::Renderer2D::drawQuad({ m_QuadPosition[0], m_QuadPosition[1] }, { 1.0f, 1.0f }, m_Textures[0], 
-            { m_QuadColor[0], m_QuadColor[1], m_QuadColor[2], m_QuadColor[3] });
-
-        Elysium::Renderer2D::drawQuadWithRotation({ 0.0f, 0.0f }, { 2.0f, 1.0f }, glm::radians(m_RotationSpeed), color);
-
-        m_RotationSpeed += 120.0f * ts;
+        Elysium::Renderer2D::drawQuad({ 0.0f, 15.0f }, { 1000.0f, 30.0f }, m_Background);
+        
         Elysium::Renderer2D::endScene();
 
         auto [x, y] = Elysium::Input::getMousePosition();
@@ -158,7 +132,7 @@ void SandboxLayer::onUpdate(Elysium::Timestep ts)
         {
             if (m_PlayerLookingRight)
             {
-                m_Player.texture->reflectAroundYAxis();
+                m_Player.TextureData.reflectAroundYAxis();
                 m_PlayerLookingRight = false;
             }
 
@@ -173,7 +147,7 @@ void SandboxLayer::onUpdate(Elysium::Timestep ts)
         {
             if (!m_PlayerLookingRight)
             {
-                m_Player.texture->reflectAroundYAxis();
+                m_Player.TextureData.reflectAroundYAxis();
                 m_PlayerLookingRight = true;
             }
 

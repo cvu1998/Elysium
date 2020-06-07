@@ -49,8 +49,8 @@ namespace Elysium
 
     void PhysicalObject::Draw()
     {
-       if (texture)
-           Renderer2D::drawQuad(Position, Size, *texture, Color);
+       if (!TextureData.isDefault())
+           Renderer2D::drawQuad(Position, Size, TextureData, Color);
        else
            Renderer2D::drawQuad(Position, Size, Color);
     }

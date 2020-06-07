@@ -31,12 +31,12 @@ namespace Elysium
         // |      |
         // v0----v1
         static void drawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color);
-        static void drawQuad(const glm::vec2& position, const glm::vec2& size, const Texture& texture,
+        static void drawQuad(const glm::vec2& position, const glm::vec2& size, const TextureData& texture,
             const glm::vec4& color = { 1.0f, 1.0f, 1.0f, 1.0f });
 
         // ---Rotation in radians---
         static void drawQuadWithRotation(const glm::vec2& position, const glm::vec2& size, float rotation, const glm::vec4& color);
-        static void drawQuadWithRotation(const glm::vec2& position, const glm::vec2& size, float rotation, const Texture& texture,
+        static void drawQuadWithRotation(const glm::vec2& position, const glm::vec2& size, float rotation, const TextureData& texture,
             const glm::vec4& color = { 1.0f, 1.0f, 1.0f, 1.0f });
 
         struct Stats {

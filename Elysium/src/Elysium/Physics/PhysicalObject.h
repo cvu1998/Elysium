@@ -47,7 +47,7 @@ namespace Elysium
         glm::vec2 Impulse = { 0.0f, 0.0f };
 
         glm::vec4 Color = { 1.0f, 1.0f, 1.0f, 1.0f };
-        Texture* texture = NULL;
+        TextureData TextureData;
 
     public:
         PhysicalObject(const glm::vec2& initialPosition, const glm::vec2& size, ObjectType type);
@@ -71,7 +71,7 @@ namespace Elysium
         virtual void setFrictionCoefficient(float coefficient) final;
         inline virtual void setGravitationalAccel(float acceleration) final { GravitationalAccel = acceleration; }
 
-        virtual void Draw() final;
+        virtual void Draw();
 
         virtual CollisionOccurence getCollisionOccurence(const PhysicalObject* object) const final;
 

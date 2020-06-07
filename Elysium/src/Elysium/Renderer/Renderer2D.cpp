@@ -2,7 +2,7 @@
 
 #include <array>
 
-#include "Math.h"
+#include "Elysium/Math.h"
 
 static const size_t MaxQuadCount = 10000;
 static const size_t MaxVertexCount = MaxQuadCount * 4;
@@ -77,7 +77,7 @@ namespace Elysium
         GL_ASSERT(glEnable(GL_BLEND));
         GL_ASSERT(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
-        s_Data->TextureSlots[0] = s_Data->white.getRendererID();
+        s_Data->TextureSlots[0] = s_Data->white.getTextureData().getRendererID();
         for (size_t i = 1; i < MaxTextureCount; i++)
         {
             s_Data->TextureSlots[i] = 0;
@@ -169,7 +169,7 @@ namespace Elysium
         s_Data->RendererStats.QuadCount++;
     }
 
-    void Renderer2D::drawQuad(const glm::vec2& position, const glm::vec2& size, const Texture& texture, const glm::vec4& color)
+    void Renderer2D::drawQuad(const glm::vec2& position, const glm::vec2& size, const TextureData& texture, const glm::vec4& color)
     {
         if (s_Data->IndexCount >= MaxIndexCount || s_Data->TextureSlotIndex > 32)
         {
@@ -205,7 +205,7 @@ namespace Elysium
                 position.y + halfWidth * s_Data->PositionSign[i].y };
 
             s_Data->BufferPtr->color = color;
-            s_Data->BufferPtr->TextureCoordinates = texture.getTextureCoordinates()[i];
+            s_Data->BufferPtr->TextureCoordinates = texture.TextureCoordinates[i];
             s_Data->BufferPtr->TextureID = textureIndex;
             s_Data->BufferPtr++;
         }
@@ -247,7 +247,7 @@ namespace Elysium
         s_Data->RendererStats.QuadCount++;
     }
 
-    void Renderer2D::drawQuadWithRotation(const glm::vec2& position, const glm::vec2& size, float rotation, const Texture& texture, const glm::vec4& color)
+    void Renderer2D::drawQuadWithRotation(const glm::vec2& position, const glm::vec2& size, float rotation, const TextureData& texture, const glm::vec4& color)
     {
         if (s_Data->IndexCount >= MaxIndexCount || s_Data->TextureSlotIndex > 32)
         {
@@ -285,7 +285,7 @@ namespace Elysium
                 + translation);
 
             s_Data->BufferPtr->color = color;
-            s_Data->BufferPtr->TextureCoordinates = texture.getTextureCoordinates()[i];
+            s_Data->BufferPtr->TextureCoordinates = texture.TextureCoordinates[i];
             s_Data->BufferPtr->TextureID = textureIndex;
             s_Data->BufferPtr++;
         }

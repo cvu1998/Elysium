@@ -372,7 +372,7 @@
     <ClInclude Include="src\Elysium\Physics\PhysicalObject.h" />
     <ClInclude Include="src\Elysium\Physics\PhysicsSystem.h" />
     <ClInclude Include="src\Elysium\Random.h" />
-    <ClInclude Include="src\Elysium\Renderer\Math.h" />
+    <ClInclude Include="src\Elysium\Math.h" />
     <ClInclude Include="src\Elysium\Renderer\Camera.h" />
     <ClInclude Include="src\Elysium\MouseCodes.h" />
     <ClInclude Include="src\Elysium\Renderer\Renderer2D.h" />

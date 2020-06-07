@@ -13,6 +13,8 @@
 
 #include "Elysium/OrthographicCameraController.h"
 #include "Elysium/ParticleSystem.h"
+
+#include "Elysium/Math.h"
 #include "Elysium/Random.h"
 
 #include "Elysium/Physics/DynamicObject.h"
