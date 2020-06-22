@@ -104,8 +104,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(ProjectDir)src\*.h" "$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)\include\" /S /Y /I
-xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)\include\" /S /Y /I
+      <Command>xcopy "$(ProjectDir)src\*.h" "$(SolutionDir)bin\include\" /S /Y /I
+xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\include\" /S /Y /I
 </Command>
     </PostBuildEvent>
     <Lib>
@@ -135,8 +135,8 @@ xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\$(Configuration)-$(Platform)\$
       <AdditionalLibraryDirectories>$(SolutionDir)bin\$(Configuration)-$(Platform)\Glad\</AdditionalLibraryDirectories>
     </Lib>
     <PostBuildEvent>
-      <Command>xcopy "$(ProjectDir)src\*.h" "$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)\include\" /S /Y /I
-xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)\include\" /S /Y /I
+      <Command>xcopy "$(ProjectDir)src\*.h" "$(SolutionDir)bin\include\" /S /Y /I
+xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\include\" /S /Y /I
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -158,8 +158,8 @@ xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\$(Configuration)-$(Platform)\$
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(ProjectDir)src\*.h" "$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)\include\" /S /Y /I
-xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)\include\" /S /Y /I
+      <Command>xcopy "$(ProjectDir)src\*.h" "$(SolutionDir)bin\include\" /S /Y /I
+xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\include\" /S /Y /I
 </Command>
     </PostBuildEvent>
     <Lib>
@@ -193,8 +193,8 @@ xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\$(Configuration)-$(Platform)\$
       <AdditionalLibraryDirectories>$(SolutionDir)bin\$(Configuration)-$(Platform)\Glad\</AdditionalLibraryDirectories>
     </Lib>
     <PostBuildEvent>
-      <Command>xcopy "$(ProjectDir)src\*.h" "$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)\include\" /S /Y /I
-xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)\include\" /S /Y /I
+      <Command>xcopy "$(ProjectDir)src\*.h" "$(SolutionDir)bin\include\" /S /Y /I
+xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\include\" /S /Y /I
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
