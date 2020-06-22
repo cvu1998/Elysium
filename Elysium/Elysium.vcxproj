@@ -104,8 +104,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>xcopy "$(ProjectDir)src\*.h" "$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)\include\" /S /Y /I
+xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)\include\" /S /Y /I
+</Command>
     </PostBuildEvent>
     <Lib>
       <AdditionalDependencies>Glad.lib</AdditionalDependencies>
@@ -133,6 +134,11 @@
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)bin\$(Configuration)-$(Platform)\Glad\</AdditionalLibraryDirectories>
     </Lib>
+    <PostBuildEvent>
+      <Command>xcopy "$(ProjectDir)src\*.h" "$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)\include\" /S /Y /I
+xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)\include\" /S /Y /I
+</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -152,8 +158,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>xcopy "$(ProjectDir)src\*.h" "$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)\include\" /S /Y /I
+xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)\include\" /S /Y /I
+</Command>
     </PostBuildEvent>
     <Lib>
       <AdditionalDependencies>Glad.lib</AdditionalDependencies>
@@ -185,6 +192,11 @@
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)bin\$(Configuration)-$(Platform)\Glad\</AdditionalLibraryDirectories>
     </Lib>
+    <PostBuildEvent>
+      <Command>xcopy "$(ProjectDir)src\*.h" "$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)\include\" /S /Y /I
+xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)\include\" /S /Y /I
+</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Elysium\Input.cpp" />

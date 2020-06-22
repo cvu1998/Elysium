@@ -135,8 +135,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\lib\$(Platform);$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\;$(SolutionDir)bin\$(Configuration)-$(Platform)\Glad\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>user32.lib;gdi32.lib;shell32.lib;glfw3.lib;opengl32.lib;Glad.lib;Elysium.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\lib\$(Platform);$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\</AdditionalLibraryDirectories>
+      <AdditionalDependencies>user32.lib;gdi32.lib;shell32.lib;glfw3.lib;Elysium.lib</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>mkdir "$(TargetDir)res"
@@ -155,8 +155,8 @@ xcopy /E /Y "$(ProjectDir)res" "$(SolutionDir)bin\$(Configuration)-$(Platform)\S
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\lib\$(Platform);$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\;$(SolutionDir)bin\$(Configuration)-$(Platform)\Glad\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>user32.lib;gdi32.lib;shell32.lib;glfw3.lib;opengl32.lib;Glad.lib;Elysium.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\lib\$(Platform);$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\</AdditionalLibraryDirectories>
+      <AdditionalDependencies>user32.lib;gdi32.lib;shell32.lib;glfw3.lib;Elysium.lib</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>mkdir "$(TargetDir)res"
@@ -175,8 +175,8 @@ xcopy /E /Y "$(ProjectDir)res" "$(SolutionDir)bin\$(Configuration)-$(Platform)\S
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\lib\$(Platform);$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\;$(SolutionDir)bin\$(Configuration)-$(Platform)\Glad\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>user32.lib;gdi32.lib;shell32.lib;glfw3.lib;opengl32.lib;Glad.lib;Elysium.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\lib\$(Platform);$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\</AdditionalLibraryDirectories>
+      <AdditionalDependencies>user32.lib;gdi32.lib;shell32.lib;glfw3.lib;Elysium.lib</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>mkdir "$(TargetDir)res"
@@ -199,8 +199,8 @@ xcopy /E /Y "$(ProjectDir)res" "$(SolutionDir)bin\$(Configuration)-$(Platform)\S
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\lib\$(Platform);$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\;$(SolutionDir)bin\$(Configuration)-$(Platform)\Glad\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>user32.lib;gdi32.lib;shell32.lib;glfw3.lib;opengl32.lib;Glad.lib;Elysium.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\lib\$(Platform);$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\</AdditionalLibraryDirectories>
+      <AdditionalDependencies>user32.lib;gdi32.lib;shell32.lib;glfw3.lib;Elysium.lib</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>mkdir "$(TargetDir)res"

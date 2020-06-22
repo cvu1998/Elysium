@@ -9,7 +9,9 @@ class SandboxLayer : public Elysium::Layer
 private:
     bool* m_RunSandbox;
 
-    Elysium::OrthographicCameraController m_CameraController;
+    float m_Height = 30.0f;
+
+    Elysium::OrthographicCamera m_Camera;
     std::vector<Texture> m_Textures;
     TextureData m_Background;
 
