@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Utility>
+
 #include <glm/glm.hpp>
 
 namespace Elysium
@@ -12,6 +14,7 @@ namespace Elysium
         glm::mat4 m_ViewMatrix;
 
         glm::vec3 m_Position;
+        glm::vec2 m_Bounds;
         float m_Rotation = 0.0f;
 
     private:
@@ -38,5 +41,7 @@ namespace Elysium
         inline const glm::mat4& getProjectionMatrix() const { return m_ProjectionMatrix; }
         inline const glm::mat4& getViewnMatrix() const { return m_ViewMatrix; }
         inline const glm::mat4& getViewProjectionMatrix() const { return m_ViewProjectionMatrix; }
+
+        glm::vec2 getScreenToWorldPosition(unsigned int width, unsigned int height, std::pair<float,float>& position);
     };
 }

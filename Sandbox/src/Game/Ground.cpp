@@ -1,6 +1,6 @@
 #include "Ground.h"
 
-Ground::Ground(const glm::vec2& initialPosition, const glm::vec2& size) : Elysium::StaticObject(initialPosition, size)
+Ground::Ground(const char* name, const glm::vec2& initialPosition, const glm::vec2& size) : Elysium::StaticObject(name, initialPosition, size)
 {
 }
 

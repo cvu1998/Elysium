@@ -22,7 +22,7 @@ private:
     Elysium::DynamicObject m_Player;
     bool m_PlayerLookingRight = true;
 
-    Elysium::DynamicObject m_Dynamic;
+    Elysium::DynamicObject m_MoveableBox;
     Ground m_Ground;
     Elysium::StaticObject m_Box;
     Elysium::PhysicsSystem m_PhysicsSystem;

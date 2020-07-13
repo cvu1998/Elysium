@@ -127,7 +127,8 @@ namespace Elysium
     void Renderer2D::flush()
     {
         for (unsigned int i = 0; i < s_Data->TextureSlotIndex; i++) {
-            GL_ASSERT(glBindTextureUnit(i, s_Data->TextureSlots[i]));
+            GL_ASSERT(glActiveTexture(GL_TEXTURE0 + i));
+            GL_ASSERT(glBindTexture(GL_TEXTURE_2D, s_Data->TextureSlots[i]));
         }
 
         s_Data->vArray->bind();
@@ -227,13 +228,12 @@ namespace Elysium
 
         float textureIndex = 0.0f;
 
-        Elysium::Complex transform(cos(rotation), sin(rotation));
-        Elysium::Complex translation(position.x, position.y);
+        Complex transform(cos(rotation), sin(rotation));
+        Complex translation(position.x, position.y);
 
         for (size_t i = 0; i < 4; i++)
         {
-            s_Data->BufferPtr->position = (glm::vec2) (Elysium::Complex::scaleXY(
-                Elysium::Complex(s_Data->QuadVertexPositions[i].x, s_Data->QuadVertexPositions[i].y), size.x, size.y)
+            s_Data->BufferPtr->position = (glm::vec2) (Complex::scaleXY(Complex(s_Data->QuadVertexPositions[i].x, s_Data->QuadVertexPositions[i].y), size.x, size.y)
                 * transform
                 + translation);
 
@@ -274,13 +274,12 @@ namespace Elysium
             s_Data->TextureSlotIndex++;
         }
 
-        Elysium::Complex transform(cos(rotation), sin(rotation));
-        Elysium::Complex translation(position.x, position.y);
+        Complex transform(cos(rotation), sin(rotation));
+        Complex translation(position.x, position.y);
 
         for (size_t i = 0; i < 4; i++)
         {
-            s_Data->BufferPtr->position = (glm::vec2) (Elysium::Complex::scaleXY(
-                Elysium::Complex(s_Data->QuadVertexPositions[i].x, s_Data->QuadVertexPositions[i].y), size.x, size.y)
+            s_Data->BufferPtr->position = (glm::vec2) (Complex::scaleXY(Complex(s_Data->QuadVertexPositions[i].x, s_Data->QuadVertexPositions[i].y), size.x, size.y)
                 * transform
                 + translation);
 

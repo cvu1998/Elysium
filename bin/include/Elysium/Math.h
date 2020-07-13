@@ -4,6 +4,21 @@
 
 namespace Elysium
 {
+    using Vector2 = glm::vec2;
+    using Vector3 = glm::vec3;
+    using Vector4 = glm::vec4;
+
+    template<class T>
+    static T normalize(const T& vector)
+    {
+        return glm::normalize(vector);
+    }
+
+    static float radians(float angle)
+    {
+        return glm::radians(angle);
+    }
+
     struct Complex
     {
     public:

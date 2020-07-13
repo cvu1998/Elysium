@@ -2,37 +2,21 @@
 
 namespace Elysium
 {
-    PhysicalObject::PhysicalObject(const glm::vec2& initialPosition, const glm::vec2& size, ObjectType type) :
+    PhysicalObject::PhysicalObject(const char* name, const Vector2& initialPosition, const Vector2& size, ObjectType type) :
+        Name(name),
         Position(initialPosition),
         Size(size),
+        BroadSize(std::max(size.x, size.y)),
         m_Type(type)
     {
-        VerticesPosition[0] = { initialPosition.x - size.x / 2, initialPosition.y - size.y / 2 };
-        VerticesPosition[1] = { initialPosition.x + size.x / 2, initialPosition.y - size.y / 2 };
-        VerticesPosition[2] = { initialPosition.x + size.x / 2, initialPosition.y + size.y / 2 };
-        VerticesPosition[3] = { initialPosition.x - size.x / 2, initialPosition.y + size.y / 2 };
-    }
-
-    const glm::vec2& PhysicalObject::getMinVertex() const
-    {
-        unsigned int index = 0;
-        for (unsigned int i = 1; i < 4; i++)
-        {
-            if (VerticesPosition[i].x < VerticesPosition[index].x || VerticesPosition[i].y < VerticesPosition[index].y)
-                index = i;
-        }
-        return VerticesPosition[index];
-    }
-
-    const glm::vec2& PhysicalObject::getMaxVertex() const
-    {
-        unsigned int index = 0;
-        for (unsigned int i = 1; i < 4; i++)
-        {
-            if (VerticesPosition[i].x > VerticesPosition[index].x || VerticesPosition[i].y > VerticesPosition[index].y)
-                index = i;
-        }
-        return VerticesPosition[index];
+        float halfLength = size.x / 2.0f;
+        float halfWidth = size.y / 2.0f;
+        
+        m_ModelVertices.reserve(4);
+        m_ModelVertices.emplace_back(-halfLength, -halfWidth);
+        m_ModelVertices.emplace_back( halfLength, -halfWidth);
+        m_ModelVertices.emplace_back( halfLength,  halfWidth);
+        m_ModelVertices.emplace_back(-halfLength,  halfWidth);
     }
 
     void PhysicalObject::setElasticityCoefficient(float coefficient)
@@ -47,30 +31,38 @@ namespace Elysium
             FrictionCoefficient = coefficient;
     }
 
+    Vector2 PhysicalObject::tranformVertex(const Vector2& vertex) const
+    {
+        Complex transform(cos(Rotation), sin(Rotation));
+        Complex translation(Position.x, Position.y);
+
+        return (Vector2) (Complex(vertex.x, vertex.y) * transform + translation);
+    }
+
+    std::vector<Vector2> PhysicalObject::getModelVertices() const
+    {
+        std::vector<Vector2> vertices;
+
+        for (Vector2 vertex : m_ModelVertices)
+            vertices.push_back(tranformVertex(vertex));
+
+        return vertices;
+    }
+
+    std::vector<Vector2> PhysicalObject::getNormals() const
+    {
+        std::vector<Vector2> vertices = getModelVertices();
+        std::vector<Vector2> normals;
+        normals.emplace_back(-(vertices[0].y - vertices[1].y), vertices[0].x - vertices[1].x);
+        normals.emplace_back(-(vertices[1].y - vertices[2].y), vertices[1].x - vertices[2].x);
+        return normals;
+    }
+
     void PhysicalObject::Draw()
     {
        if (!TextureData.isDefault())
            Renderer2D::drawQuad(Position, Size, TextureData, Color);
        else
            Renderer2D::drawQuad(Position, Size, Color);
-    }
-
-    CollisionOccurence PhysicalObject::getCollisionOccurence(const PhysicalObject* object) const
-    {
-        glm::vec2 ObjectMax = object->getMaxVertex();
-        glm::vec2 ObjectMin = object->getMinVertex();
-
-        glm::vec2 max = getMaxVertex();
-        glm::vec2 min = getMinVertex();
-
-        if (max.x >= object->getPosition().x && min.x <= object->getPosition().x && (max.y + Size.y) >= object->getPosition().y && (min.y + Size.y) <= object->getPosition().y)
-            return CollisionOccurence::TOP;
-        else if ((max.x - Size.x) >= object->getPosition().x && (min.x - Size.x) <= object->getPosition().x && max.y >= object->getPosition().y && min.y <= object->getPosition().y)
-            return CollisionOccurence::LEFT;
-        else if (max.x >= object->getPosition().x && min.x <= object->getPosition().x && (max.y - Size.y) >= object->getPosition().y && (min.y - Size.y) <= object->getPosition().y)
-            return CollisionOccurence::BOTTOM;
-        else if ((max.x + Size.x) >= object->getPosition().x && (min.x + Size.x) <= object->getPosition().x && max.y >= object->getPosition().y && min.y <= object->getPosition().y)
-            return CollisionOccurence::RIGHT;
-        return CollisionOccurence::NONE;
     }
 }

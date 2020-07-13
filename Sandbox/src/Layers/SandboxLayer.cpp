@@ -5,10 +5,10 @@ SandboxLayer::SandboxLayer(bool* runSandbox, unsigned int width, unsigned int he
     m_Camera(-m_Height * (float)(width / height), m_Height* (float)(width / height), 0.0f, m_Height),
     m_ParticleSystem(100, m_Camera),
     m_PhysicsSystem(5.0f, m_Camera),
-    m_Player({ 0.0f, 10.0f }, { 1.0f, 2.0f }, 10.0f),
-    m_Dynamic({ 5.0f, 15.0f }, { 2.0f, 2.0f }, 10.0f),
-    m_Ground({ 0.0f, 0.0f }, { 1000.0f, 2.0f }),
-    m_Box({ 2.5f, 2.0f }, { 2.0f, 2.0f })
+    m_Player("Player", { 0.0f, 10.0f }, { 1.0f, 2.0f }, 10.0f),
+    m_MoveableBox("Box", { 5.0f, 15.0f }, { 2.0f, 2.0f }, 10.0f),
+    m_Ground("Ground",{ 0.0f, 0.0f }, { 1000.0f, 2.0f }),
+    m_Box("Box", { 2.5f, 2.0f }, { 2.0f, 2.0f })
 {
     Elysium::Renderer2D::Init();
 
@@ -58,10 +58,10 @@ SandboxLayer::SandboxLayer(bool* runSandbox, unsigned int width, unsigned int he
     m_Player.setElasticityCoefficient(0.0f);
     m_Player.setFrictionCoefficient(1.0f);
 
-    m_Dynamic.TextureData = m_Textures[5].getTextureData();
-    m_Dynamic.TextureData.subtextureCoordinates({ 4, 1 }, { 128, 128 });
-    m_Dynamic.setElasticityCoefficient(0.0f);
-    m_Dynamic.setFrictionCoefficient(1.0f);
+    m_MoveableBox.TextureData = m_Textures[5].getTextureData();
+    m_MoveableBox.TextureData.subtextureCoordinates({ 4, 1 }, { 128, 128 });
+    m_MoveableBox.setElasticityCoefficient(0.0f);
+    m_MoveableBox.setFrictionCoefficient(1.0f);
 
     m_Ground.TextureData = m_Textures[5].getTextureData();
     m_Ground.TextureData.subtextureCoordinates({ 0, 6 }, { 128, 128 });
@@ -72,8 +72,9 @@ SandboxLayer::SandboxLayer(bool* runSandbox, unsigned int width, unsigned int he
     m_Box.TextureData.subtextureCoordinates({ 4, 1 }, { 128, 128 });
     m_Box.setElasticityCoefficient(0.0f);
     m_Box.setFrictionCoefficient(1.0f);
-
-    m_PhysicsSystem.addPhysicalObject(&m_Dynamic);
+    
+    m_PhysicsSystem.Gravity = true;
+    m_PhysicsSystem.addPhysicalObject(&m_MoveableBox);
     m_PhysicsSystem.addPhysicalObject(&m_Player);
     m_PhysicsSystem.addPhysicalObject(&m_Ground);
     m_PhysicsSystem.addPhysicalObject(&m_Box);
@@ -88,7 +89,7 @@ void SandboxLayer::onUpdate(Elysium::Timestep ts)
 {
     if (*m_RunSandbox)
     {
-        m_Camera.setPosition({ m_Player.getPosition().x, 0.0f, 0.0f });
+        m_Camera.setPosition({ m_Player.getPosition().x, m_Player.getPosition().y - m_Player.getSize().y, 0.0f });
 
         Elysium::Renderer2D::beginScene(m_Camera);
 
@@ -96,36 +97,33 @@ void SandboxLayer::onUpdate(Elysium::Timestep ts)
         
         Elysium::Renderer2D::endScene();
 
-        auto [x, y] = Elysium::Input::getMousePosition();
+        auto mousePosition = Elysium::Input::getMousePosition();
         auto width = Elysium::Application::Get().getWindow().getWidth();
         auto height = Elysium::Application::Get().getWindow().getHeight();
 
-        //auto pos = m_CameraController.getCamera().getPosition();
-        //x = (x / width) * m_CameraController.getBoundsWidth() - m_CameraController.getBoundsWidth() * 0.5f;
-        //y = m_CameraController.getBoundsHeight() * 0.5f - (y / height) * m_CameraController.getBoundsHeight();
-        //m_Particle.Position = { x + pos.x, y + pos.y };
+        m_Particle.Position = m_Camera.getScreenToWorldPosition(width, height, mousePosition);
         m_Particle2.Position = { m_Player.getPosition().x,  m_Player.getPosition().y };
 
         for (int i = 0; i < 5; i++)
         {
-            //m_ParticleSystem.Emit(m_Particle);
+            m_ParticleSystem.Emit(m_Particle);
             m_ParticleSystem.Emit(m_Particle2);
         }
         m_ParticleSystem.OnUpdate(ts);
 
         m_PhysicsSystem.onUpdate(ts);
 
-        bool SurfaceContact =
-           (m_PhysicsSystem.areColliding(&m_Player, &m_Ground) &&
-            m_Ground.getCollisionOccurence(&m_Player) == CollisionOccurence::TOP) ||
-           (m_PhysicsSystem.areColliding(&m_Player, &m_Box) &&
-            m_Box.getCollisionOccurence(&m_Player) == CollisionOccurence::TOP) ||
-           (m_PhysicsSystem.areColliding(&m_Player, &m_Dynamic) &&
-            m_Dynamic.getCollisionOccurence(&m_Player) == CollisionOccurence::TOP);
+        //bool SurfaceContact =
+        //   (m_PhysicsSystem.areColliding(&m_Player, &m_Ground) &&
+        //    m_Ground.getCollisionOccurence(&m_Player) == CollisionOccurence::TOP) ||
+        //   (m_PhysicsSystem.areColliding(&m_Player, &m_Box) &&
+        //    m_Box.getCollisionOccurence(&m_Player) == CollisionOccurence::TOP) ||
+        //   (m_PhysicsSystem.areColliding(&m_Player, &m_MoveableBox) &&
+        //    m_MoveableBox.getCollisionOccurence(&m_Player) == CollisionOccurence::TOP);
 
-        if (Elysium::Input::isKeyPressed(ELY_KEY_SPACE) && SurfaceContact)
+        if (Elysium::Input::isKeyPressed(ELY_KEY_SPACE))
         {
-            m_Player.Impulse.y = 5.0f * m_Player.getMass();
+            m_Player.Impulse.y = 5.0f * m_Player.Mass;
         }
 
         if (Elysium::Input::isKeyPressed(ELY_KEY_A))
@@ -136,12 +134,12 @@ void SandboxLayer::onUpdate(Elysium::Timestep ts)
                 m_PlayerLookingRight = false;
             }
 
-            if (SurfaceContact)
+            //if (SurfaceContact)
             {
-                m_Player.Impulse.x = -10.0f * m_Player.getMass() * ts;
+                m_Player.Impulse.x = -10.0f * m_Player.Mass * ts;
             }
-            else
-                m_Player.Impulse.x = -2.0f * m_Player.getMass() * ts;
+            //else
+                m_Player.Impulse.x = -2.0f * m_Player.Mass * ts;
         }
         else if (Elysium::Input::isKeyPressed(ELY_KEY_D))
         {
@@ -151,12 +149,12 @@ void SandboxLayer::onUpdate(Elysium::Timestep ts)
                 m_PlayerLookingRight = true;
             }
 
-            if (SurfaceContact)
+            //if (SurfaceContact)
             {
-                m_Player.Impulse.x = 10.0f * m_Player.getMass() * ts;
+                m_Player.Impulse.x = 10.0f * m_Player.Mass * ts;
             }
-            else
-                m_Player.Impulse.x = 2.0f * m_Player.getMass() * ts;
+            //else
+                m_Player.Impulse.x = 2.0f * m_Player.Mass * ts;
         }
 
         ImGui::Begin("Statistics");
