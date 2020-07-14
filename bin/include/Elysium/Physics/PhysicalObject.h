@@ -26,8 +26,6 @@ namespace Elysium
         Vector2 Velocity = { 0.0f, 0.0f };
         Vector2 Acceleration = { 0.0f, 0.0f };
 
-        float Rotation = 0.0f;
-
         std::vector<Vector2> m_ModelVertices;
         
         float ElasticityCoefficient = 1.0f;
@@ -39,11 +37,13 @@ namespace Elysium
         Vector2 Force = { 0.0f, 0.0f };
         Vector2 Impulse = { 0.0f, 0.0f };
 
+        float Rotation = 0.0f;
+
         Vector4 Color = { 1.0f, 1.0f, 1.0f, 1.0f };
         TextureData TextureData;
 
     protected:
-        virtual Vector2 tranformVertex(const Vector2& vertex) final;
+        virtual Vector2 tranformVertex(const Vector2& vertex) const final;
 
     public:
         PhysicalObject(const char* name, const Vector2& initialPosition, const Vector2& size, ObjectType type);
@@ -62,9 +62,10 @@ namespace Elysium
         inline virtual float getFrictionCoefficient() const final { return FrictionCoefficient; }
 
         virtual void setModelVertices(const std::vector<Vector2>& vertices) final { m_ModelVertices = vertices; }
-        virtual std::vector<Vector2>getModelVertices() final;
+        virtual const std::vector<Vector2>& getModelVertices() const final { return m_ModelVertices; }
+        virtual std::vector<Vector2>getVertices() const final;
 
-        virtual std::vector<Vector2>getNormals();
+        virtual std::vector<Vector2>getNormals() const;
         virtual void Draw();
 
         virtual void onCollision() = 0;
@@ -73,8 +74,6 @@ namespace Elysium
 
     struct ObjectCollisionInfo
     {
-        PhysicalObject* object = nullptr;
         Vector2 Normal = { 0.0f, 0.0f };
-        Vector2 MTV = { 0.0f, 0.0f };
     };
 }

@@ -39,7 +39,7 @@ namespace Elysium
         return (Vector2) (Complex(vertex.x, vertex.y) * transform + translation);
     }
 
-    std::vector<Vector2> PhysicalObject::getModelVertices() const
+    std::vector<Vector2> PhysicalObject::getVertices() const
     {
         std::vector<Vector2> vertices;
 
@@ -51,7 +51,7 @@ namespace Elysium
 
     std::vector<Vector2> PhysicalObject::getNormals() const
     {
-        std::vector<Vector2> vertices = getModelVertices();
+        std::vector<Vector2> vertices = getVertices();
         std::vector<Vector2> normals;
         normals.emplace_back(-(vertices[0].y - vertices[1].y), vertices[0].x - vertices[1].x);
         normals.emplace_back(-(vertices[1].y - vertices[2].y), vertices[1].x - vertices[2].x);
@@ -61,8 +61,8 @@ namespace Elysium
     void PhysicalObject::Draw()
     {
        if (!TextureData.isDefault())
-           Renderer2D::drawQuad(Position, Size, TextureData, Color);
+           Renderer2D::drawQuadWithRotation(Position, Size, Rotation, TextureData, Color);
        else
-           Renderer2D::drawQuad(Position, Size, Color);
+           Renderer2D::drawQuadWithRotation(Position, Size, Rotation, Color);
     }
 }

@@ -2,8 +2,6 @@
 
 #include <Elysium.h>
 
-#include "Game/Ground.h"
-
 class SandboxLayer : public Elysium::Layer
 {
 private:
@@ -23,7 +21,7 @@ private:
     bool m_PlayerLookingRight = true;
 
     Elysium::DynamicObject m_MoveableBox;
-    Ground m_Ground;
+    Elysium::StaticObject m_Ground;
     Elysium::StaticObject m_Box;
     Elysium::PhysicsSystem m_PhysicsSystem;
 

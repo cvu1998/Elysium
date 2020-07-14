@@ -1,5 +1,7 @@
 #pragma once
 
+#include <fstream>
+#include <limits>
 #include <unordered_map>
 
 #include "Elysium/Math.h"
@@ -10,7 +12,8 @@ namespace Elysium
 
     struct CollisionInfo
     {
-        bool Collision = false;
+        bool Collision = true;
+        float minOverlap = std::numeric_limits<float>::max();
         std::pair<ObjectCollisionInfo, ObjectCollisionInfo> CollisionInfoPair;
     };
 
@@ -37,6 +40,8 @@ namespace Elysium
         std::unordered_map<std::pair<PhysicalObject*, PhysicalObject*>, bool, Hash_ObjectPair> m_CollisionMap;
 
         OrthographicCamera* m_Camera;
+
+        std::ofstream m_LogFile;
 
     public:
         bool Gravity = true;

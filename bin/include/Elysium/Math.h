@@ -9,6 +9,12 @@ namespace Elysium
     using Vector4 = glm::vec4;
 
     template<class T>
+    static T dot(const T& vector)
+    {
+        return glm::dot(vector);
+    }
+
+    template<class T>
     static T normalize(const T& vector)
     {
         return glm::normalize(vector);

@@ -4,7 +4,7 @@ SandboxLayer::SandboxLayer(bool* runSandbox, unsigned int width, unsigned int he
     m_RunSandbox(runSandbox),
     m_Camera(-m_Height * (float)(width / height), m_Height* (float)(width / height), 0.0f, m_Height),
     m_ParticleSystem(100, m_Camera),
-    m_PhysicsSystem(5.0f, m_Camera),
+    m_PhysicsSystem(10.0f, m_Camera),
     m_Player("Player", { 0.0f, 10.0f }, { 1.0f, 2.0f }, 10.0f),
     m_MoveableBox("Box", { 5.0f, 15.0f }, { 2.0f, 2.0f }, 10.0f),
     m_Ground("Ground",{ 0.0f, 0.0f }, { 1000.0f, 2.0f }),
@@ -65,6 +65,7 @@ SandboxLayer::SandboxLayer(bool* runSandbox, unsigned int width, unsigned int he
 
     m_Ground.TextureData = m_Textures[5].getTextureData();
     m_Ground.TextureData.subtextureCoordinates({ 0, 6 }, { 128, 128 });
+    //m_Ground.Rotation = 45.0f;
     m_Ground.setElasticityCoefficient(0.0f);
     m_Ground.setFrictionCoefficient(0.5f);
 
@@ -89,7 +90,7 @@ void SandboxLayer::onUpdate(Elysium::Timestep ts)
 {
     if (*m_RunSandbox)
     {
-        m_Camera.setPosition({ m_Player.getPosition().x, m_Player.getPosition().y - m_Player.getSize().y, 0.0f });
+        m_Camera.setPosition({ m_Player.getPosition().x, m_Player.getPosition().y - (m_Player.getSize().y * 4.0f), 0.0f });
 
         Elysium::Renderer2D::beginScene(m_Camera);
 
@@ -123,7 +124,7 @@ void SandboxLayer::onUpdate(Elysium::Timestep ts)
 
         if (Elysium::Input::isKeyPressed(ELY_KEY_SPACE))
         {
-            m_Player.Impulse.y = 5.0f * m_Player.Mass;
+            m_Player.Impulse.y = 1.0f * m_Player.Mass;
         }
 
         if (Elysium::Input::isKeyPressed(ELY_KEY_A))
@@ -181,7 +182,10 @@ bool SandboxLayer::onKeyPressedEvent(Elysium::KeyPressedEvent& event)
 
 bool SandboxLayer::onWindowResizeEvent(Elysium::WindowResizeEvent& event)
 {
-    m_Camera.setProjection(-m_Height * (float)(event.getWidth() / event.getHeight()), m_Height * (float)(event.getWidth() / event.getHeight()),
+    unsigned int width = event.getWidth();
+    unsigned int height = event.getHeight();
+    if (width > 0 && height > 0)
+    m_Camera.setProjection(-m_Height * (float)(width / height), m_Height * (float)(width / height),
         0.0f, m_Height);
     return false;
 }
