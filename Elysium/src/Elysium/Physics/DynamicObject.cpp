@@ -8,7 +8,11 @@ namespace Elysium
         Mass = mass;
     }
 
-    void DynamicObject::onCollision()
+    void DynamicObject::applyObjectLogic(Timestep ts)
+    {
+    }
+
+    void DynamicObject::onCollision(const PhysicalObject* ObjectCollided, const ObjectCollisionInfo& info, const ObjectCollisionInfo& otherInfo, Timestep ts)
     {
     }
 
@@ -19,5 +23,7 @@ namespace Elysium
         Position = Position + (Velocity * (float)ts);
 
         Impulse = { 0.0f, 0.0f };
+
+        applyObjectLogic(ts);
     }
 }

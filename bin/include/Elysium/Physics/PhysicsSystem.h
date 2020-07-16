@@ -9,14 +9,6 @@
 
 namespace Elysium
 {
-
-    struct CollisionInfo
-    {
-        bool Collision = true;
-        float minOverlap = std::numeric_limits<float>::max();
-        std::pair<ObjectCollisionInfo, ObjectCollisionInfo> CollisionInfoPair;
-    };
-
     class PhysicsSystem
     {
     private:
@@ -37,7 +29,8 @@ namespace Elysium
 
         unsigned int m_ObjectInsertIndex = 0;
         std::vector<PhysicalObject*> m_Objects;
-        std::unordered_map<std::pair<PhysicalObject*, PhysicalObject*>, bool, Hash_ObjectPair> m_CollisionMap;
+        std::unordered_map<std::pair<PhysicalObject*, PhysicalObject*>, CollisionInfo, Hash_ObjectPair> m_CollisionMap;
+        CollisionInfo m_NoCollision = { false };
 
         OrthographicCamera* m_Camera;
 
@@ -62,7 +55,7 @@ namespace Elysium
         void addPhysicalObject(PhysicalObject* object);
         void removePhysicalObject(PhysicalObject* object);
 
-        bool areColliding(PhysicalObject* object1, PhysicalObject* object2);
+        const CollisionInfo& areColliding(PhysicalObject* object1, PhysicalObject* object2);
 
         void onUpdate(Timestep ts);
     };

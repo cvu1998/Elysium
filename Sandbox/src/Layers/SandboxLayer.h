@@ -2,6 +2,8 @@
 
 #include <Elysium.h>
 
+#include "Game/Player.h"
+
 class SandboxLayer : public Elysium::Layer
 {
 private:
@@ -17,12 +19,12 @@ private:
     Elysium::ParticleProperties m_Particle2;
     Elysium::ParticleSystem m_ParticleSystem;
 
-    Elysium::DynamicObject m_Player;
-    bool m_PlayerLookingRight = true;
+    Player m_Player;
 
     Elysium::DynamicObject m_MoveableBox;
     Elysium::StaticObject m_Ground;
     Elysium::StaticObject m_Box;
+    TextureData m_BoxTexture;
     Elysium::PhysicsSystem m_PhysicsSystem;
 
 public:

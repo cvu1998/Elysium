@@ -33,7 +33,8 @@ namespace Elysium
 
     Vector2 PhysicalObject::tranformVertex(const Vector2& vertex) const
     {
-        Complex transform(cos(Rotation), sin(Rotation));
+        float radiansRotation = radians(Rotation);
+        Complex transform(cos(radiansRotation), sin(radiansRotation));
         Complex translation(Position.x, Position.y);
 
         return (Vector2) (Complex(vertex.x, vertex.y) * transform + translation);
@@ -61,8 +62,8 @@ namespace Elysium
     void PhysicalObject::Draw()
     {
        if (!TextureData.isDefault())
-           Renderer2D::drawQuadWithRotation(Position, Size, Rotation, TextureData, Color);
+           Renderer2D::drawQuadWithRotation(Position, Size, radians(Rotation), TextureData, Color);
        else
-           Renderer2D::drawQuadWithRotation(Position, Size, Rotation, Color);
+           Renderer2D::drawQuadWithRotation(Position, Size, radians(Rotation), Color);
     }
 }

@@ -12,6 +12,18 @@ enum class ObjectType
 
 namespace Elysium
 {
+    struct ObjectCollisionInfo
+    {
+        Vector2 Normal = { 0.0f, 0.0f };
+    };
+
+    struct CollisionInfo
+    {
+        bool Collision = true;
+        float minOverlap = std::numeric_limits<float>::max();
+        std::pair<ObjectCollisionInfo, ObjectCollisionInfo> CollisionInfoPair;
+    };
+
     class PhysicalObject
     {
         friend class PhysicsSystem;
@@ -45,10 +57,14 @@ namespace Elysium
     protected:
         virtual Vector2 tranformVertex(const Vector2& vertex) const final;
 
+        virtual void applyObjectLogic(Timestep ts) = 0;
+        virtual void onUpdate(Timestep ts) = 0;
+
     public:
         PhysicalObject(const char* name, const Vector2& initialPosition, const Vector2& size, ObjectType type);
 
         inline virtual ObjectType getType() const final { return m_Type; }
+        inline virtual const char* getName() const final { return Name; }
 
         inline virtual const Vector2& getPosition() const final { return Position; }
         inline virtual const Vector2& getVelocity() const final { return Velocity; }
@@ -68,12 +84,7 @@ namespace Elysium
         virtual std::vector<Vector2>getNormals() const;
         virtual void Draw();
 
-        virtual void onCollision() = 0;
-        virtual void onUpdate(Timestep ts) = 0;
-    };
-
-    struct ObjectCollisionInfo
-    {
-        Vector2 Normal = { 0.0f, 0.0f };
+        virtual void onCollision(const PhysicalObject* ObjectCollided, 
+            const ObjectCollisionInfo& info, const ObjectCollisionInfo& otherInfo, Timestep ts) = 0;
     };
 }

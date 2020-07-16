@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cmath>
+
 #include <glm/glm.hpp>
 
 namespace Elysium
@@ -7,6 +9,12 @@ namespace Elysium
     using Vector2 = glm::vec2;
     using Vector3 = glm::vec3;
     using Vector4 = glm::vec4;
+
+    template<class T>
+    static T abs(const T& vector)
+    {
+        return glm::abs(vector);
+    }
 
     template<class T>
     static T dot(const T& vector)

@@ -119,12 +119,12 @@ namespace Elysium
         }
     }
 
-    bool PhysicsSystem::areColliding(PhysicalObject* object1, PhysicalObject* object2)
+    const CollisionInfo& PhysicsSystem::areColliding(PhysicalObject* object1, PhysicalObject* object2)
     {
         auto it = m_CollisionMap.find(std::make_pair(object1, object2));
         if (it != m_CollisionMap.end())
             return it->second;
-        return false;
+        return m_NoCollision;
     }
 
     void PhysicsSystem::onUpdate(Timestep ts)
@@ -152,41 +152,70 @@ namespace Elysium
                     {
                         CollisionInfo info;
                         checkNarrowPhase(m_Objects[i], m_Objects[j], info);
-                        m_LogFile << m_Time << ": BroadPhaseCollision: " << m_Objects[i]->Name << ", " << m_Objects[j]->Name << std::endl;
 
                         if (info.Collision)
                         {
                             m_LogFile << m_Time << ": NarrowPhaseCollision: " << m_Objects[i]->Name << ", " << m_Objects[j]->Name << std::endl;
                             m_LogFile << m_Time << ": CollisionInfo Overlap: " << info.minOverlap << std::endl;
+                            m_LogFile << m_Time << ": CollisionInfo Normal: " << m_Objects[i]->Name << ": " << info.CollisionInfoPair.first.Normal.x << ", " << info.CollisionInfoPair.first.Normal.y << std::endl;
+                            m_LogFile << m_Time << ": CollisionInfo Normal: " << m_Objects[j]->Name << ": " << info.CollisionInfoPair.second.Normal.x << ", " << info.CollisionInfoPair.second.Normal.y << std::endl;
 
-                            float magnitude1 = fabs(dot(m_Objects[i]->Velocity, info.CollisionInfoPair.first.Normal));
-                            float magnitude2 = fabs(dot(m_Objects[j]->Velocity, info.CollisionInfoPair.second.Normal));
+                            Vector2 ObjectINormal = info.CollisionInfoPair.first.Normal;
+                            Vector2 ObjectJNormal = info.CollisionInfoPair.second.Normal;
+
+                            float magnitude1 = fabs(dot(m_Objects[i]->Velocity, ObjectINormal));
+                            float magnitude2 = fabs(dot(m_Objects[j]->Velocity, ObjectJNormal));
                             if (magnitude1 > magnitude2)
                             {
                                 if (m_Objects[i]->getType() == ObjectType::DYNAMIC)
-                                    m_Objects[i]->Position = m_Objects[i]->Position + (info.minOverlap * info.CollisionInfoPair.first.Normal);
+                                    m_Objects[i]->Position = m_Objects[i]->Position + (info.minOverlap * ObjectINormal);
                                 else
-                                    m_Objects[j]->Position = m_Objects[j]->Position + (info.minOverlap * info.CollisionInfoPair.second.Normal);
+                                    m_Objects[j]->Position = m_Objects[j]->Position + (info.minOverlap * ObjectJNormal);
                             }
                             else
                             {
                                 if (m_Objects[i]->getType() == ObjectType::DYNAMIC)
-                                    m_Objects[j]->Position = m_Objects[j]->Position + (info.minOverlap * info.CollisionInfoPair.second.Normal);
+                                    m_Objects[j]->Position = m_Objects[j]->Position + (info.minOverlap * ObjectJNormal);
                                 else
-                                    m_Objects[i]->Position = m_Objects[i]->Position + (info.minOverlap * info.CollisionInfoPair.first.Normal);
+                                    m_Objects[i]->Position = m_Objects[i]->Position + (info.minOverlap * ObjectINormal);
+                            }
+                            /***** Normal Force *****/
+                            m_Objects[i]->Force += abs(m_Objects[i]->Force) * ObjectINormal;
+                            m_Objects[j]->Force += abs(m_Objects[j]->Force) * ObjectJNormal;
+
+                            /***** Conservation of Momentum *****/
+                            m_Objects[i]->Impulse += abs(m_Objects[j]->Velocity) * ObjectINormal;
+                            m_Objects[j]->Impulse += abs(m_Objects[i]->Velocity) * ObjectJNormal;
+
+                            /***** Normal Collision Impulse Response *****/
+                            m_Objects[i]->Impulse += abs(m_Objects[i]->Velocity) * ObjectINormal * (m_Objects[j]->ElasticityCoefficient * 10.0f);
+                            m_Objects[j]->Impulse += abs(m_Objects[j]->Velocity) * ObjectJNormal * (m_Objects[i]->ElasticityCoefficient * 10.0f);
+
+                            /***** Friction *****/
+                            Vector2 frictionDirection = { 0.0f, 0.0f };
+                            if (m_Objects[i]->Velocity.x * m_Objects[i]->Velocity.x + m_Objects[i]->Velocity.y * m_Objects[i]->Velocity.y > 0)
+                            {
+                                frictionDirection = { fabs(ObjectINormal.y),  fabs(ObjectINormal.x) };
+                                frictionDirection = -(frictionDirection * normalize(m_Objects[i]->Velocity));
+                                m_Objects[i]->Impulse += abs(m_Objects[i]->Velocity) * frictionDirection * m_Objects[i]->Mass * m_Objects[j]->getFrictionCoefficient() * (float)ts;
+                            }
+                            if (m_Objects[j]->Velocity.x * m_Objects[j]->Velocity.x + m_Objects[j]->Velocity.y * m_Objects[j]->Velocity.y > 0)
+                            {
+                                frictionDirection = { fabs(ObjectJNormal.y) , fabs(ObjectJNormal.x) };
+                                frictionDirection = -(frictionDirection * normalize(m_Objects[j]->Velocity));
+                                m_Objects[j]->Impulse += abs(m_Objects[j]->Velocity) * frictionDirection * m_Objects[j]->Mass * m_Objects[i]->getFrictionCoefficient() * (float)ts;
                             }
 
-                            m_Objects[i]->Force = { 0.0f, 0.0f };
-                            m_Objects[j]->Force = { 0.0f, 0.0f };
+                            m_LogFile << m_Time << ": CollisionInfo Impulse: " << m_Objects[i]->Name << ": " << m_Objects[i]->Velocity.x << ", " << m_Objects[i]->Velocity.y << std::endl;
+                            m_LogFile << m_Time << ": CollisionInfo Impulse: " << m_Objects[j]->Name << ": " << m_Objects[j]->Velocity.x << ", " << m_Objects[j]->Velocity.y << std::endl;
+                            m_LogFile << m_Time << ": CollisionInfo Impulse: " << m_Objects[i]->Name << ": " << m_Objects[i]->Impulse.x << ", " << m_Objects[i]->Impulse.y << std::endl;
+                            m_LogFile << m_Time << ": CollisionInfo Impulse: " << m_Objects[j]->Name << ": " << m_Objects[j]->Impulse.x << ", " << m_Objects[j]->Impulse.y << std::endl;
 
-                            m_Objects[i]->Impulse += m_Objects[i]->Velocity * info.CollisionInfoPair.second.Normal;
-                            m_Objects[j]->Impulse += m_Objects[j]->Velocity * info.CollisionInfoPair.first.Normal;
+                            m_CollisionMap[std::make_pair(m_Objects[i], m_Objects[j])] = info;
+                            m_CollisionMap[std::make_pair(m_Objects[j], m_Objects[i])] = info;
 
-                            m_CollisionMap[std::make_pair(m_Objects[i], m_Objects[j])] = true;
-                            m_CollisionMap[std::make_pair(m_Objects[j], m_Objects[i])] = true;
-
-                            m_Objects[i]->onCollision();
-                            m_Objects[j]->onCollision();
+                            m_Objects[i]->onCollision(m_Objects[j], info.CollisionInfoPair.first, info.CollisionInfoPair.second, ts);
+                            m_Objects[j]->onCollision(m_Objects[i], info.CollisionInfoPair.second, info.CollisionInfoPair.first, ts);
                         }
                     }
                 }
