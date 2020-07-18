@@ -5,8 +5,8 @@
 class Application : public Elysium::Application
 {
 private:
-    GameLayer* m_Game;
-    SandboxLayer* m_Sandbox;
+    GameLayer* m_Game = nullptr;
+    SandboxLayer* m_Sandbox = nullptr;
     TestLayer* m_Tests;
 
     bool m_VSync = true;
@@ -18,13 +18,9 @@ public:
     {
         m_Window->setVSync(m_VSync);
 
-        //m_Game = new GameLayer(&m_RunLayer, m_Window->getWidth(), m_Window->getHeight());
-        m_Sandbox = new SandboxLayer(&m_RunLayer, m_Window->getWidth(), m_Window->getHeight());
         m_Tests = new TestLayer(&m_RunLayer);
 
         m_LayerStack.pushLayer(m_Tests);
-        //m_LayerStack.pushOverlay(m_Game);
-        m_LayerStack.pushOverlay(m_Sandbox);
     }
 
     ~Application()
@@ -36,19 +32,43 @@ public:
         ImGui::Begin("Main Application");
         ImGui::Checkbox("VSync", &m_VSync);
         ImGui::ColorEdit4("Clear Color", m_ClearColor);
-        if (ImGui::Button("Play Again!"))
+        if (ImGui::Button("Sandbox"))
         {
-            m_LayerStack.popOverlay(m_Sandbox);
-            delete m_Sandbox;
+            if (m_Game)
+            {
+                m_LayerStack.popOverlay(m_Game);
+                delete m_Game;
+                m_Game = nullptr;
+            }
+
+            if (m_Sandbox)
+            {
+                m_LayerStack.popOverlay(m_Sandbox);
+                delete m_Sandbox;
+                m_Sandbox = nullptr;
+            }
             
             m_Sandbox = new SandboxLayer(&m_RunLayer, m_Window->getWidth(), m_Window->getHeight());
             m_LayerStack.pushOverlay(m_Sandbox);
+        }
+        if (ImGui::Button("Play!"))
+        {
+            if (m_Sandbox)
+            {
+                m_LayerStack.popOverlay(m_Sandbox);
+                delete m_Sandbox;
+                m_Sandbox = nullptr;
+            }
 
-            //m_LayerStack.popOverlay(m_Game);
-            //delete m_Game;
-            //
-            //m_Game = new GameLayer(&m_RunLayer, m_Window->getWidth(), m_Window->getHeight());
-            //m_LayerStack.pushOverlay(m_Game);
+            if (m_Game)
+            {
+                m_LayerStack.popOverlay(m_Game);
+                delete m_Game;
+                m_Game = nullptr;
+            }
+
+            m_Game = new GameLayer(&m_RunLayer, m_Window->getWidth(), m_Window->getHeight());
+            m_LayerStack.pushOverlay(m_Game);
         }
         ImGui::End();
 

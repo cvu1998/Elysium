@@ -2,18 +2,20 @@
 
 #include <Elysium.h>
 
-class Player : public Elysium::DynamicObject
+class Player
 {
 private:
-    bool m_PlayerLookingRight = true;
-
-private:
-    virtual void applyObjectLogic(Elysium::Timestep ts) override;
+    Elysium::PhysicsBody m_ID;
 
 public:
-    Player(const Elysium::Vector2& position, const Elysium::Vector2& size, float mass);
+    bool m_PlayerLookingRight = true;
+    TextureData m_TextureData;
 
-    virtual void onCollision(const PhysicalObject* ObjectCollided,
-        const Elysium::ObjectCollisionInfo& info, const Elysium::ObjectCollisionInfo& otherInfo, Elysium::Timestep ts) override;
+public:
+    Player(Elysium::PhysicsSystem& system, const Elysium::Vector2& position, const Elysium::Vector2& size, float mass);
+
+    inline Elysium::PhysicsBody getIdentifier() const { return m_ID; }
+
+    static void onCollision(Elysium::PhysicalBody& body, const Elysium::CollisionInfo& info);
 };
 

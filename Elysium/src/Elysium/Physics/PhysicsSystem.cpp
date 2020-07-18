@@ -1,5 +1,7 @@
 #include "PhysicsSystem.h"
 
+#include <algorithm>
+
 #include "Elysium/Math.h"
 
 namespace Elysium
@@ -16,36 +18,50 @@ namespace Elysium
         m_LogFile.close();
     }
 
-    bool PhysicsSystem::checkBroadPhase(const PhysicalObject* object1, const PhysicalObject* object2)
+    PhysicsBody PhysicsSystem::createPhysicalBody(BodyType type, const char* name, float mass, const Vector2& initialPosition, const Vector2& size, 
+        Collision_Callback callback)
     {
-        const Vector2& min1 = object1->Position - object1->BroadSize / 2;
-        const Vector2& min2 = object2->Position - object2->BroadSize / 2;
-        const Vector2& max1 = object1->Position + object1->BroadSize / 2;
-        const Vector2& max2 = object2->Position + object2->BroadSize / 2;
+        if (m_InactiveBodies.empty())
+        {
+            m_Bodies.emplace_back(type, name, mass, initialPosition, size, callback);
+            return (PhysicsBody)m_Bodies.size() - 1;
+        }
+        PhysicsBody body = m_InactiveBodies.back();
+        m_InactiveBodies.pop_back();
+        m_Bodies[body] = PhysicalBody(type, name, mass, initialPosition, size, callback);
+        return body;
+    }
+
+    bool PhysicsSystem::checkBroadPhase(const PhysicalBody& body1, const PhysicalBody& body2)
+    {
+        Vector2 min1 = body1.Position - body1.BroadSize / 2;
+        Vector2 max1 = body1.Position + body1.BroadSize / 2;
+        Vector2 min2 = body2.Position - body2.BroadSize / 2;
+        Vector2 max2 = body2.Position + body2.BroadSize / 2;
 
         bool CollisionX = max1.x >= min2.x && min1.x <= max2.x;
         bool CollisionY = max1.y >= min2.y && min1.y <= max2.y;
         return CollisionX && CollisionY;
     }
 
-    void PhysicsSystem::checkNarrowPhase(const PhysicalObject* object1, const PhysicalObject* object2, CollisionInfo& info)
+    void PhysicsSystem::checkNarrowPhase(const PhysicalBody& body1, const PhysicalBody& body2, CollisionInfo& info)
     {
         std::vector<Vector2> normals;
-        std::vector<Vector2>& vertices1 = object1->getVertices();
-        std::vector<Vector2>& vertices2 = object2->getVertices();
-        for (auto normal : object1->getNormals())
+        std::vector<Vector2>& vertices1 = body1.getVertices();
+        std::vector<Vector2>& vertices2 = body2.getVertices();
+        for (Vector2& normal : body1.getNormals())
             normals.push_back(normalize(normal));
-        for (auto normal : object2->getNormals())
+        for (Vector2& normal : body2.getNormals())
             normals.push_back(normalize(normal));
 
         float overlap = 0.0f;
         Vector2 collisionNormal = { 0.0f, 0.0f };
         bool firstIsMax = false;
-        for (auto& normal : normals)
+        for (Vector2& normal : normals)
         {
             float min1 =  std::numeric_limits<float>::max();
             float max1 = -std::numeric_limits<float>::max();
-            for (auto& vertex : vertices1)
+            for (Vector2& vertex : vertices1)
             {
                 float projection = dot(vertex, normal);
                 min1 = std::min(min1, projection);
@@ -54,7 +70,7 @@ namespace Elysium
 
             float min2 =  std::numeric_limits<float>::max();
             float max2 = -std::numeric_limits<float>::max();
-            for (auto& vertex : vertices2)
+            for (Vector2& vertex : vertices2)
             {
                 float projection = dot(vertex, normal);
                 min2 = std::min(min2, projection);
@@ -95,139 +111,127 @@ namespace Elysium
         }
     }
 
-    void PhysicsSystem::addPhysicalObject(PhysicalObject* object)
+    void PhysicsSystem::removePhysicalBody(PhysicsBody body)
     {
-        if (object->getType() == ObjectType::DYNAMIC)
-        {
-            m_Objects.emplace(m_Objects.begin() + m_ObjectInsertIndex, object);
-            m_ObjectInsertIndex++;
-            return;
-        }
-        m_Objects.push_back(object);
-        
-    }
-
-    void PhysicsSystem::removePhysicalObject(PhysicalObject* object)
-    {
-        auto it = std::find(m_Objects.begin(), m_Objects.end(), object);
-        if (it != m_Objects.end())
-        {
-            if ((*it)->getType() == ObjectType::DYNAMIC)
-                m_ObjectInsertIndex--;
-
-            m_Objects.erase(it);
-        }
-    }
-
-    const CollisionInfo& PhysicsSystem::areColliding(PhysicalObject* object1, PhysicalObject* object2)
-    {
-        auto it = m_CollisionMap.find(std::make_pair(object1, object2));
-        if (it != m_CollisionMap.end())
-            return it->second;
-        return m_NoCollision;
+        m_Bodies[body].Active = 0;
+        m_InactiveBodies.push_back(body);
+        std::sort(m_InactiveBodies.begin(), m_InactiveBodies.end(), std::greater());
     }
 
     void PhysicsSystem::onUpdate(Timestep ts)
     {
         m_Time += ts;
-        m_CurrentTimestep = ts;
 
-        for (unsigned int i = 0; i < m_ObjectInsertIndex; i++)
+        for (uint32_t i = 0; i < m_Bodies.size(); i++)
         {
-            if (m_Objects[i]->getType() == ObjectType::DYNAMIC)
+            if (m_Bodies[i].Type == BodyType::DYNAMIC && m_Bodies[i].Active > 0)
             {
-                if (Gravity)
-                    m_Objects[i]->Force.y = -m_GravitationalAccel * m_Objects[i]->Mass;
+                m_Bodies[i].Acceleration = m_Bodies[i].Force / m_Bodies[i].Mass;
+                m_Bodies[i].Velocity = m_Bodies[i].Velocity + (m_Bodies[i].Impulse / m_Bodies[i].Mass) + (m_Bodies[i].Acceleration * (float)ts);
+                m_Bodies[i].Position = m_Bodies[i].Position + (m_Bodies[i].Velocity * (float)ts);
+
+                m_Bodies[i].Impulse = { 0.0f, 0.0f };
+
+                if (Gravity && m_Bodies[i].Active != 2)
+                {
+                    m_Bodies[i].Force.y = -m_GravitationalAccel * m_Bodies[i].Mass;
+                    m_Bodies[i].Active = 2;
+                }
             }
         }
 
-        m_CollisionMap.clear();
-        for (unsigned int i = 0; i < m_Objects.size(); i++)
+        for (uint32_t i = 0; i < m_Bodies.size(); i++)
         {
-            if (m_Objects[i]->getType() == ObjectType::DYNAMIC)
+            if (m_Bodies[i].Active > 0)
             {
-                for (unsigned int j = i + 1; j < m_Objects.size(); j++)
+                for (uint32_t j = i + 1; j < m_Bodies.size(); j++)
                 {
-                    if (checkBroadPhase(m_Objects[i], m_Objects[j]))
+                    if (m_Bodies[j].Active > 0)
                     {
-                        CollisionInfo info;
-                        checkNarrowPhase(m_Objects[i], m_Objects[j], info);
+                        if (m_Bodies[i].Type == BodyType::STATIC && m_Bodies[j].Type == BodyType::STATIC)
+                            continue;
 
-                        if (info.Collision)
+                        if (checkBroadPhase(m_Bodies[i], m_Bodies[j]))
                         {
-                            m_LogFile << m_Time << ": NarrowPhaseCollision: " << m_Objects[i]->Name << ", " << m_Objects[j]->Name << std::endl;
-                            m_LogFile << m_Time << ": CollisionInfo Overlap: " << info.minOverlap << std::endl;
-                            m_LogFile << m_Time << ": CollisionInfo Normal: " << m_Objects[i]->Name << ": " << info.CollisionInfoPair.first.Normal.x << ", " << info.CollisionInfoPair.first.Normal.y << std::endl;
-                            m_LogFile << m_Time << ": CollisionInfo Normal: " << m_Objects[j]->Name << ": " << info.CollisionInfoPair.second.Normal.x << ", " << info.CollisionInfoPair.second.Normal.y << std::endl;
+                            CollisionInfo info;
+                            checkNarrowPhase(m_Bodies[i], m_Bodies[j], info);
 
-                            Vector2 ObjectINormal = info.CollisionInfoPair.first.Normal;
-                            Vector2 ObjectJNormal = info.CollisionInfoPair.second.Normal;
-
-                            float magnitude1 = fabs(dot(m_Objects[i]->Velocity, ObjectINormal));
-                            float magnitude2 = fabs(dot(m_Objects[j]->Velocity, ObjectJNormal));
-                            if (magnitude1 > magnitude2)
+                            if (info.Collision)
                             {
-                                if (m_Objects[i]->getType() == ObjectType::DYNAMIC)
-                                    m_Objects[i]->Position = m_Objects[i]->Position + (info.minOverlap * ObjectINormal);
+                                //m_LogFile << m_Time << ": NarrowPhaseCollision: " << m_Bodies[i].Name << ", " << m_Bodies[j].Name << std::endl;
+                                //m_LogFile << m_Time << ": CollisionInfo Overlap: " << info.minOverlap << std::endl;
+                                //m_LogFile << m_Time << ": CollisionInfo Normal: " << m_Bodies[i].Name << ": " << info.CollisionInfoPair.first.Normal.x << ", " << info.CollisionInfoPair.first.Normal.y << std::endl;
+                                //m_LogFile << m_Time << ": CollisionInfo Normal: " << m_Bodies[j].Name << ": " << info.CollisionInfoPair.second.Normal.x << ", " << info.CollisionInfoPair.second.Normal.y << std::endl;
+
+                                Vector2 ObjectINormal = info.CollisionInfoPair.first.Normal;
+                                Vector2 ObjectJNormal = info.CollisionInfoPair.second.Normal;
+
+                                float magnitude1 = fabs(dot(m_Bodies[i].Velocity, ObjectINormal));
+                                float magnitude2 = fabs(dot(m_Bodies[j].Velocity, ObjectJNormal));
+                                if (magnitude1 > magnitude2)
+                                {
+                                    if (m_Bodies[i].Type == BodyType::DYNAMIC)
+                                        m_Bodies[i].Position = m_Bodies[i].Position + (info.minOverlap * ObjectINormal);
+                                    else
+                                        m_Bodies[j].Position = m_Bodies[j].Position + (info.minOverlap * ObjectJNormal);
+                                }
                                 else
-                                    m_Objects[j]->Position = m_Objects[j]->Position + (info.minOverlap * ObjectJNormal);
+                                {
+                                    if (m_Bodies[j].Type == BodyType::DYNAMIC)
+                                        m_Bodies[j].Position = m_Bodies[j].Position + (info.minOverlap * ObjectJNormal);
+                                    else
+                                        m_Bodies[i].Position = m_Bodies[i].Position + (info.minOverlap * ObjectINormal);
+                                }
+                                /***** Normal Force *****/
+                                m_Bodies[i].Force += abs(m_Bodies[i].Force) * ObjectINormal;
+                                m_Bodies[j].Force += abs(m_Bodies[j].Force) * ObjectJNormal;
+
+                                if (m_Bodies[i].Force.y >= 0.0f)
+                                    m_Bodies[i].Active = 1;
+
+                                if (m_Bodies[j].Force.y >= 0.0f)
+                                    m_Bodies[j].Active = 1;
+
+                                /***** Conservation of Momentum *****/
+                                m_Bodies[i].Impulse += abs(m_Bodies[j].Velocity) * ObjectINormal;
+                                m_Bodies[j].Impulse += abs(m_Bodies[i].Velocity) * ObjectJNormal;
+
+                                /***** Normal Collision Impulse Response *****/
+                                m_Bodies[i].Impulse += abs(m_Bodies[i].Velocity) * ObjectINormal * (m_Bodies[j].ElasticityCoefficient * 10.0f);
+                                m_Bodies[j].Impulse += abs(m_Bodies[j].Velocity) * ObjectJNormal * (m_Bodies[i].ElasticityCoefficient * 10.0f);
+
+                                /***** Friction *****/
+                                Vector2 frictionDirection = { 0.0f, 0.0f };
+                                if (m_Bodies[i].Velocity.x * m_Bodies[i].Velocity.x + m_Bodies[i].Velocity.y * m_Bodies[i].Velocity.y > 0)
+                                {
+                                    frictionDirection = { fabs(ObjectINormal.y),  fabs(ObjectINormal.x) };
+                                    frictionDirection = -(frictionDirection * normalize(m_Bodies[i].Velocity));
+                                    m_Bodies[i].Impulse += abs(m_Bodies[i].Velocity) * frictionDirection * m_Bodies[i].Mass * m_Bodies[j].getFrictionCoefficient() * (float)ts;
+                                }
+                                if (m_Bodies[j].Velocity.x * m_Bodies[j].Velocity.x + m_Bodies[j].Velocity.y * m_Bodies[j].Velocity.y > 0)
+                                {
+                                    frictionDirection = { fabs(ObjectJNormal.y) , fabs(ObjectJNormal.x) };
+                                    frictionDirection = -(frictionDirection * normalize(m_Bodies[j].Velocity));
+                                    m_Bodies[j].Impulse += abs(m_Bodies[j].Velocity) * frictionDirection * m_Bodies[j].Mass * m_Bodies[i].getFrictionCoefficient() * (float)ts;
+                                }
+
+                                //m_LogFile << m_Time << ": CollisionInfo Impulse: " << m_Bodies[i].Name << ": " << m_Bodies[i].Velocity.x << ", " << m_Bodies[i].Velocity.y << std::endl;
+                                //m_LogFile << m_Time << ": CollisionInfo Impulse: " << m_Bodies[j].Name << ": " << m_Bodies[j].Velocity.x << ", " << m_Bodies[j].Velocity.y << std::endl;
+                                //m_LogFile << m_Time << ": CollisionInfo Impulse: " << m_Bodies[i].Name << ": " << m_Bodies[i].Impulse.x << ", " << m_Bodies[i].Impulse.y << std::endl;
+                                //m_LogFile << m_Time << ": CollisionInfo Impulse: " << m_Bodies[j].Name << ": " << m_Bodies[j].Impulse.x << ", " << m_Bodies[j].Impulse.y << std::endl;
+
+                                if (m_Bodies[i].Callback)
+                                    m_Bodies[i].Callback(m_Bodies[i], { true, info.minOverlap, ts,
+                                        std::make_pair(info.CollisionInfoPair.first, info.CollisionInfoPair.second) });
+
+                                if (m_Bodies[j].Callback)
+                                    m_Bodies[j].Callback(m_Bodies[i], { true, info.minOverlap, ts,
+                                         std::make_pair(info.CollisionInfoPair.second, info.CollisionInfoPair.first) });
                             }
-                            else
-                            {
-                                if (m_Objects[i]->getType() == ObjectType::DYNAMIC)
-                                    m_Objects[j]->Position = m_Objects[j]->Position + (info.minOverlap * ObjectJNormal);
-                                else
-                                    m_Objects[i]->Position = m_Objects[i]->Position + (info.minOverlap * ObjectINormal);
-                            }
-                            /***** Normal Force *****/
-                            m_Objects[i]->Force += abs(m_Objects[i]->Force) * ObjectINormal;
-                            m_Objects[j]->Force += abs(m_Objects[j]->Force) * ObjectJNormal;
-
-                            /***** Conservation of Momentum *****/
-                            m_Objects[i]->Impulse += abs(m_Objects[j]->Velocity) * ObjectINormal;
-                            m_Objects[j]->Impulse += abs(m_Objects[i]->Velocity) * ObjectJNormal;
-
-                            /***** Normal Collision Impulse Response *****/
-                            m_Objects[i]->Impulse += abs(m_Objects[i]->Velocity) * ObjectINormal * (m_Objects[j]->ElasticityCoefficient * 10.0f);
-                            m_Objects[j]->Impulse += abs(m_Objects[j]->Velocity) * ObjectJNormal * (m_Objects[i]->ElasticityCoefficient * 10.0f);
-
-                            /***** Friction *****/
-                            Vector2 frictionDirection = { 0.0f, 0.0f };
-                            if (m_Objects[i]->Velocity.x * m_Objects[i]->Velocity.x + m_Objects[i]->Velocity.y * m_Objects[i]->Velocity.y > 0)
-                            {
-                                frictionDirection = { fabs(ObjectINormal.y),  fabs(ObjectINormal.x) };
-                                frictionDirection = -(frictionDirection * normalize(m_Objects[i]->Velocity));
-                                m_Objects[i]->Impulse += abs(m_Objects[i]->Velocity) * frictionDirection * m_Objects[i]->Mass * m_Objects[j]->getFrictionCoefficient() * (float)ts;
-                            }
-                            if (m_Objects[j]->Velocity.x * m_Objects[j]->Velocity.x + m_Objects[j]->Velocity.y * m_Objects[j]->Velocity.y > 0)
-                            {
-                                frictionDirection = { fabs(ObjectJNormal.y) , fabs(ObjectJNormal.x) };
-                                frictionDirection = -(frictionDirection * normalize(m_Objects[j]->Velocity));
-                                m_Objects[j]->Impulse += abs(m_Objects[j]->Velocity) * frictionDirection * m_Objects[j]->Mass * m_Objects[i]->getFrictionCoefficient() * (float)ts;
-                            }
-
-                            m_LogFile << m_Time << ": CollisionInfo Impulse: " << m_Objects[i]->Name << ": " << m_Objects[i]->Velocity.x << ", " << m_Objects[i]->Velocity.y << std::endl;
-                            m_LogFile << m_Time << ": CollisionInfo Impulse: " << m_Objects[j]->Name << ": " << m_Objects[j]->Velocity.x << ", " << m_Objects[j]->Velocity.y << std::endl;
-                            m_LogFile << m_Time << ": CollisionInfo Impulse: " << m_Objects[i]->Name << ": " << m_Objects[i]->Impulse.x << ", " << m_Objects[i]->Impulse.y << std::endl;
-                            m_LogFile << m_Time << ": CollisionInfo Impulse: " << m_Objects[j]->Name << ": " << m_Objects[j]->Impulse.x << ", " << m_Objects[j]->Impulse.y << std::endl;
-
-                            m_CollisionMap[std::make_pair(m_Objects[i], m_Objects[j])] = info;
-                            m_CollisionMap[std::make_pair(m_Objects[j], m_Objects[i])] = info;
-
-                            m_Objects[i]->onCollision(m_Objects[j], info.CollisionInfoPair.first, info.CollisionInfoPair.second, ts);
-                            m_Objects[j]->onCollision(m_Objects[i], info.CollisionInfoPair.second, info.CollisionInfoPair.first, ts);
                         }
                     }
                 }
             }
         }
-
-        Renderer2D::beginScene(*m_Camera);
-        for (unsigned int i = 0; i < m_Objects.size(); i++)
-        {
-            m_Objects[i]->Draw();
-            m_Objects[i]->onUpdate(ts);
-        }
-        Renderer2D::endScene();
     }
 }

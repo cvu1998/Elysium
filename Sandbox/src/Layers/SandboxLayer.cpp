@@ -5,10 +5,7 @@ SandboxLayer::SandboxLayer(bool* runSandbox, unsigned int width, unsigned int he
     m_Camera(-m_Height * (float)(width / height), m_Height* (float)(width / height), 0.0f, m_Height),
     m_ParticleSystem(100, m_Camera),
     m_PhysicsSystem(10.0f, m_Camera),
-    m_Player({ 20.0f, 10.0f }, { 1.0f, 2.0f }, 10.0f),
-    m_MoveableBox("Box", { 10.0f, 15.0f }, { 2.0f, 2.0f }, 10.0f),
-    m_Ground("Ground",{ 0.0f, 0.0f }, { 500.0f, 2.0f }),
-    m_Box("Static-Box", { 2.5f, 2.0f }, { 2.0f, 2.0f })
+    m_Player(m_PhysicsSystem, { 20.0f, 10.0f }, { 1.0f, 2.0f }, 10.0f)
 {
     Elysium::Renderer2D::Init();
 
@@ -55,31 +52,15 @@ SandboxLayer::SandboxLayer(bool* runSandbox, unsigned int width, unsigned int he
     m_BoxTexture = m_Textures[5].getTextureData();
     m_BoxTexture.subtextureCoordinates({ 4, 1 }, { 128, 128 });
 
-    m_Player.Color = { 1.0f, 1.0f, 1.0f, 1.0f };
-    m_Player.TextureData = m_Textures[3].getTextureData();
-    m_Player.TextureData.subtextureCoordinates({ 7.5, 2.5 }, { 64, 128 });
-    m_Player.setElasticityCoefficient(0.0f);
-    m_Player.setFrictionCoefficient(1.0f);
+    m_MoveableBox = m_PhysicsSystem.createPhysicalBody(Elysium::BodyType::DYNAMIC, "Box", 10.0f, { 10.0f, 15.0f }, { 2.0f, 2.0f });
+    m_Ground = m_PhysicsSystem.createPhysicalBody(Elysium::BodyType::STATIC, "Ground", 10.0f, { 0.0f, 0.0f }, { 500.0f, 2.0f });
+    m_Box = m_PhysicsSystem.createPhysicalBody(Elysium::BodyType::STATIC, "sBox", 10.0f, { 2.5f, 2.0f }, { 2.0f, 2.0f });
 
-    m_MoveableBox.TextureData = m_BoxTexture;
-    m_MoveableBox.setElasticityCoefficient(0.0f);
-    m_MoveableBox.setFrictionCoefficient(1.0f);
+    m_Player.m_TextureData = m_Textures[3].getTextureData();
+    m_Player.m_TextureData.subtextureCoordinates({ 7.5, 2.5 }, { 64, 128 });
 
-    m_Ground.TextureData = m_Textures[5].getTextureData();
-    m_Ground.TextureData.subtextureCoordinates({ 0, 6 }, { 128, 128 });
-    //m_Ground.Rotation = 30.0f;
-    m_Ground.setElasticityCoefficient(0.0f);
-    m_Ground.setFrictionCoefficient(1.0f);
-
-    m_Box.TextureData = m_BoxTexture;
-    m_Box.setElasticityCoefficient(0.0f);
-    m_Box.setFrictionCoefficient(1.0f);
-    
-    m_PhysicsSystem.Gravity = true;
-    m_PhysicsSystem.addPhysicalObject(&m_Player);
-    m_PhysicsSystem.addPhysicalObject(&m_MoveableBox);
-    m_PhysicsSystem.addPhysicalObject(&m_Ground);
-    m_PhysicsSystem.addPhysicalObject(&m_Box);
+    m_GroundTexture = m_Textures[5].getTextureData();
+    m_GroundTexture.subtextureCoordinates({ 0, 6 }, { 128, 128 });
 }
 
 SandboxLayer::~SandboxLayer()
@@ -91,29 +72,57 @@ void SandboxLayer::onUpdate(Elysium::Timestep ts)
 {
     if (*m_RunSandbox)
     {
-        m_Camera.setPosition({ m_Player.getPosition().x, m_Player.getPosition().y - (m_Player.getSize().y * 4.0f), 0.0f });
+        Elysium::PhysicalBody& player = m_PhysicsSystem.getPhysicalBody(m_Player.getIdentifier());
+        Elysium::PhysicalBody& box = m_PhysicsSystem.getPhysicalBody(m_MoveableBox);
+        Elysium::PhysicalBody& ground = m_PhysicsSystem.getPhysicalBody(m_Ground);
+        Elysium::PhysicalBody& sBox = m_PhysicsSystem.getPhysicalBody(m_Box);
+
+        m_Camera.setPosition({ player.Position.x, player.Position.y - (player.getSize().y * 4.0f), 0.0f });
 
         Elysium::Renderer2D::beginScene(m_Camera);
-
         Elysium::Renderer2D::drawQuad({ 0.0f, 15.0f }, { 1000.0f, 30.0f }, m_Background);
-        
         Elysium::Renderer2D::endScene();
 
         auto mousePosition = Elysium::Input::getMousePosition();
         auto width = Elysium::Application::Get().getWindow().getWidth();
         auto height = Elysium::Application::Get().getWindow().getHeight();
-        
+
         m_Particle.Position = m_Camera.getScreenToWorldPosition(width, height, mousePosition);
-        m_Particle2.Position = { m_Player.getPosition().x,  m_Player.getPosition().y };
-        
+        m_Particle2.Position = { player.Position.x, player.Position.y };
+
         for (int i = 0; i < 5; i++)
         {
             m_ParticleSystem.Emit(m_Particle);
             m_ParticleSystem.Emit(m_Particle2);
         }
         m_ParticleSystem.OnUpdate(ts);
-
         m_PhysicsSystem.onUpdate(ts);
+
+        if (Elysium::Input::isKeyPressed(ELY_KEY_A))
+        {
+            if (m_Player.m_PlayerLookingRight)
+            {
+                m_Player.m_TextureData.reflectAroundYAxis();
+                m_Player.m_PlayerLookingRight = false;
+            }
+            player.Impulse.x = -1.0f * player.getMass() * ts;
+        }
+        else if (Elysium::Input::isKeyPressed(ELY_KEY_D))
+        {
+            if (!m_Player.m_PlayerLookingRight)
+            {
+                m_Player.m_TextureData.reflectAroundYAxis();
+                m_Player.m_PlayerLookingRight = true;
+            }
+            player.Impulse.x = 1.0f * player.getMass() * ts;
+        }
+
+        Elysium::Renderer2D::beginScene(m_Camera);
+        Elysium::Renderer2D::drawQuad(player.Position, player.getSize(), m_Player.m_TextureData);
+        Elysium::Renderer2D::drawQuad(box.Position, box.getSize(), m_BoxTexture);
+        Elysium::Renderer2D::drawQuad(sBox.Position, sBox.getSize(), m_BoxTexture);
+        Elysium::Renderer2D::drawQuad(ground.Position, ground.getSize(), m_GroundTexture);
+        Elysium::Renderer2D::endScene();
 
         ImGui::Begin("Statistics");
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);

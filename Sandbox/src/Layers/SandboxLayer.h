@@ -19,13 +19,15 @@ private:
     Elysium::ParticleProperties m_Particle2;
     Elysium::ParticleSystem m_ParticleSystem;
 
+    Elysium::PhysicsSystem m_PhysicsSystem;
+
     Player m_Player;
 
-    Elysium::DynamicObject m_MoveableBox;
-    Elysium::StaticObject m_Ground;
-    Elysium::StaticObject m_Box;
+    Elysium::PhysicsBody m_MoveableBox;
+    Elysium::PhysicsBody m_Ground;
+    TextureData m_GroundTexture;
+    Elysium::PhysicsBody m_Box;
     TextureData m_BoxTexture;
-    Elysium::PhysicsSystem m_PhysicsSystem;
 
 public:
     SandboxLayer(bool* runSandbox, unsigned int height, unsigned int width);

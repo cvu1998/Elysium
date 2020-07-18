@@ -19,15 +19,19 @@ private:
     Elysium::ParticleProperties m_Particle2;
     Elysium::ParticleSystem m_ParticleSystem;
 
-    Player m_Player;
-
-    Elysium::DynamicObject m_MoveableBox;
-    Elysium::StaticObject m_Ground;
-    Elysium::StaticObject m_Box;
-    TextureData m_BoxTexture;
-    std::vector<Elysium::DynamicObject> m_Boxes;
     Elysium::PhysicsSystem m_PhysicsSystem;
 
+    Player m_Player;
+
+    Elysium::PhysicsBody m_MoveableBox;
+    TextureData m_GroundTexture;
+    Elysium::PhysicsBody m_Ground;
+    std::array<Elysium::PhysicsBody, 1000> m_GroundLayers;
+    Elysium::PhysicsBody m_Box;
+    std::array<Elysium::PhysicsBody, 250> m_Boxes;
+    TextureData m_BoxTexture;
+
+    size_t m_Index = 0;
     float m_SpawnTime = 0.0f;
 
 public:
