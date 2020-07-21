@@ -4,8 +4,7 @@ SandboxLayer::SandboxLayer(bool* runSandbox, unsigned int width, unsigned int he
     m_RunSandbox(runSandbox),
     m_Camera(-m_Height * (float)(width / height), m_Height* (float)(width / height), 0.0f, m_Height),
     m_ParticleSystem(100, m_Camera),
-    m_PhysicsSystem(10.0f, m_Camera),
-    m_Player(m_PhysicsSystem, { 20.0f, 10.0f }, { 1.0f, 2.0f }, 10.0f)
+    m_Player({ 20.0f, 10.0f }, { 2.0f, 2.0f }, 10.0f)
 {
     Elysium::Renderer2D::Init();
 
@@ -13,7 +12,7 @@ SandboxLayer::SandboxLayer(bool* runSandbox, unsigned int width, unsigned int he
     m_Textures.emplace_back("res/texture/meadow.png");
     m_Textures.emplace_back("res/texture/Vader.png");
     m_Textures.emplace_back("res/texture/alec.png");
-    m_Textures.emplace_back("res/texture/player-sprite.png");
+    m_Textures.emplace_back("res/texture/Idle (1).png");
     m_Textures.emplace_back("res/texture/RPGpack_sheet_2X.png");
     m_Textures.emplace_back("res/texture/platformPack_tilesheet.png");
     m_Textures.emplace_back("res/texture/background.png");
@@ -49,18 +48,37 @@ SandboxLayer::SandboxLayer(bool* runSandbox, unsigned int width, unsigned int he
 
     // ---------------------------------------------------------------------------------- //
 
-    m_BoxTexture = m_Textures[5].getTextureData();
-    m_BoxTexture.subtextureCoordinates({ 4, 1 }, { 128, 128 });
-
-    m_MoveableBox = m_PhysicsSystem.createPhysicalBody(Elysium::BodyType::DYNAMIC, "Box", 10.0f, { 10.0f, 15.0f }, { 2.0f, 2.0f });
-    m_Ground = m_PhysicsSystem.createPhysicalBody(Elysium::BodyType::STATIC, "Ground", 10.0f, { 0.0f, 0.0f }, { 500.0f, 2.0f });
-    m_Box = m_PhysicsSystem.createPhysicalBody(Elysium::BodyType::STATIC, "sBox", 10.0f, { 2.5f, 2.0f }, { 2.0f, 2.0f });
-
     m_Player.m_TextureData = m_Textures[3].getTextureData();
-    m_Player.m_TextureData.subtextureCoordinates({ 7.5, 2.5 }, { 64, 128 });
 
     m_GroundTexture = m_Textures[5].getTextureData();
     m_GroundTexture.subtextureCoordinates({ 0, 6 }, { 128, 128 });
+
+    m_BoxTexture = m_Textures[5].getTextureData();
+    m_BoxTexture.subtextureCoordinates({ 4, 1 }, { 128, 128 });
+
+    m_BallTexture = m_Textures[5].getTextureData();
+    m_BallTexture.subtextureCoordinates({ 1, 1 }, { 128, 128 });
+
+    m_MoveableBox = e_PhysicsSystem.createPhysicalBody(Elysium::BodyType::DYNAMIC, "Box", 10.0f, { 10.0f, 15.0f }, { 2.0f, 2.0f });
+    m_Ball = e_PhysicsSystem.createPhysicalBody(Elysium::BodyType::DYNAMIC, "Ball", 10.0f, { -2.0f, 10.0f }, { 2.0f, 2.0f });
+    m_Ground = e_PhysicsSystem.createPhysicalBody(Elysium::BodyType::STATIC, "Ground", 10.0f, { 0.0f, 0.0f }, { 500.0f, 2.0f });
+    m_Box = e_PhysicsSystem.createPhysicalBody(Elysium::BodyType::STATIC, "sBox", 10.0f, { 2.5f, 2.0f }, { 2.0f, 2.0f });
+
+    m_Circle = e_PhysicsSystem.createPhysicalBody(Elysium::BodyType::DYNAMIC, "Ball", 10.0f, { 5.0f, 10.0f }, { 2.0f, 2.0f });
+
+    Elysium::PhysicalBody& player = e_PhysicsSystem.getPhysicalBody(m_Player.getIdentifier());
+    player.Radius = 1.0f;
+
+    Elysium::PhysicalBody& ground = e_PhysicsSystem.getPhysicalBody(m_Ground);
+    ground.setFrictionCoefficient(0.5f);
+    //ground.setElasticityCoefficient(1.0f);
+
+    Elysium::PhysicalBody& ball = e_PhysicsSystem.getPhysicalBody(m_Ball);
+    ball.Radius = 1.0f;
+    ball.setElasticityCoefficient(1.0f);
+
+    Elysium::PhysicalBody& circle = e_PhysicsSystem.getPhysicalBody(m_Circle);
+    circle.Radius = 1.0f;
 }
 
 SandboxLayer::~SandboxLayer()
@@ -72,10 +90,12 @@ void SandboxLayer::onUpdate(Elysium::Timestep ts)
 {
     if (*m_RunSandbox)
     {
-        Elysium::PhysicalBody& player = m_PhysicsSystem.getPhysicalBody(m_Player.getIdentifier());
-        Elysium::PhysicalBody& box = m_PhysicsSystem.getPhysicalBody(m_MoveableBox);
-        Elysium::PhysicalBody& ground = m_PhysicsSystem.getPhysicalBody(m_Ground);
-        Elysium::PhysicalBody& sBox = m_PhysicsSystem.getPhysicalBody(m_Box);
+        Elysium::PhysicalBody& player = e_PhysicsSystem.getPhysicalBody(m_Player.getIdentifier());
+        Elysium::PhysicalBody& box = e_PhysicsSystem.getPhysicalBody(m_MoveableBox);
+        Elysium::PhysicalBody& ground = e_PhysicsSystem.getPhysicalBody(m_Ground);
+        Elysium::PhysicalBody& sBox = e_PhysicsSystem.getPhysicalBody(m_Box);
+        Elysium::PhysicalBody& ball = e_PhysicsSystem.getPhysicalBody(m_Ball);
+        Elysium::PhysicalBody& circle = e_PhysicsSystem.getPhysicalBody(m_Circle);
 
         m_Camera.setPosition({ player.Position.x, player.Position.y - (player.getSize().y * 4.0f), 0.0f });
 
@@ -96,32 +116,17 @@ void SandboxLayer::onUpdate(Elysium::Timestep ts)
             m_ParticleSystem.Emit(m_Particle2);
         }
         m_ParticleSystem.OnUpdate(ts);
-        m_PhysicsSystem.onUpdate(ts);
+        e_PhysicsSystem.onUpdate(ts);
 
-        if (Elysium::Input::isKeyPressed(ELY_KEY_A))
-        {
-            if (m_Player.m_PlayerLookingRight)
-            {
-                m_Player.m_TextureData.reflectAroundYAxis();
-                m_Player.m_PlayerLookingRight = false;
-            }
-            player.Impulse.x = -1.0f * player.getMass() * ts;
-        }
-        else if (Elysium::Input::isKeyPressed(ELY_KEY_D))
-        {
-            if (!m_Player.m_PlayerLookingRight)
-            {
-                m_Player.m_TextureData.reflectAroundYAxis();
-                m_Player.m_PlayerLookingRight = true;
-            }
-            player.Impulse.x = 1.0f * player.getMass() * ts;
-        }
+        m_Player.onUpdate(ts);
 
         Elysium::Renderer2D::beginScene(m_Camera);
         Elysium::Renderer2D::drawQuad(player.Position, player.getSize(), m_Player.m_TextureData);
         Elysium::Renderer2D::drawQuad(box.Position, box.getSize(), m_BoxTexture);
         Elysium::Renderer2D::drawQuad(sBox.Position, sBox.getSize(), m_BoxTexture);
         Elysium::Renderer2D::drawQuad(ground.Position, ground.getSize(), m_GroundTexture);
+        Elysium::Renderer2D::drawQuad(ball.Position, ball.getSize(), m_BallTexture);
+        Elysium::Renderer2D::drawQuad(circle.Position, circle.getSize(), m_BallTexture);
         Elysium::Renderer2D::endScene();
 
         ImGui::Begin("Statistics");

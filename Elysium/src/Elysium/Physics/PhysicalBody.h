@@ -6,12 +6,17 @@
 
 namespace Elysium
 {
-    class PhysicalBody;
-
     enum class BodyType
     {
         STATIC = 0,
         DYNAMIC = 1
+    };
+
+    enum class BodyStatus
+    {
+        INACTIVE = 0,
+        ACTIVE = 1,
+        NOGRAVITY = 2
     };
 
     struct BodyCollisionInfo
@@ -28,11 +33,13 @@ namespace Elysium
         std::pair<BodyCollisionInfo, BodyCollisionInfo> CollisionInfoPair;
     };
 
-    typedef void (*Collision_Callback) (PhysicalBody&, const CollisionInfo&);
+    class PhysiscsSystem;
 
     class PhysicalBody
     {
         friend class PhysicsSystem;
+
+        typedef void (*Collision_Callback) (PhysicalBody&, const CollisionInfo&);
 
     private:      
         BodyType Type;
@@ -41,7 +48,6 @@ namespace Elysium
         Vector2 Velocity = { 0.0f, 0.0f };
         Vector2 Acceleration = { 0.0f, 0.0f };
 
-        Vector2 Size = { 1.0f, 1.0f };
         float BroadSize = 0.0f;
         std::vector<Vector2> m_ModelVertices;
         
@@ -49,13 +55,15 @@ namespace Elysium
         float FrictionCoefficient = 1.0f;
         float GravitationalAccel = 0.0f;
 
-        unsigned int Active = 1;
-
         Collision_Callback Callback;
 
     public:
         Vector2 Position = { 0.0f, 0.0f };
+        Vector2 Size = { 1.0f, 1.0f };
+        float Radius = 0.0f;
         float Rotation = 0.0f;
+
+        BodyStatus Status = BodyStatus::ACTIVE;
 
         Vector2 Force = { 0.0f, 0.0f };
         Vector2 Impulse = { 0.0f, 0.0f };

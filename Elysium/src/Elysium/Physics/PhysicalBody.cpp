@@ -1,5 +1,7 @@
 #include "PhysicalBody.h"
 
+#include <set>
+
 namespace Elysium
 {
     PhysicalBody::PhysicalBody(BodyType type,const char* name, float mass, const Vector2& initialPosition, const Vector2& size, 
@@ -11,8 +13,8 @@ namespace Elysium
         BroadSize(std::max(size.x, size.y)),
         Callback(callback)
     {
-        float halfLength = size.x / 2.0f;
-        float halfWidth = size.y / 2.0f;
+        float halfLength = size.x * 0.5f;
+        float halfWidth = size.y * 0.5f;
         
         m_ModelVertices.reserve(4);
         m_ModelVertices.emplace_back(-halfLength, -halfWidth);
@@ -49,7 +51,7 @@ namespace Elysium
     {
         std::vector<Vector2> vertices;
 
-        for (Vector2 vertex : m_ModelVertices)
+        for (const Vector2& vertex : m_ModelVertices)
             vertices.push_back(tranformVertex(vertex));
 
         return vertices;
@@ -59,8 +61,19 @@ namespace Elysium
     {
         std::vector<Vector2> vertices = getVertices();
         std::vector<Vector2> normals;
-        normals.emplace_back(-(vertices[0].y - vertices[1].y), vertices[0].x - vertices[1].x);
-        normals.emplace_back(-(vertices[1].y - vertices[2].y), vertices[1].x - vertices[2].x);
+
+        std::set<float> polarAngles;
+        std::pair<std::set<float>::iterator, bool> valid;
+        if (vertices.size() > 0)
+        {
+            for (size_t i = 0; i < vertices.size() - 1; i++)
+            {
+                Vector2 normal = { -(vertices[i].y - vertices[i + 1].y), vertices[i].x - vertices[i + 1].x };
+                valid = polarAngles.insert(fabs(atan2(normal.y, normal.x)));
+                if (valid.second)
+                    normals.push_back(normal);
+            }
+        }
         return normals;
     }
 }

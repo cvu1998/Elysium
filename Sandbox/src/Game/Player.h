@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Elysium.h>
+#include "Game/Systems.h"
 
 class Player
 {
@@ -12,9 +12,11 @@ public:
     TextureData m_TextureData;
 
 public:
-    Player(Elysium::PhysicsSystem& system, const Elysium::Vector2& position, const Elysium::Vector2& size, float mass);
+    Player(const Elysium::Vector2& position, const Elysium::Vector2& size, float mass);
 
     inline Elysium::PhysicsBody getIdentifier() const { return m_ID; }
+
+    void onUpdate(Elysium::Timestep ts);
 
     static void onCollision(Elysium::PhysicalBody& body, const Elysium::CollisionInfo& info);
 };

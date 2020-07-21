@@ -1,7 +1,5 @@
 #pragma once
 
-#include <Elysium.h>
-
 #include "Game/Player.h"
 
 class GameLayer : public Elysium::Layer
@@ -18,8 +16,6 @@ private:
     Elysium::ParticleProperties m_Particle;
     Elysium::ParticleProperties m_Particle2;
     Elysium::ParticleSystem m_ParticleSystem;
-
-    Elysium::PhysicsSystem m_PhysicsSystem;
 
     Player m_Player;
 

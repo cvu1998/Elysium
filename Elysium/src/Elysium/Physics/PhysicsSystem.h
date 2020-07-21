@@ -7,6 +7,8 @@
 #include "Elysium/Math.h"
 #include "Elysium/Physics/PhysicalBody.h"
 
+#define LOG
+
 namespace Elysium
 {
     typedef std::uint32_t PhysicsBody;
@@ -20,9 +22,9 @@ namespace Elysium
         std::vector<PhysicalBody> m_Bodies;
         std::vector<PhysicsBody> m_InactiveBodies;
 
-        OrthographicCamera* m_Camera;
-
+#ifdef LOG
         std::ofstream m_LogFile;
+#endif
 
     public:
         bool Gravity = true;
@@ -32,11 +34,11 @@ namespace Elysium
         void checkNarrowPhase(const PhysicalBody& body1, const PhysicalBody& body2, CollisionInfo& info);
 
     public:
-        PhysicsSystem(float acceleration, OrthographicCamera& camera);
+        PhysicsSystem(float acceleration);
         ~PhysicsSystem();
 
         PhysicsBody createPhysicalBody(BodyType type, const char* name, float mass, const Vector2& initialPosition, const Vector2& size,
-            Collision_Callback callback = nullptr);
+            PhysicalBody::Collision_Callback callback = nullptr);
 
         inline void setGravitaionnalAccel(float acceleration) { m_GravitationalAccel = acceleration; }
         inline float getGravitaionnalAccel() const { return m_GravitationalAccel; }
