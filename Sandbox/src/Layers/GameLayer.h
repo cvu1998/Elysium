@@ -19,12 +19,10 @@ private:
 
     Player m_Player;
 
-    Elysium::PhysicsBody m_MoveableBox;
     TextureData m_GroundTexture;
-    Elysium::PhysicsBody m_Ground;
-    std::array<Elysium::PhysicsBody, 1000> m_GroundLayers;
-    Elysium::PhysicsBody m_Box;
-    std::array<Elysium::PhysicsBody, 250> m_Boxes;
+    Elysium::BodyHandle m_Ground;
+    std::array<Elysium::BodyHandle, 5000> m_GroundLayers;
+    std::array<Elysium::BodyHandle, 250> m_Boxes;
     TextureData m_BoxTexture;
 
     size_t m_Index = 0;

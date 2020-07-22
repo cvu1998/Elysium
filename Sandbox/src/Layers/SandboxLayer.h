@@ -19,13 +19,13 @@ private:
 
     Player m_Player;
 
-    Elysium::PhysicsBody m_MoveableBox;
-    Elysium::PhysicsBody m_Ground;
+    Elysium::BodyHandle m_MoveableBox;
+    Elysium::BodyHandle m_Ground;
     TextureData m_GroundTexture;
-    Elysium::PhysicsBody m_Box;
+    Elysium::BodyHandle m_Box;
     TextureData m_BoxTexture;
-    Elysium::PhysicsBody m_Ball;
-    Elysium::PhysicsBody m_Circle;
+    Elysium::BodyHandle m_Ball;
+    Elysium::BodyHandle m_Circle;
     TextureData m_BallTexture;
 
 public:

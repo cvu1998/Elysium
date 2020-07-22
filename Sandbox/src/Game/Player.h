@@ -5,7 +5,7 @@
 class Player
 {
 private:
-    Elysium::PhysicsBody m_ID;
+    Elysium::BodyHandle m_ID;
 
 public:
     bool m_PlayerLookingRight = true;
@@ -14,7 +14,7 @@ public:
 public:
     Player(const Elysium::Vector2& position, const Elysium::Vector2& size, float mass);
 
-    inline Elysium::PhysicsBody getIdentifier() const { return m_ID; }
+    inline Elysium::BodyHandle getIdentifier() const { return m_ID; }
 
     void onUpdate(Elysium::Timestep ts);
 

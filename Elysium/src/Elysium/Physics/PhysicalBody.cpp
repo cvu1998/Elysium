@@ -10,7 +10,6 @@ namespace Elysium
         Name(name),
         Position(initialPosition),
         Size(size),
-        BroadSize(std::max(size.x, size.y)),
         Callback(callback)
     {
         float halfLength = size.x * 0.5f;
@@ -24,6 +23,21 @@ namespace Elysium
 
         if (type == BodyType::DYNAMIC)
             Mass = mass;
+    }
+
+    PhysicalBody PhysicalBody::createPhysicalBody(BodyType type, const char* name, float mass, const Vector2& initialPosition, const Vector2& size, Collision_Callback callback)
+    {
+        return PhysicalBody(type, name, mass, initialPosition, size, callback);
+    }
+
+    void PhysicalBody::setRadius(float radius)
+    {
+        if (radius > 0.0f)
+        {
+            Radius = radius;
+            Size = { 2.0f * radius, 2.0f * radius };
+        }
+
     }
 
     void PhysicalBody::setElasticityCoefficient(float coefficient)

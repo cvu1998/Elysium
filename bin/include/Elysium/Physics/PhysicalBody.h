@@ -45,10 +45,11 @@ namespace Elysium
         BodyType Type;
         const char* Name;
         float Mass = 0.0f;
+        float Radius = 0.0f;
+        Vector2 Size = { 1.0f, 1.0f };
         Vector2 Velocity = { 0.0f, 0.0f };
         Vector2 Acceleration = { 0.0f, 0.0f };
 
-        float BroadSize = 0.0f;
         std::vector<Vector2> m_ModelVertices;
         
         float ElasticityCoefficient = 1.0f;
@@ -59,8 +60,6 @@ namespace Elysium
 
     public:
         Vector2 Position = { 0.0f, 0.0f };
-        Vector2 Size = { 1.0f, 1.0f };
-        float Radius = 0.0f;
         float Rotation = 0.0f;
 
         BodyStatus Status = BodyStatus::ACTIVE;
@@ -69,10 +68,13 @@ namespace Elysium
         Vector2 Impulse = { 0.0f, 0.0f };
 
     private:
+        PhysicalBody(BodyType type, const char* name, float mass, const Vector2& initialPosition, const Vector2& size,
+            Collision_Callback callback);
+
         Vector2 tranformVertex(const Vector2& vertex) const;
 
     public:
-        PhysicalBody(BodyType type, const char* name, float mass, const Vector2& initialPosition, const Vector2& size,
+        static PhysicalBody createPhysicalBody(BodyType type, const char* name, float mass, const Vector2& initialPosition, const Vector2& size,
             Collision_Callback callback);
 
         inline const char* getName() const { return Name; }
@@ -82,8 +84,10 @@ namespace Elysium
         inline const Vector2& getSize() const { return Size; }
         inline float getRotation() const { return Rotation; };
 
+        void setRadius(float radius);
         void setElasticityCoefficient(float coefficient);
         void setFrictionCoefficient(float coefficient);
+        inline float getRadius() const { return Radius; }
         inline float getElasticityCoefficient() const { return ElasticityCoefficient; }
         inline float getFrictionCoefficient() const { return FrictionCoefficient; }
 

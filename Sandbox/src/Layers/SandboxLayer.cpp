@@ -64,21 +64,21 @@ SandboxLayer::SandboxLayer(bool* runSandbox, unsigned int width, unsigned int he
     m_Ground = e_PhysicsSystem.createPhysicalBody(Elysium::BodyType::STATIC, "Ground", 10.0f, { 0.0f, 0.0f }, { 500.0f, 2.0f });
     m_Box = e_PhysicsSystem.createPhysicalBody(Elysium::BodyType::STATIC, "sBox", 10.0f, { 2.5f, 2.0f }, { 2.0f, 2.0f });
 
-    m_Circle = e_PhysicsSystem.createPhysicalBody(Elysium::BodyType::DYNAMIC, "Ball", 10.0f, { 5.0f, 10.0f }, { 2.0f, 2.0f });
+    m_Circle = e_PhysicsSystem.createPhysicalBody(Elysium::BodyType::DYNAMIC, "Circle", 10.0f, { -5.0f, 10.0f }, { 2.0f, 2.0f });
 
     Elysium::PhysicalBody& player = e_PhysicsSystem.getPhysicalBody(m_Player.getIdentifier());
-    player.Radius = 1.0f;
+    player.setRadius(1.0f);
 
     Elysium::PhysicalBody& ground = e_PhysicsSystem.getPhysicalBody(m_Ground);
     ground.setFrictionCoefficient(0.5f);
     //ground.setElasticityCoefficient(1.0f);
 
     Elysium::PhysicalBody& ball = e_PhysicsSystem.getPhysicalBody(m_Ball);
-    ball.Radius = 1.0f;
+    ball.setRadius(1.0f);
     ball.setElasticityCoefficient(1.0f);
 
     Elysium::PhysicalBody& circle = e_PhysicsSystem.getPhysicalBody(m_Circle);
-    circle.Radius = 1.0f;
+    circle.setRadius(1.0f);
 }
 
 SandboxLayer::~SandboxLayer()
