@@ -22,7 +22,7 @@ namespace Elysium
         m_ModelVertices.emplace_back(-halfLength,  halfWidth);
 
         if (type == BodyType::DYNAMIC)
-            Mass = mass;
+            Mass = fabs(mass);
     }
 
     PhysicalBody PhysicalBody::createPhysicalBody(BodyType type, const char* name, float mass, const Vector2& initialPosition, const Vector2& size, Collision_Callback callback)
@@ -66,9 +66,46 @@ namespace Elysium
         std::vector<Vector2> vertices;
 
         for (const Vector2& vertex : m_ModelVertices)
-            vertices.push_back(tranformVertex(vertex));
+            vertices.push_back(vertex + Position);
+            //vertices.push_back(tranformVertex(vertex));
 
         return vertices;
+    }
+
+    Vector2 PhysicalBody::getMinVertex() const
+    {
+        Vector2 array[4];
+        array[0] = tranformVertex(+Size * 0.5f);
+        array[1] = tranformVertex(-Size * 0.5f);
+        array[2] = tranformVertex({ +Size.x * 0.5f, -Size.y * 0.5f });
+        array[3] = tranformVertex({ -Size.x * 0.5f, +Size.y * 0.5f });
+
+        for (size_t i = 1; i < 4; i++)
+        {
+            if (array[i].x < array[0].x)
+                array[0].x = array[i].x;
+            if (array[i].y < array[0].y)
+                array[0].y = array[i].y;
+        }
+        return array[0];
+    }
+
+    Vector2 PhysicalBody::getMaxVertex() const
+    {
+        Vector2 array[4];
+        array[0] = tranformVertex(+Size * 0.5f);
+        array[1] = tranformVertex(-Size * 0.5f);
+        array[2] = tranformVertex({ +Size.x * 0.5f, -Size.y * 0.5f });
+        array[3] = tranformVertex({ -Size.x * 0.5f, +Size.y * 0.5f });
+
+        for (size_t i = 1; i < 4; i++)
+        {
+            if (array[i].x > array[0].x)
+                array[0].x = array[i].x;
+            if (array[i].y > array[0].y)
+                array[0].y = array[i].y;
+        }
+        return array[0];
     }
 
     std::vector<Vector2> PhysicalBody::getNormals() const

@@ -11,7 +11,7 @@
 
 namespace Elysium
 {
-    typedef std::uint32_t BodyHandle;
+    using BodyHandle = uint32_t;
 
     class PhysicsSystem final
     {

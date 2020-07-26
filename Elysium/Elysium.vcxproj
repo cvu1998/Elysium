@@ -371,6 +371,7 @@ xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\include\" /S /Y /I
     <None Include="src\vendor\glm\gtx\wrap.inl" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Elysium\ArrayList.h" />
     <ClInclude Include="src\Elysium\Input.h" />
     <ClInclude Include="src\Elysium\KeyCodes.h" />
     <ClInclude Include="src\Elysium\LayerStack.h" />

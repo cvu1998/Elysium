@@ -39,7 +39,7 @@ namespace Elysium
     {
         friend class PhysicsSystem;
 
-        typedef void (*Collision_Callback) (PhysicalBody&, const CollisionInfo&);
+        using Collision_Callback = void (*)(PhysicalBody&, const CollisionInfo&);
 
     private:      
         BodyType Type;
@@ -49,23 +49,28 @@ namespace Elysium
         Vector2 Size = { 1.0f, 1.0f };
         Vector2 Velocity = { 0.0f, 0.0f };
         Vector2 Acceleration = { 0.0f, 0.0f };
+        Vector2 Normal = { 0.0f, 0.0f };
+        std::vector<Vector2> Impulses;
 
         std::vector<Vector2> m_ModelVertices;
         
         float ElasticityCoefficient = 1.0f;
         float FrictionCoefficient = 1.0f;
         float GravitationalAccel = 0.0f;
+        float Rotation = 0.0f;
 
         Collision_Callback Callback;
+        unsigned int NumberOfExecution = 0;
 
     public:
         Vector2 Position = { 0.0f, 0.0f };
-        float Rotation = 0.0f;
 
         BodyStatus Status = BodyStatus::ACTIVE;
 
         Vector2 Force = { 0.0f, 0.0f };
         Vector2 Impulse = { 0.0f, 0.0f };
+
+        unsigned int CallbackExecutions = 0;
 
     private:
         PhysicalBody(BodyType type, const char* name, float mass, const Vector2& initialPosition, const Vector2& size,
@@ -91,9 +96,14 @@ namespace Elysium
         inline float getElasticityCoefficient() const { return ElasticityCoefficient; }
         inline float getFrictionCoefficient() const { return FrictionCoefficient; }
 
+        inline void setNumberOfCallbackExecution(unsigned int number) { NumberOfExecution = number; }
+
         void setModelVertices(const std::vector<Vector2>& vertices) { m_ModelVertices = vertices; }
         const std::vector<Vector2>& getModelVertices() const { return m_ModelVertices; }
         std::vector<Vector2>getVertices() const;
+
+        Vector2 getMinVertex() const;
+        Vector2 getMaxVertex() const;
 
         std::vector<Vector2>getNormals() const;
     };
