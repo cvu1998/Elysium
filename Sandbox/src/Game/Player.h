@@ -12,7 +12,7 @@ public:
     TextureData m_TextureData;
 
 public:
-    Player(const Elysium::Vector2& position, const Elysium::Vector2& size, float mass);
+    Player();
 
     inline Elysium::BodyHandle getIdentifier() const { return m_ID; }
 

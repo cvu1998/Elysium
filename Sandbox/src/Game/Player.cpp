@@ -1,9 +1,9 @@
 #include "Player.h"
 
-Player::Player(const Elysium::Vector2& position, const Elysium::Vector2& size, float mass)
+Player::Player()
 {
     e_PhysicsSystem.getBodies().clear();
-    m_ID = e_PhysicsSystem.createPhysicalBody(Elysium::BodyType::DYNAMIC, "Player", mass, position, size, Player::onCollision);
+    e_PhysicsSystem.createPhysicalBody(&m_ID, Elysium::BodyType::DYNAMIC, "Player", 50.0f, { 20.0f, 10.0f }, { 2.0f, 2.0f }, Player::onCollision);
 
     Elysium::PhysicalBody& player = e_PhysicsSystem.getPhysicalBody(m_ID);
     player.setRadius(1.0f);

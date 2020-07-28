@@ -3,8 +3,7 @@
 SandboxLayer::SandboxLayer(bool* runSandbox, unsigned int width, unsigned int height) : Layer("Sandbox"),
     m_RunSandbox(runSandbox),
     m_Camera(-m_Height * (float)(width / height), m_Height* (float)(width / height), 0.0f, m_Height),
-    m_ParticleSystem(100, m_Camera),
-    m_Player({ 20.0f, 10.0f }, { 2.0f, 2.0f }, 10.0f)
+    m_ParticleSystem(100, m_Camera)
 {
     Elysium::Renderer2D::Init();
 
@@ -59,12 +58,12 @@ SandboxLayer::SandboxLayer(bool* runSandbox, unsigned int width, unsigned int he
     m_BallTexture = m_Textures[5].getTextureData();
     m_BallTexture.subtextureCoordinates({ 1, 1 }, { 128, 128 });
 
-    m_Ground = e_PhysicsSystem.createPhysicalBody(Elysium::BodyType::STATIC, "Ground", 10.0f, { 0.0f, 0.0f }, { 500.0f, 2.0f });
-    m_MoveableBox = e_PhysicsSystem.createPhysicalBody(Elysium::BodyType::DYNAMIC, "Box", 10.0f, { 10.0f, 15.0f }, { 2.0f, 2.0f });
-    m_Ball = e_PhysicsSystem.createPhysicalBody(Elysium::BodyType::DYNAMIC, "Ball", 10.0f, { -2.0f, 10.0f }, { 2.0f, 2.0f });
-    m_Box = e_PhysicsSystem.createPhysicalBody(Elysium::BodyType::STATIC, "sBox", 10.0f, { 2.5f, 2.0f }, { 2.0f, 2.0f });
+    e_PhysicsSystem.createPhysicalBody(&m_Ground, Elysium::BodyType::STATIC, "Ground", 10.0f, { 0.0f, 0.0f }, { 500.0f, 2.0f });
+    e_PhysicsSystem.createPhysicalBody(&m_MoveableBox, Elysium::BodyType::DYNAMIC, "Box", 10.0f, { 10.0f, 15.0f }, { 2.0f, 2.0f });
+    e_PhysicsSystem.createPhysicalBody(&m_Ball, Elysium::BodyType::DYNAMIC, "Ball", 10.0f, { -2.0f, 10.0f }, { 2.0f, 2.0f });
+    e_PhysicsSystem.createPhysicalBody(&m_Box, Elysium::BodyType::STATIC, "sBox", 10.0f, { 2.5f, 2.0f }, { 2.0f, 2.0f });
 
-    m_Circle = e_PhysicsSystem.createPhysicalBody(Elysium::BodyType::DYNAMIC, "Circle", 10.0f, { -5.0f, 10.0f }, { 2.0f, 2.0f });
+    e_PhysicsSystem.createPhysicalBody(&m_Circle, Elysium::BodyType::DYNAMIC, "Circle", 10.0f, { -5.0f, 10.0f }, { 2.0f, 2.0f });
 
     Elysium::PhysicalBody& ground = e_PhysicsSystem.getPhysicalBody(m_Ground);
     ground.setFrictionCoefficient(0.5f);

@@ -1,52 +1,58 @@
 #pragma once
 
+#include <memory>
 #include <vector>
 
 namespace Elysium
 {
-    template <class T, size_t S>
+    template <class T>
     class ArrayList
     {
     private:
-        std::vector<T*> m_ArrayList;
+        static constexpr size_t s_ArraySize = 1000;
+        static constexpr double s_InverseSize = (1.0 / (double)s_ArraySize);
+        std::vector<std::unique_ptr<T[]>> m_ArrayList;
         size_t m_VectorIndex = 0;
         size_t m_ArrayIndex = 0;
-        float m_InverseS = 1 / S;
 
     public:
-        ~ArrayList()
-        {
-            for (auto* index : m_ArrayList)
-            {
-                delete[] index;
-                index = nullptr;
-            }
-        }
-
         void add(const T& element)
         {
-            if (m_Index == S)
+            if (m_ArrayIndex == s_ArraySize)
             {
                 m_VectorIndex++;
                 m_ArrayIndex = 0;
             }
 
-            if (m_Index == 0)
+            if (m_ArrayIndex == 0)
             {
-                m_ArrayList.push_back(new T[S]);
+                std::unique_ptr<T[]> array(new T[s_ArraySize]);
+                m_ArrayList.push_back(std::move(array));
             }
             m_ArrayList[m_VectorIndex][m_ArrayIndex] = element;
             m_ArrayIndex++;
         }
 
+        void clear()
+        {
+            m_VectorIndex = 0;
+            m_ArrayIndex = 0;
+            m_ArrayList.clear();
+        }
+
         size_t size()
         {
-            return (m_VectorIndex * S) + m_ArrayIndex;
+            return (m_VectorIndex * s_ArraySize) + m_ArrayIndex;
         }
 
         T& operator[](size_t index)
         {
-            return m_ArrayList[index * m_InverseS][index % S];
+            return m_ArrayList[(size_t)(index * s_InverseSize)][index % s_ArraySize];
+        }
+
+        const T& operator[](size_t index) const
+        {
+            return m_ArrayList[(size_t)(index * s_InverseSize)][index % s_ArraySize];
         }
     };
 }

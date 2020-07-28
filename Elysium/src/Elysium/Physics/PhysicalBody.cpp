@@ -4,7 +4,26 @@
 
 namespace Elysium
 {
-    PhysicalBody::PhysicalBody(BodyType type,const char* name, float mass, const Vector2& initialPosition, const Vector2& size, 
+    PhysicalBody::PhysicalBody()
+    {
+        Type = BodyType::STATIC;
+        Name = nullptr;
+        Mass = 0.0f;
+        Radius = 0.0f;
+        Size = { 1.0f, 1.0f };
+        Velocity = { 0.0f, 0.0f };
+        Acceleration = { 0.0f, 0.0f };
+
+        ElasticityCoefficient = 1.0f;
+        FrictionCoefficient = 1.0f;
+        GravitationalAccel = 0.0f;
+        Rotation = 0.0f;
+
+        Callback = nullptr;
+        NumberOfExecution = 0;
+    }
+
+    PhysicalBody::PhysicalBody(BodyType type,const char* name, float mass, const Vector2& initialPosition, const Vector2& size,
         Collision_Callback callback) :
         Type(type),
         Name(name),
@@ -21,7 +40,8 @@ namespace Elysium
         m_ModelVertices.emplace_back( halfLength,  halfWidth);
         m_ModelVertices.emplace_back(-halfLength,  halfWidth);
 
-        if (type == BodyType::DYNAMIC)
+        Mass = INFINITY;
+        if (type == BodyType::DYNAMIC || type == BodyType::KINEMATIC)
             Mass = fabs(mass);
     }
 
@@ -67,7 +87,6 @@ namespace Elysium
 
         for (const Vector2& vertex : m_ModelVertices)
             vertices.push_back(vertex + Position);
-            //vertices.push_back(tranformVertex(vertex));
 
         return vertices;
     }

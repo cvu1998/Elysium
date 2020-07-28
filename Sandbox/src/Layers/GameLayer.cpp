@@ -3,8 +3,7 @@
 GameLayer::GameLayer(bool* runGame, unsigned int width, unsigned int height) : Layer("Sandbox"),
 m_RunGame(runGame),
 m_Camera(-m_Height * (float)(width / height), m_Height* (float)(width / height), 0.0f, m_Height),
-m_ParticleSystem(100, m_Camera),
-m_Player({ 20.0f, 10.0f }, { 2.0f, 2.0f }, 10.0f)
+m_ParticleSystem(100, m_Camera)
 {
     Elysium::Renderer2D::Init();
 
@@ -56,12 +55,12 @@ m_Player({ 20.0f, 10.0f }, { 2.0f, 2.0f }, 10.0f)
     m_BoxTexture = m_Textures[5].getTextureData();
     m_BoxTexture.subtextureCoordinates({ 4, 1 }, { 128, 128 });
 
-    m_Ground = e_PhysicsSystem.createPhysicalBody(Elysium::BodyType::STATIC, "Ground", 10.0f, { 0.0f, 0.0f }, { 500.0f, 2.0f });
+    e_PhysicsSystem.createPhysicalBody(&m_Ground, Elysium::BodyType::STATIC, "Ground", 10.0f, { 0.0f, 0.0f }, { 5000.0f, 2.0f });
 
     float depth = -((float)m_GroundLayers.size() * 2.0f);
     for (size_t i = 0; i < m_GroundLayers.size(); i++)
     {
-        m_GroundLayers[i] = e_PhysicsSystem.createPhysicalBody(Elysium::BodyType::STATIC, "Layer", 10.0f, { 0.0f, depth + (float)(2.0f * i) }, { 500.0f, 2.0f });
+        e_PhysicsSystem.createPhysicalBody(&m_GroundLayers[i], Elysium::BodyType::STATIC, "Layer", 10.0f, { 0.0f, depth + (float)(2.0f * i) }, { 500.0f, 2.0f });
     }
 }
 
@@ -76,6 +75,17 @@ void GameLayer::onUpdate(Elysium::Timestep ts)
     {
         Elysium::PhysicalBody& player = e_PhysicsSystem.getPhysicalBody(m_Player.getIdentifier());
         Elysium::PhysicalBody& ground = e_PhysicsSystem.getPhysicalBody(m_Ground);
+
+        m_SpawnTime += ts;
+        if (m_Index < m_Boxes.size() && m_SpawnTime > 0.05f)
+        {
+            float x = (Random::Float() * 200.0f) - 100.0f;
+            Elysium::Vector2 position = { x, 20.0f };
+            e_PhysicsSystem.createPhysicalBody(&m_Boxes[m_Index], Elysium::BodyType::DYNAMIC, "Box", 5.0f, position, { 2.0f, 2.0f });
+
+            m_Index++;
+            m_SpawnTime = 0.0f;
+        }
 
         m_Camera.setPosition({ player.Position.x, player.Position.y - (player.getSize().y * 4.0f), 0.0f });
 
@@ -107,17 +117,6 @@ void GameLayer::onUpdate(Elysium::Timestep ts)
         {
             Elysium::PhysicalBody& layer = e_PhysicsSystem.getPhysicalBody(body);
             Elysium::Renderer2D::drawQuad(layer.Position, layer.getSize(), m_GroundTexture);
-        }
-
-        m_SpawnTime += ts;
-        if (m_Index < m_Boxes.size() && m_SpawnTime > 0.05f)
-        {
-            float x = (Random::Float() * 200.0f) - 100.0f;
-            Elysium::Vector2 position = { x, 20.0f };
-            m_Boxes[m_Index] = e_PhysicsSystem.createPhysicalBody(Elysium::BodyType::DYNAMIC, "Box", 10.0f, position, { 2.0f, 2.0f });
-
-            m_Index++;
-            m_SpawnTime = 0.0f;
         }
         for (size_t i = 0; i < m_Index; i++)
         {

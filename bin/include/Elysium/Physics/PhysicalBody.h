@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Elysium/ArrayList.h"
 #include "Elysium/Math.h"
 #include "Elysium/Timestep.h"
 #include "Elysium/Renderer/Renderer2D.h"
@@ -9,7 +10,8 @@ namespace Elysium
     enum class BodyType
     {
         STATIC = 0,
-        DYNAMIC = 1
+        KINEMATIC = 1,
+        DYNAMIC = 2
     };
 
     enum class BodyStatus
@@ -37,6 +39,7 @@ namespace Elysium
 
     class PhysicalBody
     {
+        friend class ArrayList<PhysicalBody>;
         friend class PhysicsSystem;
 
         using Collision_Callback = void (*)(PhysicalBody&, const CollisionInfo&);
@@ -49,8 +52,18 @@ namespace Elysium
         Vector2 Size = { 1.0f, 1.0f };
         Vector2 Velocity = { 0.0f, 0.0f };
         Vector2 Acceleration = { 0.0f, 0.0f };
-        Vector2 Normal = { 0.0f, 0.0f };
-        std::vector<Vector2> Impulses;
+
+        struct Hash_Vector2
+        {
+            size_t operator()(const Vector2& vector) const
+            {
+                auto hash1 = std::hash<float>{}(vector.x);
+                auto hash2 = std::hash<float>{}(vector.y);
+                return hash1 ^ hash2;
+            }
+        };
+
+        std::unordered_map<Vector2, Vector2, Hash_Vector2> Normals;
 
         std::vector<Vector2> m_ModelVertices;
         
@@ -73,6 +86,7 @@ namespace Elysium
         unsigned int CallbackExecutions = 0;
 
     private:
+        PhysicalBody();
         PhysicalBody(BodyType type, const char* name, float mass, const Vector2& initialPosition, const Vector2& size,
             Collision_Callback callback);
 

@@ -22,6 +22,12 @@ namespace Elysium
         return glm::dot(vector);
     }
 
+    template <class T>
+    static T max(const T& vector)
+    {
+        return glm::max(vector);
+    }
+
     template<class T>
     static T normalize(const T& vector)
     {

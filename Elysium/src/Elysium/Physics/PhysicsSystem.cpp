@@ -21,18 +21,32 @@ namespace Elysium
 #endif
     }
 
-    BodyHandle PhysicsSystem::createPhysicalBody(BodyType type, const char* name, float mass, const Vector2& initialPosition, const Vector2& size,
-        PhysicalBody::Collision_Callback callback)
+    PhysicalBody& PhysicsSystem::createPhysicalBody(BodyType type, const char* name, float mass, const Vector2& initialPosition, const Vector2& size, PhysicalBody::Collision_Callback callback)
     {
         if (m_InactiveBodies.empty())
         {
-            m_Bodies.push_back(std::move(PhysicalBody::createPhysicalBody(type, name, mass, initialPosition, size, callback)));
-            return (BodyHandle)m_Bodies.size() - 1;
+            m_Bodies.add(PhysicalBody::createPhysicalBody(type, name, mass, initialPosition, size, callback));
+            return m_Bodies[m_Bodies.size() - 1];
         }
         BodyHandle body = m_InactiveBodies.back();
         m_InactiveBodies.pop_back();
         m_Bodies[body] = PhysicalBody(type, name, mass, initialPosition, size, callback);
-        return body;
+        return m_Bodies[body];
+    }
+
+    void PhysicsSystem::createPhysicalBody(BodyHandle* handle, BodyType type, const char* name, float mass, const Vector2& initialPosition, const Vector2& size,
+        PhysicalBody::Collision_Callback callback)
+    {
+        if (m_InactiveBodies.empty())
+        {
+            m_Bodies.add(PhysicalBody::createPhysicalBody(type, name, mass, initialPosition, size, callback));
+            *handle = (BodyHandle)m_Bodies.size() - 1;
+            return;
+        }
+        BodyHandle body = m_InactiveBodies.back();
+        m_InactiveBodies.pop_back();
+        m_Bodies[body] = PhysicalBody(type, name, mass, initialPosition, size, callback);
+        *handle = body;
     }
 
     bool PhysicsSystem::checkBroadPhase(const PhysicalBody& body1, const PhysicalBody& body2)
@@ -164,44 +178,34 @@ namespace Elysium
     void PhysicsSystem::onUpdate(Timestep ts)
     {
         m_Time += ts;
-
         for (uint32_t i = 0; i < m_Bodies.size(); i++)
         {
             if (m_Bodies[i].Status != BodyStatus::INACTIVE)
             {
                 switch (m_Bodies[i].Type)
                 {
-                case BodyType::DYNAMIC:
-                    Vector2 maxImpulse = { 0.0f, 0.0f };
-                    for (auto& impulse : m_Bodies[i].Impulses)
+                case BodyType::STATIC:
+                    m_Bodies[i].Acceleration = { 0.0f, 0.0f };
+                    m_Bodies[i].Velocity = { 0.0f, 0.0f };
+
+                    m_Bodies[i].Force = { 0.0f, 0.0f };
+                    break;
+                default:
+                    for (auto& impulse : m_Bodies[i].Normals)
                     {
-                        maxImpulse.x = std::max(maxImpulse.x, impulse.x);
-                        maxImpulse.y = std::max(maxImpulse.y, impulse.y);
+                        m_Bodies[i].Impulse += impulse.first * impulse.second;
+                        impulse.second = { 0.0f, 0.0f };
                     }
-                    if (fabs(m_Bodies[i].Normal.x) > 0.0f || fabs(m_Bodies[i].Normal.y) > 0.0f)
-                        m_Bodies[i].Normal = normalize(m_Bodies[i].Normal);
-                    m_Bodies[i].Impulse += maxImpulse * m_Bodies[i].Normal;
+
                     m_Bodies[i].Acceleration = m_Bodies[i].Force / m_Bodies[i].Mass;
                     m_Bodies[i].Velocity = m_Bodies[i].Velocity + (m_Bodies[i].Impulse / m_Bodies[i].Mass) + (m_Bodies[i].Acceleration * (float)ts);
                     m_Bodies[i].Position = m_Bodies[i].Position + (m_Bodies[i].Velocity * (float)ts);
 
                     m_Bodies[i].Force = { 0.0f, 0.0f };
-
                     if (Gravity && m_Bodies[i].Status != BodyStatus::NOGRAVITY)
-                    {
                         m_Bodies[i].Force.y = -m_GravitationalAccel * m_Bodies[i].Mass;
-                    }
-                    break;
-                default:
-                    m_Bodies[i].Acceleration = { 0.0f, 0.0f };
-                    m_Bodies[i].Velocity = { 0.0f, 0.0f };
-                    
-                    m_Bodies[i].Force = { 0.0f, 0.0f };
                 }
-                m_Bodies[i].Impulses.clear();
-                m_Bodies[i].Normal = { 0.0f, 0.0f };
                 m_Bodies[i].Impulse = { 0.0f, 0.0f };
-
                 m_Bodies[i].CallbackExecutions = 0;
             }
         }
@@ -250,14 +254,14 @@ namespace Elysium
                         float magnitude2 = fabs(dot(m_Bodies[j].Velocity, jNormal));
                         if (magnitude1 > magnitude2)
                         {
-                            if (m_Bodies[i].Type == BodyType::DYNAMIC)
+                            if (m_Bodies[i].Type == BodyType::DYNAMIC || m_Bodies[i].Type == BodyType::KINEMATIC)
                                 m_Bodies[i].Position = m_Bodies[i].Position + (info.minOverlap * iNormal);
                             else
                                 m_Bodies[j].Position = m_Bodies[j].Position + (info.minOverlap * jNormal);
                         }
                         else
                         {
-                            if (m_Bodies[j].Type == BodyType::DYNAMIC)
+                            if (m_Bodies[j].Type == BodyType::DYNAMIC || m_Bodies[j].Type == BodyType::KINEMATIC)
                                 m_Bodies[j].Position = m_Bodies[j].Position + (info.minOverlap * jNormal);
                             else
                                 m_Bodies[i].Position = m_Bodies[i].Position + (info.minOverlap * iNormal);
@@ -265,22 +269,21 @@ namespace Elysium
                         /***** Normal Force *****/
                         m_Bodies[i].Force += abs(m_Bodies[i].Force) * iNormal;
                         m_Bodies[j].Force += abs(m_Bodies[j].Force) * jNormal;
-
+                        
                         Vector2 iIMpulse = { 0.0f, 0.0f };
                         Vector2 jIMpulse = { 0.0f, 0.0f };
 
-                        jIMpulse += abs(m_Bodies[i].Velocity / m_Bodies[j].Mass);
-                        iIMpulse += abs(m_Bodies[j].Velocity / m_Bodies[i].Mass);
+                        if (m_Bodies[j].Type == BodyType::DYNAMIC)
+                            jIMpulse = abs(m_Bodies[i].Velocity / m_Bodies[j].Mass);
+                        if (m_Bodies[i].Type == BodyType::DYNAMIC)
+                            iIMpulse = abs(m_Bodies[j].Velocity / m_Bodies[i].Mass);
 
                         float averageElasticity = (m_Bodies[i].ElasticityCoefficient + m_Bodies[j].ElasticityCoefficient) * 0.5f;
                         iIMpulse += abs(m_Bodies[i].Velocity) * m_Bodies[i].Mass * (averageElasticity);
                         jIMpulse += abs(m_Bodies[j].Velocity) * m_Bodies[j].Mass * (averageElasticity);
 
-                        m_Bodies[i].Impulses.push_back(iIMpulse);
-                        m_Bodies[j].Impulses.push_back(jIMpulse);
-
-                        m_Bodies[i].Normal += iNormal;
-                        m_Bodies[j].Normal += jNormal;
+                        m_Bodies[i].Normals[iNormal] = max(iIMpulse, m_Bodies[i].Normals[iNormal]);
+                        m_Bodies[j].Normals[jNormal] = max(jIMpulse, m_Bodies[j].Normals[jNormal]);
 
                         /***** Friction *****/
                         Vector2 frictionDirection = { 0.0f, 0.0f };
