@@ -42,6 +42,7 @@ namespace Elysium
         static Application& Get() { return *s_Instance; }
 
         virtual Window& getWindow() final { return *m_Window; }
+        virtual const Window& getWindow() const final { return *m_Window; }
 
         void setClearColor(float r, float g, float b, float a);
 

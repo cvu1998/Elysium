@@ -104,7 +104,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(ProjectDir)src\*.h" "$(SolutionDir)bin\include\" /S /Y /I
+      <Command>rmdir "$(SolutionDir)bin\include\" /s /q
+xcopy "$(ProjectDir)src\*.h" "$(SolutionDir)bin\include\" /S /Y /I
 xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\include\" /S /Y /I
 </Command>
     </PostBuildEvent>
@@ -135,7 +136,8 @@ xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\include\" /S /Y /I
       <AdditionalLibraryDirectories>$(SolutionDir)bin\$(Configuration)-$(Platform)\Glad\</AdditionalLibraryDirectories>
     </Lib>
     <PostBuildEvent>
-      <Command>xcopy "$(ProjectDir)src\*.h" "$(SolutionDir)bin\include\" /S /Y /I
+      <Command>rmdir "$(SolutionDir)bin\include\" /s /q
+xcopy "$(ProjectDir)src\*.h" "$(SolutionDir)bin\include\" /S /Y /I
 xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\include\" /S /Y /I
 </Command>
     </PostBuildEvent>
@@ -158,7 +160,8 @@ xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\include\" /S /Y /I
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(ProjectDir)src\*.h" "$(SolutionDir)bin\include\" /S /Y /I
+      <Command>rmdir "$(SolutionDir)bin\include\" /s /q
+xcopy "$(ProjectDir)src\*.h" "$(SolutionDir)bin\include\" /S /Y /I
 xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\include\" /S /Y /I
 </Command>
     </PostBuildEvent>
@@ -193,7 +196,8 @@ xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\include\" /S /Y /I
       <AdditionalLibraryDirectories>$(SolutionDir)bin\$(Configuration)-$(Platform)\Glad\</AdditionalLibraryDirectories>
     </Lib>
     <PostBuildEvent>
-      <Command>xcopy "$(ProjectDir)src\*.h" "$(SolutionDir)bin\include\" /S /Y /I
+      <Command>rmdir "$(SolutionDir)bin\include\" /s /q
+xcopy "$(ProjectDir)src\*.h" "$(SolutionDir)bin\include\" /S /Y /I
 xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\include\" /S /Y /I
 </Command>
     </PostBuildEvent>
@@ -205,8 +209,7 @@ xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\include\" /S /Y /I
     <ClCompile Include="src\Elysium\Application.cpp" />
     <ClCompile Include="src\Elysium\OrthographicCameraController.cpp" />
     <ClCompile Include="src\Elysium\ParticleSystem.cpp" />
-    <ClCompile Include="src\Elysium\Physics\DynamicObject.cpp" />
-    <ClCompile Include="src\Elysium\Physics\PhysicalObject.cpp" />
+    <ClCompile Include="src\Elysium\Physics\PhysicalBody.cpp" />
     <ClCompile Include="src\Elysium\Physics\PhysicsSystem.cpp" />
     <ClCompile Include="src\Elysium\Random.cpp" />
     <ClCompile Include="src\Elysium\Renderer\Camera.cpp" />
@@ -214,12 +217,12 @@ xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\include\" /S /Y /I
     <ClCompile Include="src\Elysium\Renderer\Shader.cpp" />
     <ClCompile Include="src\Elysium\Renderer\IndexBuffer.cpp" />
     <ClCompile Include="src\Elysium\Renderer\Renderer.cpp" />
+    <ClCompile Include="src\Elysium\Timer.cpp" />
     <ClCompile Include="src\Elysium\Window.cpp" />
     <ClCompile Include="src\Elysium\Renderer\VertexBuffer.cpp" />
     <ClCompile Include="src\Elysium\Renderer\VertexArray.cpp" />
     <ClCompile Include="src\Elysium\Utility.cpp" />
     <ClCompile Include="src\Elysium\Renderer\Texture.cpp" />
-    <ClCompile Include="src\Elysium\Physics\StaticObject.cpp" />
     <ClCompile Include="src\vendor\glm\detail\glm.cpp" />
     <ClCompile Include="src\vendor\imgui\imgui.cpp" />
     <ClCompile Include="src\vendor\imgui\imgui_demo.cpp" />
@@ -368,6 +371,7 @@ xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\include\" /S /Y /I
     <None Include="src\vendor\glm\gtx\wrap.inl" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Elysium\ArrayList.h" />
     <ClInclude Include="src\Elysium\Input.h" />
     <ClInclude Include="src\Elysium\KeyCodes.h" />
     <ClInclude Include="src\Elysium\LayerStack.h" />
@@ -380,8 +384,7 @@ xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\include\" /S /Y /I
     <ClInclude Include="src\Elysium\Events\MouseEvent.h" />
     <ClInclude Include="src\Elysium\OrthographicCameraController.h" />
     <ClInclude Include="src\Elysium\ParticleSystem.h" />
-    <ClInclude Include="src\Elysium\Physics\DynamicObject.h" />
-    <ClInclude Include="src\Elysium\Physics\PhysicalObject.h" />
+    <ClInclude Include="src\Elysium\Physics\PhysicalBody.h" />
     <ClInclude Include="src\Elysium\Physics\PhysicsSystem.h" />
     <ClInclude Include="src\Elysium\Random.h" />
     <ClInclude Include="src\Elysium\Math.h" />
@@ -392,6 +395,7 @@ xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\include\" /S /Y /I
     <ClInclude Include="src\Elysium\Renderer\IndexBuffer.h" />
     <ClInclude Include="src\Elysium\Renderer\Renderer.h" />
     <ClInclude Include="src\Elysium\Renderer\Shape.h" />
+    <ClInclude Include="src\Elysium\Timer.h" />
     <ClInclude Include="src\Elysium\Window.h" />
     <ClInclude Include="src\Elysium\Timestep.h" />
     <ClInclude Include="src\Elysium\Renderer\VertexBuffer.h" />
@@ -399,7 +403,6 @@ xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\include\" /S /Y /I
     <ClInclude Include="src\Elysium\Renderer\VertexBufferLayout.h" />
     <ClInclude Include="src\Elysium\Utility.h" />
     <ClInclude Include="src\Elysium\Renderer\Texture.h" />
-    <ClInclude Include="src\Elysium\Physics\StaticObject.h" />
     <ClInclude Include="src\vendor\glm\common.hpp" />
     <ClInclude Include="src\vendor\glm\detail\compute_common.hpp" />
     <ClInclude Include="src\vendor\glm\detail\compute_vector_relational.hpp" />

@@ -5,6 +5,7 @@
 
 #include <glm/glm.hpp>
 
+#include "Elysium/Math.h"
 #include "Elysium/Timestep.h"
 
 #include "Elysium/Renderer/Camera.h"
@@ -14,13 +15,13 @@ namespace Elysium
 {
 	struct ParticleProperties
 	{
-		glm::vec2		Position = { 0.0f, 0.0f };
-		glm::vec2		Velocity = { 0.0f, 10.0f };
-		glm::vec2		VelocityVariation = { 1.0f, 1.0f };
+		Vector2		Position = { 0.0f, 0.0f };
+		Vector2		Velocity = { 0.0f, 10.0f };
+		Vector2		VelocityVariation = { 1.0f, 1.0f };
 		float			RotationSpeed = 180.f;
 
-		glm::vec4		ColorBegin = { 1.0f, 1.0f, 1.0f, 1.0f };
-		glm::vec4		ColorEnd = { 0.0f, 0.0f, 0.0f, 1.0f };
+		Vector4		ColorBegin = { 1.0f, 1.0f, 1.0f, 1.0f };
+		Vector4		ColorEnd = { 0.0f, 0.0f, 0.0f, 1.0f };
 		TextureData		TextureData;
 
 		float			SizeBegin = 1.0f;
@@ -35,12 +36,12 @@ namespace Elysium
 	private:
 		struct Particle
 		{
-			glm::vec2 Position;
-			glm::vec2 Velocity;
+			Vector2 Position;
+			Vector2 Velocity;
 			float Rotation;
 			float RotationSpeed;
 
-			glm::vec4 ColorBegin, ColorEnd;
+			Vector4 ColorBegin, ColorEnd;
 			TextureData TextureData;
 
 			float SizeBegin, SizeEnd;

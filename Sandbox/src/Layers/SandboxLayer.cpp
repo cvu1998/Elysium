@@ -3,12 +3,7 @@
 SandboxLayer::SandboxLayer(bool* runSandbox, unsigned int width, unsigned int height) : Layer("Sandbox"),
     m_RunSandbox(runSandbox),
     m_Camera(-m_Height * (float)(width / height), m_Height* (float)(width / height), 0.0f, m_Height),
-    m_ParticleSystem(100, m_Camera),
-    m_PhysicsSystem(5.0f, m_Camera),
-    m_Player({ 0.0f, 10.0f }, { 1.0f, 2.0f }, 10.0f),
-    m_Dynamic({ 5.0f, 15.0f }, { 2.0f, 2.0f }, 10.0f),
-    m_Ground({ 0.0f, 0.0f }, { 1000.0f, 2.0f }),
-    m_Box({ 2.5f, 2.0f }, { 2.0f, 2.0f })
+    m_ParticleSystem(100, m_Camera)
 {
     Elysium::Renderer2D::Init();
 
@@ -16,7 +11,7 @@ SandboxLayer::SandboxLayer(bool* runSandbox, unsigned int width, unsigned int he
     m_Textures.emplace_back("res/texture/meadow.png");
     m_Textures.emplace_back("res/texture/Vader.png");
     m_Textures.emplace_back("res/texture/alec.png");
-    m_Textures.emplace_back("res/texture/player-sprite.png");
+    m_Textures.emplace_back("res/texture/Idle (1).png");
     m_Textures.emplace_back("res/texture/RPGpack_sheet_2X.png");
     m_Textures.emplace_back("res/texture/platformPack_tilesheet.png");
     m_Textures.emplace_back("res/texture/background.png");
@@ -52,31 +47,34 @@ SandboxLayer::SandboxLayer(bool* runSandbox, unsigned int width, unsigned int he
 
     // ---------------------------------------------------------------------------------- //
 
-    m_Player.Color = { 1.0f, 1.0f, 1.0f, 1.0f };
-    m_Player.TextureData = m_Textures[3].getTextureData();
-    m_Player.TextureData.subtextureCoordinates({ 7.5, 2.5 }, { 64, 128 });
-    m_Player.setElasticityCoefficient(0.0f);
-    m_Player.setFrictionCoefficient(1.0f);
+    m_Player.m_TextureData = m_Textures[3].getTextureData();
 
-    m_Dynamic.TextureData = m_Textures[5].getTextureData();
-    m_Dynamic.TextureData.subtextureCoordinates({ 4, 1 }, { 128, 128 });
-    m_Dynamic.setElasticityCoefficient(0.0f);
-    m_Dynamic.setFrictionCoefficient(1.0f);
+    m_GroundTexture = m_Textures[5].getTextureData();
+    m_GroundTexture.subtextureCoordinates({ 0, 6 }, { 128, 128 });
 
-    m_Ground.TextureData = m_Textures[5].getTextureData();
-    m_Ground.TextureData.subtextureCoordinates({ 0, 6 }, { 128, 128 });
-    m_Ground.setElasticityCoefficient(0.0f);
-    m_Ground.setFrictionCoefficient(0.5f);
+    m_BoxTexture = m_Textures[5].getTextureData();
+    m_BoxTexture.subtextureCoordinates({ 4, 1 }, { 128, 128 });
 
-    m_Box.TextureData = m_Textures[5].getTextureData();
-    m_Box.TextureData.subtextureCoordinates({ 4, 1 }, { 128, 128 });
-    m_Box.setElasticityCoefficient(0.0f);
-    m_Box.setFrictionCoefficient(1.0f);
+    m_BallTexture = m_Textures[5].getTextureData();
+    m_BallTexture.subtextureCoordinates({ 1, 1 }, { 128, 128 });
 
-    m_PhysicsSystem.addPhysicalObject(&m_Dynamic);
-    m_PhysicsSystem.addPhysicalObject(&m_Player);
-    m_PhysicsSystem.addPhysicalObject(&m_Ground);
-    m_PhysicsSystem.addPhysicalObject(&m_Box);
+    e_PhysicsSystem.createPhysicalBody(&m_Ground, Elysium::BodyType::STATIC, "Ground", 10.0f, { 0.0f, 0.0f }, { 500.0f, 2.0f });
+    e_PhysicsSystem.createPhysicalBody(&m_MoveableBox, Elysium::BodyType::DYNAMIC, "Box", 10.0f, { 10.0f, 15.0f }, { 2.0f, 2.0f });
+    e_PhysicsSystem.createPhysicalBody(&m_Ball, Elysium::BodyType::DYNAMIC, "Ball", 10.0f, { -2.0f, 10.0f }, { 2.0f, 2.0f });
+    e_PhysicsSystem.createPhysicalBody(&m_Box, Elysium::BodyType::STATIC, "sBox", 10.0f, { 2.5f, 2.0f }, { 2.0f, 2.0f });
+
+    e_PhysicsSystem.createPhysicalBody(&m_Circle, Elysium::BodyType::DYNAMIC, "Circle", 10.0f, { -5.0f, 10.0f }, { 2.0f, 2.0f });
+
+    Elysium::PhysicalBody& ground = e_PhysicsSystem.getPhysicalBody(m_Ground);
+    ground.setFrictionCoefficient(0.5f);
+    //ground.setElasticityCoefficient(1.0f);
+
+    Elysium::PhysicalBody& ball = e_PhysicsSystem.getPhysicalBody(m_Ball);
+    ball.setRadius(1.0f);
+    ball.setElasticityCoefficient(1.0f);
+
+    Elysium::PhysicalBody& circle = e_PhysicsSystem.getPhysicalBody(m_Circle);
+    circle.setRadius(1.0f);
 }
 
 SandboxLayer::~SandboxLayer()
@@ -88,76 +86,44 @@ void SandboxLayer::onUpdate(Elysium::Timestep ts)
 {
     if (*m_RunSandbox)
     {
-        m_Camera.setPosition({ m_Player.getPosition().x, 0.0f, 0.0f });
+        Elysium::PhysicalBody& player = e_PhysicsSystem.getPhysicalBody(m_Player.getIdentifier());
+        Elysium::PhysicalBody& ground = e_PhysicsSystem.getPhysicalBody(m_Ground);
+        Elysium::PhysicalBody& box = e_PhysicsSystem.getPhysicalBody(m_MoveableBox);
+        Elysium::PhysicalBody& sBox = e_PhysicsSystem.getPhysicalBody(m_Box);
+        Elysium::PhysicalBody& ball = e_PhysicsSystem.getPhysicalBody(m_Ball);
+        Elysium::PhysicalBody& circle = e_PhysicsSystem.getPhysicalBody(m_Circle);
+
+        m_Camera.setPosition({ player.Position.x, player.Position.y - (player.getSize().y * 4.0f), 0.0f });
 
         Elysium::Renderer2D::beginScene(m_Camera);
-
         Elysium::Renderer2D::drawQuad({ 0.0f, 15.0f }, { 1000.0f, 30.0f }, m_Background);
-        
         Elysium::Renderer2D::endScene();
 
-        auto [x, y] = Elysium::Input::getMousePosition();
+        auto mousePosition = Elysium::Input::getMousePosition();
         auto width = Elysium::Application::Get().getWindow().getWidth();
         auto height = Elysium::Application::Get().getWindow().getHeight();
 
-        //auto pos = m_CameraController.getCamera().getPosition();
-        //x = (x / width) * m_CameraController.getBoundsWidth() - m_CameraController.getBoundsWidth() * 0.5f;
-        //y = m_CameraController.getBoundsHeight() * 0.5f - (y / height) * m_CameraController.getBoundsHeight();
-        //m_Particle.Position = { x + pos.x, y + pos.y };
-        m_Particle2.Position = { m_Player.getPosition().x,  m_Player.getPosition().y };
+        m_Particle.Position = m_Camera.getScreenToWorldPosition(width, height, mousePosition);
+        m_Particle2.Position = { player.Position.x, player.Position.y };
 
         for (int i = 0; i < 5; i++)
         {
-            //m_ParticleSystem.Emit(m_Particle);
+            m_ParticleSystem.Emit(m_Particle);
             m_ParticleSystem.Emit(m_Particle2);
         }
         m_ParticleSystem.OnUpdate(ts);
+        e_PhysicsSystem.onUpdate(ts);
 
-        m_PhysicsSystem.onUpdate(ts);
+        m_Player.onUpdate(ts);
 
-        bool SurfaceContact =
-           (m_PhysicsSystem.areColliding(&m_Player, &m_Ground) &&
-            m_Ground.getCollisionOccurence(&m_Player) == CollisionOccurence::TOP) ||
-           (m_PhysicsSystem.areColliding(&m_Player, &m_Box) &&
-            m_Box.getCollisionOccurence(&m_Player) == CollisionOccurence::TOP) ||
-           (m_PhysicsSystem.areColliding(&m_Player, &m_Dynamic) &&
-            m_Dynamic.getCollisionOccurence(&m_Player) == CollisionOccurence::TOP);
-
-        if (Elysium::Input::isKeyPressed(ELY_KEY_SPACE) && SurfaceContact)
-        {
-            m_Player.Impulse.y = 5.0f * m_Player.getMass();
-        }
-
-        if (Elysium::Input::isKeyPressed(ELY_KEY_A))
-        {
-            if (m_PlayerLookingRight)
-            {
-                m_Player.TextureData.reflectAroundYAxis();
-                m_PlayerLookingRight = false;
-            }
-
-            if (SurfaceContact)
-            {
-                m_Player.Impulse.x = -10.0f * m_Player.getMass() * ts;
-            }
-            else
-                m_Player.Impulse.x = -2.0f * m_Player.getMass() * ts;
-        }
-        else if (Elysium::Input::isKeyPressed(ELY_KEY_D))
-        {
-            if (!m_PlayerLookingRight)
-            {
-                m_Player.TextureData.reflectAroundYAxis();
-                m_PlayerLookingRight = true;
-            }
-
-            if (SurfaceContact)
-            {
-                m_Player.Impulse.x = 10.0f * m_Player.getMass() * ts;
-            }
-            else
-                m_Player.Impulse.x = 2.0f * m_Player.getMass() * ts;
-        }
+        Elysium::Renderer2D::beginScene(m_Camera);
+        Elysium::Renderer2D::drawQuad(player.Position, player.getSize(), m_Player.m_TextureData);
+        Elysium::Renderer2D::drawQuad(ground.Position, ground.getSize(), m_GroundTexture);
+        Elysium::Renderer2D::drawQuad(box.Position, box.getSize(), m_BoxTexture);
+        Elysium::Renderer2D::drawQuad(sBox.Position, sBox.getSize(), m_BoxTexture);
+        Elysium::Renderer2D::drawQuad(ball.Position, ball.getSize(), m_BallTexture);
+        Elysium::Renderer2D::drawQuad(circle.Position, circle.getSize(), m_BallTexture);
+        Elysium::Renderer2D::endScene();
 
         ImGui::Begin("Statistics");
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
@@ -183,7 +149,10 @@ bool SandboxLayer::onKeyPressedEvent(Elysium::KeyPressedEvent& event)
 
 bool SandboxLayer::onWindowResizeEvent(Elysium::WindowResizeEvent& event)
 {
-    m_Camera.setProjection(-m_Height * (float)(event.getWidth() / event.getHeight()), m_Height * (float)(event.getWidth() / event.getHeight()),
+    unsigned int width = event.getWidth();
+    unsigned int height = event.getHeight();
+    if (width > 0 && height > 0)
+    m_Camera.setProjection(-m_Height * (float)(width / height), m_Height * (float)(width / height),
         0.0f, m_Height);
     return false;
 }

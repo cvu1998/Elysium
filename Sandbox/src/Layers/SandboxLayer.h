@@ -1,8 +1,6 @@
 #pragma once
 
-#include <Elysium.h>
-
-#include "Game/Ground.h"
+#include "Game/Player.h"
 
 class SandboxLayer : public Elysium::Layer
 {
@@ -19,13 +17,16 @@ private:
     Elysium::ParticleProperties m_Particle2;
     Elysium::ParticleSystem m_ParticleSystem;
 
-    Elysium::DynamicObject m_Player;
-    bool m_PlayerLookingRight = true;
+    Player m_Player;
 
-    Elysium::DynamicObject m_Dynamic;
-    Ground m_Ground;
-    Elysium::StaticObject m_Box;
-    Elysium::PhysicsSystem m_PhysicsSystem;
+    Elysium::BodyHandle m_MoveableBox;
+    Elysium::BodyHandle m_Ground;
+    TextureData m_GroundTexture;
+    Elysium::BodyHandle m_Box;
+    TextureData m_BoxTexture;
+    Elysium::BodyHandle m_Ball;
+    Elysium::BodyHandle m_Circle;
+    TextureData m_BallTexture;
 
 public:
     SandboxLayer(bool* runSandbox, unsigned int height, unsigned int width);

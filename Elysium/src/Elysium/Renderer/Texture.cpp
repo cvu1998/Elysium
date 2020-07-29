@@ -3,7 +3,7 @@
 #include "stb_image/stb_image.h"
 
 Texture::Texture()
-    : m_FilePath(NULL), m_LocalBuffer(nullptr), m_BPP(0)
+    : m_FilePath(nullptr), m_LocalBuffer(nullptr), m_BPP(0)
 {
     m_Data.m_Default = true;
 

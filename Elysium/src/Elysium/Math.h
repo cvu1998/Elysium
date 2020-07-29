@@ -1,9 +1,44 @@
 #pragma once
 
+#include <cmath>
+
 #include <glm/glm.hpp>
 
 namespace Elysium
 {
+    using Vector2 = glm::vec2;
+    using Vector3 = glm::vec3;
+    using Vector4 = glm::vec4;
+
+    template<class T>
+    static T abs(const T& vector)
+    {
+        return glm::abs(vector);
+    }
+
+    template<class T>
+    static T dot(const T& vector)
+    {
+        return glm::dot(vector);
+    }
+
+    template <class T>
+    static T max(const T& vector)
+    {
+        return glm::max(vector);
+    }
+
+    template<class T>
+    static T normalize(const T& vector)
+    {
+        return glm::normalize(vector);
+    }
+
+    static float radians(float angle)
+    {
+        return glm::radians(angle);
+    }
+
     struct Complex
     {
     public:

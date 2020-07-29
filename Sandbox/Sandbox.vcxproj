@@ -19,8 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Game\Ground.cpp" />
     <ClCompile Include="src\Application.cpp" />
+    <ClCompile Include="src\Game\Player.cpp" />
+    <ClCompile Include="src\Game\Systems.cpp" />
+    <ClCompile Include="src\Layers\GameLayer.cpp" />
     <ClCompile Include="src\Layers\SandboxLayer.cpp" />
     <ClCompile Include="src\test\BatchRendering_Test.cpp" />
     <ClCompile Include="src\test\ClearColor_Test.cpp" />
@@ -31,7 +33,9 @@
     <ClCompile Include="src\test\Texture2D_Test.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Game\Ground.h" />
+    <ClInclude Include="src\Game\Player.h" />
+    <ClInclude Include="src\Game\Systems.h" />
+    <ClInclude Include="src\Layers\GameLayer.h" />
     <ClInclude Include="src\Layers\SandboxLayer.h" />
     <ClInclude Include="src\test\BatchRendering_Test.h" />
     <ClInclude Include="src\test\ClearColor_Test.h" />
@@ -44,9 +48,6 @@
   <ItemGroup>
     <None Include="res\shaders\basic.shader" />
     <None Include="res\shaders\batch_rendering.shader" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="..\..\..\..\Pictures\player_sprite.jpg" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -139,7 +140,8 @@
       <AdditionalDependencies>user32.lib;gdi32.lib;shell32.lib;glfw3.lib;Elysium.lib</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>mkdir "$(TargetDir)res"
+      <Command>rmdir "$(SolutionDir)bin\$(Configuration)-$(Platform)\Sandbox\res" /s /q
+mkdir "$(TargetDir)res"
 xcopy /E /Y "$(ProjectDir)res" "$(SolutionDir)bin\$(Configuration)-$(Platform)\Sandbox\res"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -159,7 +161,8 @@ xcopy /E /Y "$(ProjectDir)res" "$(SolutionDir)bin\$(Configuration)-$(Platform)\S
       <AdditionalDependencies>user32.lib;gdi32.lib;shell32.lib;glfw3.lib;Elysium.lib</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>mkdir "$(TargetDir)res"
+      <Command>rmdir "$(SolutionDir)bin\$(Configuration)-$(Platform)\Sandbox\res" /s /q
+mkdir "$(TargetDir)res"
 xcopy /E /Y "$(ProjectDir)res" "$(SolutionDir)bin\$(Configuration)-$(Platform)\Sandbox\res"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -179,7 +182,8 @@ xcopy /E /Y "$(ProjectDir)res" "$(SolutionDir)bin\$(Configuration)-$(Platform)\S
       <AdditionalDependencies>user32.lib;gdi32.lib;shell32.lib;glfw3.lib;Elysium.lib</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>mkdir "$(TargetDir)res"
+      <Command>rmdir "$(SolutionDir)bin\$(Configuration)-$(Platform)\Sandbox\res" /s /q
+mkdir "$(TargetDir)res"
 xcopy /E /Y "$(ProjectDir)res" "$(SolutionDir)bin\$(Configuration)-$(Platform)\Sandbox\res"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -203,7 +207,8 @@ xcopy /E /Y "$(ProjectDir)res" "$(SolutionDir)bin\$(Configuration)-$(Platform)\S
       <AdditionalDependencies>user32.lib;gdi32.lib;shell32.lib;glfw3.lib;Elysium.lib</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>mkdir "$(TargetDir)res"
+      <Command>rmdir "$(SolutionDir)bin\$(Configuration)-$(Platform)\Sandbox\res" /s /q
+mkdir "$(TargetDir)res"
 xcopy /E /Y "$(ProjectDir)res" "$(SolutionDir)bin\$(Configuration)-$(Platform)\Sandbox\res"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>

@@ -1,55 +1,54 @@
 #pragma once
 
 #include <fstream>
-#include <unordered_map>
+#include <limits>
 
-#include <glm/glm.hpp>
+#include "Elysium/Math.h"
+#include "Elysium/Physics/PhysicalBody.h"
 
-#include "Elysium/Physics/PhysicalObject.h"
+//#define LOG
 
 namespace Elysium
 {
-    class PhysicsSystem
+    using BodyHandle = uint32_t;
+
+    class PhysicsSystem final
     {
     private:
         float m_Time = 0.0f;
         float m_GravitationalAccel;
 
-        Timestep m_CurrentTimestep;
+        ArrayList<PhysicalBody> m_Bodies;
+        std::vector<BodyHandle> m_InactiveBodies;
 
-        struct Hash_ObjectPair
-        {
-            size_t operator()(const std::pair<PhysicalObject*, PhysicalObject*>& pair) const
-            {
-                auto hash1 = std::hash<PhysicalObject*>{}(pair.first);
-                auto hash2 = std::hash<PhysicalObject*>{}(pair.second);
-                return hash1 ^ hash2;
-            }
-        };
-
-        unsigned int m_ObjectInsertIndex = 0;
-        std::vector<PhysicalObject*> m_Objects;
-        std::unordered_map<std::pair<PhysicalObject*, PhysicalObject*>, bool, Hash_ObjectPair> m_CollisionMap;
-
-        OrthographicCamera* m_Camera;
-
-    private:
-        bool areIntersecting(const PhysicalObject* object1, const PhysicalObject* object2);
-        bool checkFutureBoxCollision(const PhysicalObject* object1, const PhysicalObject* object2);
+#ifdef LOG
+        std::ofstream m_LogFile;
+#endif
 
     public:
-        PhysicsSystem(float acceleration, OrthographicCamera& camera);
+        bool Gravity = true;
+
+    private:
+        bool checkBroadPhase(const PhysicalBody& body1, const PhysicalBody& body2);
+        void checkNarrowPhase(const PhysicalBody& body1, const PhysicalBody& body2, CollisionInfo& info);
+
+    public:
+        PhysicsSystem(float acceleration);
         ~PhysicsSystem();
 
-        inline float getGravitaionnalAccel() const { return m_GravitationalAccel; }
-        inline Timestep getTimeStep() const { return m_CurrentTimestep; }
+        PhysicalBody& createPhysicalBody(BodyType type, const char* name, float mass, const Vector2& initialPosition, const Vector2& size,
+            PhysicalBody::Collision_Callback callback = nullptr);
+
+        void createPhysicalBody(BodyHandle* handle, BodyType type, const char* name, float mass, const Vector2& initialPosition, const Vector2& size,
+            PhysicalBody::Collision_Callback callback = nullptr);
 
         inline void setGravitaionnalAccel(float acceleration) { m_GravitationalAccel = acceleration; }
+        inline float getGravitaionnalAccel() const { return m_GravitationalAccel; }
 
-        void addPhysicalObject(PhysicalObject* object);
-        void removePhysicalObject(PhysicalObject* object);
+        inline ArrayList<PhysicalBody>& getBodies() { return m_Bodies; }
 
-        bool areColliding(PhysicalObject* object1, PhysicalObject* object2);
+        inline PhysicalBody& getPhysicalBody(BodyHandle identifier) { return m_Bodies[identifier]; };
+        void removePhysicalBody(BodyHandle body);
 
         void onUpdate(Timestep ts);
     };
