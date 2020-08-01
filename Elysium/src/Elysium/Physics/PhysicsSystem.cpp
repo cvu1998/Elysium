@@ -25,7 +25,7 @@ namespace Elysium
     {
         if (m_InactiveBodies.empty())
         {
-            m_Bodies.add(PhysicalBody::createPhysicalBody(type, name, mass, initialPosition, size, callback));
+            m_Bodies.push_back(PhysicalBody::createPhysicalBody(type, name, mass, initialPosition, size, callback));
             return m_Bodies[m_Bodies.size() - 1];
         }
         BodyHandle body = m_InactiveBodies.back();
@@ -39,7 +39,7 @@ namespace Elysium
     {
         if (m_InactiveBodies.empty())
         {
-            m_Bodies.add(PhysicalBody::createPhysicalBody(type, name, mass, initialPosition, size, callback));
+            m_Bodies.push_back(PhysicalBody::createPhysicalBody(type, name, mass, initialPosition, size, callback));
             *handle = (BodyHandle)m_Bodies.size() - 1;
             return;
         }
@@ -196,10 +196,18 @@ namespace Elysium
                         m_Bodies[i].Impulse += impulse.first * impulse.second;
                         impulse.second = { 0.0f, 0.0f };
                     }
+                    m_Bodies[i].ContactNormal = isAllNaN(normalize(m_Bodies[i].Impulse)) ?
+                        m_Bodies[i].ContactNormal : normalize(m_Bodies[i].Impulse);
 
                     m_Bodies[i].Acceleration = m_Bodies[i].Force / m_Bodies[i].Mass;
                     m_Bodies[i].Velocity = m_Bodies[i].Velocity + (m_Bodies[i].Impulse / m_Bodies[i].Mass) + (m_Bodies[i].Acceleration * (float)ts);
                     m_Bodies[i].Position = m_Bodies[i].Position + (m_Bodies[i].Velocity * (float)ts);
+
+                    if (m_Bodies[i].Radius > 0.0f)
+                    {
+                        float inertia = glm::pi<float>() * (m_Bodies[i].Radius * m_Bodies[i].Radius * m_Bodies[i].Radius * m_Bodies[i].Radius) * 0.25f;
+                        m_Bodies[i].Rotation += (cross(m_Bodies[i].ContactNormal, m_Bodies[i].Velocity) / inertia) * (float)ts;
+                    }
 
                     m_Bodies[i].Force = { 0.0f, 0.0f };
                     if (Gravity && m_Bodies[i].Status != BodyStatus::NOGRAVITY)
@@ -312,11 +320,11 @@ namespace Elysium
                         m_LogFile << m_Time << ": CollisionInfo Impulse: " << m_Bodies[j].Name << ": " << m_Bodies[j].Impulse.x << ", " << m_Bodies[j].Impulse.y << std::endl;
 #endif
                         if (m_Bodies[i].Callback && m_Bodies[i].CallbackExecutions < m_Bodies[i].NumberOfExecution)
-                            m_Bodies[i].Callback(m_Bodies[i], { true, info.minOverlap, ts,
+                            m_Bodies[i].Callback(m_Bodies[i], m_Bodies[j], { true, info.minOverlap, ts,
                                 std::make_pair(info.CollisionInfoPair.first, info.CollisionInfoPair.second) });
 
                         if (m_Bodies[j].Callback && m_Bodies[j].CallbackExecutions < m_Bodies[j].NumberOfExecution)
-                            m_Bodies[j].Callback(m_Bodies[j], { true, info.minOverlap, ts,
+                            m_Bodies[j].Callback(m_Bodies[j], m_Bodies[i],{ true, info.minOverlap, ts,
                                     std::make_pair(info.CollisionInfoPair.second, info.CollisionInfoPair.first) });
                     }
                 }

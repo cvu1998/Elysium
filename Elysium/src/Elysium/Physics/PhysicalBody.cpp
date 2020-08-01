@@ -13,6 +13,7 @@ namespace Elysium
         Size = { 1.0f, 1.0f };
         Velocity = { 0.0f, 0.0f };
         Acceleration = { 0.0f, 0.0f };
+        ContactNormal = { 0.0f, 0.0f };
 
         ElasticityCoefficient = 1.0f;
         FrictionCoefficient = 1.0f;

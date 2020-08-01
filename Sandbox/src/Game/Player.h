@@ -18,6 +18,6 @@ public:
 
     void onUpdate(Elysium::Timestep ts);
 
-    static void onCollision(Elysium::PhysicalBody& body, const Elysium::CollisionInfo& info);
+    static void onCollision(Elysium::PhysicalBody& body, Elysium::PhysicalBody& collidee, const Elysium::CollisionInfo& info);
 };
 

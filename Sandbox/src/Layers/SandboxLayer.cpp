@@ -56,10 +56,10 @@ SandboxLayer::SandboxLayer(bool* runSandbox, unsigned int width, unsigned int he
     m_BoxTexture.subtextureCoordinates({ 4, 1 }, { 128, 128 });
 
     m_BallTexture = m_Textures[5].getTextureData();
-    m_BallTexture.subtextureCoordinates({ 1, 1 }, { 128, 128 });
+    m_BallTexture.subtextureCoordinates({ 10, 6 }, { 128, 128 });
 
     e_PhysicsSystem.createPhysicalBody(&m_Ground, Elysium::BodyType::STATIC, "Ground", 10.0f, { 0.0f, 0.0f }, { 500.0f, 2.0f });
-    e_PhysicsSystem.createPhysicalBody(&m_MoveableBox, Elysium::BodyType::DYNAMIC, "Box", 10.0f, { 10.0f, 15.0f }, { 2.0f, 2.0f });
+    e_PhysicsSystem.createPhysicalBody(&m_MoveableBox, Elysium::BodyType::DYNAMIC, "Box", 10.0f, { 10.0f, 25.0f }, { 2.0f, 2.0f });
     e_PhysicsSystem.createPhysicalBody(&m_Ball, Elysium::BodyType::DYNAMIC, "Ball", 10.0f, { -2.0f, 10.0f }, { 2.0f, 2.0f });
     e_PhysicsSystem.createPhysicalBody(&m_Box, Elysium::BodyType::STATIC, "sBox", 10.0f, { 2.5f, 2.0f }, { 2.0f, 2.0f });
 
@@ -72,7 +72,6 @@ SandboxLayer::SandboxLayer(bool* runSandbox, unsigned int width, unsigned int he
     Elysium::PhysicalBody& ball = e_PhysicsSystem.getPhysicalBody(m_Ball);
     ball.setRadius(1.0f);
     ball.setElasticityCoefficient(1.0f);
-
     Elysium::PhysicalBody& circle = e_PhysicsSystem.getPhysicalBody(m_Circle);
     circle.setRadius(1.0f);
 }
@@ -121,8 +120,8 @@ void SandboxLayer::onUpdate(Elysium::Timestep ts)
         Elysium::Renderer2D::drawQuad(ground.Position, ground.getSize(), m_GroundTexture);
         Elysium::Renderer2D::drawQuad(box.Position, box.getSize(), m_BoxTexture);
         Elysium::Renderer2D::drawQuad(sBox.Position, sBox.getSize(), m_BoxTexture);
-        Elysium::Renderer2D::drawQuad(ball.Position, ball.getSize(), m_BallTexture);
-        Elysium::Renderer2D::drawQuad(circle.Position, circle.getSize(), m_BallTexture);
+        Elysium::Renderer2D::drawQuadWithRotation(ball.Position, ball.getSize(), ball.getRotation(), m_BallTexture);
+        Elysium::Renderer2D::drawQuadWithRotation(circle.Position, circle.getSize(), circle.getRotation(), m_BallTexture);
         Elysium::Renderer2D::endScene();
 
         ImGui::Begin("Statistics");

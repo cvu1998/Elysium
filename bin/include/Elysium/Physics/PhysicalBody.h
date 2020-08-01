@@ -23,7 +23,6 @@ namespace Elysium
 
     struct BodyCollisionInfo
     {
-        const char* BodyName;
         Vector2 Normal = { 0.0f, 0.0f };
     };
 
@@ -42,7 +41,9 @@ namespace Elysium
         friend class ArrayList<PhysicalBody>;
         friend class PhysicsSystem;
 
-        using Collision_Callback = void (*)(PhysicalBody&, const CollisionInfo&);
+        using Collision_Callback = void (*)(PhysicalBody& body,
+            PhysicalBody& collidee,
+            const CollisionInfo& collisionInfo);
 
     private:      
         BodyType Type;
@@ -64,6 +65,7 @@ namespace Elysium
         };
 
         std::unordered_map<Vector2, Vector2, Hash_Vector2> Normals;
+        Vector2 ContactNormal = { 0.0f, 0.0f };
 
         std::vector<Vector2> m_ModelVertices;
         

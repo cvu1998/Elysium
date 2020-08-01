@@ -16,7 +16,24 @@ namespace Elysium
         size_t m_ArrayIndex = 0;
 
     public:
-        void add(const T& element)
+        void push_back(const T& element)
+        {
+            if (m_ArrayIndex == s_ArraySize)
+            {
+                m_VectorIndex++;
+                m_ArrayIndex = 0;
+            }
+
+            if (m_ArrayIndex == 0)
+            {
+                std::unique_ptr<T[]> array(new T[s_ArraySize]);
+                m_ArrayList.push_back(std::move(array));
+            }
+            m_ArrayList[m_VectorIndex][m_ArrayIndex] = element;
+            m_ArrayIndex++;
+        }
+
+        void push_back(const T&& element)
         {
             if (m_ArrayIndex == s_ArraySize)
             {

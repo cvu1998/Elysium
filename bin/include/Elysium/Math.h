@@ -16,22 +16,21 @@ namespace Elysium
         return glm::abs(vector);
     }
 
-    template<class T>
-    static T dot(const T& vector)
+    static float cross(const Vector2& a, const Vector2& b)
     {
-        return glm::dot(vector);
+        return a.x * b.y - a.y * b.x;
+    }
+
+    template<class T>
+    static bool isAllNaN(const T& vector)
+    {
+        return glm::all(glm::isnan(vector));
     }
 
     template <class T>
     static T max(const T& vector)
     {
         return glm::max(vector);
-    }
-
-    template<class T>
-    static T normalize(const T& vector)
-    {
-        return glm::normalize(vector);
     }
 
     static float radians(float angle)
