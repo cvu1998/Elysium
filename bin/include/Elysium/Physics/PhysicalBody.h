@@ -1,5 +1,7 @@
 #pragma once
 
+#include <limits>
+
 #include "Elysium/ArrayList.h"
 #include "Elysium/Math.h"
 #include "Elysium/Timestep.h"
@@ -29,7 +31,7 @@ namespace Elysium
     struct CollisionInfo
     {
         bool Collision = true;
-        float minOverlap = std::numeric_limits<float>::max();
+        float minOverlap = (std::numeric_limits<float>::max());
         Timestep ts;
         std::pair<BodyCollisionInfo, BodyCollisionInfo> CollisionInfoPair;
     };
@@ -49,6 +51,7 @@ namespace Elysium
         BodyType Type;
         const char* Name;
         float Mass = 0.0f;
+        float Inertia = 0.0f;
         float Radius = 0.0f;
         Vector2 Size = { 1.0f, 1.0f };
         Vector2 Velocity = { 0.0f, 0.0f };

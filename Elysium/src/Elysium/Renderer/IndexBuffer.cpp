@@ -1,5 +1,7 @@
 #include "IndexBuffer.h"
 
+#include <glad/glad.h>
+
 #include "Elysium/Utility.h"
 
 IndexBuffer::IndexBuffer(unsigned int count) : m_Count(count) {

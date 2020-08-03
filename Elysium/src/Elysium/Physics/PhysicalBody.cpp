@@ -9,6 +9,7 @@ namespace Elysium
         Type = BodyType::STATIC;
         Name = nullptr;
         Mass = 0.0f;
+        Inertia = 0.0f;
         Radius = 0.0f;
         Size = { 1.0f, 1.0f };
         Velocity = { 0.0f, 0.0f };
@@ -57,6 +58,8 @@ namespace Elysium
         {
             Radius = radius;
             Size = { 2.0f * radius, 2.0f * radius };
+
+            Inertia = glm::pi<float>()* (Radius * Radius * Radius * Radius) * 0.25f;
         }
 
     }

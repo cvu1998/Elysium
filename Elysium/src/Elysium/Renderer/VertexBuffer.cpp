@@ -1,5 +1,7 @@
 #include "VertexBuffer.h"
 
+#include <glad/glad.h>
+
 #include "Elysium/Renderer/Shape.h"
 #include "Elysium/Utility.h"
 

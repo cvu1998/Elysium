@@ -1,6 +1,7 @@
 #include "Texture.h"
 
-#include "stb_image/stb_image.h"
+#include <glad/glad.h>
+#include <stb_image/stb_image.h>
 
 Texture::Texture()
     : m_FilePath(nullptr), m_LocalBuffer(nullptr), m_BPP(0)

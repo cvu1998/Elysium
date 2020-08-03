@@ -28,12 +28,7 @@ public:
 
     void setUniform1i(const char* name, int value);
 
-    template <size_t T>
-    void setUniform1iv(const char* name, int value, int(&sampler)[T])
-    {
-        GL_ASSERT(glUniform1iv(getUniformLocation(name), value, sampler));
-    }
-
+    void setUniform1iv(const char* name, int value, int* sampler);
     void setUniform4f(const char* name, float v0, float v1, float v2, float v3);
     void setUniformMat4f(const char* name, const glm::mat4& matrix);
 

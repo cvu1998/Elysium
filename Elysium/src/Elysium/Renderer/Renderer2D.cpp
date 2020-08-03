@@ -89,7 +89,7 @@ namespace Elysium
         int sampler[32];
         for (int i = 0; i < 32; i++)
             sampler[i] = i;
-        s_Data->shader->setUniform1iv<32>("u_Textures", 32, sampler);
+        s_Data->shader->setUniform1iv("u_Textures", 32, sampler);
     }
 
     void Renderer2D::Shutdown()

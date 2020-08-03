@@ -58,7 +58,7 @@ namespace test {
         int sampler[32];
         for (int i = 0; i < 32; i++)
             sampler[i] = i;
-        m_Shader.setUniform1iv<32>("u_Textures", 32, sampler);
+        m_Shader.setUniform1iv("u_Textures", 32, sampler);
 
         m_Textures[0].bind(white);
         m_Textures[1].bind(meadow);

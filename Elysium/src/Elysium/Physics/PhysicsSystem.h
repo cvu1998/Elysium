@@ -1,12 +1,13 @@
 #pragma once
 
 #include <fstream>
-#include <limits>
 
 #include "Elysium/Math.h"
 #include "Elysium/Physics/PhysicalBody.h"
 
-//#define LOG
+#ifdef _DEBUG
+#define LOG
+#endif
 
 namespace Elysium
 {

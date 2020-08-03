@@ -1,6 +1,6 @@
 #include "Window.h"
 
-#include <iostream>
+#include "Elysium/Log.h"
 
 namespace Elysium
 {
@@ -8,7 +8,7 @@ namespace Elysium
 
     static void GLFWErrorCallback(int error, const char* description)
     {
-        std::cout << "GLFW Error (" << error << "): " << description << "\n";
+        ELY_CORE_ERROR("GLFW Error ({0}): {1}", error, description);
     }
 
     Window* Window::Create(const WindowProperties& properties)
@@ -26,7 +26,7 @@ namespace Elysium
         {
             if (!glfwInit())
             {
-                std::cout << "Error: glfwInit" << "\n";
+                ELY_CORE_ERROR("Error at glfwInit!");
             }
             s_GLFWInitialized = true;
         }
@@ -36,7 +36,7 @@ namespace Elysium
         {
             glfwSetErrorCallback(GLFWErrorCallback);
 
-            std::cout << "Error: glfwCreateWindow" << "\n";
+            ELY_CORE_ERROR("Error at glfwCreateWindow!");
             glfwTerminate();
         }
 

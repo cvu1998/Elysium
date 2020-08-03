@@ -44,7 +44,7 @@ namespace test {
         template <typename T>
         void registerTest(const char* name)
         {
-            std::cout << "Registering test " << name << "\n";
+            ELY_INFO("Registering test: {0}", name);
             m_Tests.push_back(std::make_pair(name, []() { return new T(); }));
         }
     };

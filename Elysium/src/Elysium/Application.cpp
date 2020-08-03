@@ -1,9 +1,9 @@
 #include "Application.h"
 
 #include <algorithm>
-#include <iostream>
 
-#include "Elysium/Renderer/Renderer.h"
+#include "Elysium/Log.h"
+#include "Elysium/Renderer/Renderer2D.h"
 #include "Elysium/Timestep.h"
 
 namespace Elysium
@@ -12,17 +12,19 @@ namespace Elysium
 
     Application::Application(bool imgui) : m_ImGui(imgui), m_ClearColor{ 0.0f, 0.0f, 0.0f, 0.0f }
     {
-        LOG_ASSERT(!s_Instance, "Application already exists!");
+        Log::Init();
+
+        ELY_LOG_ASSERT(!s_Instance, "Application already exists!");
         s_Instance = this;
 
         m_Window = std::unique_ptr<Window>(Window::Create());
         m_Window->setEventCallback(BIND_EVENT_FUNCTION(Application::onEvent));
 
         if (m_Window->getStatus() == 0)
-            std::cout << "Glad Init Error!" << "\n";
+            ELY_CORE_ERROR("Glad Init Error!");
         
         #ifdef _DEBUG
-        std::cout << glGetString(GL_VERSION) << "\n";
+        ELY_CORE_INFO("OpenGl version: {0}", glGetString(GL_VERSION));
         #endif
 
         if (m_ImGui)
@@ -33,6 +35,7 @@ namespace Elysium
             ImGui_ImplOpenGL3_Init(glsl_version);
             ImGui::StyleColorsDark();
         }
+        Renderer2D::Init();
     }
 
     Application::~Application()
@@ -43,6 +46,7 @@ namespace Elysium
             ImGui_ImplGlfw_Shutdown();
             ImGui::DestroyContext();
         }
+        Renderer2D::Shutdown();
     }
 
     void Application::onEvent(Event& event)

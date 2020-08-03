@@ -94,9 +94,9 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>GLFW_INCLUDE_NONE</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLFW_INCLUDE_NONE;</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)\Glad\include\;$(ProjectDir)src\;$(ProjectDir)src\vendor\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)\Glad\include\;$(ProjectDir)src\;$(ProjectDir)src\vendor\;$(ProjectDir)src\vendor\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -120,9 +120,9 @@ xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\include\" /S /Y /I
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>GLFW_INCLUDE_NONE</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLFW_INCLUDE_NONE;</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)\Glad\include\;$(ProjectDir)src\;$(ProjectDir)src\vendor\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)\Glad\include\;$(ProjectDir)src\;$(ProjectDir)src\vendor\;$(ProjectDir)src\vendor\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -148,9 +148,9 @@ xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\include\" /S /Y /I
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>GLFW_INCLUDE_NONE</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLFW_INCLUDE_NONE;</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)\Glad\include\;$(ProjectDir)src\;$(ProjectDir)src\vendor\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)\Glad\include\;$(ProjectDir)src\;$(ProjectDir)src\vendor\;$(ProjectDir)src\vendor\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -178,9 +178,9 @@ xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\include\" /S /Y /I
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>GLFW_INCLUDE_NONE</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLFW_INCLUDE_NONE;</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)\Glad\include\;$(ProjectDir)src\;$(ProjectDir)src\vendor\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)\Glad\include\;$(ProjectDir)src\;$(ProjectDir)src\vendor\;$(ProjectDir)src\vendor\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -203,6 +203,7 @@ xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\include\" /S /Y /I
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Elysium\Log.cpp" />
     <ClCompile Include="src\Elysium\Input.cpp" />
     <ClCompile Include="src\Elysium\LayerStack.cpp" />
     <ClCompile Include="src\Elysium\Layer.cpp" />
@@ -371,6 +372,7 @@ xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\include\" /S /Y /I
     <None Include="src\vendor\glm\gtx\wrap.inl" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Elysium\Log.h" />
     <ClInclude Include="src\Elysium\ArrayList.h" />
     <ClInclude Include="src\Elysium\Input.h" />
     <ClInclude Include="src\Elysium\KeyCodes.h" />

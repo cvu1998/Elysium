@@ -30,7 +30,6 @@ private:
 
 public:
     GameLayer(bool* runGame, unsigned int height, unsigned int width);
-    ~GameLayer();
 
     void onUpdate(Elysium::Timestep ts) override;
     void onEvent(Elysium::Event& event) override;

@@ -1,14 +1,3 @@
-#include <iostream>
-
-#include <glad/glad.h>
-
-#define LOG_ASSERT(x, y) \
-       if (!x)                   \
-       {                         \
-         std::cout << y << '\n'; \
-         __debugbreak();         \
-       }
-
 #ifdef _DEBUG
  #define ASSERT(x) if (!x) __debugbreak();
  #define GL_ASSERT(x) glClearError(); \
@@ -25,4 +14,3 @@
 
 void glClearError();
 bool glLogCall(const char* function, const char* file, int line);
-

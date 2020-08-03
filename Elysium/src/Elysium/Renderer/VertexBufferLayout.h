@@ -1,5 +1,12 @@
 #pragma once
+
 #include <vector>
+
+#ifdef APIENTRY
+#undef APIENTRY
+#endif
+
+#include <glad/glad.h>
 
 #include "Elysium/Renderer/Shape.h"
 #include "Elysium/Utility.h"

@@ -128,7 +128,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)Elysium\src\;$(SolutionDir)Elysium\src\vendor\;$(SolutionDir)Glad\include\;$(ProjectDir)src\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)Elysium\src\;$(SolutionDir)Elysium\src\vendor\;$(SolutionDir)Elysium\src\vendor\spdlog\include;$(SolutionDir)Glad\include\;$(ProjectDir)src\</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -151,7 +151,7 @@ xcopy /E /Y "$(ProjectDir)res" "$(SolutionDir)bin\$(Configuration)-$(Platform)\S
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)Elysium\src\;$(SolutionDir)Elysium\src\vendor\;$(SolutionDir)Glad\include\;$(ProjectDir)src\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)Elysium\src\;$(SolutionDir)Elysium\src\vendor\;$(SolutionDir)Elysium\src\vendor\spdlog\include;$(SolutionDir)Glad\include\;$(ProjectDir)src\</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -172,7 +172,7 @@ xcopy /E /Y "$(ProjectDir)res" "$(SolutionDir)bin\$(Configuration)-$(Platform)\S
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)Elysium\src\;$(SolutionDir)Elysium\src\vendor\;$(SolutionDir)Glad\include\;$(ProjectDir)src\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)Elysium\src\;$(SolutionDir)Elysium\src\vendor\;$(SolutionDir)Elysium\src\vendor\spdlog\include;$(SolutionDir)Glad\include\;$(ProjectDir)src\</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -195,7 +195,7 @@ xcopy /E /Y "$(ProjectDir)res" "$(SolutionDir)bin\$(Configuration)-$(Platform)\S
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)Elysium\src\;$(SolutionDir)Elysium\src\vendor\;$(SolutionDir)Glad\include\;$(ProjectDir)src\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)Elysium\src\;$(SolutionDir)Elysium\src\vendor\;$(SolutionDir)Elysium\src\vendor\spdlog\include;$(SolutionDir)Glad\include\;$(ProjectDir)src\</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>

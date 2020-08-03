@@ -30,7 +30,6 @@ private:
 
 public:
     SandboxLayer(bool* runSandbox, unsigned int height, unsigned int width);
-    ~SandboxLayer();
 
     void onUpdate(Elysium::Timestep ts) override;
     void onEvent(Elysium::Event& event) override;

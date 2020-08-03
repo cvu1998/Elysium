@@ -1,6 +1,8 @@
 #include "Utility.h"
 
-#include <iostream>
+#include <glad/glad.h>
+
+#include "Elysium/Log.h"
 
 void glClearError()
 {
@@ -11,8 +13,7 @@ bool glLogCall(const char* function, const char* file, int line)
 {
     while (GLenum error = glGetError())
     {
-        std::cout << "[OpenGL Error] (0x" << std::hex << error << "): " << function << " in file:\n"
-            << " " << file << ": " << std::dec << line << "\n";
+        ELY_CORE_ERROR("[OpenGL Error] (0x{0:x}): {1} in file:\n{2}: {3}", error, function, file, line);
         return false;
     }
     return true;

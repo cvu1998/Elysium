@@ -5,8 +5,6 @@ SandboxLayer::SandboxLayer(bool* runSandbox, unsigned int width, unsigned int he
     m_Camera(-m_Height * (float)(width / height), m_Height* (float)(width / height), 0.0f, m_Height),
     m_ParticleSystem(100, m_Camera)
 {
-    Elysium::Renderer2D::Init();
-
     m_Textures.reserve(7);
     m_Textures.emplace_back("res/texture/meadow.png");
     m_Textures.emplace_back("res/texture/Vader.png");
@@ -74,11 +72,6 @@ SandboxLayer::SandboxLayer(bool* runSandbox, unsigned int width, unsigned int he
     ball.setElasticityCoefficient(1.0f);
     Elysium::PhysicalBody& circle = e_PhysicsSystem.getPhysicalBody(m_Circle);
     circle.setRadius(1.0f);
-}
-
-SandboxLayer::~SandboxLayer()
-{
-    Elysium::Renderer2D::Shutdown();
 }
 
 void SandboxLayer::onUpdate(Elysium::Timestep ts)

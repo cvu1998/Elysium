@@ -1,5 +1,7 @@
 #include "Timer.h"
 
+#include "Elysium/Log.h"
+
 namespace Elysium
 {
     Timer::Timer(const char* message) : m_Message(message)
@@ -17,6 +19,6 @@ namespace Elysium
         auto duration = end - start;
         double ms = duration * 0.001;
 
-        std::cout << m_Message << duration  << " us, " <<  ms << " ms\n";
+        ELY_CORE_TRACE("{0}: {1} us, {2} ms ", m_Message, duration, ms);
     }
 }

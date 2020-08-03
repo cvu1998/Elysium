@@ -1,8 +1,11 @@
 #include "Shader.h"
 
 #include <fstream>
-#include <iostream>
 #include <sstream>
+
+#include "Elysium/Log.h"
+
+#include <glad/glad.h>
 
 enum class ShaderType
 {
@@ -37,6 +40,11 @@ void Shader::setUniform1i(const char* name, int value)
     GL_ASSERT(glUniform1i(getUniformLocation(name), value));
 }
 
+void Shader::setUniform1iv(const char* name, int value, int* sampler)
+{
+    GL_ASSERT(glUniform1iv(getUniformLocation(name), value, sampler));
+}
+
 void Shader::setUniform4f(const char* name, float v0, float v1, float v2, float v3)
 {
     GL_ASSERT(glUniform4f(getUniformLocation(name), v0, v1, v2 ,v3));
@@ -54,7 +62,7 @@ int Shader::getUniformLocation(const char* name) const
 
     GL_ASSERT(int location = glGetUniformLocation(m_RendererID, name));
     if (location == -1)
-        std::cout << "Warning: Uniform " << name << " doesn't exist!\n";
+        ELY_CORE_WARN("Warning: Uniform {0} doesn't exist!", name);
 
     m_UniformLocationCache[name] = location;
     return location;
@@ -103,9 +111,8 @@ unsigned int Shader::compileShader(unsigned int type, const std::string& source)
         glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
         char* message = (char*)alloca(length * sizeof(char));
         glGetShaderInfoLog(id, length, &length, message);
-        std::cout << "Failed to compile " <<
-            (type == GL_VERTEX_SHADER ? "vertex" : "fragment") << " shader!\n";
-        std::cout << message << "\n";
+        ELY_CORE_ERROR("Failed to compile {0} shader!", (type == GL_VERTEX_SHADER ? "vertex" : "fragment"));
+        ELY_CORE_ERROR(message);
         glDeleteShader(id);
 
         return 0;

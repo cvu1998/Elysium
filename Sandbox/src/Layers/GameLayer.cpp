@@ -5,8 +5,6 @@ m_RunGame(runGame),
 m_Camera(-m_Height * (float)(width / height), m_Height* (float)(width / height), 0.0f, m_Height),
 m_ParticleSystem(100, m_Camera)
 {
-    Elysium::Renderer2D::Init();
-
     m_Textures.reserve(7);
     m_Textures.emplace_back("res/texture/meadow.png");
     m_Textures.emplace_back("res/texture/Vader.png");
@@ -62,11 +60,6 @@ m_ParticleSystem(100, m_Camera)
     {
         e_PhysicsSystem.createPhysicalBody(&m_GroundLayers[i], Elysium::BodyType::STATIC, "Layer", 10.0f, { 0.0f, depth + (float)(2.0f * i) }, { 500.0f, 2.0f });
     }
-}
-
-GameLayer::~GameLayer()
-{
-    Elysium::Renderer2D::Shutdown();
 }
 
 void GameLayer::onUpdate(Elysium::Timestep ts)

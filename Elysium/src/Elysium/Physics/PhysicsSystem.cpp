@@ -9,7 +9,7 @@ namespace Elysium
     PhysicsSystem::PhysicsSystem(float acceleration) : 
         m_GravitationalAccel(acceleration)
 #ifdef LOG
-        , m_LogFile("Physics-Log.txt")
+        , m_LogFile("PhysicsSystem.log")
 #endif
     {
     }
@@ -98,8 +98,8 @@ namespace Elysium
         bool firstIsMax = false;
         for (Vector2& normal : normals)
         {
-            float min1 = std::numeric_limits<float>::max();
-            float max1 = -std::numeric_limits<float>::max();
+            float min1 = (std::numeric_limits<float>::max());
+            float max1 = -(std::numeric_limits<float>::max());
             if (body1.Radius > 0.0f)
             {
                 Vector2 circleVertex = normal * body1.Radius;
@@ -116,8 +116,8 @@ namespace Elysium
                 }
             }
 
-            float min2 = std::numeric_limits<float>::max();
-            float max2 = -std::numeric_limits<float>::max();
+            float min2 = (std::numeric_limits<float>::max());
+            float max2 = -(std::numeric_limits<float>::max());
             if (body2.Radius > 0.0f)
             {
                 Vector2 circleVertex = normal * body2.Radius;
@@ -205,8 +205,7 @@ namespace Elysium
 
                     if (m_Bodies[i].Radius > 0.0f)
                     {
-                        float inertia = glm::pi<float>() * (m_Bodies[i].Radius * m_Bodies[i].Radius * m_Bodies[i].Radius * m_Bodies[i].Radius) * 0.25f;
-                        m_Bodies[i].Rotation += (cross(m_Bodies[i].ContactNormal, m_Bodies[i].Velocity) / inertia) * (float)ts;
+                        m_Bodies[i].Rotation += (cross(m_Bodies[i].ContactNormal, m_Bodies[i].Velocity) / m_Bodies[i].Inertia) * (float)ts;
                     }
 
                     m_Bodies[i].Force = { 0.0f, 0.0f };

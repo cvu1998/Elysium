@@ -22,6 +22,9 @@
 #include "Elysium/Physics/PhysicsSystem.h"
 #include "Elysium/Physics/PhysicalBody.h"
 
+// ---Log---
+#include "Elysium/Log.h"
+
 // ---Renderer---
 #include "Elysium/Renderer/Camera.h"
 
