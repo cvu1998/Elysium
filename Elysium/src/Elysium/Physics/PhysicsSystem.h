@@ -1,13 +1,9 @@
 #pragma once
 
-#include <fstream>
-
 #include "Elysium/Math.h"
 #include "Elysium/Physics/PhysicalBody.h"
 
-#ifdef _DEBUG
-#define LOG
-#endif
+//#define LOG
 
 namespace Elysium
 {
@@ -22,14 +18,12 @@ namespace Elysium
         ArrayList<PhysicalBody> m_Bodies;
         std::vector<BodyHandle> m_InactiveBodies;
 
-#ifdef LOG
-        std::ofstream m_LogFile;
-#endif
-
     public:
         bool Gravity = true;
 
     private:
+        void updateBody(PhysicalBody& body, Timestep ts);
+        void applyCollisionResponse(PhysicalBody& body, const PhysicalBody& otherBody, const Vector2& normal, Timestep ts);
         bool checkBroadPhase(const PhysicalBody& body1, const PhysicalBody& body2);
         void checkNarrowPhase(const PhysicalBody& body1, const PhysicalBody& body2, CollisionInfo& info);
 

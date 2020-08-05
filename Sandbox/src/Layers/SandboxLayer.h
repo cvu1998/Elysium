@@ -23,6 +23,7 @@ private:
     Elysium::BodyHandle m_Ground;
     TextureData m_GroundTexture;
     Elysium::BodyHandle m_Box;
+    Elysium::BodyHandle m_sBox;
     TextureData m_BoxTexture;
     Elysium::BodyHandle m_Ball;
     Elysium::BodyHandle m_Circle;

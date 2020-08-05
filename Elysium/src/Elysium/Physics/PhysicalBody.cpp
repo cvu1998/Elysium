@@ -6,23 +6,6 @@ namespace Elysium
 {
     PhysicalBody::PhysicalBody()
     {
-        Type = BodyType::STATIC;
-        Name = nullptr;
-        Mass = 0.0f;
-        Inertia = 0.0f;
-        Radius = 0.0f;
-        Size = { 1.0f, 1.0f };
-        Velocity = { 0.0f, 0.0f };
-        Acceleration = { 0.0f, 0.0f };
-        ContactNormal = { 0.0f, 0.0f };
-
-        ElasticityCoefficient = 1.0f;
-        FrictionCoefficient = 1.0f;
-        GravitationalAccel = 0.0f;
-        Rotation = 0.0f;
-
-        Callback = nullptr;
-        NumberOfExecution = 0;
     }
 
     PhysicalBody::PhysicalBody(BodyType type,const char* name, float mass, const Vector2& initialPosition, const Vector2& size,
@@ -44,7 +27,12 @@ namespace Elysium
 
         Mass = INFINITY;
         if (type == BodyType::DYNAMIC || type == BodyType::KINEMATIC)
+        {
             Mass = fabs(mass);
+
+            float radius = std::max(Size.x * 0.5f, Size.y * 0.5f);
+            Inertia = 0.5f * Mass * radius * radius;
+        }
     }
 
     PhysicalBody PhysicalBody::createPhysicalBody(BodyType type, const char* name, float mass, const Vector2& initialPosition, const Vector2& size, Collision_Callback callback)
@@ -59,7 +47,11 @@ namespace Elysium
             Radius = radius;
             Size = { 2.0f * radius, 2.0f * radius };
 
-            Inertia = glm::pi<float>()* (Radius * Radius * Radius * Radius) * 0.25f;
+            Inertia = 0.5f * Mass * Radius * Radius;
+        }
+        else
+        {
+            Radius = 0.0f;
         }
 
     }
@@ -78,8 +70,7 @@ namespace Elysium
 
     Vector2 PhysicalBody::tranformVertex(const Vector2& vertex) const
     {
-        float radiansRotation = radians(Rotation);
-        Complex transform(cos(radiansRotation), sin(radiansRotation));
+        Complex transform(cos(Rotation), sin(Rotation));
         Complex translation(Position.x, Position.y);
 
         return (Vector2)(Complex(vertex.x, vertex.y) * transform + translation);
@@ -90,42 +81,44 @@ namespace Elysium
         std::vector<Vector2> vertices;
 
         for (const Vector2& vertex : m_ModelVertices)
-            vertices.push_back(vertex + Position);
+            vertices.push_back(tranformVertex(vertex));
 
         return vertices;
-    }
-
-    Vector2 PhysicalBody::getMinVertex() const
-    {
-        Vector2 array[4];
-        array[0] = tranformVertex(+Size * 0.5f);
-        array[1] = tranformVertex(-Size * 0.5f);
-        array[2] = tranformVertex({ +Size.x * 0.5f, -Size.y * 0.5f });
-        array[3] = tranformVertex({ -Size.x * 0.5f, +Size.y * 0.5f });
-
-        for (size_t i = 1; i < 4; i++)
-        {
-            if (array[i].x < array[0].x)
-                array[0].x = array[i].x;
-            if (array[i].y < array[0].y)
-                array[0].y = array[i].y;
-        }
-        return array[0];
     }
 
     Vector2 PhysicalBody::getMaxVertex() const
     {
         Vector2 array[4];
-        array[0] = tranformVertex(+Size * 0.5f);
-        array[1] = tranformVertex(-Size * 0.5f);
-        array[2] = tranformVertex({ +Size.x * 0.5f, -Size.y * 0.5f });
-        array[3] = tranformVertex({ -Size.x * 0.5f, +Size.y * 0.5f });
+        Vector2 halfSize = Size * 0.5f;
+        array[0] = tranformVertex(+halfSize);
+        array[1] = tranformVertex(-halfSize);
+        array[2] = tranformVertex({ +halfSize.x, -halfSize.y});
+        array[3] = tranformVertex({ -halfSize.x, +halfSize.y });
 
         for (size_t i = 1; i < 4; i++)
         {
             if (array[i].x > array[0].x)
                 array[0].x = array[i].x;
             if (array[i].y > array[0].y)
+                array[0].y = array[i].y;
+        }
+        return array[0];
+    }
+
+    Vector2 PhysicalBody::getMinVertex() const
+    {
+        Vector2 array[4];
+        Vector2 halfSize = Size * 0.5f;
+        array[0] = tranformVertex(+halfSize);
+        array[1] = tranformVertex(-halfSize);
+        array[2] = tranformVertex({ +halfSize.x, -halfSize.y });
+        array[3] = tranformVertex({ -halfSize.x, +halfSize.y });
+
+        for (size_t i = 1; i < 4; i++)
+        {
+            if (array[i].x < array[0].x)
+                array[0].x = array[i].x;
+            if (array[i].y < array[0].y)
                 array[0].y = array[i].y;
         }
         return array[0];

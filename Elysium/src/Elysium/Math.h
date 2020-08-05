@@ -38,6 +38,16 @@ namespace Elysium
         return glm::radians(angle);
     }
 
+    static bool isinf(const Vector2& vector)
+    {
+        return (std::isinf(vector.x) || std::isinf(vector.y));
+    }
+
+    static bool isNaN(const Vector2& vector)
+    {
+        return (std::isnan(vector.x) || std::isnan(vector.y));
+    }
+
     struct Complex
     {
     public:

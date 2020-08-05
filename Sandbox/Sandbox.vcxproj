@@ -22,7 +22,7 @@
     <ClCompile Include="src\Application.cpp" />
     <ClCompile Include="src\Game\Player.cpp" />
     <ClCompile Include="src\Game\Systems.cpp" />
-    <ClCompile Include="src\Layers\GameLayer.cpp" />
+    <ClCompile Include="src\Layers\PerformanceLayer.cpp" />
     <ClCompile Include="src\Layers\SandboxLayer.cpp" />
     <ClCompile Include="src\test\BatchRendering_Test.cpp" />
     <ClCompile Include="src\test\ClearColor_Test.cpp" />
@@ -35,7 +35,7 @@
   <ItemGroup>
     <ClInclude Include="src\Game\Player.h" />
     <ClInclude Include="src\Game\Systems.h" />
-    <ClInclude Include="src\Layers\GameLayer.h" />
+    <ClInclude Include="src\Layers\PerformanceLayer.h" />
     <ClInclude Include="src\Layers\SandboxLayer.h" />
     <ClInclude Include="src\test\BatchRendering_Test.h" />
     <ClInclude Include="src\test\ClearColor_Test.h" />

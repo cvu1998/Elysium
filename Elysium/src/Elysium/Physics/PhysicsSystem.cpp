@@ -2,23 +2,19 @@
 
 #include <algorithm>
 
+#define NOMINMAX
+#include "Elysium/Log.h"
 #include "Elysium/Math.h"
 
 namespace Elysium
 {
     PhysicsSystem::PhysicsSystem(float acceleration) : 
         m_GravitationalAccel(acceleration)
-#ifdef LOG
-        , m_LogFile("PhysicsSystem.log")
-#endif
     {
     }
 
     PhysicsSystem::~PhysicsSystem()
     {
-#ifdef LOG
-        m_LogFile.close();
-#endif
     }
 
     PhysicalBody& PhysicsSystem::createPhysicalBody(BodyType type, const char* name, float mass, const Vector2& initialPosition, const Vector2& size, PhysicalBody::Collision_Callback callback)
@@ -49,12 +45,55 @@ namespace Elysium
         *handle = body;
     }
 
+    void PhysicsSystem::updateBody(PhysicalBody& body, Timestep ts)
+    {
+        for (auto& impulse : body.Normals)
+        {
+            body.ContactNormal += impulse.first;
+            body.Impulse += impulse.first * impulse.second;
+        }
+        body.Normals.clear();
+
+        body.Acceleration = body.Force / body.Mass;
+        body.Velocity = body.Velocity + (body.Impulse / body.Mass) + (body.Acceleration * (float)ts);
+        body.Position = body.Position + (body.Velocity * (float)ts);
+
+        body.Force = { 0.0f, 0.0f };
+        if (Gravity)
+            body.Force.y = -m_GravitationalAccel * body.Mass;
+    }
+
+    void PhysicsSystem::applyCollisionResponse(PhysicalBody& body, const PhysicalBody& otherBody, const Vector2& normal, Timestep ts)
+    {
+        /***** Normal Force *****/
+        body.Force += abs(body.Force) * normal;
+
+        Vector2 impulse = { 0.0f, 0.0f };
+
+        if (body.Type == BodyType::DYNAMIC)
+            impulse = abs(otherBody.Velocity / body.Mass);
+
+        float averageElasticity = (body.ElasticityCoefficient + otherBody.ElasticityCoefficient) * 0.5f;
+        impulse += abs(body.Velocity) * body.Mass * (averageElasticity);
+
+        body.Normals[normal] = max(impulse, body.Normals[normal]);
+
+        /***** Friction *****/
+        Vector2 frictionDirection = { 0.0f, 0.0f };
+        if (body.Velocity.x * body.Velocity.x + body.Velocity.y * body.Velocity.y > 0.0f)
+        {
+            frictionDirection = { fabs(normal.y),  fabs(normal.x) };
+            frictionDirection = -(frictionDirection * normalize(body.Velocity));
+            body.Impulse += abs(body.Velocity) * frictionDirection * body.Mass * body.getFrictionCoefficient() * (float)(ts * 10.0f);
+        }
+    }
+
     bool PhysicsSystem::checkBroadPhase(const PhysicalBody& body1, const PhysicalBody& body2)
     {
-        Vector2 min1 = body1.Position - (body1.Size * 0.5f);
-        Vector2 max1 = body1.Position + (body1.Size * 0.5f);
-        Vector2 min2 = body2.Position - (body2.Size * 0.5f);
-        Vector2 max2 = body2.Position + (body2.Size * 0.5f);
+        Vector2 min1 = body1.MinimumVertex;
+        Vector2 max1 = body1.MaximumVertex;
+        Vector2 min2 = body2.MinimumVertex;
+        Vector2 max2 = body2.MaximumVertex;
 
         bool CollisionX = max1.x >= min2.x && min1.x <= max2.x;
         bool CollisionY = max1.y >= min2.y && min1.y <= max2.y;
@@ -184,36 +223,31 @@ namespace Elysium
             {
                 switch (m_Bodies[i].Type)
                 {
-                case BodyType::STATIC:
+                case BodyType::DYNAMIC:
+                    updateBody(m_Bodies[i], ts);
+                    if (m_Bodies[i].Radius > 0.0f)
+                        m_Bodies[i].ContactNormal = (isNaN(normalize(m_Bodies[i].ContactNormal)) || isinf(normalize(m_Bodies[i].ContactNormal))) ?
+                            m_Bodies[i].ContactNormal : normalize(m_Bodies[i].ContactNormal);
+                    else
+                        m_Bodies[i].ContactNormal = (isNaN(normalize(m_Bodies[i].Impulse)) || isinf(normalize(m_Bodies[i].Impulse))) ?
+                        m_Bodies[i].ContactNormal : normalize(m_Bodies[i].Impulse);
+
+                    m_Bodies[i].Rotation += (cross(m_Bodies[i].ContactNormal, m_Bodies[i].Velocity) / m_Bodies[i].Inertia) * (float)ts;
+                    break;
+                case BodyType::KINEMATIC:
+                    updateBody(m_Bodies[i], ts);
+                    break;
+                default:
                     m_Bodies[i].Acceleration = { 0.0f, 0.0f };
                     m_Bodies[i].Velocity = { 0.0f, 0.0f };
 
                     m_Bodies[i].Force = { 0.0f, 0.0f };
-                    break;
-                default:
-                    for (auto& impulse : m_Bodies[i].Normals)
-                    {
-                        m_Bodies[i].Impulse += impulse.first * impulse.second;
-                        impulse.second = { 0.0f, 0.0f };
-                    }
-                    m_Bodies[i].ContactNormal = isAllNaN(normalize(m_Bodies[i].Impulse)) ?
-                        m_Bodies[i].ContactNormal : normalize(m_Bodies[i].Impulse);
-
-                    m_Bodies[i].Acceleration = m_Bodies[i].Force / m_Bodies[i].Mass;
-                    m_Bodies[i].Velocity = m_Bodies[i].Velocity + (m_Bodies[i].Impulse / m_Bodies[i].Mass) + (m_Bodies[i].Acceleration * (float)ts);
-                    m_Bodies[i].Position = m_Bodies[i].Position + (m_Bodies[i].Velocity * (float)ts);
-
-                    if (m_Bodies[i].Radius > 0.0f)
-                    {
-                        m_Bodies[i].Rotation += (cross(m_Bodies[i].ContactNormal, m_Bodies[i].Velocity) / m_Bodies[i].Inertia) * (float)ts;
-                    }
-
-                    m_Bodies[i].Force = { 0.0f, 0.0f };
-                    if (Gravity && m_Bodies[i].Status != BodyStatus::NOGRAVITY)
-                        m_Bodies[i].Force.y = -m_GravitationalAccel * m_Bodies[i].Mass;
                 }
                 m_Bodies[i].Impulse = { 0.0f, 0.0f };
                 m_Bodies[i].CallbackExecutions = 0;
+
+                m_Bodies[i].MaximumVertex = m_Bodies[i].getMaxVertex();
+                m_Bodies[i].MinimumVertex = m_Bodies[i].getMinVertex();
             }
         }
 
@@ -230,8 +264,8 @@ namespace Elysium
         }
         std::sort(ssBodies.begin(), ssBodies.end(), [this](BodyHandle i, BodyHandle j)
             {
-                return (m_Bodies[i].Position.y - (m_Bodies[i].Size.y * 0.5f) <
-                m_Bodies[j].Position.y - (m_Bodies[j].Size.y * 0.5f));
+                return (m_Bodies[i].MinimumVertex.y <
+                m_Bodies[j].MinimumVertex.y);
             }
         );
 
@@ -241,12 +275,14 @@ namespace Elysium
             for (size_t b = a + 1; b < ssBodies.size(); b++)
             {
                 BodyHandle j = ssBodies[b];
-                if ((m_Bodies[j].Type == BodyType::STATIC && m_Bodies[i].Type == BodyType::STATIC) ||
-                    m_Bodies[j].Position.y - (m_Bodies[j].Size.y * 0.5f) >
-                    m_Bodies[i].Position.y + (m_Bodies[i].Size.y * 0.5f))
+                if (m_Bodies[j].MinimumVertex.y >
+                    m_Bodies[i].MaximumVertex.y)
                 {
                     break;
                 }
+
+                if (m_Bodies[j].Type == BodyType::STATIC && m_Bodies[i].Type == BodyType::STATIC)
+                    continue;
 
                 if (checkBroadPhase(m_Bodies[i], m_Bodies[j]))
                 {
@@ -260,63 +296,26 @@ namespace Elysium
                         float magnitude1 = fabs(dot(m_Bodies[i].Velocity, iNormal));
                         float magnitude2 = fabs(dot(m_Bodies[j].Velocity, jNormal));
                         if (magnitude1 > magnitude2)
-                        {
-                            if (m_Bodies[i].Type == BodyType::DYNAMIC || m_Bodies[i].Type == BodyType::KINEMATIC)
-                                m_Bodies[i].Position = m_Bodies[i].Position + (info.minOverlap * iNormal);
-                            else
-                                m_Bodies[j].Position = m_Bodies[j].Position + (info.minOverlap * jNormal);
-                        }
+                            m_Bodies[i].Position = m_Bodies[i].Position + (info.minOverlap * iNormal);
                         else
-                        {
-                            if (m_Bodies[j].Type == BodyType::DYNAMIC || m_Bodies[j].Type == BodyType::KINEMATIC)
-                                m_Bodies[j].Position = m_Bodies[j].Position + (info.minOverlap * jNormal);
-                            else
-                                m_Bodies[i].Position = m_Bodies[i].Position + (info.minOverlap * iNormal);
-                        }
-                        /***** Normal Force *****/
-                        m_Bodies[i].Force += abs(m_Bodies[i].Force) * iNormal;
-                        m_Bodies[j].Force += abs(m_Bodies[j].Force) * jNormal;
-                        
-                        Vector2 iIMpulse = { 0.0f, 0.0f };
-                        Vector2 jIMpulse = { 0.0f, 0.0f };
+                             m_Bodies[j].Position = m_Bodies[j].Position + (info.minOverlap * jNormal);
 
-                        if (m_Bodies[j].Type == BodyType::DYNAMIC)
-                            jIMpulse = abs(m_Bodies[i].Velocity / m_Bodies[j].Mass);
-                        if (m_Bodies[i].Type == BodyType::DYNAMIC)
-                            iIMpulse = abs(m_Bodies[j].Velocity / m_Bodies[i].Mass);
+                        if (m_Bodies[i].Type != BodyType::STATIC)
+                            applyCollisionResponse(m_Bodies[i], m_Bodies[j], iNormal, ts);
 
-                        float averageElasticity = (m_Bodies[i].ElasticityCoefficient + m_Bodies[j].ElasticityCoefficient) * 0.5f;
-                        iIMpulse += abs(m_Bodies[i].Velocity) * m_Bodies[i].Mass * (averageElasticity);
-                        jIMpulse += abs(m_Bodies[j].Velocity) * m_Bodies[j].Mass * (averageElasticity);
-
-                        m_Bodies[i].Normals[iNormal] = max(iIMpulse, m_Bodies[i].Normals[iNormal]);
-                        m_Bodies[j].Normals[jNormal] = max(jIMpulse, m_Bodies[j].Normals[jNormal]);
-
-                        /***** Friction *****/
-                        Vector2 frictionDirection = { 0.0f, 0.0f };
-                        if (m_Bodies[i].Velocity.x * m_Bodies[i].Velocity.x + m_Bodies[i].Velocity.y * m_Bodies[i].Velocity.y > 0.0f)
-                        {
-                            frictionDirection = { fabs(iNormal.y),  fabs(iNormal.x) };
-                            frictionDirection = -(frictionDirection * normalize(m_Bodies[i].Velocity));
-                            m_Bodies[i].Impulse += abs(m_Bodies[i].Velocity) * frictionDirection * m_Bodies[i].Mass * m_Bodies[j].getFrictionCoefficient() * (float)(ts * 10.0f);
-                        }
-                        if (m_Bodies[j].Velocity.x * m_Bodies[j].Velocity.x + m_Bodies[j].Velocity.y * m_Bodies[j].Velocity.y > 0.0f)
-                        {
-                            frictionDirection = { fabs(jNormal.y) , fabs(jNormal.x) };
-                            frictionDirection = -(frictionDirection * normalize(m_Bodies[j].Velocity));
-                            m_Bodies[j].Impulse += abs(m_Bodies[j].Velocity) * frictionDirection * m_Bodies[j].Mass * m_Bodies[i].getFrictionCoefficient() * (float)(ts * 10.0f);
-                        }
+                        if (m_Bodies[j].Type != BodyType::STATIC)
+                            applyCollisionResponse(m_Bodies[j], m_Bodies[i], jNormal, ts);
 #ifdef LOG
-                        m_LogFile << m_Time << ": NarrowPhaseCollision: " << m_Bodies[i].Name << ", " << m_Bodies[j].Name << std::endl;
-                        m_LogFile << m_Time << ": CollisionInfo Overlap: " << info.minOverlap << std::endl;
-                        m_LogFile << m_Time << ": CollisionInfo Normal: " << m_Bodies[i].Name << ": " << iNormal.x << ", " << iNormal.y << std::endl;
-                        m_LogFile << m_Time << ": CollisionInfo Normal: " << m_Bodies[j].Name << ": " << jNormal.x << ", " << jNormal.y << std::endl;
-                        m_LogFile << m_Time << ": CollisionInfo Velocity: " << m_Bodies[i].Name << ": " << m_Bodies[i].Velocity.x << ", " << m_Bodies[i].Velocity.y << std::endl;
-                        m_LogFile << m_Time << ": CollisionInfo Velocity: " << m_Bodies[j].Name << ": " << m_Bodies[j].Velocity.x << ", " << m_Bodies[j].Velocity.y << std::endl;
-                        m_LogFile << m_Time << ": CollisionInfo Force: " << m_Bodies[i].Name << ": " << m_Bodies[i].Force.x << ", " << m_Bodies[i].Force.y << std::endl;
-                        m_LogFile << m_Time << ": CollisionInfo Force: " << m_Bodies[j].Name << ": " << m_Bodies[j].Force.x << ", " << m_Bodies[j].Force.y << std::endl;
-                        m_LogFile << m_Time << ": CollisionInfo Impulse: " << m_Bodies[i].Name << ": " << m_Bodies[i].Impulse.x << ", " << m_Bodies[i].Impulse.y << std::endl;
-                        m_LogFile << m_Time << ": CollisionInfo Impulse: " << m_Bodies[j].Name << ": " << m_Bodies[j].Impulse.x << ", " << m_Bodies[j].Impulse.y << std::endl;
+                        ELY_CORE_TRACE("NarrowPhaseCollision: {0}, {1}", m_Bodies[i].Name, m_Bodies[j].Name);
+                        ELY_CORE_TRACE("CollisionInfo Overlap: {0}", info.minOverlap);
+                        ELY_CORE_TRACE("CollisionInfo Normal: {0}: {1}, {2}", m_Bodies[i].Name, iNormal.x, iNormal.y);
+                        ELY_CORE_TRACE("CollisionInfo Normal: {0}: {1}, {2}", m_Bodies[j].Name, jNormal.x, jNormal.y);
+                        ELY_CORE_TRACE("CollisionInfo Velocity: {0}: {1}, {2}", m_Bodies[i].Name, m_Bodies[i].Velocity.x, m_Bodies[i].Velocity.y);
+                        ELY_CORE_TRACE("CollisionInfo Velocity: {0}: {1}, {2}", m_Bodies[j].Name, m_Bodies[j].Velocity.x, m_Bodies[j].Velocity.y);
+                        ELY_CORE_TRACE("CollisionInfo Force: {0}: {1}, {2}", m_Bodies[i].Name, m_Bodies[i].Force.x, m_Bodies[i].Force.y);
+                        ELY_CORE_TRACE("CollisionInfo Force: {0}: {1}, {2}", m_Bodies[j].Name, m_Bodies[j].Force.x, m_Bodies[j].Force.y);
+                        ELY_CORE_TRACE("CollisionInfo Impulse: {0}: {1}, {2}", m_Bodies[i].Name, m_Bodies[i].Impulse.x, m_Bodies[i].Impulse.y);
+                        ELY_CORE_TRACE("CollisionInfo Impulse: {0}: {1}, {2}", m_Bodies[j].Name, m_Bodies[j].Impulse.x, m_Bodies[j].Impulse.y);
 #endif
                         if (m_Bodies[i].Callback && m_Bodies[i].CallbackExecutions < m_Bodies[i].NumberOfExecution)
                             m_Bodies[i].Callback(m_Bodies[i], m_Bodies[j], { true, info.minOverlap, ts,

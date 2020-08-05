@@ -11,6 +11,7 @@ namespace Elysium
 {
     enum class BodyType
     {
+        NONE = -1,
         STATIC = 0,
         KINEMATIC = 1,
         DYNAMIC = 2
@@ -19,8 +20,7 @@ namespace Elysium
     enum class BodyStatus
     {
         INACTIVE = 0,
-        ACTIVE = 1,
-        NOGRAVITY = 2
+        ACTIVE = 1
     };
 
     struct BodyCollisionInfo
@@ -47,15 +47,17 @@ namespace Elysium
             PhysicalBody& collidee,
             const CollisionInfo& collisionInfo);
 
-    private:      
-        BodyType Type;
-        const char* Name;
+    private:
+        const char* Name = nullptr;
         float Mass = 0.0f;
         float Inertia = 0.0f;
         float Radius = 0.0f;
         Vector2 Size = { 1.0f, 1.0f };
         Vector2 Velocity = { 0.0f, 0.0f };
         Vector2 Acceleration = { 0.0f, 0.0f };
+
+        Vector2 MaximumVertex = { 0.0f, 0.0f };
+        Vector2 MinimumVertex = { 0.0f, 0.0f };
 
         struct Hash_Vector2
         {
@@ -75,14 +77,16 @@ namespace Elysium
         float ElasticityCoefficient = 1.0f;
         float FrictionCoefficient = 1.0f;
         float GravitationalAccel = 0.0f;
-        float Rotation = 0.0f;
 
-        Collision_Callback Callback;
+        Collision_Callback Callback = nullptr;
         unsigned int NumberOfExecution = 0;
 
     public:
         Vector2 Position = { 0.0f, 0.0f };
 
+        float Rotation = 0.0f;
+
+        BodyType Type = BodyType::NONE;
         BodyStatus Status = BodyStatus::ACTIVE;
 
         Vector2 Force = { 0.0f, 0.0f };
@@ -106,7 +110,6 @@ namespace Elysium
         inline const Vector2& getVelocity() const { return Velocity; }
         inline const Vector2& getAcceleration() const { return Acceleration; }
         inline const Vector2& getSize() const { return Size; }
-        inline float getRotation() const { return Rotation; };
 
         void setRadius(float radius);
         void setElasticityCoefficient(float coefficient);
@@ -121,8 +124,8 @@ namespace Elysium
         const std::vector<Vector2>& getModelVertices() const { return m_ModelVertices; }
         std::vector<Vector2>getVertices() const;
 
-        Vector2 getMinVertex() const;
         Vector2 getMaxVertex() const;
+        Vector2 getMinVertex() const;
 
         std::vector<Vector2>getNormals() const;
     };

@@ -1,11 +1,11 @@
-#include "Layers/GameLayer.h"
+#include "Layers/PerformanceLayer.h"
 #include "Layers/SandboxLayer.h"
 #include "Layers/TestLayer.h"
 
 class Application : public Elysium::Application
 {
 private:
-    GameLayer* m_Game = nullptr;
+    PerformanceLayer* m_Test = nullptr;
     SandboxLayer* m_Sandbox = nullptr;
     TestLayer* m_Tests;
 
@@ -34,11 +34,11 @@ public:
         ImGui::ColorEdit4("Clear Color", m_ClearColor);
         if (ImGui::Button("Sandbox"))
         {
-            if (m_Game)
+            if (m_Test)
             {
-                m_LayerStack.popOverlay(m_Game);
-                delete m_Game;
-                m_Game = nullptr;
+                m_LayerStack.popOverlay(m_Test);
+                delete m_Test;
+                m_Test = nullptr;
             }
 
             if (m_Sandbox)
@@ -51,7 +51,7 @@ public:
             m_Sandbox = new SandboxLayer(&m_RunLayer, m_Window->getWidth(), m_Window->getHeight());
             m_LayerStack.pushOverlay(m_Sandbox);
         }
-        if (ImGui::Button("Play!"))
+        if (ImGui::Button("Stress Test"))
         {
             if (m_Sandbox)
             {
@@ -60,15 +60,15 @@ public:
                 m_Sandbox = nullptr;
             }
 
-            if (m_Game)
+            if (m_Test)
             {
-                m_LayerStack.popOverlay(m_Game);
-                delete m_Game;
-                m_Game = nullptr;
+                m_LayerStack.popOverlay(m_Test);
+                delete m_Test;
+                m_Test = nullptr;
             }
 
-            m_Game = new GameLayer(&m_RunLayer, m_Window->getWidth(), m_Window->getHeight());
-            m_LayerStack.pushOverlay(m_Game);
+            m_Test = new PerformanceLayer(&m_RunLayer, m_Window->getWidth(), m_Window->getHeight());
+            m_LayerStack.pushOverlay(m_Test);
         }
         ImGui::End();
 
