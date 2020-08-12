@@ -5,7 +5,7 @@ SandboxLayer::SandboxLayer(bool* runSandbox, unsigned int width, unsigned int he
     m_Camera(-m_Height * (float)(width / height), m_Height* (float)(width / height), 0.0f, m_Height),
     m_ParticleSystem(100, m_Camera)
 {
-    m_Textures.reserve(7);
+    m_Textures.reserve(15);
     m_Textures.emplace_back("res/texture/meadow.png");
     m_Textures.emplace_back("res/texture/Vader.png");
     m_Textures.emplace_back("res/texture/alec.png");
@@ -13,6 +13,15 @@ SandboxLayer::SandboxLayer(bool* runSandbox, unsigned int width, unsigned int he
     m_Textures.emplace_back("res/texture/RPGpack_sheet_2X.png");
     m_Textures.emplace_back("res/texture/platformPack_tilesheet.png");
     m_Textures.emplace_back("res/texture/background.png");
+
+    m_Textures.emplace_back("res/texture/Run (1).png");
+    m_Textures.emplace_back("res/texture/Run (2).png");
+    m_Textures.emplace_back("res/texture/Run (3).png");
+    m_Textures.emplace_back("res/texture/Run (4).png");
+    m_Textures.emplace_back("res/texture/Run (5).png");
+    m_Textures.emplace_back("res/texture/Run (6).png");
+    m_Textures.emplace_back("res/texture/Run (7).png");
+    m_Textures.emplace_back("res/texture/Run (8).png");
 
     m_Background = m_Textures[6].getTextureData();
     m_Background.repeatTexture({ 15.0f, 1.0f });
@@ -45,7 +54,11 @@ SandboxLayer::SandboxLayer(bool* runSandbox, unsigned int width, unsigned int he
 
     // ---------------------------------------------------------------------------------- //
 
-    m_Player.m_TextureData = m_Textures[3].getTextureData();
+    m_Player.m_IdleTexture = m_Textures[3].getTextureData();
+    m_Player.m_TextureData = m_Player.m_IdleTexture;
+
+    for (size_t i = 7; i < m_Textures.size(); i++)
+        m_Player.m_RunAnimation.Textures[i - 7] = m_Textures[i].getTextureData();
 
     m_GroundTexture = m_Textures[5].getTextureData();
     m_GroundTexture.subtextureCoordinates({ 0, 6 }, { 128, 128 });

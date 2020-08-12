@@ -1,6 +1,6 @@
 #include "Player.h"
 
-Player::Player()
+Player::Player() : m_RunAnimation(m_FrameRate)
 {
     e_PhysicsSystem.getBodies().clear();
     e_PhysicsSystem.createPhysicalBody(&m_ID, Elysium::BodyType::DYNAMIC, "Player", 50.0f, { 20.0f, 20.0f }, { 2.0f, 2.0f }, Player::onCollision);
@@ -16,22 +16,38 @@ void Player::onUpdate(Elysium::Timestep ts)
 
     if (Elysium::Input::isKeyPressed(ELY_KEY_A))
     {
+        m_RunAnimation.updateAnimation(ts);
         if (m_PlayerLookingRight)
         {
-            m_TextureData.reflectAroundYAxis();
+            m_RunAnimation.reflectAroundYAxis();
             m_PlayerLookingRight = false;
         }
         player.Impulse.x += -2.0f * player.getMass() * ts;
+        m_TextureData = m_RunAnimation.getCurrentTexture();
     }
     else if (Elysium::Input::isKeyPressed(ELY_KEY_D))
     {
+        m_RunAnimation.updateAnimation(ts);
         if (!m_PlayerLookingRight)
         {
-            m_TextureData.reflectAroundYAxis();
+            m_RunAnimation.reflectAroundYAxis();
             m_PlayerLookingRight = true;
         }
         player.Impulse.x += 2.0f * player.getMass() * ts;
+        m_TextureData = m_RunAnimation.getCurrentTexture();
     }
+    else
+    {
+        m_RunAnimation.reset();
+        m_TextureData = m_IdleTexture;
+        if (!m_PlayerLookingRight)
+            m_TextureData.reflectAroundYAxis();
+    }
+
+    ImGui::Begin("Player");
+    ImGui::SliderFloat("Animation update rate", &m_FrameRate, 1.0f, 60.0f);
+    m_RunAnimation.setAnimationFrameRate(m_FrameRate);
+    ImGui::End();
 }
 
 void Player::onCollision(Elysium::PhysicalBody& body, Elysium::PhysicalBody& collidee, const Elysium::CollisionInfo& info)

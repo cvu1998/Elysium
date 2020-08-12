@@ -11,11 +11,17 @@ namespace Elysium
     private:
         static constexpr size_t s_ArraySize = 1000;
         static constexpr double s_InverseSize = (1.0 / (double)s_ArraySize);
-        std::vector<std::unique_ptr<T[]>> m_ArrayList;
+        std::vector<T*> m_ArrayList;
         size_t m_VectorIndex = 0;
         size_t m_ArrayIndex = 0;
 
     public:
+        ~ArrayList()
+        {
+            for (size_t i = 0; i < m_ArrayList.size(); i++)
+                delete[] m_ArrayList[i];
+        }
+
         void push_back(const T& element)
         {
             if (m_ArrayIndex == s_ArraySize)
@@ -26,8 +32,7 @@ namespace Elysium
 
             if (m_ArrayIndex == 0)
             {
-                std::unique_ptr<T[]> array(new T[s_ArraySize]);
-                m_ArrayList.push_back(std::move(array));
+                m_ArrayList.push_back(new T[s_ArraySize]);
             }
             m_ArrayList[m_VectorIndex][m_ArrayIndex] = element;
             m_ArrayIndex++;
@@ -43,8 +48,7 @@ namespace Elysium
 
             if (m_ArrayIndex == 0)
             {
-                std::unique_ptr<T[]> array(new T[s_ArraySize]);
-                m_ArrayList.push_back(std::move(array));
+                m_ArrayList.push_back(new T[s_ArraySize]);
             }
             m_ArrayList[m_VectorIndex][m_ArrayIndex] = element;
             m_ArrayIndex++;
@@ -54,6 +58,10 @@ namespace Elysium
         {
             m_VectorIndex = 0;
             m_ArrayIndex = 0;
+
+            for (size_t i = 0; i < m_ArrayList.size(); i++)
+                delete[] m_ArrayList[i];
+
             m_ArrayList.clear();
         }
 

@@ -14,6 +14,7 @@
 #include "Elysium/OrthographicCameraController.h"
 #include "Elysium/ParticleSystem.h"
 
+#include "Elysium/Animation.h"
 #include "Elysium/ArrayList.h"
 #include "Elysium/Math.h"
 #include "Elysium/Random.h"

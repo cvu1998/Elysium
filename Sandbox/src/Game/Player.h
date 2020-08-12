@@ -7,9 +7,14 @@ class Player
 private:
     Elysium::BodyHandle m_ID;
 
+    static constexpr size_t s_RunAnimationSize = 8;
+
 public:
+    float m_FrameRate = 9.0f;
     bool m_PlayerLookingRight = true;
+    Elysium::Animation<s_RunAnimationSize> m_RunAnimation;
     TextureData m_TextureData;
+    TextureData m_IdleTexture; 
 
 public:
     Player();
