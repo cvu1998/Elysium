@@ -2,7 +2,7 @@
 
 SandboxLayer::SandboxLayer(bool* runSandbox, unsigned int width, unsigned int height) : Layer("Sandbox"),
     m_RunSandbox(runSandbox),
-    m_Camera(-m_Height * (float)(width / height), m_Height* (float)(width / height), 0.0f, m_Height),
+    m_Camera(-m_Height * (float)(width / height), m_Height * (float)(width / height), 0.0f, m_Height),
     m_ParticleSystem(100, m_Camera)
 {
     m_Textures.reserve(15);

@@ -35,6 +35,5 @@ public:
     void onUpdate(Elysium::Timestep ts) override;
     void onEvent(Elysium::Event& event) override;
 
-    bool onKeyPressedEvent(Elysium::KeyPressedEvent& event);
     bool onWindowResizeEvent(Elysium::WindowResizeEvent& event);
 };

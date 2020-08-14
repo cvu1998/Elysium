@@ -1,8 +1,8 @@
 #include "PerformanceLayer.h"
 
-PerformanceLayer::PerformanceLayer(bool* runGame, unsigned int width, unsigned int height) : Layer("Sandbox"),
+PerformanceLayer::PerformanceLayer(bool* runGame, unsigned int width, unsigned int height) : Layer("Stress Test"),
 m_RunGame(runGame),
-m_Camera(-m_Height * (float)(width / height), m_Height* (float)(width / height), 0.0f, m_Height),
+m_Camera(-m_Height * (float)(width / height), m_Height * (float)(width / height), 0.0f, m_Height),
 m_ParticleSystem(100, m_Camera)
 {
     m_Textures.reserve(15);
@@ -152,13 +152,7 @@ void PerformanceLayer::onUpdate(Elysium::Timestep ts)
 void PerformanceLayer::onEvent(Elysium::Event& event)
 {
     Elysium::EventDispatcher dispatcher(event);
-    dispatcher.Dispatch<Elysium::KeyPressedEvent>(BIND_EVENT_FUNCTION(PerformanceLayer::onKeyPressedEvent));
     dispatcher.Dispatch<Elysium::WindowResizeEvent>(BIND_EVENT_FUNCTION(PerformanceLayer::onWindowResizeEvent));
-}
-
-bool PerformanceLayer::onKeyPressedEvent(Elysium::KeyPressedEvent& event)
-{
-    return false;
 }
 
 bool PerformanceLayer::onWindowResizeEvent(Elysium::WindowResizeEvent& event)

@@ -17,17 +17,17 @@ namespace Elysium
     {
     }
 
-    PhysicalBody& PhysicsSystem::createPhysicalBody(BodyType type, const char* name, float mass, const Vector2& initialPosition, const Vector2& size, PhysicalBody::Collision_Callback callback)
+    PhysicalBody* PhysicsSystem::createPhysicalBody(BodyType type, const char* name, float mass, const Vector2& initialPosition, const Vector2& size, PhysicalBody::Collision_Callback callback)
     {
         if (m_InactiveBodies.empty())
         {
             m_Bodies.push_back(PhysicalBody::createPhysicalBody(type, name, mass, initialPosition, size, callback));
-            return m_Bodies[m_Bodies.size() - 1];
+            return &m_Bodies[m_Bodies.size() - 1];
         }
         BodyHandle body = m_InactiveBodies.back();
         m_InactiveBodies.pop_back();
         m_Bodies[body] = PhysicalBody(type, name, mass, initialPosition, size, callback);
-        return m_Bodies[body];
+        return &m_Bodies[body];
     }
 
     void PhysicsSystem::createPhysicalBody(BodyHandle* handle, BodyType type, const char* name, float mass, const Vector2& initialPosition, const Vector2& size,

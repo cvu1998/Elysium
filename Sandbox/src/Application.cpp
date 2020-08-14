@@ -1,3 +1,4 @@
+#include "Layers/Connect4Layer.h"
 #include "Layers/PerformanceLayer.h"
 #include "Layers/SandboxLayer.h"
 #include "Layers/TestLayer.h"
@@ -5,6 +6,7 @@
 class Application : public Elysium::Application
 {
 private:
+    Connect4Layer* m_Connect4 = nullptr;
     PerformanceLayer* m_Test = nullptr;
     SandboxLayer* m_Sandbox = nullptr;
     TestLayer* m_Tests;
@@ -34,45 +36,52 @@ public:
         ImGui::ColorEdit4("Clear Color", m_ClearColor);
         if (ImGui::Button("Sandbox"))
         {
-            if (m_Test)
-            {
-                m_LayerStack.popOverlay(m_Test);
-                delete m_Test;
-                m_Test = nullptr;
-            }
-
-            if (m_Sandbox)
-            {
-                m_LayerStack.popOverlay(m_Sandbox);
-                delete m_Sandbox;
-                m_Sandbox = nullptr;
-            }
+            deleteLayers();
             
             m_Sandbox = new SandboxLayer(&m_RunLayer, m_Window->getWidth(), m_Window->getHeight());
             m_LayerStack.pushOverlay(m_Sandbox);
         }
         if (ImGui::Button("Stress Test"))
         {
-            if (m_Sandbox)
-            {
-                m_LayerStack.popOverlay(m_Sandbox);
-                delete m_Sandbox;
-                m_Sandbox = nullptr;
-            }
-
-            if (m_Test)
-            {
-                m_LayerStack.popOverlay(m_Test);
-                delete m_Test;
-                m_Test = nullptr;
-            }
+            deleteLayers();
 
             m_Test = new PerformanceLayer(&m_RunLayer, m_Window->getWidth(), m_Window->getHeight());
             m_LayerStack.pushOverlay(m_Test);
         }
+        if (ImGui::Button("Connect 4"))
+        {
+            deleteLayers();
+
+            m_Connect4 = new Connect4Layer(&m_RunLayer, m_Window->getWidth(), m_Window->getHeight());
+            m_LayerStack.pushOverlay(m_Connect4);
+        }
         ImGui::End();
 
         m_Window->setVSync(m_VSync);
+    }
+
+    void deleteLayers()
+    {
+        if (m_Connect4)
+        {
+            m_LayerStack.popOverlay(m_Connect4);
+            delete m_Connect4;
+            m_Connect4 = nullptr;
+        }
+
+        if (m_Sandbox)
+        {
+            m_LayerStack.popOverlay(m_Sandbox);
+            delete m_Sandbox;
+            m_Sandbox = nullptr;
+        }
+
+        if (m_Test)
+        {
+            m_LayerStack.popOverlay(m_Test);
+            delete m_Test;
+            m_Test = nullptr;
+        }
     }
 };
 

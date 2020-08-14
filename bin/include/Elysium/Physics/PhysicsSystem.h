@@ -31,7 +31,7 @@ namespace Elysium
         PhysicsSystem(float acceleration);
         ~PhysicsSystem();
 
-        PhysicalBody& createPhysicalBody(BodyType type, const char* name, float mass, const Vector2& initialPosition, const Vector2& size,
+        PhysicalBody* createPhysicalBody(BodyType type, const char* name, float mass, const Vector2& initialPosition, const Vector2& size,
             PhysicalBody::Collision_Callback callback = nullptr);
 
         void createPhysicalBody(BodyHandle* handle, BodyType type, const char* name, float mass, const Vector2& initialPosition, const Vector2& size,
