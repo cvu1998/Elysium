@@ -25,7 +25,6 @@ m_SpriteSheet("res/texture/platformPack_tilesheet.png")
 
 Connect4Layer::~Connect4Layer()
 {
-
 }
 
 void Connect4Layer::onUpdate(Elysium::Timestep ts)
@@ -60,7 +59,7 @@ void Connect4Layer::onUpdate(Elysium::Timestep ts)
         Elysium::Renderer2D::beginScene(m_Camera);
         for (Elysium::BodyHandle& body : m_Rectangles)
         {
-            Elysium::PhysicalBody& rectangle = e_PhysicsSystem.getPhysicalBody(body);
+            const Elysium::PhysicalBody& rectangle = e_PhysicsSystem.readPhysicalBody(body);
             Elysium::Renderer2D::drawQuad(rectangle.Position, rectangle.getSize(), { 0.0f, 0.0f, 1.0f, 1.0f });
         }
         for (size_t i = 0; i < m_CoinIndex; i++)
@@ -92,7 +91,7 @@ bool Connect4Layer::onMousePressedEvent(Elysium::MouseButtonPressedEvent& event)
 {
     if (!m_GameOver && m_MoveCooldown > 0.0f)
     {
-        m_MoveCooldown = -2.0f;
+        m_MoveCooldown = -1.0f;
         auto mousePosition = Elysium::Input::getMousePosition();
         auto width = Elysium::Application::Get().getWindow().getWidth();
         auto height = Elysium::Application::Get().getWindow().getHeight();

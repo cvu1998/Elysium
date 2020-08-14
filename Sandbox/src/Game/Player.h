@@ -5,7 +5,7 @@
 class Player
 {
 private:
-    Elysium::BodyHandle m_ID;
+    Elysium::PhysicalBody* m_Player;
 
     static constexpr size_t s_RunAnimationSize = 8;
 
@@ -19,10 +19,10 @@ public:
 public:
     Player();
 
-    inline Elysium::BodyHandle getIdentifier() const { return m_ID; }
+    inline Elysium::PhysicalBody* getBody() { return m_Player; }
 
     void onUpdate(Elysium::Timestep ts);
+    void kickBall(Elysium::BodyHandle handle);
 
     static void onCollision(Elysium::PhysicalBody& body, Elysium::PhysicalBody& collidee, const Elysium::CollisionInfo& info);
 };
-

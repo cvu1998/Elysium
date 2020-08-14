@@ -42,7 +42,8 @@ namespace Elysium
 
         inline ArrayList<PhysicalBody>& getBodies() { return m_Bodies; }
 
-        inline PhysicalBody& getPhysicalBody(BodyHandle identifier) { return m_Bodies[identifier]; };
+        inline PhysicalBody* getPhysicalBody(BodyHandle identifier) { return &m_Bodies[identifier]; };
+        inline const PhysicalBody& readPhysicalBody(BodyHandle identifier) const { return m_Bodies[identifier]; };
         void removePhysicalBody(BodyHandle body);
 
         void onUpdate(Timestep ts);

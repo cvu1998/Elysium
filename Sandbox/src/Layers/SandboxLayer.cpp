@@ -78,32 +78,32 @@ SandboxLayer::SandboxLayer(bool* runSandbox, unsigned int width, unsigned int he
 
     e_PhysicsSystem.createPhysicalBody(&m_Circle, Elysium::BodyType::DYNAMIC, "Circle", 1.0f, { -5.0f, 10.0f }, { 2.0f, 2.0f });
 
-    Elysium::PhysicalBody& ground = e_PhysicsSystem.getPhysicalBody(m_Ground);
-    ground.setFrictionCoefficient(0.5f);
+    Elysium::PhysicalBody* ground = e_PhysicsSystem.getPhysicalBody(m_Ground);
+    ground->setFrictionCoefficient(0.5f);
     //ground.setElasticityCoefficient(1.0f);
 
     //ground.Rotation = Elysium::radians(10.0f);
 
-    Elysium::PhysicalBody& ball = e_PhysicsSystem.getPhysicalBody(m_Ball);
-    ball.setRadius(1.0f);
-    ball.setElasticityCoefficient(1.0f);
-    Elysium::PhysicalBody& circle = e_PhysicsSystem.getPhysicalBody(m_Circle);
-    circle.setRadius(1.0f);
+    Elysium::PhysicalBody* ball = e_PhysicsSystem.getPhysicalBody(m_Ball);
+    ball->setRadius(1.0f);
+    ball->setElasticityCoefficient(1.0f);
+    Elysium::PhysicalBody* circle = e_PhysicsSystem.getPhysicalBody(m_Circle);
+    circle->setRadius(1.0f);
 }
 
 void SandboxLayer::onUpdate(Elysium::Timestep ts)
 {
     if (*m_RunSandbox)
     {
-        Elysium::PhysicalBody& player = e_PhysicsSystem.getPhysicalBody(m_Player.getIdentifier());
-        Elysium::PhysicalBody& ground = e_PhysicsSystem.getPhysicalBody(m_Ground);
-        Elysium::PhysicalBody& box = e_PhysicsSystem.getPhysicalBody(m_MoveableBox);
-        Elysium::PhysicalBody& sBox1 = e_PhysicsSystem.getPhysicalBody(m_Box);
-        Elysium::PhysicalBody& sBox2 = e_PhysicsSystem.getPhysicalBody(m_sBox);
-        Elysium::PhysicalBody& ball = e_PhysicsSystem.getPhysicalBody(m_Ball);
-        Elysium::PhysicalBody& circle = e_PhysicsSystem.getPhysicalBody(m_Circle);
+        const Elysium::PhysicalBody* player = m_Player.getBody();
+        const Elysium::PhysicalBody& ground = e_PhysicsSystem.readPhysicalBody(m_Ground);
+        const Elysium::PhysicalBody& box = e_PhysicsSystem.readPhysicalBody(m_MoveableBox);
+        const Elysium::PhysicalBody& sBox1 = e_PhysicsSystem.readPhysicalBody(m_Box);
+        const Elysium::PhysicalBody& sBox2 = e_PhysicsSystem.readPhysicalBody(m_sBox);
+        const Elysium::PhysicalBody& ball = e_PhysicsSystem.readPhysicalBody(m_Ball);
+        const Elysium::PhysicalBody& circle = e_PhysicsSystem.readPhysicalBody(m_Circle);
 
-        m_Camera.setPosition({ player.Position.x, player.Position.y - (player.getSize().y * 4.0f), 0.0f });
+        m_Camera.setPosition({ player->Position.x, player->Position.y - (player->getSize().y * 4.0f), 0.0f });
 
         Elysium::Renderer2D::beginScene(m_Camera);
         Elysium::Renderer2D::drawQuad({ 0.0f, 15.0f }, { 1000.0f, 30.0f }, m_Background);
@@ -114,7 +114,7 @@ void SandboxLayer::onUpdate(Elysium::Timestep ts)
         auto height = Elysium::Application::Get().getWindow().getHeight();
 
         m_Particle.Position = m_Camera.getScreenToWorldPosition(width, height, mousePosition);
-        m_Particle2.Position = { player.Position.x, player.Position.y };
+        m_Particle2.Position = { player->Position.x, player->Position.y };
 
         for (int i = 0; i < 5; i++)
         {
@@ -125,9 +125,10 @@ void SandboxLayer::onUpdate(Elysium::Timestep ts)
         e_PhysicsSystem.onUpdate(ts);
 
         m_Player.onUpdate(ts);
+        m_Player.kickBall(m_Ball);
 
         Elysium::Renderer2D::beginScene(m_Camera);
-        Elysium::Renderer2D::drawQuad(player.Position, player.getSize(), m_Player.m_TextureData);
+        Elysium::Renderer2D::drawQuad(player->Position, player->getSize(), m_Player.m_TextureData);
         Elysium::Renderer2D::drawQuadWithRotation(ground.Position, ground.getSize(), ground.Rotation, m_GroundTexture);
         Elysium::Renderer2D::drawQuadWithRotation(box.Position, box.getSize(), box.Rotation, m_BoxTexture);
         Elysium::Renderer2D::drawQuad(sBox1.Position, sBox1.getSize(), m_BoxTexture);

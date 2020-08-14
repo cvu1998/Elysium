@@ -82,8 +82,8 @@ void PerformanceLayer::onUpdate(Elysium::Timestep ts)
 {
     if (*m_RunGame)
     {
-        Elysium::PhysicalBody& player = e_PhysicsSystem.getPhysicalBody(m_Player.getIdentifier());
-        Elysium::PhysicalBody& ground = e_PhysicsSystem.getPhysicalBody(m_Ground);
+        const Elysium::PhysicalBody* player = m_Player.getBody();
+        const Elysium::PhysicalBody& ground = e_PhysicsSystem.readPhysicalBody(m_Ground);
 
         m_SpawnTime += ts;
         if (m_Index < m_Boxes.size() && m_SpawnTime > 0.05f)
@@ -96,7 +96,7 @@ void PerformanceLayer::onUpdate(Elysium::Timestep ts)
             m_SpawnTime = 0.0f;
         }
 
-        m_Camera.setPosition({ player.Position.x, player.Position.y - (player.getSize().y * 4.0f), 0.0f });
+        m_Camera.setPosition({ player->Position.x, player->Position.y - (player->getSize().y * 4.0f), 0.0f });
 
         Elysium::Renderer2D::beginScene(m_Camera);
         Elysium::Renderer2D::drawQuad({ 0.0f, 15.0f }, { 1000.0f, 30.0f }, m_Background);
@@ -107,7 +107,7 @@ void PerformanceLayer::onUpdate(Elysium::Timestep ts)
         auto height = Elysium::Application::Get().getWindow().getHeight();
 
         m_Particle.Position = m_Camera.getScreenToWorldPosition(width, height, mousePosition);
-        m_Particle2.Position = { player.Position.x, player.Position.y };
+        m_Particle2.Position = { player->Position.x, player->Position.y };
 
         for (int i = 0; i < 5; i++)
         {
@@ -120,17 +120,17 @@ void PerformanceLayer::onUpdate(Elysium::Timestep ts)
         m_Player.onUpdate(ts);
 
         Elysium::Renderer2D::beginScene(m_Camera);
-        Elysium::Renderer2D::drawQuad(player.Position, player.getSize(), m_Player.m_TextureData);
+        Elysium::Renderer2D::drawQuad(player->Position, player->getSize(), m_Player.m_TextureData);
         Elysium::Renderer2D::drawQuad(ground.Position, ground.getSize(), m_GroundTexture);
         for (Elysium::BodyHandle& body : m_GroundLayers)
         {
-            Elysium::PhysicalBody& layer = e_PhysicsSystem.getPhysicalBody(body);
+            const Elysium::PhysicalBody& layer = e_PhysicsSystem.readPhysicalBody(body);
             Elysium::Renderer2D::drawQuad(layer.Position, layer.getSize(), m_GroundTexture);
         }
         unsigned int number = 0;
         for (size_t i = 0; i < m_Index; i++)
         {
-            Elysium::PhysicalBody& b = e_PhysicsSystem.getPhysicalBody(m_Boxes[i]);
+            const Elysium::PhysicalBody& b = e_PhysicsSystem.readPhysicalBody(m_Boxes[i]);
             Elysium::Renderer2D::drawQuadWithRotation(b.Position, b.getSize(), b.Rotation, m_BoxTexture);
             if (b.Position.y > 0.0f)
                 number++;

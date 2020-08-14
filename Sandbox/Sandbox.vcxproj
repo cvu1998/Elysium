@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Layers\SoccerLayer.cpp" />
+    <ClCompile Include="src\Game\Adversary.cpp" />
     <ClCompile Include="src\Game\Connect4Grid.cpp" />
     <ClCompile Include="src\Layers\Connect4Layer.cpp" />
     <ClCompile Include="src\Application.cpp" />
@@ -35,6 +37,8 @@
     <ClCompile Include="src\test\Texture2D_Test.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Layers\SoccerLayer.h" />
+    <ClInclude Include="src\Game\Adversary.h" />
     <ClInclude Include="src\Game\Connect4Grid.h" />
     <ClInclude Include="src\Layers\Connect4Layer.h" />
     <ClInclude Include="src\Game\Player.h" />

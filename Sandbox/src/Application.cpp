@@ -1,6 +1,7 @@
 #include "Layers/Connect4Layer.h"
 #include "Layers/PerformanceLayer.h"
 #include "Layers/SandboxLayer.h"
+#include "Layers/SoccerLayer.h"
 #include "Layers/TestLayer.h"
 
 class Application : public Elysium::Application
@@ -9,6 +10,7 @@ private:
     Connect4Layer* m_Connect4 = nullptr;
     PerformanceLayer* m_Test = nullptr;
     SandboxLayer* m_Sandbox = nullptr;
+    SoccerLayer* m_Soccer = nullptr;
     TestLayer* m_Tests;
 
     bool m_VSync = true;
@@ -55,6 +57,13 @@ public:
             m_Connect4 = new Connect4Layer(&m_RunLayer, m_Window->getWidth(), m_Window->getHeight());
             m_LayerStack.pushOverlay(m_Connect4);
         }
+        if (ImGui::Button("Soccer"))
+        {
+            deleteLayers();
+
+            m_Soccer = new SoccerLayer(&m_RunLayer, m_Window->getWidth(), m_Window->getHeight());
+            m_LayerStack.pushOverlay(m_Soccer);
+        }
         ImGui::End();
 
         m_Window->setVSync(m_VSync);
@@ -74,6 +83,13 @@ public:
             m_LayerStack.popOverlay(m_Sandbox);
             delete m_Sandbox;
             m_Sandbox = nullptr;
+        }
+
+        if (m_Soccer)
+        {
+            m_LayerStack.popOverlay(m_Soccer);
+            delete m_Soccer;
+            m_Soccer = nullptr;
         }
 
         if (m_Test)
