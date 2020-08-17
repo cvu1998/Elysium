@@ -1,5 +1,7 @@
 #include "Player.h"
 
+#include "Values.h"
+
 Player::Player() : m_RunAnimation(m_FrameRate)
 {
     e_PhysicsSystem.getBodies().clear();
@@ -40,11 +42,7 @@ void Player::onUpdate(Elysium::Timestep ts)
         if (!m_PlayerLookingRight)
             m_TextureData.reflectAroundYAxis();
     }
-
-    //ImGui::Begin("Player");
-    //ImGui::SliderFloat("Animation update rate", &m_FrameRate, 1.0f, 60.0f);
-    //m_RunAnimation.setAnimationFrameRate(m_FrameRate);
-    //ImGui::End();
+    m_Cooldown += ts;
 }
 
 void Player::kickBall(Elysium::BodyHandle handle)
@@ -52,16 +50,45 @@ void Player::kickBall(Elysium::BodyHandle handle)
     Elysium::PhysicalBody* body = e_PhysicsSystem.getPhysicalBody(handle);
     float distance = ((body->Position.x - m_Player->Position.x) * (body->Position.x - m_Player->Position.x)) +
         ((body->Position.y - m_Player->Position.y) * (body->Position.y - m_Player->Position.y));
-    if (distance < 6.0f)
+    if (distance < SoccerRange)
     {
-        Elysium::Vector2 direction = normalize(body->Position - m_Player->Position);
-        if (Elysium::Input::isKeyPressed(ELY_KEY_S))
+        if (m_Cooldown >= 0.0f)
         {
-            body->Impulse += 10.0f * direction * body->getMass();
+            Elysium::Vector2 direction = normalize(body->Position - m_Player->Position);
+            if (Elysium::Input::isKeyPressed(ELY_KEY_S))
+            {
+                m_Cooldown = -CooldownTime;
+                body->Impulse += KickImpulse * 2.0f * direction * body->getMass();
+            }
+            else if (Elysium::Input::isKeyPressed(ELY_KEY_Q))
+            {
+                m_Cooldown = -CooldownTime;
+                body->Impulse += KickImpulse * Elysium::Vector2(direction.x, 0.70710678118f) * body->getMass();
+            }
+            else if (Elysium::Input::isKeyPressed(ELY_KEY_E))
+            {
+                m_Cooldown = -CooldownTime;
+                body->Position.x += SwapBall * -direction.x;
+            }
         }
-        else if (Elysium::Input::isKeyPressed(ELY_KEY_Q))
+    }
+}
+
+void Player::movePlayer(Elysium::PhysicalBody* body)
+{
+    float distance = ((body->Position.x - m_Player->Position.x) * (body->Position.x - m_Player->Position.x)) +
+        ((body->Position.y - m_Player->Position.y) * (body->Position.y - m_Player->Position.y));
+    if (distance < SoccerRange)
+    {
+        if (m_Cooldown >= 0.0f)
         {
-            body->Impulse += 7.5f * Elysium::Vector2(direction.x, 0.70710678118f) * body->getMass();
+            Elysium::Vector2 direction = normalize(body->Position - m_Player->Position);
+            if (Elysium::Input::isKeyPressed(ELY_KEY_E))
+            {
+                m_Cooldown = -CooldownTime;
+                body->Position.x += SwapPlayer * -direction.x;
+
+            }
         }
     }
 }

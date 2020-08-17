@@ -6,6 +6,7 @@ class Player
 {
 private:
     Elysium::PhysicalBody* m_Player;
+    float m_Cooldown = 0.0f;
 
     static constexpr size_t s_RunAnimationSize = 8;
 
@@ -23,6 +24,7 @@ public:
 
     void onUpdate(Elysium::Timestep ts);
     void kickBall(Elysium::BodyHandle handle);
+    void movePlayer(Elysium::PhysicalBody* body);
 
     static void onCollision(Elysium::PhysicalBody& body, Elysium::PhysicalBody& collidee, const Elysium::CollisionInfo& info);
 };

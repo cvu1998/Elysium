@@ -37,4 +37,3 @@ public:
     bool onMousePressedEvent(Elysium::MouseButtonPressedEvent& event);
     bool onWindowResizeEvent(Elysium::WindowResizeEvent& event);
 };
-

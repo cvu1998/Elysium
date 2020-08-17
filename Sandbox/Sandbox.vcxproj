@@ -37,6 +37,7 @@
     <ClCompile Include="src\test\Texture2D_Test.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Game\Values.h" />
     <ClInclude Include="src\Layers\SoccerLayer.h" />
     <ClInclude Include="src\Game\Adversary.h" />
     <ClInclude Include="src\Game\Connect4Grid.h" />

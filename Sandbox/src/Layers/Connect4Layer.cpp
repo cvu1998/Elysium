@@ -89,7 +89,7 @@ void Connect4Layer::onEvent(Elysium::Event& event)
 
 bool Connect4Layer::onMousePressedEvent(Elysium::MouseButtonPressedEvent& event)
 {
-    if (!m_GameOver && m_MoveCooldown > 0.0f)
+    if (!m_GameOver && m_MoveCooldown >= 0.0f)
     {
         m_MoveCooldown = -1.0f;
         auto mousePosition = Elysium::Input::getMousePosition();
@@ -147,6 +147,7 @@ bool Connect4Layer::onMousePressedEvent(Elysium::MouseButtonPressedEvent& event)
                 m_Coins[m_CoinIndex].first->setRadius(1.0f);
                 m_Coins[m_CoinIndex++].second = m_Turn;
                 m_Grid.appendColumn(column, m_Turn);
+
                 if (m_Grid.isWinningMove(column, m_Turn))
                 {
                     m_GameOver = true;
@@ -160,19 +161,17 @@ bool Connect4Layer::onMousePressedEvent(Elysium::MouseButtonPressedEvent& event)
                         break;
                     }
                 }
-            }
 
-            switch (m_Turn)
-            {
-            case 1:
-                m_Turn = 2;
-                break;
-            case 2:
-                m_Turn = 1;
-                break;
+                switch (m_Turn)
+                {
+                case 1:
+                    m_Turn = 2;
+                    break;
+                case 2:
+                    m_Turn = 1;
+                    break;
+                }
             }
-
-            m_Grid.printGrid();
         }
     }
     return false;

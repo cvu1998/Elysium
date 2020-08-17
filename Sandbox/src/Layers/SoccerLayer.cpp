@@ -83,8 +83,8 @@ void SoccerLayer::onUpdate(Elysium::Timestep ts)
             m_GameOver = false;
         }
 
-        const Elysium::PhysicalBody* adversary = m_Adversary.getBody();
-        const Elysium::PhysicalBody* player = m_Player.getBody();
+        Elysium::PhysicalBody* adversary = m_Adversary.getBody();
+        Elysium::PhysicalBody* player = m_Player.getBody();
         const Elysium::PhysicalBody& ground = e_PhysicsSystem.readPhysicalBody(m_Ground);
         const Elysium::PhysicalBody& ball = e_PhysicsSystem.readPhysicalBody(m_Ball);
 
@@ -100,8 +100,10 @@ void SoccerLayer::onUpdate(Elysium::Timestep ts)
 
         m_Adversary.onUpdate(ts);
         m_Adversary.kickBall(m_Ball);
+        m_Adversary.movePlayer(player);
         m_Player.onUpdate(ts);
         m_Player.kickBall(m_Ball);
+        m_Player.movePlayer(adversary);
 
         if (ball.Position.x > 30.0f)
         {
