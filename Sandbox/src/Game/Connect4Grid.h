@@ -1,8 +1,5 @@
 #pragma once
 
-#include <array>
-#include <fstream>
-
 #include <Elysium.h>
 
 class Connect4Grid
@@ -25,7 +22,7 @@ public:
     inline uint32_t getValue(int32_t row, int32_t column) const
     {
         if (row >= 0  && row < 6 && column >= 0 && column < 7)
-            return m_Grid[column * 6 + row];
+            return m_Grid[(size_t)column * 6 + (size_t)row];
         return 0;
     }
 
@@ -37,5 +34,6 @@ public:
     }
 
     bool isWinningMove(size_t index, uint32_t value) const; 
+    void getCurrentStateCode(std::string& string);
     void printGrid();
 };

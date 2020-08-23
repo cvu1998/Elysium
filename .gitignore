@@ -19,6 +19,8 @@
 *.tlog
 *.user
 
+*.rl
+
 bin/Debug-Win32/
 bin/Debug-x64/
 Diagnostics/

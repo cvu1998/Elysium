@@ -6,7 +6,9 @@
 
 #include <memory>
 
+#define NOMINMAX
 #include <spdlog/spdlog.h>
+#undef NOMINMAX
 
 namespace Elysium
 {

@@ -137,8 +137,8 @@ namespace Elysium
         bool firstIsMax = false;
         for (Vector2& normal : normals)
         {
-            float min1 = (std::numeric_limits<float>::max());
-            float max1 = -(std::numeric_limits<float>::max());
+            float min1 = std::numeric_limits<float>::max();
+            float max1 = -std::numeric_limits<float>::max();
             if (body1.Radius > 0.0f)
             {
                 Vector2 circleVertex = normal * body1.Radius;
@@ -155,8 +155,8 @@ namespace Elysium
                 }
             }
 
-            float min2 = (std::numeric_limits<float>::max());
-            float max2 = -(std::numeric_limits<float>::max());
+            float min2 = std::numeric_limits<float>::max();
+            float max2 = -std::numeric_limits<float>::max();
             if (body2.Radius > 0.0f)
             {
                 Vector2 circleVertex = normal * body2.Radius;

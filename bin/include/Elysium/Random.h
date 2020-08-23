@@ -18,4 +18,10 @@ public:
 	{
 		return (float)s_Distribution(s_RandomEngine) / (float)std::numeric_limits<uint32_t>::max();
 	}
+
+	static int Integer(int min, int max)
+	{
+		std::uniform_int_distribution<int> uni(min, max);
+		return uni(s_RandomEngine);
+	}
 };

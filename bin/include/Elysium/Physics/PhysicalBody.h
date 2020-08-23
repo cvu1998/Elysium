@@ -31,7 +31,7 @@ namespace Elysium
     struct CollisionInfo
     {
         bool Collision = true;
-        float minOverlap = (std::numeric_limits<float>::max());
+        float minOverlap = std::numeric_limits<float>::max();
         Timestep ts;
         std::pair<BodyCollisionInfo, BodyCollisionInfo> CollisionInfoPair;
     };

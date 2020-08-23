@@ -14,6 +14,15 @@ bool Connect4Grid::isWinningMove(size_t index, uint32_t value) const
         isWinningRightDiagonal(index, value) || isWinningLeftDiagonal(index, value);
 }
 
+void Connect4Grid::getCurrentStateCode(std::string& string)
+{
+    std::stringstream ss;
+    for (int i = 6; i >= 0; i--)
+        ss << getValue(i, 0) << getValue(i, 1) << getValue(i, 2) << getValue(i, 3) <<
+            getValue(i, 4) << getValue(i, 5) << getValue(i, 6);
+    string = ss.str();
+}
+
 void Connect4Grid::printGrid()
 {
     ELY_INFO("----------");
@@ -48,7 +57,7 @@ bool Connect4Grid::isWinningRow(size_t index, uint32_t value) const
                 counter++;
         }
     }
-    return counter == 4;
+    return counter >= 4;
 }
 
 bool Connect4Grid::isWinningColumn(size_t index, uint32_t value) const
@@ -76,7 +85,7 @@ bool Connect4Grid::isWinningColumn(size_t index, uint32_t value) const
                 counter++;
         }
     }
-    return counter == 4;
+    return counter >= 4;
 }
 
 bool Connect4Grid::isWinningRightDiagonal(size_t index, uint32_t value) const
@@ -104,7 +113,7 @@ bool Connect4Grid::isWinningRightDiagonal(size_t index, uint32_t value) const
                 counter++;
         }
     }
-    return counter == 4;
+    return counter >= 4;
 }
 
 bool Connect4Grid::isWinningLeftDiagonal(size_t index, uint32_t value) const
@@ -132,5 +141,5 @@ bool Connect4Grid::isWinningLeftDiagonal(size_t index, uint32_t value) const
                 counter++;
         }
     }
-    return counter == 4;
+    return counter >= 4;
 }

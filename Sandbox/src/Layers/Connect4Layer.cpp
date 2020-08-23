@@ -171,6 +171,7 @@ bool Connect4Layer::onMousePressedEvent(Elysium::MouseButtonPressedEvent& event)
                     m_Turn = 1;
                     break;
                 }
+                m_Grid.printGrid();
             }
         }
     }

@@ -19,6 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Game\Tic-Tac-Toe.cpp" />
+    <ClCompile Include="src\Layers\RLConnect4Layer.cpp" />
+    <ClCompile Include="src\Layers\RLTTTLayer.cpp" />
     <ClCompile Include="src\Layers\SoccerLayer.cpp" />
     <ClCompile Include="src\Game\Adversary.cpp" />
     <ClCompile Include="src\Game\Connect4Grid.cpp" />
@@ -37,7 +40,10 @@
     <ClCompile Include="src\test\Texture2D_Test.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Game\Tic-Tac-Toe.h" />
     <ClInclude Include="src\Game\Values.h" />
+    <ClInclude Include="src\Layers\RLConnect4Layer.h" />
+    <ClInclude Include="src\Layers\RLTTTLayer.h" />
     <ClInclude Include="src\Layers\SoccerLayer.h" />
     <ClInclude Include="src\Game\Adversary.h" />
     <ClInclude Include="src\Game\Connect4Grid.h" />

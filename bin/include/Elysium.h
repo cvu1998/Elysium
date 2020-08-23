@@ -31,3 +31,7 @@
 
 #include "Elysium/Renderer/Renderer2D.h"
 #include "Elysium/Renderer/Texture.h"
+
+// ---AI---
+#include "Elysium/AI/RLAgent.h"
+#include "Elysium/AI/State.h"
