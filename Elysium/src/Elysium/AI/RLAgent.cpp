@@ -98,7 +98,7 @@ namespace Elysium
             std::string line;
             uint8_t counter = 0;
 
-            State_Action_Pair pair;;
+            State_Action_Pair pair;
             while (getline(policyFile, line))
             {
                 switch (counter)

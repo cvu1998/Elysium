@@ -57,11 +57,16 @@ namespace Elysium
         dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FUNCTION(Application::onWindowCloseEvent));
         dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FUNCTION(Application::onWindowResizeEvent));
 
+        m_SceneManager.onEvent(event);
+
         for (auto it = m_LayerStack.end(); it != m_LayerStack.begin();)
         {
-            (*--it)->onEvent(event);
-            if (event.Handled)
-                break;
+            if (*--it)
+            {
+                (*it)->onEvent(event);
+                if (event.Handled)
+                    break;
+            }
         }
     }
 
@@ -109,8 +114,13 @@ namespace Elysium
             {
                 this->ApplicationLogic();
 
+                m_SceneManager.onUpdate(timestep);
+
                 for (Layer* layer : m_LayerStack)
-                    layer->onUpdate(timestep);
+                {
+                    if (layer)
+                        layer->onUpdate(timestep);
+                }
             }
 
             m_Window->onUpdate();
@@ -135,8 +145,13 @@ namespace Elysium
             {
                 this->ApplicationLogic();
 
+                m_SceneManager.onUpdate(timestep);
+
                 for (Layer* layer : m_LayerStack)
-                    layer->onUpdate(timestep);
+                {
+                    if (layer)
+                        layer->onUpdate(timestep);
+                }
             }
 
             ImGui::Render();

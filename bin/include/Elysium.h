@@ -3,6 +3,7 @@
 // ---Application---
 #include "Elysium/Application.h"
 #include "Elysium/Layer.h"
+#include "Elysium/Scene.h"
 #include "Elysium/Window.h"
 
 #include "Elysium/Timestep.h"
@@ -22,6 +23,8 @@
 
 #include "Elysium/Physics/PhysicsSystem.h"
 #include "Elysium/Physics/PhysicalBody.h"
+
+#include "Elysium/Editor.h"
 
 // ---Log---
 #include "Elysium/Log.h"

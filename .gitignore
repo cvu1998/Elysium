@@ -1,6 +1,7 @@
 *.db
 *.db-shm
 *.db-wal
+*.ely
 *.filters
 *FileListAbsolute.txt
 *.idb
@@ -18,8 +19,6 @@
 *.suo
 *.tlog
 *.user
-
-*.rl
 
 bin/Debug-Win32/
 bin/Debug-x64/

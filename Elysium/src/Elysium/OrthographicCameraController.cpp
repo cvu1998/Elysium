@@ -7,7 +7,9 @@
 
 namespace Elysium
 {
-    OrthographicCameraController::OrthographicCameraController(float aspectRatio, float zoomLevel) : m_AspectRatio(aspectRatio), m_ZoomLevel(zoomLevel),
+    OrthographicCameraController::OrthographicCameraController(float aspectRatio, float zoomLevel) : 
+        m_AspectRatio(aspectRatio), 
+        m_ZoomLevel(zoomLevel),
         m_Camera(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel)
     {
     }
@@ -36,10 +38,8 @@ namespace Elysium
             m_CameraPosition.y += sin(glm::radians(m_CameraRotation)) * m_CameraTranslationSpeed * ts;
         }
 
-        if (Input::isKeyPressed(ELY_KEY_R))
+        if (Input::isKeyPressed(ELY_KEY_RIGHT_ALT))
             m_CameraRotation += m_CameraRotationSpeed * ts;
-        else if (Elysium::Input::isKeyPressed(ELY_KEY_T))
-            m_CameraRotation -= m_CameraRotationSpeed * ts;
 
         m_Camera.setPosition(m_CameraPosition);
         m_Camera.setRotation(glm::radians(m_CameraRotation));

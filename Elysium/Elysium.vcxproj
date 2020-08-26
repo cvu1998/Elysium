@@ -203,6 +203,8 @@ xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\include\" /S /Y /I
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Elysium\SceneManager.cpp" />
+    <ClCompile Include="src\Elysium\Editor.cpp" />
     <ClCompile Include="src\Elysium\AI\RLAgent.cpp" />
     <ClCompile Include="src\Elysium\AI\State.cpp" />
     <ClCompile Include="src\Elysium\Log.cpp" />
@@ -220,6 +222,7 @@ xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\include\" /S /Y /I
     <ClCompile Include="src\Elysium\Renderer\Shader.cpp" />
     <ClCompile Include="src\Elysium\Renderer\IndexBuffer.cpp" />
     <ClCompile Include="src\Elysium\Renderer\Renderer.cpp" />
+    <ClCompile Include="src\Elysium\Scene.cpp" />
     <ClCompile Include="src\Elysium\Timer.cpp" />
     <ClCompile Include="src\Elysium\Window.cpp" />
     <ClCompile Include="src\Elysium\Renderer\VertexBuffer.cpp" />
@@ -374,6 +377,8 @@ xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\include\" /S /Y /I
     <None Include="src\vendor\glm\gtx\wrap.inl" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Elysium\SceneManager.h" />
+    <ClInclude Include="src\Elysium\Editor.h" />
     <ClInclude Include="src\Elysium\AI\RLAgent.h" />
     <ClInclude Include="src\Elysium\AI\State.h" />
     <ClInclude Include="src\Elysium\Animation.h" />
@@ -402,6 +407,7 @@ xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\include\" /S /Y /I
     <ClInclude Include="src\Elysium\Renderer\IndexBuffer.h" />
     <ClInclude Include="src\Elysium\Renderer\Renderer.h" />
     <ClInclude Include="src\Elysium\Renderer\Shape.h" />
+    <ClInclude Include="src\Elysium\Scene.h" />
     <ClInclude Include="src\Elysium\Timer.h" />
     <ClInclude Include="src\Elysium\Window.h" />
     <ClInclude Include="src\Elysium\Timestep.h" />

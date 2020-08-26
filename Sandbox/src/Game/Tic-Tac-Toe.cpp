@@ -17,7 +17,7 @@ bool TTTGrid::isWinningMove(size_t index, uint32_t value) const
 void TTTGrid::getCurrentStateCode(std::string& string)
 {
     std::stringstream ss;
-    for (int i = 2; i >= 0; i--)
+    for (int i = 0; i < 3; i++)
         ss << getValue(i, 0) << getValue(i, 1) << getValue(i, 2);
     string = ss.str();
 }

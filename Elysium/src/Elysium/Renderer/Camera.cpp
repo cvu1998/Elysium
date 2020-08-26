@@ -23,7 +23,7 @@ namespace Elysium
     glm::vec2 OrthographicCamera::getScreenToWorldPosition(unsigned int width, unsigned int height, std::pair<float, float>& position)
     {
         return { ((position.first / width) * m_Bounds.x - m_Bounds.x * 0.5f) + m_Position.x,
-            (m_Bounds.y - (position.second / height) * m_Bounds.y) + m_Position.y };
+            (m_Bounds.y * 0.5f - (position.second / height) * m_Bounds.y) + m_Position.y };
     }
 
     void OrthographicCamera::recalculateViewMatrix()

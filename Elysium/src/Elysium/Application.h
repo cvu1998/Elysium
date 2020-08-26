@@ -7,6 +7,7 @@
 #include <imgui/imgui_impl_opengl3.h>
 
 #include "Elysium/LayerStack.h"
+#include "Elysium/SceneManager.h"
 #include "Elysium/Window.h"
 
 namespace Elysium 
@@ -24,7 +25,9 @@ namespace Elysium
         float m_LastFrameTime = 0.0f;
         float m_ClearColor[4];
         LayerStack m_LayerStack;
+        SceneManager m_SceneManager;
 
+    protected:
         Application(bool imgui=false);
         ~Application();
 
