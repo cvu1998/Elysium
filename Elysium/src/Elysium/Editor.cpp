@@ -111,16 +111,15 @@ namespace Elysium
         if (ImGui::Button("Add Quad"))
         {
             m_Data.Quads.emplace_back();
-            size_t index = m_Data.Quads.size() - 1;
-            m_Data.Quads[index].Index = index;
             m_Current = nullptr;
         }
         if (ImGui::Button("Remove Current Quad"))
         {
             if (m_Current)
             {
-                std::swap(m_Data.Quads[m_Current->Index], m_Data.Quads[m_Data.Quads.size() - 1]);
-                m_Data.Quads.pop_back();
+                auto it = std::find(m_Data.Quads.begin(), m_Data.Quads.end(), *m_Current);
+                if (it != m_Data.Quads.end())
+                    m_Data.Quads.erase(it);
             }
             m_Current = nullptr;
         }
@@ -245,7 +244,6 @@ namespace Elysium
                 if (Complete)
                 {
                     Complete = false;
-                    quad.Index = quads.size();
                     quads.push_back(quad);
                 }
             }

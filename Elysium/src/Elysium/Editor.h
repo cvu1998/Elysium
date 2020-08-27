@@ -25,7 +25,6 @@ namespace Elysium
 
     struct Quad
     {
-        size_t Index = 0;
         std::string Tag = "Quad";
         float Position[2] = { 0.0f, 0.0f };
         float Size[2] = { 2.0f, 2.0f };
@@ -39,6 +38,13 @@ namespace Elysium
                 << "Size=" << Size[0] << ", " << Size[1] << '\n'
                 << "Rotation=" << Rotation << '\n'
                 << "Color=" << Color[0] << ", " << Color[1] << ", " << Color[2] << ", " << Color[3] << '\n';
+        }
+
+        bool operator==(const Quad& quad)
+        {
+            return (this->Tag == quad.Tag &&
+                this->Position[0] == quad.Position[0] &&
+                this->Position[1] == quad.Position[1]);
         }
     };
 
