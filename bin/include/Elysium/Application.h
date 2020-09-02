@@ -50,7 +50,6 @@ namespace Elysium
         void setClearColor(float r, float g, float b, float a);
 
         virtual void Run() final;
-        virtual void RunWithImGui() final;
     };
 }
 

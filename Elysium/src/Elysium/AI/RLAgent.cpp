@@ -12,7 +12,7 @@ namespace Elysium
         DiscountFactor(discountFactor),
         DefaultValue(defaultValue)
     {
-        LearningRate = (LearningRate <= 0.0f || LearningRate > 1.0f) ? 1.0f : LearningRate;
+        LearningRate = (LearningRate < 0.0f || LearningRate > 1.0f) ? 1.0f : LearningRate;
         DiscountFactor = (DiscountFactor < 0.0f || DiscountFactor > 1.0f) ? 0.0f : DiscountFactor;
     }
 
@@ -123,14 +123,17 @@ namespace Elysium
 
     void RLAgent::savePolicyToFile(const char* filename)
     {
-        std::ofstream policyFile(filename);
-        std::string string;
-        for (auto iterator : Policy)
+        if (!Policy.empty())
         {
-            iterator.first.toString(string);
-            policyFile << string;
-            policyFile << iterator.second << std::endl;
+            std::ofstream policyFile(filename);
+            std::string string;
+            for (auto iterator : Policy)
+            {
+                iterator.first.toString(string);
+                policyFile << string;
+                policyFile << iterator.second << std::endl;
+            }
+            policyFile.close();
         }
-        policyFile.close();
     }
 }

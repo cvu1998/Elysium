@@ -73,7 +73,7 @@ public:
 int main(void)
 {
     Application* application = new Application(true);
-    application->RunWithImGui();
+    application->Run();
     delete application;
     return 0;
 }

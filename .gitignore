@@ -18,6 +18,7 @@
 *.sqlite
 *.suo
 *.tlog
+*.txt
 *.user
 
 bin/Debug-Win32/

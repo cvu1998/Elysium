@@ -7,25 +7,21 @@
 class TTTAgent : public Elysium::RLAgent
 {
 public:
-    float ExplorationProb = 0.1f;
+    float ExplorationProb = 0.3f;
     bool Greedy = false;
     uint32_t AgentScore = 0;
     uint32_t AdversaryScore = 0;
 
-    std::vector<Elysium::Action> Actions;
     Elysium::State_Action_Pair ChosenPair;
 
 public:
-    TTTAgent(float learningRate, float discountFactor) : RLAgent(learningRate, discountFactor, 0.5f)
+    TTTAgent(float learningRate, float discountFactor) : RLAgent(learningRate, discountFactor, 0.0f)
     {
-        Actions.reserve(9);
-        for (Elysium::Action a = 0; a < 9; a++)
-            Actions.emplace_back(a);
     }
 
     void updateValue(const Elysium::State& nextState)
     {
-        this->updateActionValueQL(ChosenPair, nextState, Actions);
+        this->updateActionValueQL(ChosenPair, nextState, {0, 1, 2, 3, 4, 5, 6, 7, 8});
     }
 };
 
@@ -42,11 +38,6 @@ private:
     Elysium::BodyHandle m_CoinIndex = 0;
     std::array<TextureData, 2> m_CoinTextures; // 1 Blue, 2 Red
 
-    TTTAgent m_Agent;
-    TTTAgent m_TrainingAgent;
-    bool m_Training = false;
-    bool m_Random = false;
-
     TTTGrid m_Grid;
     uint32_t m_Turn = 1;
     float m_MoveCooldown = 1.0f;
@@ -54,9 +45,19 @@ private:
     uint32_t m_BlueScore = 0;
     uint32_t m_RedScore = 0;
 
+    TTTAgent m_Agent;
+    MinimaxPlayer m_Minimax;
+    bool m_Random = false;
+    bool m_TrainWithMinimax = false;
+    bool m_PlayAgainstMinimax = true;
+
 private:
+    void getPosition(Elysium::Action action, Elysium::Vector2& position);
+
     void addAction(Elysium::Vector2 position, size_t index);
     void updateAgent(float gameOverReward, float defaultReward);
+
+    void minimaxPlay();
 
     bool isWithinBounds(Elysium::Vector2 position, float x1, float y1, float x2, float y2);
 
@@ -67,7 +68,6 @@ public:
     void onUpdate(Elysium::Timestep ts) override;
     void onEvent(Elysium::Event& event) override;
 
-    bool onKeyPressedEvent(Elysium::KeyPressedEvent& event);
     bool onMousePressedEvent(Elysium::MouseButtonPressedEvent& event);
     bool onWindowResizeEvent(Elysium::WindowResizeEvent& event);
 };

@@ -110,36 +110,12 @@ namespace Elysium
             Timestep timestep = std::min(0.0333f, time - m_LastFrameTime);
             m_LastFrameTime = time;
 
-            if (!m_Minimized) 
+            if (m_ImGui)
             {
-                this->ApplicationLogic();
-
-                m_SceneManager.onUpdate(timestep);
-
-                for (Layer* layer : m_LayerStack)
-                {
-                    if (layer)
-                        layer->onUpdate(timestep);
-                }
+                ImGui_ImplOpenGL3_NewFrame();
+                ImGui_ImplGlfw_NewFrame();
+                ImGui::NewFrame();
             }
-
-            m_Window->onUpdate();
-        }
-    }
-
-    void Application::RunWithImGui()
-    {
-        while (m_Running)
-        {
-            Renderer::Clear({ m_ClearColor[0], m_ClearColor[1], m_ClearColor[2], m_ClearColor[3] });
-
-            float time = (float)glfwGetTime();
-            Timestep timestep = std::min(s_MinimumFPS, time - m_LastFrameTime);
-            m_LastFrameTime = time;
-
-            ImGui_ImplOpenGL3_NewFrame();
-            ImGui_ImplGlfw_NewFrame();
-            ImGui::NewFrame();
 
             if (!m_Minimized)
             {
@@ -154,8 +130,11 @@ namespace Elysium
                 }
             }
 
-            ImGui::Render();
-            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+            if (m_ImGui)
+            {
+                ImGui::Render();
+                ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+            }
 
             m_Window->onUpdate();
         }

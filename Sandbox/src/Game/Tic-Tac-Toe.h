@@ -34,3 +34,43 @@ public:
     void getCurrentStateCode(std::string& string);
     void printGrid();
 };
+
+struct State
+{
+    int Value = 0;
+
+    TTTGrid StateRep;
+    std::vector<State> Children;
+
+    State(int value, TTTGrid grid) :
+        Value(value),
+        StateRep(grid)
+    {
+    }
+
+    bool operator<(const State& s)
+    {
+        return this->Value < s.Value;
+    }
+};
+
+class MinimaxPlayer
+{
+private:
+    TTTGrid* m_Grid;
+
+private:
+    int evaluateState(const TTTGrid& grid);
+    int evaluateDiagonals(const TTTGrid& grid);
+    void generateChildren(std::vector<State>& states, const State& state, uint32_t turn, bool lastLayer);
+
+public:
+    uint32_t Minimax = 0;     // Max
+    uint32_t Opponent = 0;    // Min
+
+public:
+    MinimaxPlayer(TTTGrid* grid);
+
+    size_t playAction();
+
+};
