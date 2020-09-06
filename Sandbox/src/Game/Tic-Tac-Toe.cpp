@@ -17,8 +17,21 @@ bool TTTGrid::isWinningMove(size_t index, uint32_t value) const
 void TTTGrid::getCurrentStateCode(std::string& string)
 {
     std::stringstream ss;
-    for (int i = 0; i < 3; i++)
-        ss << getValue(i, 0) << getValue(i, 1) << getValue(i, 2);
+    for (size_t i = 0; i < 9; i++)
+        ss << Grid[i];
+    string = ss.str();
+}
+
+void TTTGrid::getNextStateCode(std::string& string, Elysium::Action action, uint32_t turn)
+{
+    std::stringstream ss;
+    for (size_t i = 0; i < 9; i++)
+    {
+        if ((size_t)action != i)
+            ss << Grid[i];
+        else
+            ss << turn;
+    }
     string = ss.str();
 }
 
@@ -27,6 +40,14 @@ void TTTGrid::printGrid()
     ELY_INFO("----------");
     for (int i = 2; i >= 0; i--)
         ELY_INFO("{0} {1} {2}", getValue(i, 0), getValue(i, 1), getValue(i, 2));
+    ELY_INFO("----------");
+}
+
+void TTTGrid::printGrid(const std::string& stateCode)
+{
+    ELY_INFO("----------");
+    for (int i = 2; i >= 0; i--)
+        ELY_INFO("{0} {1} {2}", stateCode[i * 3 + 0], stateCode[i * 3 + 1], stateCode[i * 3 + 2]);
     ELY_INFO("----------");
 }
 
@@ -157,6 +178,28 @@ size_t MinimaxPlayer::playAction()
     return actionIndex;
 }
 
+int MinimaxPlayer::getValueFromExponent(int exponent)
+{
+    int value = 0;
+    if (exponent > 0)
+    {
+        int gain = 1;
+        for (int z = 1; z < exponent; z++)
+            gain += 10 * z;
+
+        value += gain;
+    }
+    else if (exponent < 0)
+    {
+        int loss = -1;
+        for (int z = -1; z > exponent; z--)
+            loss += 10 * z;
+
+        value += loss;
+    }
+    return value;
+}
+
 int MinimaxPlayer::evaluateState(const TTTGrid& grid)
 {
     int value = 0;
@@ -170,22 +213,7 @@ int MinimaxPlayer::evaluateState(const TTTGrid& grid)
             else if (grid.getValue(i, j) == Opponent)
                 exponent--;
         }
-        if (exponent > 0)
-        {
-            int gain = 1;
-            for (int z = 1; z < exponent; z++)
-                gain += 10 * z;
-
-            value += gain;
-        }
-        else if (exponent < 0)
-        {
-            int loss = -1;
-            for (int z = -1; z > exponent; z--)
-                loss += 10 * z;
-
-            value += loss;
-        }
+        value += getValueFromExponent(exponent);
     }
 
     for (int32_t i = 0; i < 3; i++)
@@ -198,22 +226,7 @@ int MinimaxPlayer::evaluateState(const TTTGrid& grid)
             else if (grid.getValue(j, i) == Opponent)
                 exponent--;
         }
-        if (exponent > 0)
-        {
-            int gain = 1;
-            for (int z = 1; z < exponent; z++)
-                gain *= 10;
-
-            value += gain;
-        }
-        else if (exponent < 0)
-        {
-            int loss = -1;
-            for (int z = -1; z > exponent; z--)
-                loss *= 10;
-
-            value += loss;
-        }
+        value += getValueFromExponent(exponent);
     }
     value += evaluateDiagonals(grid);
 
@@ -224,64 +237,25 @@ int MinimaxPlayer::evaluateDiagonals(const TTTGrid& grid)
 {
     int value = 0;
     int exponent = 0;
-    if (grid.getValue(0, 0) == Minimax)
-        exponent++;
-    else if (grid.getValue(0, 0) == Opponent)
-        exponent--;
-    if (grid.getValue(1, 1) == Minimax)
-        exponent++;
-    else if (grid.getValue(1, 1) == Opponent)
-        exponent--;
-    if (grid.getValue(2, 2) == Minimax)
-        exponent++;
-    else if (grid.getValue(2, 2) == Opponent)
-        exponent--;
-    if (exponent > 0)
+    for (int32_t i = 0; i < 3; i++)
     {
-        int gain = 1;
-        for (int z = 1; z < exponent; z++)
-            gain *= 10;
-
-        value += gain;
+        if (grid.getValue(i, i) == Minimax)
+            exponent++;
+        else if (grid.getValue(i, i) == Opponent)
+            exponent--;
     }
-    else if (exponent < 0)
-    {
-        int loss = -1;
-        for (int z = -1; z > exponent; z--)
-            loss *= 10;
-
-        value += loss;
-    }
+    value += getValueFromExponent(exponent);
 
     exponent = 0;
-    if (grid.getValue(2, 0) == Minimax)
-        exponent++;
-    else if (grid.getValue(2, 0) == Opponent)
-        exponent--;
-    if (grid.getValue(1, 1) == Minimax)
-        exponent++;
-    else if (grid.getValue(1, 1) == Opponent)
-        exponent--;
-    if (grid.getValue(0, 2) == Minimax)
-        exponent++;
-    else if (grid.getValue(0, 2) == Opponent)
-        exponent--;
-    if (exponent > 0)
+    for (int32_t i = 0; i < 3; i++)
     {
-        int gain = 1;
-        for (int z = 1; z < exponent; z++)
-            gain *= 10;
-
-        value += gain;
+        if (grid.getValue(2 - i, i) == Minimax)
+            exponent++;
+        else if (grid.getValue(2 - i, i) == Opponent)
+            exponent--;
     }
-    else if (exponent < 0)
-    {
-        int loss = -1;
-        for (int z = -1; z > exponent; z--)
-            loss *= 10;
+    value += getValueFromExponent(exponent);
 
-        value += loss;
-    }
     return value;
 }
 

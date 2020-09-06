@@ -57,7 +57,6 @@ void Player::kickBall(Elysium::BodyHandle handle)
             Elysium::Vector2 direction = normalize(body->Position - m_Player->Position);
             if (Elysium::Input::isKeyPressed(ELY_KEY_S))
             {
-                m_Cooldown = -CooldownTime;
                 body->Impulse += KickImpulse * 2.0f * direction * body->getMass();
             }
             else if (Elysium::Input::isKeyPressed(ELY_KEY_Q))

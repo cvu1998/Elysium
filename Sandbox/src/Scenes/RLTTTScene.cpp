@@ -5,7 +5,7 @@
 RLTTTScene::RLTTTScene(unsigned int width, unsigned int height) : Scene("Tic-Tac-Toe"),
 m_Camera(-m_Height * (float)(width / height), m_Height * (float)(width / height), -m_Height * 0.5f, m_Height * 0.5f),
 m_SpriteSheet("res/texture/platformPack_tilesheet.png"),
-m_Agent(0.2f, 0.8f),
+m_Agent(0.1f, 0.8f),
 m_Minimax(&m_Grid)
 {
     e_PhysicsSystem.getBodies().clear();
@@ -17,12 +17,14 @@ m_Minimax(&m_Grid)
 
     m_Camera.setPosition({ 0.0f, 0.0f, 0.0f });
 
-    m_Agent.readPolicyFromFile("res/AI/TTTPolicy.rl");
+    m_Agent.readFunctionFromFile("res/AI/TTTStateValueFunction.rl");
+    m_Agent.getVisitMapFromFile();
 }
 
 RLTTTScene::~RLTTTScene()
 {
-    m_Agent.savePolicyToFile("res/AI/TTTPolicy.rl");
+    m_Agent.saveFunctionToFile("res/AI/TTTStateValueFunction.rl");
+    m_Agent.saveVisitMapToFiles();
 }
 
 void RLTTTScene::getPosition(Elysium::Action action, Elysium::Vector2& position)
@@ -59,22 +61,37 @@ void RLTTTScene::getPosition(Elysium::Action action, Elysium::Vector2& position)
     }
 }
 
+void RLTTTScene::printStateData(const std::string& stateCode)
+{
+#ifdef _DEBUG
+    m_Grid.printGrid(stateCode);
+    ELY_INFO("Value of state: {0}", m_Agent.StateValueFunction[stateCode]);
+#endif
+}
+
 void RLTTTScene::addAction(Elysium::Vector2 position, size_t index)
 {
     if (m_Grid.isValid(index))
     {
-        m_MoveCooldown = -0.1f;
+        if (m_Random || m_SelfPlay || m_TrainWithMinimax)
+            m_MoveCooldown = -0.01f;
+        else
+            m_MoveCooldown = -0.5f;
 
         m_Coins[m_CoinIndex] = position;
         m_CoinsTextureIndexes[m_CoinIndex++] = m_Turn;
         m_Grid.Grid[index] = m_Turn;
 
         if (m_CoinIndex >= 9)
+        {
             m_GameOver = true;
+            m_Tie = true;
+        }
 
         if (m_Grid.isWinningMove(index, m_Turn))
         {
             m_GameOver = true;
+            m_Tie = false;
             switch (m_Turn)
             {
             case 1:
@@ -98,25 +115,16 @@ void RLTTTScene::addAction(Elysium::Vector2 position, size_t index)
     }
 }
 
-void RLTTTScene::updateAgent(float gameOverReward, float defaultReward)
+void RLTTTScene::updateAgent(float reward, bool terminal, const std::string& currentStateCode)
 {
-    float reward = m_GameOver ? gameOverReward : defaultReward;
-    m_Agent.ExplorationProb = std::max(0.1f, 0.3f - ((float)m_Agent.AgentScore / (float)(m_Agent.AdversaryScore + 1)));
-    if (m_CoinIndex >= 9 && m_Agent.AgentScore == m_RedScore && m_Agent.AdversaryScore == m_BlueScore)
-    {
-        reward = 0.0f;
-        m_Turn = Random::Integer(1, 2);
-    }
-
-    m_Agent.AgentScore = m_RedScore;
-    m_Agent.AdversaryScore = m_BlueScore;
     std::string nextStateCode;
-    m_Grid.getCurrentStateCode(nextStateCode);
-    Elysium::State nextState = Elysium::State(nextStateCode, reward, m_GameOver);
-    m_Agent.updateValue(nextState);
+    if (!terminal)
+        m_Grid.getCurrentStateCode(nextStateCode);
+    Elysium::State nextState = Elysium::State(nextStateCode, reward, terminal);
+    m_Agent.updateValue(currentStateCode, nextState);
 }
 
-void RLTTTScene::minimaxPlay()
+void RLTTTScene::playAgainstMinimax()
 {
     if (m_MoveCooldown >= 0.0f)
     {
@@ -129,24 +137,8 @@ void RLTTTScene::minimaxPlay()
                 size_t action = m_Minimax.playAction();
 
                 Elysium::Vector2 position;
-                getPosition(action, position);
+                getPosition((Elysium::Action)action, position);
                 addAction(position, action);
-            }
-        }
-        else
-        {
-            if (m_Turn == 1 && m_TrainWithMinimax && !m_Random)
-            {
-                m_Minimax.Minimax = 2;
-                m_Minimax.Opponent = 1;
-                size_t action = m_Minimax.playAction();
-
-                Elysium::Vector2 position;
-                getPosition(action, position);
-                addAction(position, action);
-
-                if (m_GameOver)
-                    updateAgent(-1.0f, 0.0f);
             }
         }
     }
@@ -163,6 +155,30 @@ void RLTTTScene::onUpdate(Elysium::Timestep ts)
 {
     if (m_GameOver && m_MoveCooldown >= 0.0f)
     {
+        if (m_Tie)
+        {
+            m_DrawCount++;
+            m_Turn = Random::Integer(1, 2);
+        }
+
+        if (!m_PlayAgainstMinimax)
+        {
+            std::string currentStateCode;
+            m_Grid.getCurrentStateCode(currentStateCode);
+            printStateData(currentStateCode);
+
+            float reward = 0.0f;
+            if (m_Agent.AdversaryScore < m_BlueScore)
+                reward = -1.0f;
+            else if (m_Agent.AgentScore < m_RedScore)
+                reward = 1.0f;
+
+            m_Agent.AgentScore = m_RedScore;
+            m_Agent.AdversaryScore = m_BlueScore;
+            updateAgent(reward, true, currentStateCode);
+            printStateData(currentStateCode);
+        }
+
         m_MoveCooldown = -1.0f;
         m_Coins.fill( {0.0f, 0.0f} );
         m_CoinsTextureIndexes.fill(0);
@@ -172,83 +188,163 @@ void RLTTTScene::onUpdate(Elysium::Timestep ts)
 
         m_Grid.clear();
 
-        m_Agent.savePolicyToFile("res/AI/TTTPolicy.rl");
+        m_Agent.saveFunctionToFile("res/AI/TTTStateValueFunction.rl");
+        m_Agent.saveVisitMapToFiles();
+    }
+
+    playAgainstMinimax();
+
+    if (!m_PlayAgainstMinimax && m_MoveCooldown >= 0.0f)
+    {
+        if (m_Turn == 1)
+        {
+            if (m_TrainWithMinimax || m_SelfPlay || m_Random)
+            {
+                std::string currentStateCode;
+                m_Grid.getCurrentStateCode(currentStateCode);
+
+                if (m_TrainWithMinimax && !m_SelfPlay && !m_Random)
+                {
+                    m_Minimax.Minimax = 2;
+                    m_Minimax.Opponent = 1;
+                    size_t action = m_Minimax.playAction();
+
+                    Elysium::Vector2 position;
+                    getPosition((Elysium::Action)action, position);
+                    addAction(position, action);
+                }
+                else if (!m_Random && m_SelfPlay && !m_TrainWithMinimax)
+                {
+                    m_Agent.StateVisitCount[currentStateCode]++;
+                    float explorationProb = 25.0f / ((25.0f + (float)m_Agent.StateVisitCount[currentStateCode]));
+                    float probability = Random::Float();
+
+                    ELY_INFO("MinAgent probabilities: {0}, {1}", explorationProb, probability);
+                    if (probability < explorationProb && !m_Agent.Greedy)
+                    {
+                        Elysium::Action action = Random::Integer(0, 8);
+                        while (!m_Grid.isValid(action))
+                            action = Random::Integer(0, 8);
+                        m_Agent.ChosenPair = { Elysium::State(currentStateCode), action };
+                    }
+                    else
+                    {
+                        std::vector<Elysium::Action> randomAction;
+                        float minValue = std::numeric_limits<float>::max();
+                        for (Elysium::Action action = 0; action < 9; action++)
+                        {
+                            if (m_Grid.isValid(action))
+                            {
+                                std::string nextStateCode;
+                                m_Grid.getNextStateCode(nextStateCode, action, m_Turn);
+                                printStateData(nextStateCode);
+
+                                float value = m_Agent.getStateValue(Elysium::State(nextStateCode));
+                                if (value < minValue)
+                                {
+                                    minValue = value;
+                                    m_Agent.ChosenPair.Action = action;
+                                    randomAction.clear();
+                                }
+                                else if (minValue == value)
+                                {
+                                    randomAction.push_back(action);
+                                }
+                            }
+                        }
+
+                        if (!randomAction.empty())
+                        {
+                            m_Agent.ChosenPair.Action = randomAction[Random::Integer(0, (int)randomAction.size() - 1)];
+                        }
+                        m_Agent.ChosenPair.State = Elysium::State(currentStateCode);
+                        ELY_INFO("MinAgent chose action and value: {0}, {1}", minValue, m_Agent.ChosenPair.Action);
+                    }
+                    Elysium::Vector2 position;
+                    getPosition(m_Agent.ChosenPair.Action, position);
+                    addAction(position, m_Agent.ChosenPair.Action);
+                }
+                else if (m_Random && !m_SelfPlay && !m_TrainWithMinimax)
+                {
+                    Elysium::Action action = Random::Integer(0, 8);
+                    while (!m_Grid.isValid(action))
+                        action = Random::Integer(0, 8);
+
+                    Elysium::Vector2 position;
+                    getPosition(action, position);
+                    addAction(position, action);
+                }
+
+                updateAgent(0.0f, false, currentStateCode);
+            }
+        }
+        else if (m_Turn == 2)
+        {
+            std::string currentStateCode;
+            m_Grid.getCurrentStateCode(currentStateCode);
+            printStateData(currentStateCode);
+
+            m_Agent.StateVisitCount[currentStateCode]++;
+            float explorationProb = 25.0f / ((25.0f + (float)m_Agent.StateVisitCount[currentStateCode]));
+            float probability = Random::Float();
+
+            ELY_INFO("MaxAgent probabilities: {0}, {1}", explorationProb, probability);
+            if (probability < explorationProb && !m_Agent.Greedy)
+            {
+                Elysium::Action action = Random::Integer(0, 8);
+                while (!m_Grid.isValid(action))
+                    action = Random::Integer(0, 8);
+                m_Agent.ChosenPair = { Elysium::State(currentStateCode), action };
+            }
+            else
+            {
+                std::vector<Elysium::Action> randomAction;
+                float maxValue = -std::numeric_limits<float>::max();
+                for (Elysium::Action action = 0; action < 9; action++)
+                {
+                    if (m_Grid.isValid(action))
+                    {
+                        std::string nextStateCode;
+                        m_Grid.getNextStateCode(nextStateCode, action, m_Turn);
+                        printStateData(nextStateCode);
+
+                        float value = m_Agent.getStateValue(Elysium::State(nextStateCode));
+                        if (maxValue < value)
+                        {
+                            maxValue = value;
+                            m_Agent.ChosenPair.Action = action;
+                            randomAction.clear();
+                        }
+                        else if (maxValue == value)
+                        {
+                            randomAction.push_back(action);
+                        }
+                    }
+                }
+
+                if (!randomAction.empty())
+                {
+                    m_Agent.ChosenPair.Action = randomAction[Random::Integer(0, (int)randomAction.size() - 1)];
+                }
+                m_Agent.ChosenPair.State = Elysium::State(currentStateCode);
+                ELY_INFO("MaxAgent chose action and value: {0}, {1}", maxValue, m_Agent.ChosenPair.Action);
+            }
+            Elysium::Vector2 position;
+            getPosition(m_Agent.ChosenPair.Action, position);
+            addAction(position, m_Agent.ChosenPair.Action);
+
+            updateAgent(0.0f, false, currentStateCode);
+        }
     }
 
     ImGui::Begin("Agent's Options");
-    ImGui::Text("Exploration Probability: %f", m_Agent.ExplorationProb);
-    ImGui::SliderFloat("Learning Rate", &m_Agent.LearningRate, 0.0f, 1.0f);
     ImGui::Checkbox("Train With Minimax", &m_TrainWithMinimax);
+    ImGui::Checkbox("Train Using Self Play", &m_SelfPlay);
     ImGui::Checkbox("Train With Random", &m_Random);
     ImGui::Checkbox("Play Against Minimax", &m_PlayAgainstMinimax);
     ImGui::Checkbox("Greedy", &m_Agent.Greedy);
+    ImGui::Text("Agent Learning Rate: %f", m_Agent.LearningRate);
     ImGui::End();
-
-    minimaxPlay();
-
-    if (m_Turn == 1 && m_MoveCooldown >= 0.0f && m_Random && !(m_TrainWithMinimax || m_PlayAgainstMinimax))
-    {
-        Elysium::Action action = Random::Integer(0, 8);
-        while (!m_Grid.isValid(action))
-            action = Random::Integer(0, 8);
-
-        Elysium::Vector2 position;
-        getPosition(action, position);
-        addAction(position, action);
-
-        if (m_GameOver)
-            updateAgent(-1.0f, 0.0f);
-    }
-
-    if (m_Turn == 2 && m_MoveCooldown >= 0.0f && !m_PlayAgainstMinimax)
-    {
-        std::string currentStateCode;
-        m_Grid.getCurrentStateCode(currentStateCode);
-
-        float probability = Random::Float();
-        if (probability < m_Agent.ExplorationProb && !m_Agent.Greedy)
-        {
-            Elysium::Action action = Random::Integer(0, 8);
-            while (!m_Grid.isValid(action))
-                action = Random::Integer(0, 8);
-            m_Agent.ChosenPair = { Elysium::State(currentStateCode), action };
-        }
-        else
-        {
-            float maxValue = -std::numeric_limits<float>::max();
-            Elysium::Action chosenAction;
-            std::vector<Elysium::Action> randomAction;
-            for (Elysium::Action action = 0; action < 9; action++)
-            {
-                if (m_Grid.isValid(action))
-                {
-                    float value = m_Agent.getStateActionPairValue({ Elysium::State(currentStateCode), action });
-
-                    if (maxValue < value)
-                    {
-                        maxValue = value;
-                        chosenAction = action;
-                        randomAction.clear();
-                    }
-                    else if (maxValue == value)
-                    {
-                        randomAction.push_back(action);
-                    }
-                }
-            }
-
-            if (!randomAction.empty())
-            {
-                chosenAction = randomAction[Random::Integer(0, (int)randomAction.size() - 1)];
-            }
-            m_Agent.ChosenPair = { Elysium::State(currentStateCode), chosenAction };
-        }
-        Elysium::Vector2 position;
-        getPosition(m_Agent.ChosenPair.Action, position);
-        addAction(position, m_Agent.ChosenPair.Action);
-
-        updateAgent(1.0f, 0.0f);
-    }
 
     if (m_MoveCooldown < 0.0f)
         m_MoveCooldown += ts;
@@ -274,7 +370,7 @@ void RLTTTScene::onUpdate(Elysium::Timestep ts)
     ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
     ImGui::Text("Number of Draw Calls: %d", Elysium::Renderer2D::getStats().DrawCount);
     ImGui::Text("Number of Quads: %d", Elysium::Renderer2D::getStats().QuadCount);
-    ImGui::Text("Red: %d : Blue %d", m_RedScore, m_BlueScore);
+    ImGui::Text("Red: %d : Blue %d, Draws: %d", m_RedScore, m_BlueScore, m_DrawCount);
     ImGui::End();
 
     Elysium::Renderer2D::resetStats();
@@ -356,10 +452,17 @@ bool RLTTTScene::onMousePressedEvent(Elysium::MouseButtonPressedEvent& event)
         }
         if (validClick)
         {
+            std::string currentStateCode;
+            if (!m_PlayAgainstMinimax)
+            {
+                m_Grid.getCurrentStateCode(currentStateCode);
+                printStateData(currentStateCode);
+            }
+
             addAction(position, index);;
 
-            if (m_GameOver && !m_PlayAgainstMinimax)
-                updateAgent(-1.0f, 0.0f);
+            if (!m_PlayAgainstMinimax)
+                updateAgent(0.0f, false, currentStateCode);
         }
     }
     return false;

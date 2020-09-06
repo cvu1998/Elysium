@@ -8,6 +8,43 @@ namespace Elysium
 {
     class RLAgent
     {
+    public:
+        float LearningRate;
+        float DiscountFactor;
+
+        float DefaultValue = 0.0f;
+
+    public:
+        RLAgent(float learningRate, float discountFactor, float defaultValue);
+    };
+
+    class TabularRLAgent : public RLAgent
+    {
+    private:
+        struct hash_state {
+            size_t operator()(const State& state) const
+            {
+                std::string string(state.getCode());
+                return std::hash<std::string>{}(string);
+            }
+        };
+
+    public:
+        std::unordered_map<State, float, hash_state> StateValueFunction;
+
+    public:
+        TabularRLAgent(float learningRate, float discountFactor, float defaultValue);
+
+        float getStateValue(const State& state);
+        void updateStateValue(const State& currentState, const State& nextState);
+
+        void readFunctionFromFile(const char* filename);
+        void saveFunctionToFile(const char* filename);
+
+    };
+
+    class TabularControlRLAgent : public RLAgent
+    {
     private:
         struct hash_pair {
             size_t operator()(const State_Action_Pair& pair) const
@@ -18,21 +55,16 @@ namespace Elysium
         };
 
     public:
-        std::unordered_map<State_Action_Pair, float, hash_pair> Policy;
-
-        float LearningRate;
-        float DiscountFactor;
-
-        float DefaultValue = 0.0f;
+        std::unordered_map<State_Action_Pair, float, hash_pair> ActionValueFunction;
 
     public:
-        RLAgent(float learningRate, float discountFactor, float defaultValue);
+        TabularControlRLAgent(float learningRate, float discountFactor, float defaultValue);
 
         float getStateActionPairValue(const State_Action_Pair& pair);
-        void updateActionValueQL(State_Action_Pair& pair, const State& nextState, std::vector<Action> actions);
-        void updateActionValueES(State_Action_Pair& pair, const State& nextState, std::vector<Action> actions);
+        void updateActionValueQL(const State_Action_Pair& pair, const State& nextState, std::vector<Action> actions);
+        void updateActionValueES(const State_Action_Pair& pair, const State& nextState, std::vector<Action> actions);
 
-        void readPolicyFromFile(const char* filename);
-        void savePolicyToFile(const char* filename);
+        void readFunctionFromFile(const char* filename);
+        void saveFunctionToFile(const char* filename);
     };
 }

@@ -4,10 +4,10 @@
 
 #include "Game/Tic-Tac-Toe.h"
 
-class TTTAgent : public Elysium::RLAgent
+class TTTAgent : public Elysium::TabularRLAgent
 {
 public:
-    float ExplorationProb = 0.3f;
+    std::unordered_map<std::string, unsigned int> StateVisitCount;
     bool Greedy = false;
     uint32_t AgentScore = 0;
     uint32_t AdversaryScore = 0;
@@ -15,13 +15,54 @@ public:
     Elysium::State_Action_Pair ChosenPair;
 
 public:
-    TTTAgent(float learningRate, float discountFactor) : RLAgent(learningRate, discountFactor, 0.0f)
+    TTTAgent(float learningRate, float discountFactor) : TabularRLAgent(learningRate, discountFactor, 0.0f)
     {
     }
 
-    void updateValue(const Elysium::State& nextState)
+    void updateValue(const std::string& currenStateCode, const Elysium::State& nextState)
     {
-        this->updateActionValueQL(ChosenPair, nextState, {0, 1, 2, 3, 4, 5, 6, 7, 8});
+        this->updateStateValue(Elysium::State(currenStateCode), nextState);
+    }
+
+    void getVisitMapFromFile()
+    {
+        std::ifstream StateFile("res/AI/TTTStateVisits.rl");
+        if (StateFile.is_open())
+        {
+            std::string line;
+            std::string state;
+            uint8_t counter = 0;
+
+            while (getline(StateFile, line))
+            {
+                switch (counter)
+                {
+                case 0:
+                    state = line;
+                    counter++;
+                    break;
+                case 1:
+                    StateVisitCount[state] = std::stoul(line);
+                    counter = 0;
+                    break;
+                }
+            }
+            StateFile.close();
+        }
+    }
+
+    void saveVisitMapToFiles()
+    {
+        if (!StateVisitCount.empty())
+        {
+            std::ofstream StateFile("res/AI/TTTStateVisits.rl");
+            for (auto iterator : StateVisitCount)
+            {
+                StateFile << iterator.first << std::endl;
+                StateFile << iterator.second << std::endl;
+            }
+            StateFile.close();
+        }
     }
 };
 
@@ -42,22 +83,26 @@ private:
     uint32_t m_Turn = 1;
     float m_MoveCooldown = 1.0f;
     bool m_GameOver = false;
+    bool m_Tie = false;
     uint32_t m_BlueScore = 0;
     uint32_t m_RedScore = 0;
+    uint32_t m_DrawCount = 0;
 
     TTTAgent m_Agent;
     MinimaxPlayer m_Minimax;
     bool m_Random = false;
+    bool m_SelfPlay = false;
     bool m_TrainWithMinimax = false;
     bool m_PlayAgainstMinimax = true;
 
 private:
     void getPosition(Elysium::Action action, Elysium::Vector2& position);
+    void printStateData(const std::string& stateCode);
 
     void addAction(Elysium::Vector2 position, size_t index);
-    void updateAgent(float gameOverReward, float defaultReward);
+    void updateAgent(float reward, bool terminal, const std::string& currentStateCode);
 
-    void minimaxPlay();
+    void playAgainstMinimax();
 
     bool isWithinBounds(Elysium::Vector2 position, float x1, float y1, float x2, float y2);
 

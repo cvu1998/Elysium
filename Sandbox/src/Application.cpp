@@ -1,5 +1,4 @@
 #include "Scenes/Connect4Scene.h"
-#include "Scenes/RLConnect4Scene.h"
 #include "Scenes/PerformanceScene.h"
 #include "Scenes/SandboxScene.h"
 #include "Scenes/SoccerScene.h"
@@ -11,7 +10,6 @@ private:
     Elysium::Editor* m_Editor = nullptr;
 
     Connect4Scene* m_Connect4 = nullptr;
-    RLConnect4Scene* m_RLConnect4 = nullptr;
     PerformanceScene* m_Test = nullptr;
     SandboxScene* m_Sandbox = nullptr;
     SoccerScene* m_Soccer = nullptr;
@@ -54,7 +52,7 @@ public:
             m_Connect4 = new Connect4Scene(m_Window->getWidth(), m_Window->getHeight());
             m_SceneManager.loadScene(m_Connect4);
         }
-        if (ImGui::Button("RL Tic-Tac-Toe"))
+        if (ImGui::Button("Tic-Tac-Toe"))
         {
             m_TTT = new RLTTTScene(m_Window->getWidth(), m_Window->getHeight());
             m_SceneManager.loadScene(m_TTT);

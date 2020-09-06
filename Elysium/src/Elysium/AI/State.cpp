@@ -23,4 +23,9 @@ namespace Elysium
         m_Terminal(terminal)
     {
     }
+
+    bool State::operator==(const State& state) const
+    {
+        return (0 == strcmp(this->getCode(), state.getCode()));
+    }
 }

@@ -32,7 +32,9 @@ public:
 
     bool isWinningMove(size_t index, uint32_t value) const;
     void getCurrentStateCode(std::string& string);
+    void getNextStateCode(std::string& string, Elysium::Action action, uint32_t turn);
     void printGrid();
+    void printGrid(const std::string& stateCode);
 };
 
 struct State
@@ -60,6 +62,7 @@ private:
     TTTGrid* m_Grid;
 
 private:
+    int getValueFromExponent(int exponent);
     int evaluateState(const TTTGrid& grid);
     int evaluateDiagonals(const TTTGrid& grid);
     void generateChildren(std::vector<State>& states, const State& state, uint32_t turn, bool lastLayer);

@@ -20,7 +20,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Game\Tic-Tac-Toe.cpp" />
-    <ClCompile Include="src\Scenes\RLConnect4Scene.cpp" />
     <ClCompile Include="src\Scenes\RLTTTScene.cpp" />
     <ClCompile Include="src\Scenes\SoccerScene.cpp" />
     <ClCompile Include="src\Game\Adversary.cpp" />
@@ -42,7 +41,6 @@
   <ItemGroup>
     <ClInclude Include="src\Game\Tic-Tac-Toe.h" />
     <ClInclude Include="src\Game\Values.h" />
-    <ClInclude Include="src\Scenes\RLConnect4Scene.h" />
     <ClInclude Include="src\Scenes\RLTTTScene.h" />
     <ClInclude Include="src\Scenes\SoccerScene.h" />
     <ClInclude Include="src\Game\Adversary.h" />

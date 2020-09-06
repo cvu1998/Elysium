@@ -16,19 +16,96 @@ namespace Elysium
         DiscountFactor = (DiscountFactor < 0.0f || DiscountFactor > 1.0f) ? 0.0f : DiscountFactor;
     }
 
-    float RLAgent::getStateActionPairValue(const State_Action_Pair& pair)
+    TabularRLAgent::TabularRLAgent(float learningRate, float discountFactor, float defaultValue) :
+        RLAgent(learningRate, discountFactor, defaultValue)
     {
-        auto stateActionPair = Policy.find(pair);
-        if (stateActionPair == Policy.end())
-            Policy[pair] = { DefaultValue };
-        return Policy[pair];
     }
 
-    void RLAgent::updateActionValueQL(State_Action_Pair& pair, const State& nextState, std::vector<Action> actions)
+    float TabularRLAgent::getStateValue(const State& state)
     {
-        auto stateActionPair = Policy.find(pair);
-        if (stateActionPair == Policy.end())
-            Policy[pair] = { DefaultValue };
+        if (StateValueFunction.find(state) == StateValueFunction.end())
+            StateValueFunction[state] = { DefaultValue };
+        return StateValueFunction[state];
+    }
+
+    void TabularRLAgent::updateStateValue(const State& currentState, const State& nextState)
+    {
+        if (StateValueFunction.find(currentState) == StateValueFunction.end())
+            StateValueFunction[currentState] = { DefaultValue };
+
+        float nextStateValue = DefaultValue;
+        if (!nextState.isTerminal())
+        {
+            auto iterator = StateValueFunction.find(nextState);
+            if (iterator != StateValueFunction.end())
+            {
+                nextStateValue = iterator->second;
+            }
+        }
+
+        nextStateValue = nextState.isTerminal() ? 0.0f : nextStateValue;
+        StateValueFunction[currentState] += LearningRate * (nextState.getReward() + (DiscountFactor * nextStateValue) - StateValueFunction[currentState]);
+    }
+
+    void TabularRLAgent::readFunctionFromFile(const char* filename)
+    {
+        std::ifstream functionFile(filename);
+        if (functionFile.is_open())
+        {
+            std::string line;
+            uint8_t counter = 0;
+
+            State state;
+            while (getline(functionFile, line))
+            {
+                switch (counter)
+                {
+                case 0:
+                    state = std::move(State(line));
+                    counter++;
+                    break;
+                case 1:
+                    StateValueFunction[state] = std::stof(line);
+                    counter = 0;
+                    break;
+                }
+            }
+            functionFile.close();
+        }
+    }
+
+    void TabularRLAgent::saveFunctionToFile(const char* filename)
+    {
+        if (!StateValueFunction.empty())
+        {
+            std::ofstream functionFile(filename);
+            for (auto iterator : StateValueFunction)
+            {
+                functionFile << iterator.first.getCode() << std::endl;
+                functionFile << iterator.second << std::endl;
+            }
+            functionFile.close();
+        }
+    }
+
+    // ---------- TABULAR CONTROL ----------//
+
+    TabularControlRLAgent::TabularControlRLAgent(float learningRate, float discountFactor, float defaultValue) : 
+        RLAgent(learningRate, discountFactor, defaultValue)
+    {
+    }
+
+    float TabularControlRLAgent::getStateActionPairValue(const State_Action_Pair& pair)
+    {
+        if (ActionValueFunction.find(pair) == ActionValueFunction.end())
+            ActionValueFunction[pair] = { DefaultValue };
+        return ActionValueFunction[pair];
+    }
+
+    void TabularControlRLAgent::updateActionValueQL(const State_Action_Pair& pair, const State& nextState, std::vector<Action> actions)
+    {
+        if (ActionValueFunction.find(pair) == ActionValueFunction.end())
+            ActionValueFunction[pair] = { DefaultValue };
 
         float maxNextActionValue = -std::numeric_limits<float>::max();
         if (!nextState.isTerminal())
@@ -36,8 +113,8 @@ namespace Elysium
             for (Action action : actions)
             {
                 State_Action_Pair nextPair = { nextState, action };
-                auto iterator = Policy.find(nextPair);
-                if (iterator != Policy.end())
+                auto iterator = ActionValueFunction.find(nextPair);
+                if (iterator != ActionValueFunction.end())
                 {
                     maxNextActionValue = std::max(maxNextActionValue, iterator->second);
                 }
@@ -45,14 +122,13 @@ namespace Elysium
             maxNextActionValue = maxNextActionValue == -std::numeric_limits<float>::max() ? DefaultValue : maxNextActionValue;
         }
         maxNextActionValue = nextState.isTerminal() ? 0.0f : maxNextActionValue;
-        Policy[pair] += LearningRate * (nextState.getReward() + (DiscountFactor * maxNextActionValue) - Policy[pair]);
+        ActionValueFunction[pair] += LearningRate * (nextState.getReward() + (DiscountFactor * maxNextActionValue) - ActionValueFunction[pair]);
     }
 
-    void RLAgent::updateActionValueES(State_Action_Pair& pair, const State& nextState, std::vector<Action> actions)
+    void TabularControlRLAgent::updateActionValueES(const State_Action_Pair& pair, const State& nextState, std::vector<Action> actions)
     {
-        auto stateActionPair = Policy.find(pair);
-        if (stateActionPair == Policy.end())
-            Policy[pair] = { DefaultValue };
+        if (ActionValueFunction.find(pair) == ActionValueFunction.end())
+            ActionValueFunction[pair] = { DefaultValue };
 
         float expectedValue = 0.0f;
         float probability = 1.0f / (actions.size() - 1.0f);
@@ -62,8 +138,8 @@ namespace Elysium
             for (Action action : actions)
             {
                 State_Action_Pair nextPair = { nextState, action };
-                auto iterator = Policy.find(nextPair);
-                if (iterator != Policy.end())
+                auto iterator = ActionValueFunction.find(nextPair);
+                if (iterator != ActionValueFunction.end())
                 {
                     summationValues.push_back(iterator->second);
                 }
@@ -87,19 +163,19 @@ namespace Elysium
             }
         }
         expectedValue = nextState.isTerminal() ? 0.0f : expectedValue;
-        Policy[pair] += LearningRate * (nextState.getReward() + (DiscountFactor * expectedValue) - Policy[pair]);
+        ActionValueFunction[pair] += LearningRate * (nextState.getReward() + (DiscountFactor * expectedValue) - ActionValueFunction[pair]);
     }
 
-    void RLAgent::readPolicyFromFile(const char* filename)
+    void TabularControlRLAgent::readFunctionFromFile(const char* filename)
     {
-        std::ifstream policyFile(filename);
-        if (policyFile.is_open())
+        std::ifstream functionFile(filename);
+        if (functionFile.is_open())
         {
             std::string line;
             uint8_t counter = 0;
 
             State_Action_Pair pair;
-            while (getline(policyFile, line))
+            while (getline(functionFile, line))
             {
                 switch (counter)
                 {
@@ -112,28 +188,28 @@ namespace Elysium
                     counter++;
                     break;
                 case 2:
-                    Policy[pair] = std::stof(line);
+                    ActionValueFunction[pair] = std::stof(line);
                     counter = 0;
                     break;
                 }
             }
-            policyFile.close();
+            functionFile.close();
         }
     }
 
-    void RLAgent::savePolicyToFile(const char* filename)
+    void TabularControlRLAgent::saveFunctionToFile(const char* filename)
     {
-        if (!Policy.empty())
+        if (!ActionValueFunction.empty())
         {
-            std::ofstream policyFile(filename);
+            std::ofstream functionFile(filename);
             std::string string;
-            for (auto iterator : Policy)
+            for (auto iterator : ActionValueFunction)
             {
                 iterator.first.toString(string);
-                policyFile << string;
-                policyFile << iterator.second << std::endl;
+                functionFile << string;
+                functionFile << iterator.second << std::endl;
             }
-            policyFile.close();
+            functionFile.close();
         }
     }
 }
