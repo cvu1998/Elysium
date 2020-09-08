@@ -1,0 +1,15 @@
+Tag=Bird
+Position=-10, 21
+Size=1, 1
+Rotation=0
+Color=1, 1, 1, 1
+Tag=Ground
+Position=0, 0
+Size=3000, 2
+Rotation=0
+Color=1, 1, 1, 1
+Tag=Ceiling
+Position=0, 42
+Size=3000, 2
+Rotation=0
+Color=1, 1, 1, 1

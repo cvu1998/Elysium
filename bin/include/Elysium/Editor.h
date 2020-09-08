@@ -62,14 +62,16 @@ namespace Elysium
         unsigned int m_WindowHeight;
 
         OrthographicCameraController m_CameraController;
+        float m_TranslationSpeed = 3.0f;
 
         Quad* m_Current = nullptr;
         unsigned int m_Repeat = 0;
         bool m_CurrentIsMoving = false;
+        bool m_SameCurrent = false;
 
         SceneData m_Data;
 
-        char m_Filename[64] = "Scene";
+        char m_Filename[256] = "Scene";
 
     private:
         bool isWithinBounds(Vector2 position, Vector2 bottom, Vector2 top);

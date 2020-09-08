@@ -29,6 +29,7 @@ private:
 
 public:
     PerformanceScene(unsigned int height, unsigned int width);
+    ~PerformanceScene();
 
     void onUpdate(Elysium::Timestep ts) override;
     void onEvent(Elysium::Event& event) override;

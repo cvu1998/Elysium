@@ -85,6 +85,7 @@ namespace Elysium
         Vector2 Position = { 0.0f, 0.0f };
 
         float Rotation = 0.0f;
+        bool AllowRotation = true;
 
         BodyType Type = BodyType::NONE;
         BodyStatus Status = BodyStatus::ACTIVE;
@@ -128,5 +129,7 @@ namespace Elysium
         Vector2 getMinVertex() const;
 
         std::vector<Vector2>getNormals() const;
+
+        void resetValues();
     };
 }

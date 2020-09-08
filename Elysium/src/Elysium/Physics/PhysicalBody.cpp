@@ -143,4 +143,14 @@ namespace Elysium
         }
         return normals;
     }
+
+    void PhysicalBody::resetValues()
+    {
+        Velocity = { 0.0f, 0.0f };
+        Acceleration = { 0.0f, 0.0f };
+        Rotation = 0.0f;
+
+        ContactNormal = { 0.0f, 0.0f };
+        Normals.clear();
+    }
 }

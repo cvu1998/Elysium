@@ -4,7 +4,6 @@
 
 Player::Player() : m_RunAnimation(m_FrameRate)
 {
-    e_PhysicsSystem.getBodies().clear();
     m_Player = e_PhysicsSystem.createPhysicalBody(Elysium::BodyType::DYNAMIC, "Player", 50.0f, { -27.5f, 20.0f }, { 2.0f, 2.0f }, Player::onCollision);
 
     m_Player->setRadius(1.0f);

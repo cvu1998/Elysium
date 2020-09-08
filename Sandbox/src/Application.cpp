@@ -1,4 +1,5 @@
 #include "Scenes/Connect4Scene.h"
+#include "Scenes/FlappyBirdScene.h"
 #include "Scenes/PerformanceScene.h"
 #include "Scenes/SandboxScene.h"
 #include "Scenes/SoccerScene.h"
@@ -7,14 +8,6 @@
 class Application : public Elysium::Application
 {
 private:
-    Elysium::Editor* m_Editor = nullptr;
-
-    Connect4Scene* m_Connect4 = nullptr;
-    PerformanceScene* m_Test = nullptr;
-    SandboxScene* m_Sandbox = nullptr;
-    SoccerScene* m_Soccer = nullptr;
-    RLTTTScene* m_TTT = nullptr;
-
     bool m_VSync = true;
 
 public:
@@ -34,33 +27,38 @@ public:
         ImGui::ColorEdit4("Clear Color", m_ClearColor);
         if (ImGui::Button("Editor"))
         {
-            m_Editor = new Elysium::Editor(m_Window->getWidth(), m_Window->getHeight());
-            m_SceneManager.loadScene(m_Editor);
+            m_SceneManager.unloadScene();
+            m_SceneManager.loadScene(new Elysium::Editor(m_Window->getWidth(), m_Window->getHeight()));
         }
         if (ImGui::Button("Sandbox"))
         {
-            m_Sandbox = new SandboxScene(m_Window->getWidth(), m_Window->getHeight());
-            m_SceneManager.loadScene(m_Sandbox);
+            m_SceneManager.unloadScene();
+            m_SceneManager.loadScene(new SandboxScene(m_Window->getWidth(), m_Window->getHeight()));
         }
         if (ImGui::Button("Stress Test"))
         {
-            m_Test = new PerformanceScene(m_Window->getWidth(), m_Window->getHeight());
-            m_SceneManager.loadScene(m_Test);;
+            m_SceneManager.unloadScene();
+            m_SceneManager.loadScene(new PerformanceScene(m_Window->getWidth(), m_Window->getHeight()));;
         }
         if (ImGui::Button("Connect 4"))
         {
-            m_Connect4 = new Connect4Scene(m_Window->getWidth(), m_Window->getHeight());
-            m_SceneManager.loadScene(m_Connect4);
+            m_SceneManager.unloadScene();
+            m_SceneManager.loadScene(new Connect4Scene(m_Window->getWidth(), m_Window->getHeight()));
         }
         if (ImGui::Button("Tic-Tac-Toe"))
         {
-            m_TTT = new RLTTTScene(m_Window->getWidth(), m_Window->getHeight());
-            m_SceneManager.loadScene(m_TTT);
+            m_SceneManager.unloadScene();
+            m_SceneManager.loadScene(new RLTTTScene(m_Window->getWidth(), m_Window->getHeight()));
+        }
+        if (ImGui::Button("Flappy Bird"))
+        {
+            m_SceneManager.unloadScene();
+            m_SceneManager.loadScene(new FlappyBirdScene(m_Window->getWidth(), m_Window->getHeight()));
         }
         if (ImGui::Button("Soccer"))
         {
-            m_Soccer = new SoccerScene(m_Window->getWidth(), m_Window->getHeight());
-            m_SceneManager.loadScene(m_Soccer);
+            m_SceneManager.unloadScene();
+            m_SceneManager.loadScene(new SoccerScene(m_Window->getWidth(), m_Window->getHeight()));
         }
         ImGui::End();
 

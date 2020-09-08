@@ -2,13 +2,14 @@
 
 #include "Game/Systems.h"
 
-RLTTTScene::RLTTTScene(unsigned int width, unsigned int height) : Scene("Tic-Tac-Toe"),
-m_Camera(-m_Height * (float)(width / height), m_Height * (float)(width / height), -m_Height * 0.5f, m_Height * 0.5f),
-m_SpriteSheet("res/texture/platformPack_tilesheet.png"),
-m_Agent(0.1f, 0.8f),
-m_Minimax(&m_Grid)
+RLTTTScene::RLTTTScene(unsigned int width, unsigned int height) : 
+    Elysium::Scene("Tic-Tac-Toe"),
+    m_Camera(-m_Height * (float)(width / height), m_Height * (float)(width / height), -m_Height * 0.5f, m_Height * 0.5f),
+    m_SpriteSheet("res/texture/platformPack_tilesheet.png"),
+    m_Agent(0.1f, 0.8f),
+    m_Minimax(&m_Grid)
 {
-    e_PhysicsSystem.getBodies().clear();
+    e_PhysicsSystem.clear();
     m_CoinTextures[0] = m_SpriteSheet.getTextureData();
     m_CoinTextures[0].subtextureCoordinates({ 10, 6 }, { 128, 128 });
 

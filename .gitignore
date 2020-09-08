@@ -1,7 +1,6 @@
 *.db
 *.db-shm
 *.db-wal
-*.ely
 *.filters
 *FileListAbsolute.txt
 *.idb

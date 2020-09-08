@@ -41,6 +41,11 @@ namespace Elysium
         inline float getGravitaionnalAccel() const { return m_GravitationalAccel; }
 
         inline ArrayList<PhysicalBody>& getBodies() { return m_Bodies; }
+        inline void clear()
+        {
+            m_Bodies.clear();
+            m_InactiveBodies.clear();
+        }
 
         inline PhysicalBody* getPhysicalBody(BodyHandle identifier) { return &m_Bodies[identifier]; };
         inline const PhysicalBody& readPhysicalBody(BodyHandle identifier) const { return m_Bodies[identifier]; };

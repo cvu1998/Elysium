@@ -57,6 +57,7 @@ namespace Elysium
 
         if (m_Current)
         {
+            m_SameCurrent = true;
             Vector2 position = { m_Current->Position[0], m_Current->Position[1] };
             Vector2 size = { m_Current->Size[0] * 0.5f, m_Current->Size[1] * 0.5f };
             if (!isWithinBounds(cursorPosition, position - size, position + size))
@@ -88,13 +89,16 @@ namespace Elysium
                 if (isWithinBounds(cursorPosition, position - size, position + size))
                 {
                     if (!m_CurrentIsMoving)
+                    {
                         m_Current = &q;
+                        m_SameCurrent = false;
+                    }
                 }
             }
         }
 
         ImGui::Begin("Editor Layer");
-        ImGui::InputText("Filename", m_Filename, 64);
+        ImGui::InputText("Filename", m_Filename, 256);
         if (ImGui::Button("Save Scene to File"))
         {
             saveSceneToFile();
@@ -111,7 +115,9 @@ namespace Elysium
         if (ImGui::Button("Add Quad"))
         {
             m_Data.Quads.emplace_back();
-            m_Current = nullptr;
+            m_Current = &m_Data.Quads[m_Data.Quads.size() - 1];
+            m_Current->Position[0] = m_CameraController.getCamera().getPosition().x;
+            m_Current->Position[1] = m_CameraController.getCamera().getPosition().y;
         }
         if (ImGui::Button("Remove Current Quad"))
         {
@@ -128,7 +134,11 @@ namespace Elysium
             m_Data.Quads.clear();
             m_Current = nullptr;
         }
-        if (m_Current)
+        ImGui::Text("Camera Bounds Height: %f", m_CameraController.getBoundsHeight());
+        ImGui::Text("Camera Position: %f, %f", m_CameraController.getCamera().getPosition().x, m_CameraController.getCamera().getPosition().y);
+        ImGui::Text("Cursor Position: %f, %f", cursorPosition.x, cursorPosition.y);
+        ImGui::InputFloat("Set Camera Translation Speed", &m_TranslationSpeed);
+        if (m_Current && m_SameCurrent)
         {
             char quadTag[64];
             strcpy_s(quadTag, 64, m_Current->Tag.data());

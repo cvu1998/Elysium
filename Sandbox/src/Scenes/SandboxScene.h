@@ -29,6 +29,7 @@ private:
 
 public:
     SandboxScene(unsigned int height, unsigned int width);
+    ~SandboxScene();
 
     void onUpdate(Elysium::Timestep ts) override;
     void onEvent(Elysium::Event& event) override;

@@ -6,7 +6,6 @@ Connect4Scene::Connect4Scene(unsigned int width, unsigned int height) : Scene("C
 m_Camera(-m_Height * (float)(width / height), m_Height * (float)(width / height), -m_Height * 0.5f, m_Height * 0.5f),
 m_SpriteSheet("res/texture/platformPack_tilesheet.png")
 {
-    e_PhysicsSystem.getBodies().clear();
     m_CoinTextures[0] = m_SpriteSheet.getTextureData();
     m_CoinTextures[0].subtextureCoordinates({ 10, 6 }, { 128, 128 });
 
@@ -24,6 +23,7 @@ m_SpriteSheet("res/texture/platformPack_tilesheet.png")
 
 Connect4Scene::~Connect4Scene()
 {
+    e_PhysicsSystem.clear();
 }
 
 void Connect4Scene::onUpdate(Elysium::Timestep ts)
@@ -33,7 +33,7 @@ void Connect4Scene::onUpdate(Elysium::Timestep ts)
         if (m_Restart)
         {
             m_Coins.fill(std::make_pair(nullptr, 0));
-            e_PhysicsSystem.getBodies().clear();
+            e_PhysicsSystem.clear();
 
             m_CoinIndex = 0;
             m_GameOver = false;

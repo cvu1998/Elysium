@@ -77,6 +77,11 @@ m_ParticleSystem(100, m_Camera)
     }
 }
 
+PerformanceScene::~PerformanceScene()
+{
+    e_PhysicsSystem.clear();
+}
+
 void PerformanceScene::onUpdate(Elysium::Timestep ts)
 {
     const Elysium::PhysicalBody* player = m_Player.getBody();

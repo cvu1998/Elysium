@@ -60,6 +60,11 @@ m_Camera(-m_Height * (float)(width / height), m_Height* (float)(width / height),
     m_Camera.setPosition({ 0.0f, -1.0f, 0.0f });
 }
 
+SoccerScene::~SoccerScene()
+{
+    e_PhysicsSystem.clear();
+}
+
 void SoccerScene::onUpdate(Elysium::Timestep ts)
 {
     if (m_GameOver)

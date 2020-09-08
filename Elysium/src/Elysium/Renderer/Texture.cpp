@@ -77,10 +77,10 @@ void TextureData::repeatTexture(const glm::vec2& repetition)
     TextureCoordinates[3] = { 0.0f, repetition.y };
 }
 
-void TextureData::subtextureCoordinates(const glm::vec2& coordinates, const glm::vec2& size)
+void TextureData::subtextureCoordinates(const glm::vec2& coordinates, const glm::vec2& size, const glm::vec2& offset)
 {
-    glm::vec2 minimum = { (coordinates.x * size.x) / m_Width, (coordinates.y * size.y) / m_Height };
-    glm::vec2 maximum = { ((coordinates.x + 1) * size.x) / m_Width, ((coordinates.y + 1) * size.y) / m_Height };
+    glm::vec2 minimum = { ((coordinates.x * size.x) + offset.x) / m_Width, ((coordinates.y * size.y) + offset.y) / m_Height };
+    glm::vec2 maximum = { (((coordinates.x + 1) * size.x) + offset.x) / m_Width, (((coordinates.y + 1) * size.y) + offset.y) / m_Height };
     if (!CoordinatesInverted)
     {
         TextureCoordinates[0] = { minimum.x, minimum.y };

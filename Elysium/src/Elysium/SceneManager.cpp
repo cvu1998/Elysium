@@ -24,12 +24,18 @@ namespace Elysium
             m_CurrentScene->onEvent(event);
     }
 
-    void SceneManager::loadScene(Scene* scene)
+    void SceneManager::unloadScene()
     {
         if (m_CurrentScene)
         {
             delete m_CurrentScene;
+            m_CurrentScene = nullptr;
         }
+    }
+
+    void SceneManager::loadScene(Scene* scene)
+    {
+        unloadScene();
         m_CurrentScene = scene;
     }
 }

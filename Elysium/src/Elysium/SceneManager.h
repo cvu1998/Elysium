@@ -16,6 +16,7 @@ namespace Elysium
         void onUpdate(Timestep ts);
         void onEvent(Event& event);
 
+        void unloadScene();
         void loadScene(Scene* scene);
     };
 }

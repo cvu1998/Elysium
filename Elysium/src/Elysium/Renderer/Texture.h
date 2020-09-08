@@ -25,7 +25,8 @@ public:
 
     void reflectAroundYAxis();
     void repeatTexture(const glm::vec2& repetition);
-    void subtextureCoordinates(const glm::vec2& coordinates, const glm::vec2& size);
+    void subtextureCoordinates(const glm::vec2& coordinates, const glm::vec2& size, 
+        const glm::vec2& offset = { 0.0f, 0.0f });
 };
 
 class Texture

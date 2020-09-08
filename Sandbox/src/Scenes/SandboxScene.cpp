@@ -90,6 +90,11 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Scene("San
     circle->setRadius(1.0f);
 }
 
+SandboxScene::~SandboxScene()
+{
+    e_PhysicsSystem.clear();
+}
+
 void SandboxScene::onUpdate(Elysium::Timestep ts)
 {
     const Elysium::PhysicalBody* player = m_Player.getBody();
@@ -101,10 +106,6 @@ void SandboxScene::onUpdate(Elysium::Timestep ts)
     const Elysium::PhysicalBody& circle = e_PhysicsSystem.readPhysicalBody(m_Circle);
 
     m_Camera.setPosition({ player->Position.x, player->Position.y + (player->getSize().y * 4.0f), 0.0f });
-
-    Elysium::Renderer2D::beginScene(m_Camera);
-    Elysium::Renderer2D::drawQuad({ 0.0f, 15.0f }, { 1000.0f, 30.0f }, m_Background);
-    Elysium::Renderer2D::endScene();
 
     auto mousePosition = Elysium::Input::getMousePosition();
     auto width = Elysium::Application::Get().getWindow().getWidth();
@@ -125,6 +126,7 @@ void SandboxScene::onUpdate(Elysium::Timestep ts)
     m_Player.kickBall(m_Ball);
 
     Elysium::Renderer2D::beginScene(m_Camera);
+    Elysium::Renderer2D::drawQuad({ 0.0f, 15.0f }, { 1000.0f, 30.0f }, m_Background);
     Elysium::Renderer2D::drawQuad(player->Position, player->getSize(), m_Player.m_TextureData);
     Elysium::Renderer2D::drawQuadWithRotation(ground.Position, ground.getSize(), ground.Rotation, m_GroundTexture);
     Elysium::Renderer2D::drawQuadWithRotation(box.Position, box.getSize(), box.Rotation, m_BoxTexture);

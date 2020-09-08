@@ -232,7 +232,8 @@ namespace Elysium
                         m_Bodies[i].ContactNormal = (isNaN(normalize(m_Bodies[i].Impulse)) || isinf(normalize(m_Bodies[i].Impulse))) ?
                         m_Bodies[i].ContactNormal : normalize(m_Bodies[i].Impulse);
 
-                    m_Bodies[i].Rotation += (cross(m_Bodies[i].ContactNormal, m_Bodies[i].Velocity) / m_Bodies[i].Inertia) * (float)ts;
+                    if (m_Bodies[i].AllowRotation)
+                        m_Bodies[i].Rotation += (cross(m_Bodies[i].ContactNormal, m_Bodies[i].Velocity) / m_Bodies[i].Inertia) * (float)ts;
                     break;
                 case BodyType::KINEMATIC:
                     updateBody(m_Bodies[i], ts);

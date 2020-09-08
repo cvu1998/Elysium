@@ -28,6 +28,7 @@ private:
 
 public:
     SoccerScene(unsigned int height, unsigned int width);
+    ~SoccerScene();
 
     void onUpdate(Elysium::Timestep ts) override;
     void onEvent(Elysium::Event& event) override;
