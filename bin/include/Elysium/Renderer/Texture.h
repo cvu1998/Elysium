@@ -23,6 +23,7 @@ public:
     inline int getWidth() const { return m_Width; }
     inline bool isDefault() const { return m_Default; }
 
+    void reflectAroundXAxis();
     void reflectAroundYAxis();
     void repeatTexture(const glm::vec2& repetition);
     void subtextureCoordinates(const glm::vec2& coordinates, const glm::vec2& size, 

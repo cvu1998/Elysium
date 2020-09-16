@@ -203,6 +203,7 @@ xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\include\" /S /Y /I
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Elysium\AI\TabularRLAgent.cpp" />
     <ClCompile Include="src\Elysium\SceneManager.cpp" />
     <ClCompile Include="src\Elysium\Editor.cpp" />
     <ClCompile Include="src\Elysium\AI\RLAgent.cpp" />
@@ -377,6 +378,9 @@ xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\include\" /S /Y /I
     <None Include="src\vendor\glm\gtx\wrap.inl" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Elysium\AI\BinaryFeatureVector.h" />
+    <ClInclude Include="src\Elysium\AI\LinearRLAgent.h" />
+    <ClInclude Include="src\Elysium\AI\TabularRLAgent.h" />
     <ClInclude Include="src\Elysium\SceneManager.h" />
     <ClInclude Include="src\Elysium\Editor.h" />
     <ClInclude Include="src\Elysium\AI\RLAgent.h" />

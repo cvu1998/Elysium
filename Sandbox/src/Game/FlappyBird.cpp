@@ -20,9 +20,9 @@ void FlappyBird::onEvent(Elysium::Event& event)
 
 bool FlappyBird::onKeyPressedEvent(Elysium::KeyPressedEvent& event)
 {
-    if (event.getKeyCode() == ELY_KEY_SPACE && Body->getVelocity().y < 0.0f && !PauseBird)
+    if (event.getKeyCode() == ELY_KEY_SPACE && !PauseBird && !UseRLAgent)
     {
-        Body->Impulse.y += 15.0f * Body->getMass();
+        Body->Velocity.y = 10.0f;
     }
 
     return false;

@@ -24,6 +24,12 @@ namespace Elysium
     {
     }
 
+    State::State(float reward, bool terminal) :
+        m_Reward(reward),
+        m_Terminal(terminal)
+    {
+    }
+
     bool State::operator==(const State& state) const
     {
         return (0 == strcmp(this->getCode(), state.getCode()));

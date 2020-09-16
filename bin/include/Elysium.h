@@ -36,5 +36,7 @@
 #include "Elysium/Renderer/Texture.h"
 
 // ---AI---
-#include "Elysium/AI/RLAgent.h"
+#include "Elysium/AI/BinaryFeatureVector.h"
+#include "Elysium/AI/LinearRLAgent.h"
+#include "Elysium/AI/TabularRLAgent.h"
 #include "Elysium/AI/State.h"

@@ -6,6 +6,7 @@ class FlappyBird
 {
 public:
     Elysium::PhysicalBody* Body = nullptr;
+    bool UseRLAgent = true;
     bool PauseBird = false;
     TextureData m_TextureData;
 

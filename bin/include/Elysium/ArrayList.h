@@ -18,8 +18,13 @@ namespace Elysium
     public:
         ~ArrayList()
         {
+            m_VectorIndex = 0;
+            m_ArrayIndex = 0;
+
             for (size_t i = 0; i < m_ArrayList.size(); i++)
                 delete[] m_ArrayList[i];
+
+            m_ArrayList.clear();
         }
 
         void push_back(const T& element)

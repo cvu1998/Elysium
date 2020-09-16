@@ -53,8 +53,6 @@ namespace Elysium
         float Inertia = 0.0f;
         float Radius = 0.0f;
         Vector2 Size = { 1.0f, 1.0f };
-        Vector2 Velocity = { 0.0f, 0.0f };
-        Vector2 Acceleration = { 0.0f, 0.0f };
 
         Vector2 MaximumVertex = { 0.0f, 0.0f };
         Vector2 MinimumVertex = { 0.0f, 0.0f };
@@ -83,6 +81,8 @@ namespace Elysium
 
     public:
         Vector2 Position = { 0.0f, 0.0f };
+        Vector2 Velocity = { 0.0f, 0.0f };
+        Vector2 Acceleration = { 0.0f, 0.0f };
 
         float Rotation = 0.0f;
         bool AllowRotation = true;
@@ -108,8 +108,6 @@ namespace Elysium
 
         inline const char* getName() const { return Name; }
         inline float getMass() const { return Mass; }
-        inline const Vector2& getVelocity() const { return Velocity; }
-        inline const Vector2& getAcceleration() const { return Acceleration; }
         inline const Vector2& getSize() const { return Size; }
 
         void setRadius(float radius);

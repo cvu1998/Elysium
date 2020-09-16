@@ -16,6 +16,7 @@ namespace Elysium
         State(const std::string& code);
         State(const std::string& code, float reward);
         State(const std::string& code, float reward, bool terminal);
+        State(float reward, bool terminal);
 
         inline const char* getCode() const { return m_Code.c_str(); }
         inline float getReward() const { return m_Reward; }

@@ -59,6 +59,16 @@ void Texture::unBind() const
     GL_ASSERT(glBindTexture(GL_TEXTURE_2D, 0))
 }
 
+void TextureData::reflectAroundXAxis()
+{
+    glm::vec2 textureCoordinates[4] = { TextureCoordinates[0],  TextureCoordinates[1],  TextureCoordinates[2],  TextureCoordinates[3] };
+    TextureCoordinates[0] = textureCoordinates[3];
+    TextureCoordinates[1] = textureCoordinates[2];
+    TextureCoordinates[2] = textureCoordinates[1];
+    TextureCoordinates[3] = textureCoordinates[0];
+    CoordinatesInverted = !CoordinatesInverted;
+}
+
 void TextureData::reflectAroundYAxis()
 {
     glm::vec2 textureCoordinates[4] = { TextureCoordinates[0],  TextureCoordinates[1],  TextureCoordinates[2],  TextureCoordinates[3] };

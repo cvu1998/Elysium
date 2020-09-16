@@ -117,7 +117,7 @@ namespace Elysium
                 ImGui::NewFrame();
             }
 
-            if (!m_Minimized)
+            //if (!m_Minimized)
             {
                 this->ApplicationLogic();
 
