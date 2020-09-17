@@ -118,17 +118,19 @@ private:
     TextureData m_CeilingSprite;
 
     TextureData m_Background;
-    std::vector<float>m_BackgroundPositions;
+    std::deque<float>m_BackgroundPositions;
     float m_BackgroundPosition = 0.0f;
 
     TextureData m_LowerSprite;
     TextureData m_UpperSprite;
-    std::vector<Elysium::BodyHandle> m_LowerPipes;
-    std::vector<Elysium::BodyHandle> m_UpperPipes;
+    std::deque<Elysium::BodyHandle> m_LowerPipes;
+    std::deque<Elysium::BodyHandle> m_UpperPipes;
     Elysium::PhysicalBody* m_LowerPipe = nullptr;
     Elysium::PhysicalBody* m_UpperPipe = nullptr;
+    size_t m_Score = 0;
     size_t m_PipeIndex = 0;
     size_t m_BestScore = 0;
+    size_t m_NumberOfEpisodes = 1;
 
     float m_PipeDistance = 15.0f;
 

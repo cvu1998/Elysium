@@ -164,7 +164,9 @@ void FlappyBirdScene::updateEnvironment(Elysium::Timestep ts)
                 m_BackgroundPositions.push_back(45.0f);
                 m_BackgroundPosition = 45.0f;;
 
+                m_Score = 0;
                 m_PipeIndex = 0;
+                m_NumberOfEpisodes++;
                 m_LowerPipe = e_PhysicsSystem.getPhysicalBody(m_LowerPipes[m_PipeIndex]);
                 m_UpperPipe = e_PhysicsSystem.getPhysicalBody(m_UpperPipes[m_PipeIndex]);
             }
@@ -194,6 +196,7 @@ void FlappyBirdScene::updateEnvironment(Elysium::Timestep ts)
         m_Bird.Body->Position.x >= m_UpperPipe->Position.x + (m_UpperPipe->getSize().x * 0.5f))
     {
         m_PipeIndex++;
+        m_Score++;
         m_LowerPipe = e_PhysicsSystem.getPhysicalBody(m_LowerPipes[m_PipeIndex]);
         m_UpperPipe = e_PhysicsSystem.getPhysicalBody(m_UpperPipes[m_PipeIndex]);
     }
@@ -240,7 +243,7 @@ void FlappyBirdScene::onUpdate(Elysium::Timestep ts)
             chooseActionForAgent(nextFeatures);
 
             m_Agent.NewEpisode = m_GameOver;
-            float reward = m_GameOver ? -100.0f : 0.1f;
+            float reward = m_GameOver ? -100.0f : 0.1f * ts;
 
             #ifdef _DEBUG
             ELY_INFO("Reward: {0}", reward);
@@ -251,15 +254,44 @@ void FlappyBirdScene::onUpdate(Elysium::Timestep ts)
                     ELY_INFO("{0}: {1}", m_Agent.FeatureNotes[i], nextFeatures.Vector[i]);
             }
             ELY_INFO("---]");
+            #endif
 
             if (m_GameOver)
+            {
+                #ifndef _DEBUG
+                ELY_INFO("Reward: {0}", reward);
+                ELY_INFO("Features ---[");
+                for (size_t i = 0; i < nextFeatures.Vector.size(); i++)
+                {
+                    if (nextFeatures.Vector[i] > 0.0f)
+                        ELY_INFO("{0}: {1}", m_Agent.FeatureNotes[i], nextFeatures.Vector[i]);
+                }
+                ELY_INFO("---]");
+                #endif
                 m_Agent.printWeightVector();
-            #endif
+            }
 
             if (m_Agent.TrainAgent)
                 m_Agent.updateWeightVectorSarsa(m_Agent.CurrentFeatureVector.Vector, nextFeatures.Vector, { reward, m_GameOver });
             m_Agent.CurrentFeatureVector = nextFeatures;
         }
+    }
+
+    Elysium::PhysicalBody* pipe = e_PhysicsSystem.getPhysicalBody(m_LowerPipes.front());
+    while(pipe->Position.x < m_Bird.Body->Position.x - 50.0f)
+    {
+        e_PhysicsSystem.removePhysicalBody(m_LowerPipes.front());
+        e_PhysicsSystem.removePhysicalBody(m_UpperPipes.front());
+        m_LowerPipes.pop_front();
+        m_UpperPipes.pop_front();
+        m_PipeIndex--;
+
+        pipe = e_PhysicsSystem.getPhysicalBody(m_LowerPipes.front());
+    }
+
+    while (m_BackgroundPositions.front() < m_Bird.Body->Position.x - 50.0f)
+    {
+        m_BackgroundPositions.pop_front();
     }
 
     Elysium::Renderer2D::beginScene(m_Camera);
@@ -286,6 +318,9 @@ void FlappyBirdScene::onUpdate(Elysium::Timestep ts)
         rotation = Elysium::radians(-30.0f);
     }
 
+    m_Ground->Position.x = m_Bird.Body->Position.x;
+    m_Ceiling->Position.x = m_Bird.Body->Position.x;
+
     Elysium::Renderer2D::drawQuadWithRotation(m_Bird.Body->Position, { 3.0f, 3.0f }, rotation, m_BirdSprite);
 
     for (size_t i = 0; i < m_UpperPipes.size(); i++)
@@ -306,10 +341,11 @@ void FlappyBirdScene::onUpdate(Elysium::Timestep ts)
     ImGui::Checkbox("Pause Scene", &m_PauseScene);
     ImGui::Checkbox("Flappy Bird Agent", &m_Bird.UseRLAgent);
     ImGui::Checkbox("Train Flappy Bird Agent", &m_Agent.TrainAgent);
-    ImGui::Text("Score: %d", m_PipeIndex);
-    if (m_PipeIndex > m_BestScore)
-        m_BestScore = m_PipeIndex;
+    ImGui::Text("Score: %d", m_Score);
+    if (m_Score > m_BestScore)
+        m_BestScore = m_Score;
     ImGui::Text("Best Score: %d", m_BestScore);
+    ImGui::Text("Number of Episodes: %d", m_NumberOfEpisodes);
     if (m_GameOver)
         ImGui::Text("Game Over!");
     ImGui::End();
