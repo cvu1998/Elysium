@@ -159,7 +159,9 @@
     <PostBuildEvent>
       <Command>rmdir "$(SolutionDir)bin\$(Configuration)-$(Platform)\Sandbox\res" /s /q
 mkdir "$(TargetDir)res"
-xcopy /E /Y "$(ProjectDir)res" "$(SolutionDir)bin\$(Configuration)-$(Platform)\Sandbox\res"</Command>
+xcopy /E /Y "$(ProjectDir)res" "$(SolutionDir)bin\$(Configuration)-$(Platform)\Sandbox\res"
+mkdir "$(SolutionDir)bin\Elysium\res\shaders"
+xcopy /E /Y "$(ProjectDir)res\shaders" "$(SolutionDir)bin\Elysium\res\shaders"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -180,7 +182,9 @@ xcopy /E /Y "$(ProjectDir)res" "$(SolutionDir)bin\$(Configuration)-$(Platform)\S
     <PostBuildEvent>
       <Command>rmdir "$(SolutionDir)bin\$(Configuration)-$(Platform)\Sandbox\res" /s /q
 mkdir "$(TargetDir)res"
-xcopy /E /Y "$(ProjectDir)res" "$(SolutionDir)bin\$(Configuration)-$(Platform)\Sandbox\res"</Command>
+xcopy /E /Y "$(ProjectDir)res" "$(SolutionDir)bin\$(Configuration)-$(Platform)\Sandbox\res"
+mkdir "$(SolutionDir)bin\Elysium\res\shaders"
+xcopy /E /Y "$(ProjectDir)res\shaders" "$(SolutionDir)bin\Elysium\res\shaders"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -201,7 +205,9 @@ xcopy /E /Y "$(ProjectDir)res" "$(SolutionDir)bin\$(Configuration)-$(Platform)\S
     <PostBuildEvent>
       <Command>rmdir "$(SolutionDir)bin\$(Configuration)-$(Platform)\Sandbox\res" /s /q
 mkdir "$(TargetDir)res"
-xcopy /E /Y "$(ProjectDir)res" "$(SolutionDir)bin\$(Configuration)-$(Platform)\Sandbox\res"</Command>
+xcopy /E /Y "$(ProjectDir)res" "$(SolutionDir)bin\$(Configuration)-$(Platform)\Sandbox\res"
+mkdir "$(SolutionDir)bin\Elysium\res\shaders"
+xcopy /E /Y "$(ProjectDir)res\shaders" "$(SolutionDir)bin\Elysium\res\shaders"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -226,7 +232,9 @@ xcopy /E /Y "$(ProjectDir)res" "$(SolutionDir)bin\$(Configuration)-$(Platform)\S
     <PostBuildEvent>
       <Command>rmdir "$(SolutionDir)bin\$(Configuration)-$(Platform)\Sandbox\res" /s /q
 mkdir "$(TargetDir)res"
-xcopy /E /Y "$(ProjectDir)res" "$(SolutionDir)bin\$(Configuration)-$(Platform)\Sandbox\res"</Command>
+xcopy /E /Y "$(ProjectDir)res" "$(SolutionDir)bin\$(Configuration)-$(Platform)\Sandbox\res"
+mkdir "$(SolutionDir)bin\Elysium\res\shaders"
+xcopy /E /Y "$(ProjectDir)res\shaders" "$(SolutionDir)bin\Elysium\res\shaders"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
