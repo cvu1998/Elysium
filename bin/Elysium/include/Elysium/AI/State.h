@@ -22,7 +22,7 @@ namespace Elysium
         inline float getReward() const { return m_Reward; }
         inline bool isTerminal() const { return m_Terminal; }
 
-        bool State::operator==(const State& state) const;
+        bool operator==(const State& state) const;
 
     };
 

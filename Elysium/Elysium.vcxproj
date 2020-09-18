@@ -104,10 +104,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>rmdir "$(SolutionDir)bin\Elysium\" /s /q
-xcopy "$(ProjectDir)src\*.h" "$(SolutionDir)bin\Elysium\include\" /S /Y /I
+      <Command>xcopy "$(ProjectDir)src\*.h" "$(SolutionDir)bin\Elysium\include\" /S /Y /I
 xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\Elysium\include\" /S /Y /I
-</Command>
+xcopy "$(ProjectDir)src\*.inl" "$(SolutionDir)bin\Elysium\include\" /S /Y /I</Command>
     </PostBuildEvent>
     <Lib>
       <AdditionalDependencies>Glad.lib</AdditionalDependencies>
@@ -136,10 +135,9 @@ xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\Elysium\include\" /S /Y /I
       <AdditionalLibraryDirectories>$(SolutionDir)bin\$(Configuration)-$(Platform)\Glad\</AdditionalLibraryDirectories>
     </Lib>
     <PostBuildEvent>
-      <Command>rmdir "$(SolutionDir)bin\Elysium\" /s /q
-xcopy "$(ProjectDir)src\*.h" "$(SolutionDir)bin\Elysium\include\" /S /Y /I
+      <Command>xcopy "$(ProjectDir)src\*.h" "$(SolutionDir)bin\Elysium\include\" /S /Y /I
 xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\Elysium\include\" /S /Y /I
-</Command>
+xcopy "$(ProjectDir)src\*.inl" "$(SolutionDir)bin\Elysium\include\" /S /Y /I</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -160,10 +158,9 @@ xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\Elysium\include\" /S /Y /I
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>rmdir "$(SolutionDir)bin\Elysium\" /s /q
-xcopy "$(ProjectDir)src\*.h" "$(SolutionDir)bin\Elysium\include\" /S /Y /I
+      <Command>xcopy "$(ProjectDir)src\*.h" "$(SolutionDir)bin\Elysium\include\" /S /Y /I
 xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\Elysium\include\" /S /Y /I
-</Command>
+xcopy "$(ProjectDir)src\*.inl" "$(SolutionDir)bin\Elysium\include\" /S /Y /I</Command>
     </PostBuildEvent>
     <Lib>
       <AdditionalDependencies>Glad.lib</AdditionalDependencies>
@@ -196,10 +193,9 @@ xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\Elysium\include\" /S /Y /I
       <AdditionalLibraryDirectories>$(SolutionDir)bin\$(Configuration)-$(Platform)\Glad\</AdditionalLibraryDirectories>
     </Lib>
     <PostBuildEvent>
-      <Command>rmdir "$(SolutionDir)bin\Elysium\" /s /q
-xcopy "$(ProjectDir)src\*.h" "$(SolutionDir)bin\Elysium\include\" /S /Y /I
+      <Command>xcopy "$(ProjectDir)src\*.h" "$(SolutionDir)bin\Elysium\include\" /S /Y /I
 xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\Elysium\include\" /S /Y /I
-</Command>
+xcopy "$(ProjectDir)src\*.inl" "$(SolutionDir)bin\Elysium\include\" /S /Y /I</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

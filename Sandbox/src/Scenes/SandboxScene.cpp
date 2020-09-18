@@ -119,7 +119,6 @@ void SandboxScene::onUpdate(Elysium::Timestep ts)
         m_ParticleSystem.Emit(m_Particle);
         m_ParticleSystem.Emit(m_Particle2);
     }
-    m_ParticleSystem.OnUpdate(ts);
     e_PhysicsSystem.onUpdate(ts);
 
     m_Player.onUpdate(ts);
@@ -127,6 +126,11 @@ void SandboxScene::onUpdate(Elysium::Timestep ts)
 
     Elysium::Renderer2D::beginScene(m_Camera);
     Elysium::Renderer2D::drawQuad({ 0.0f, 15.0f }, { 1000.0f, 30.0f }, m_Background);
+    Elysium::Renderer2D::endScene();
+
+    m_ParticleSystem.OnUpdate(ts);
+
+    Elysium::Renderer2D::beginScene(m_Camera);
     Elysium::Renderer2D::drawQuad(player->Position, player->getSize(), m_Player.m_TextureData);
     Elysium::Renderer2D::drawQuadWithRotation(ground.Position, ground.getSize(), ground.Rotation, m_GroundTexture);
     Elysium::Renderer2D::drawQuadWithRotation(box.Position, box.getSize(), box.Rotation, m_BoxTexture);
