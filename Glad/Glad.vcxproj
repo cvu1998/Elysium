@@ -120,6 +120,7 @@
     </Link>
     <PostBuildEvent>
       <Command>rmdir "$(SolutionDir)bin\Elysium\" /s /q
+mkdir "$(SolutionDir)bin\Elysium\include\Glad\"
 xcopy "$(ProjectDir)include\*.h" "$(SolutionDir)bin\Elysium\include\Glad\" /S /Y /I</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -142,6 +143,7 @@ xcopy "$(ProjectDir)include\*.h" "$(SolutionDir)bin\Elysium\include\Glad\" /S /Y
     </Link>
     <PostBuildEvent>
       <Command>rmdir "$(SolutionDir)bin\Elysium\" /s /q
+mkdir "$(SolutionDir)bin\Elysium\include\Glad\"
 xcopy "$(ProjectDir)include\*.h" "$(SolutionDir)bin\Elysium\include\Glad\" /S /Y /I</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -164,6 +166,7 @@ xcopy "$(ProjectDir)include\*.h" "$(SolutionDir)bin\Elysium\include\Glad\" /S /Y
     </Link>
     <PostBuildEvent>
       <Command>rmdir "$(SolutionDir)bin\Elysium\" /s /q
+mkdir "$(SolutionDir)bin\Elysium\include\Glad\"
 xcopy "$(ProjectDir)include\*.h" "$(SolutionDir)bin\Elysium\include\Glad\" /S /Y /I</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -190,6 +193,7 @@ xcopy "$(ProjectDir)include\*.h" "$(SolutionDir)bin\Elysium\include\Glad\" /S /Y
     </Link>
     <PostBuildEvent>
       <Command>rmdir "$(SolutionDir)bin\Elysium\" /s /q
+mkdir "$(SolutionDir)bin\Elysium\include\Glad\"
 xcopy "$(ProjectDir)include\*.h" "$(SolutionDir)bin\Elysium\include\Glad\" /S /Y /I</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
