@@ -164,19 +164,22 @@ namespace Elysium
             }
         }
 
-        void readWeightVectorFromFile(const char* filename)
+        bool readWeightVectorFromFile(const char* filename)
         {
+            bool isOpen = false;
             std::ifstream file(filename);
             if (file.is_open())
             {
+                isOpen = true;
                 std::string line;
                 for (size_t i = 0; i < N; i++)
                 {
                     if (getline(file, line))
                         WeightVector[i] = std::stof(line);
                 }
+                file.close();
             }
-            file.close();
+            return isOpen;
         }
 
         void saveWeightVectorToFile(const char* filename)

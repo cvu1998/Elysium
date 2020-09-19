@@ -36,11 +36,13 @@ namespace Elysium
         StateValueFunction[currentState] += LearningRate * (nextState.getReward() + (DiscountFactor * nextStateValue) - StateValueFunction[currentState]);
     }
 
-    void TabularRLAgent::readFunctionFromFile(const char* filename)
+    bool TabularRLAgent::readFunctionFromFile(const char* filename)
     {
+        bool isOpen = false;
         std::ifstream functionFile(filename);
         if (functionFile.is_open())
         {
+            isOpen = true;
             std::string line;
             uint8_t counter = 0;
 
@@ -61,6 +63,7 @@ namespace Elysium
             }
             functionFile.close();
         }
+        return isOpen;
     }
 
     void TabularRLAgent::saveFunctionToFile(const char* filename)
@@ -155,11 +158,13 @@ namespace Elysium
         ActionValueFunction[pair] += LearningRate * (nextState.getReward() + (DiscountFactor * expectedValue) - ActionValueFunction[pair]);
     }
 
-    void TabularControlRLAgent::readFunctionFromFile(const char* filename)
+    bool TabularControlRLAgent::readFunctionFromFile(const char* filename)
     {
+        bool isOpen = false;
         std::ifstream functionFile(filename);
         if (functionFile.is_open())
         {
+            isOpen = true;
             std::string line;
             uint8_t counter = 0;
 
@@ -184,6 +189,7 @@ namespace Elysium
             }
             functionFile.close();
         }
+        return isOpen;
     }
 
     void TabularControlRLAgent::saveFunctionToFile(const char* filename)

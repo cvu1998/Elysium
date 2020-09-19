@@ -27,7 +27,7 @@ namespace Elysium
         float getStateValue(const State& state);
         void updateStateValue(const State& currentState, const State& nextState);
 
-        void readFunctionFromFile(const char* filename);
+        bool readFunctionFromFile(const char* filename);
         void saveFunctionToFile(const char* filename);
 
     };
@@ -53,7 +53,7 @@ namespace Elysium
         void updateActionValueQL(const State_Action_Pair& pair, const State& nextState, std::vector<Action> actions);
         void updateActionValueES(const State_Action_Pair& pair, const State& nextState, std::vector<Action> actions);
 
-        void readFunctionFromFile(const char* filename);
+        bool readFunctionFromFile(const char* filename);
         void saveFunctionToFile(const char* filename);
     };
 }

@@ -104,7 +104,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(ProjectDir)src\*.h" "$(SolutionDir)bin\Elysium\include\" /S /Y /I
+      <Command>rmdir "$(SolutionDir)bin\Elysium\include\Elysium\" /s /q
+xcopy "$(ProjectDir)src\*.h" "$(SolutionDir)bin\Elysium\include\" /S /Y /I
 xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\Elysium\include\" /S /Y /I
 xcopy "$(ProjectDir)src\*.inl" "$(SolutionDir)bin\Elysium\include\" /S /Y /I</Command>
     </PostBuildEvent>
@@ -135,7 +136,8 @@ xcopy "$(ProjectDir)src\*.inl" "$(SolutionDir)bin\Elysium\include\" /S /Y /I</Co
       <AdditionalLibraryDirectories>$(SolutionDir)bin\$(Configuration)-$(Platform)\Glad\</AdditionalLibraryDirectories>
     </Lib>
     <PostBuildEvent>
-      <Command>xcopy "$(ProjectDir)src\*.h" "$(SolutionDir)bin\Elysium\include\" /S /Y /I
+      <Command>rmdir "$(SolutionDir)bin\Elysium\include\Elysium\" /s /q
+xcopy "$(ProjectDir)src\*.h" "$(SolutionDir)bin\Elysium\include\" /S /Y /I
 xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\Elysium\include\" /S /Y /I
 xcopy "$(ProjectDir)src\*.inl" "$(SolutionDir)bin\Elysium\include\" /S /Y /I</Command>
     </PostBuildEvent>
@@ -158,7 +160,8 @@ xcopy "$(ProjectDir)src\*.inl" "$(SolutionDir)bin\Elysium\include\" /S /Y /I</Co
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(ProjectDir)src\*.h" "$(SolutionDir)bin\Elysium\include\" /S /Y /I
+      <Command>rmdir "$(SolutionDir)bin\Elysium\include\Elysium\" /s /q
+xcopy "$(ProjectDir)src\*.h" "$(SolutionDir)bin\Elysium\include\" /S /Y /I
 xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\Elysium\include\" /S /Y /I
 xcopy "$(ProjectDir)src\*.inl" "$(SolutionDir)bin\Elysium\include\" /S /Y /I</Command>
     </PostBuildEvent>
@@ -193,7 +196,8 @@ xcopy "$(ProjectDir)src\*.inl" "$(SolutionDir)bin\Elysium\include\" /S /Y /I</Co
       <AdditionalLibraryDirectories>$(SolutionDir)bin\$(Configuration)-$(Platform)\Glad\</AdditionalLibraryDirectories>
     </Lib>
     <PostBuildEvent>
-      <Command>xcopy "$(ProjectDir)src\*.h" "$(SolutionDir)bin\Elysium\include\" /S /Y /I
+      <Command>rmdir "$(SolutionDir)bin\Elysium\include\Elysium\" /s /q
+xcopy "$(ProjectDir)src\*.h" "$(SolutionDir)bin\Elysium\include\" /S /Y /I
 xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\Elysium\include\" /S /Y /I
 xcopy "$(ProjectDir)src\*.inl" "$(SolutionDir)bin\Elysium\include\" /S /Y /I</Command>
     </PostBuildEvent>
