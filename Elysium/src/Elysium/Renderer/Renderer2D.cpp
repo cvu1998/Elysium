@@ -5,34 +5,49 @@
 #include "Elysium/Math.h"
 
 static const size_t MaxQuadCount = 10000;
-static const size_t MaxVertexCount = MaxQuadCount * 4;
-static const size_t MaxIndexCount = MaxQuadCount * 6;
+static const size_t MaxQuadVertexCount = MaxQuadCount * 4;
+static const size_t MaxQuadIndexCount = MaxQuadCount * 6;
 static const size_t MaxTextureCount = 32;
+
+static const uint32_t MaxLines = 10000;
+static const uint32_t MaxLineVertexCount = MaxLines * 2;
+static const uint32_t MaxLineIndexCount = MaxLines * 2;
 
 namespace Elysium
 {
     struct Renderer2DData
     {
+        std::unique_ptr<VertexBuffer> QuadVertexBuffer;
+        std::unique_ptr<IndexBuffer> QuadIndexBuffer;
+        std::unique_ptr<VertexArray> QuadVertexArray;
 
-        std::unique_ptr<VertexBuffer> vBuffer;
-        std::unique_ptr<IndexBuffer> iBuffer;
-        std::unique_ptr<VertexArray> vArray;
+        std::unique_ptr<Shader> QuadShader;
 
-        std::unique_ptr<Shader> shader;
+        unsigned int QuadIndexCount = 0;
 
-        Texture white;
+        QuadVertex* QuadBuffer = nullptr;
+        QuadVertex* QuadBufferPtr = nullptr;
 
-        unsigned int IndexCount = 0;
-
-        Vertex* buffer = nullptr;
-        Vertex* BufferPtr = nullptr;
-
+        Texture White;
         std::array<unsigned int, MaxTextureCount> TextureSlots;
         unsigned int TextureSlotIndex = 1;
 
         glm::vec2 PositionSign[4] = { { -1.0f, -1.0f }, { 1.0f, -1.0f }, { 1.0f,  1.0f }, {-1.0f, 1.0f } };
         glm::vec2 TextureCoordinates[4] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f,  1.0f }, { 0.0f, 1.0f } };
         glm::vec2 QuadVertexPositions[4] = { {-0.5, -0.5 }, { 0.5, -0.5 }, { 0.5,  0.5 }, {-0.5,  0.5 } };
+
+        std::unique_ptr<VertexBuffer> LineVertexBuffer;
+        std::unique_ptr<IndexBuffer> LineIndexBuffer;
+        std::unique_ptr<VertexArray> LineVertexArray;
+
+        std::unique_ptr<Shader> LineShader;
+
+        unsigned int LineIndexCount = 0;
+
+        LineVertex* LineBuffer = nullptr;
+        LineVertex* LineBufferPtr = nullptr;
+
+        glm::mat4 CameraViewProj;
 
         Renderer2D::Stats RendererStats;
     };
@@ -43,111 +58,174 @@ namespace Elysium
     void Renderer2D::Init()
     {
         s_Data = new Renderer2DData;
-        s_Data->buffer = new Vertex[MaxVertexCount];
 
-        s_Data->vArray = std::make_unique<VertexArray>();
-        s_Data->vArray->bind();
+        // -----------Quads---------- //
 
-        s_Data->vBuffer = std::make_unique<VertexBuffer>((unsigned int)MaxVertexCount);
+        s_Data->QuadBuffer = new QuadVertex[MaxQuadVertexCount];
 
-        VertexBufferLayout layout;
-        layout.push<float>(2);
-        layout.push<float>(4);
-        layout.push<float>(2);
-        layout.push<float>(1);
-        s_Data->vArray->addBuffer(*(s_Data->vBuffer), layout);
+        s_Data->QuadVertexArray = std::make_unique<VertexArray>();
+        s_Data->QuadVertexArray->bind();
+
+        s_Data->QuadVertexBuffer = std::make_unique<VertexBuffer>((unsigned int)MaxQuadVertexCount);
+
+        VertexBufferLayout quadLayout;
+        quadLayout.push<float>(2);
+        quadLayout.push<float>(4);
+        quadLayout.push<float>(2);
+        quadLayout.push<float>(1);
+        s_Data->QuadVertexArray->addBuffer(*(s_Data->QuadVertexBuffer), quadLayout);
 
         unsigned int offset = 0;
-        unsigned int indices[MaxIndexCount];
-        for (size_t i = 0; i < MaxIndexCount; i += 6)
+        unsigned int quadIndices[MaxQuadIndexCount];
+        for (size_t i = 0; i < MaxQuadIndexCount; i += 6)
         {
-            indices[i + 0] = 0 + offset;
-            indices[i + 1] = 1 + offset;
-            indices[i + 2] = 2 + offset;
+            quadIndices[i + 0] = 0 + offset;
+            quadIndices[i + 1] = 1 + offset;
+            quadIndices[i + 2] = 2 + offset;
 
-            indices[i + 3] = 2 + offset;
-            indices[i + 4] = 3 + offset;
-            indices[i + 5] = 0 + offset;
+            quadIndices[i + 3] = 2 + offset;
+            quadIndices[i + 4] = 3 + offset;
+            quadIndices[i + 5] = 0 + offset;
 
             offset += 4;
         }
 
-        s_Data->iBuffer = std::make_unique<IndexBuffer>(indices, (unsigned int)MaxIndexCount);
+        s_Data->QuadIndexBuffer = std::make_unique<IndexBuffer>(quadIndices, (unsigned int)MaxQuadIndexCount);
 
         GL_ASSERT(glEnable(GL_BLEND));
         GL_ASSERT(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
-        s_Data->TextureSlots[0] = s_Data->white.getTextureData().getRendererID();
+        s_Data->TextureSlots[0] = s_Data->White.getTextureData().getRendererID();
         for (size_t i = 1; i < MaxTextureCount; i++)
         {
             s_Data->TextureSlots[i] = 0;
         }
 
-        s_Data->shader = std::make_unique<Shader>("res/shaders/batch_rendering.shader");
-        s_Data->shader->bind();
+        s_Data->QuadShader = std::make_unique<Shader>("res/shaders/batch_rendering.shader");
+        s_Data->QuadShader->bind();
 
         int sampler[32];
         for (int i = 0; i < 32; i++)
             sampler[i] = i;
-        s_Data->shader->setUniform1iv("u_Textures", 32, sampler);
+        s_Data->QuadShader->setUniform1iv("u_Textures", 32, sampler);
+
+        // -----------Lines---------- //
+
+        s_Data->LineBuffer = new LineVertex[MaxLineVertexCount];
+
+        s_Data->LineVertexArray = std::make_unique<VertexArray>();
+        s_Data->LineVertexArray->bind();
+
+        s_Data->LineVertexBuffer = std::make_unique<VertexBuffer>((unsigned int)MaxLineVertexCount);
+
+        VertexBufferLayout lineLayout;
+        lineLayout.push<float>(2);
+        lineLayout.push<float>(4);
+        s_Data->LineVertexArray->addBuffer(*(s_Data->LineVertexBuffer), lineLayout);
+
+        unsigned int lineIndices[MaxQuadIndexCount];
+        for (size_t i = 0; i < MaxLineIndexCount; i++)
+            lineIndices[i] = (unsigned int)i;
+
+        s_Data->LineIndexBuffer = std::make_unique<IndexBuffer>(lineIndices, (unsigned int)MaxLineIndexCount);
+
+        s_Data->LineShader = std::make_unique<Shader>("res/shaders/line.shader");
     }
 
     void Renderer2D::Shutdown()
     {
-        delete[] s_Data->buffer;
+        delete[] s_Data->QuadBuffer;
+        delete[] s_Data->LineBuffer;
         delete s_Data;
     }
 
     void Renderer2D::beginScene(const Elysium::OrthographicCamera& camera)
     {
-        s_Data->shader->bind();
-        s_Data->shader->setUniformMat4f("u_ViewProjection", camera.getViewProjectionMatrix());
+        s_Data->CameraViewProj = camera.getViewProjectionMatrix();
 
-        Renderer2D::beginBatch();
+        Renderer2D::beginQuadBatch();
+
+        Renderer2D::beginLineBatch();
     }
 
     void Renderer2D::endScene()
     {
-        Renderer2D::endBatch();
-        Renderer2D::flush();
+        if (s_Data->LineBufferPtr != s_Data->LineBuffer)
+        {
+            Renderer2D::endLineBatch();
+            Renderer2D::flushLines();
+        }
+
+        if (s_Data->QuadBufferPtr != s_Data->QuadBuffer)
+        {
+            Renderer2D::endQuadBatch();
+            Renderer2D::flushQuads();
+        }
     }
 
-    void Renderer2D::beginBatch()
+    void Renderer2D::beginQuadBatch()
     {
-        s_Data->BufferPtr = s_Data->buffer;
+        s_Data->QuadBufferPtr = s_Data->QuadBuffer;
     }
 
-    void Renderer2D::endBatch()
+    void Renderer2D::endQuadBatch()
     {
-        GLsizeiptr size = (uint8_t*)s_Data->BufferPtr - (uint8_t*)s_Data->buffer;
-        s_Data->vBuffer->bind();
-        GL_ASSERT(glBufferSubData(GL_ARRAY_BUFFER, 0, size, s_Data->buffer));
+        GLsizeiptr size = (uint8_t*)s_Data->QuadBufferPtr - (uint8_t*)s_Data->QuadBuffer;
+        s_Data->QuadVertexBuffer->bind();
+        GL_ASSERT(glBufferSubData(GL_ARRAY_BUFFER, 0, size, s_Data->QuadBuffer));
     }
 
-    void Renderer2D::flush()
+    void Renderer2D::flushQuads()
     {
+        s_Data->QuadShader->bind();
+        s_Data->QuadShader->setUniformMat4f("u_ViewProjection", s_Data->CameraViewProj);
+
         for (unsigned int i = 0; i < s_Data->TextureSlotIndex; i++) {
             GL_ASSERT(glActiveTexture(GL_TEXTURE0 + i));
             GL_ASSERT(glBindTexture(GL_TEXTURE_2D, s_Data->TextureSlots[i]));
         }
 
-        s_Data->vArray->bind();
-        GL_ASSERT(glDrawElements(GL_TRIANGLES, s_Data->IndexCount, GL_UNSIGNED_INT, nullptr));
+        s_Data->QuadVertexArray->bind();
+        GL_ASSERT(glDrawElements(GL_TRIANGLES, s_Data->QuadIndexCount, GL_UNSIGNED_INT, nullptr));
         s_Data->RendererStats.DrawCount++;
 
-        s_Data->IndexCount = 0;
+        s_Data->QuadIndexCount = 0;
         s_Data->TextureSlotIndex = 1;
+    }
+
+    void Renderer2D::beginLineBatch()
+    {
+        s_Data->LineBufferPtr = s_Data->LineBuffer;
+    }
+
+    void Renderer2D::endLineBatch()
+    {
+        GLsizeiptr size = (uint8_t*)s_Data->LineBufferPtr - (uint8_t*)s_Data->LineBuffer;
+        s_Data->LineVertexBuffer->bind();
+        GL_ASSERT(glBufferSubData(GL_ARRAY_BUFFER, 0, size, s_Data->LineBuffer));
+    }
+
+    void Renderer2D::flushLines()
+    {
+        s_Data->LineShader->bind();
+        s_Data->LineShader->setUniformMat4f("u_ViewProjection", s_Data->CameraViewProj);
+
+        s_Data->LineVertexArray->bind();
+        GL_ASSERT(glDrawElements(GL_LINES, s_Data->LineIndexCount, GL_UNSIGNED_INT, nullptr));
+        s_Data->RendererStats.DrawCount++;
+
+        s_Data->LineIndexCount = 0;
     }
 
     // -----------Draw Quad---------- //
 
     void Renderer2D::drawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color)
     {
-        if (s_Data->IndexCount >= MaxIndexCount)
+        if (s_Data->QuadIndexCount >= MaxQuadIndexCount)
         {
-            endBatch();
-            flush();
-            beginBatch();
+            endQuadBatch();
+            flushQuads();
+            beginQuadBatch();
         }
 
         float textureIndex = 0.0f;
@@ -157,26 +235,26 @@ namespace Elysium
         for (size_t i = 0; i < 4; i++)
         {
 
-            s_Data->BufferPtr->position = { position.x + halfLength * s_Data->PositionSign[i].x,
+            s_Data->QuadBufferPtr->position = { position.x + halfLength * s_Data->PositionSign[i].x,
                 position.y + halfWidth * s_Data->PositionSign[i].y };
 
-            s_Data->BufferPtr->color = color;
-            s_Data->BufferPtr->TextureCoordinates = s_Data->TextureCoordinates[i];
-            s_Data->BufferPtr->TextureID = textureIndex;
-            s_Data->BufferPtr++;
+            s_Data->QuadBufferPtr->color = color;
+            s_Data->QuadBufferPtr->TextureCoordinates = s_Data->TextureCoordinates[i];
+            s_Data->QuadBufferPtr->TextureID = textureIndex;
+            s_Data->QuadBufferPtr++;
         }
 
-        s_Data->IndexCount += 6;
+        s_Data->QuadIndexCount += 6;
         s_Data->RendererStats.QuadCount++;
     }
 
     void Renderer2D::drawQuad(const glm::vec2& position, const glm::vec2& size, const TextureData& texture, const glm::vec4& color)
     {
-        if (s_Data->IndexCount >= MaxIndexCount || s_Data->TextureSlotIndex > 32)
+        if (s_Data->QuadIndexCount >= MaxQuadIndexCount || s_Data->TextureSlotIndex > 32)
         {
-            endBatch();
-            flush();
-            beginBatch();
+            endQuadBatch();
+            flushQuads();
+            beginQuadBatch();
         }
 
         unsigned int textureID = texture.getRendererID();
@@ -202,16 +280,16 @@ namespace Elysium
 
         for (size_t i = 0; i < 4; i++)
         {
-            s_Data->BufferPtr->position = { position.x + halfLength * s_Data->PositionSign[i].x,
+            s_Data->QuadBufferPtr->position = { position.x + halfLength * s_Data->PositionSign[i].x,
                 position.y + halfWidth * s_Data->PositionSign[i].y };
 
-            s_Data->BufferPtr->color = color;
-            s_Data->BufferPtr->TextureCoordinates = texture.TextureCoordinates[i];
-            s_Data->BufferPtr->TextureID = textureIndex;
-            s_Data->BufferPtr++;
+            s_Data->QuadBufferPtr->color = color;
+            s_Data->QuadBufferPtr->TextureCoordinates = texture.TextureCoordinates[i];
+            s_Data->QuadBufferPtr->TextureID = textureIndex;
+            s_Data->QuadBufferPtr++;
         }
 
-        s_Data->IndexCount += 6;
+        s_Data->QuadIndexCount += 6;
         s_Data->RendererStats.QuadCount++;
     }
 
@@ -219,11 +297,11 @@ namespace Elysium
 
     void Renderer2D::drawQuadWithRotation(const glm::vec2& position, const glm::vec2& size, float rotation, const glm::vec4& color)
     {
-        if (s_Data->IndexCount >= MaxIndexCount)
+        if (s_Data->QuadIndexCount >= MaxQuadIndexCount)
         {
-            endBatch();
-            flush();
-            beginBatch();
+            endQuadBatch();
+            flushQuads();
+            beginQuadBatch();
         }
 
         float textureIndex = 0.0f;
@@ -233,27 +311,27 @@ namespace Elysium
 
         for (size_t i = 0; i < 4; i++)
         {
-            s_Data->BufferPtr->position = (glm::vec2) (Complex::scaleXY(Complex(s_Data->QuadVertexPositions[i].x, s_Data->QuadVertexPositions[i].y), size.x, size.y)
+            s_Data->QuadBufferPtr->position = (glm::vec2) (Complex::scaleXY(Complex(s_Data->QuadVertexPositions[i].x, s_Data->QuadVertexPositions[i].y), size.x, size.y)
                 * transform
                 + translation);
 
-            s_Data->BufferPtr->color = color;
-            s_Data->BufferPtr->TextureCoordinates = s_Data->TextureCoordinates[i];
-            s_Data->BufferPtr->TextureID = textureIndex;
-            s_Data->BufferPtr++;
+            s_Data->QuadBufferPtr->color = color;
+            s_Data->QuadBufferPtr->TextureCoordinates = s_Data->TextureCoordinates[i];
+            s_Data->QuadBufferPtr->TextureID = textureIndex;
+            s_Data->QuadBufferPtr++;
         }
 
-        s_Data->IndexCount += 6;
+        s_Data->QuadIndexCount += 6;
         s_Data->RendererStats.QuadCount++;
     }
 
     void Renderer2D::drawQuadWithRotation(const glm::vec2& position, const glm::vec2& size, float rotation, const TextureData& texture, const glm::vec4& color)
     {
-        if (s_Data->IndexCount >= MaxIndexCount || s_Data->TextureSlotIndex > 32)
+        if (s_Data->QuadIndexCount >= MaxQuadIndexCount || s_Data->TextureSlotIndex > 32)
         {
-            endBatch();
-            flush();
-            beginBatch();
+            endQuadBatch();
+            flushQuads();
+            beginQuadBatch();
         }
 
         unsigned int textureID = texture.getRendererID();
@@ -279,18 +357,40 @@ namespace Elysium
 
         for (size_t i = 0; i < 4; i++)
         {
-            s_Data->BufferPtr->position = (glm::vec2) (Complex::scaleXY(Complex(s_Data->QuadVertexPositions[i].x, s_Data->QuadVertexPositions[i].y), size.x, size.y)
+            s_Data->QuadBufferPtr->position = (glm::vec2) (Complex::scaleXY(Complex(s_Data->QuadVertexPositions[i].x, s_Data->QuadVertexPositions[i].y), size.x, size.y)
                 * transform
                 + translation);
 
-            s_Data->BufferPtr->color = color;
-            s_Data->BufferPtr->TextureCoordinates = texture.TextureCoordinates[i];
-            s_Data->BufferPtr->TextureID = textureIndex;
-            s_Data->BufferPtr++;
+            s_Data->QuadBufferPtr->color = color;
+            s_Data->QuadBufferPtr->TextureCoordinates = texture.TextureCoordinates[i];
+            s_Data->QuadBufferPtr->TextureID = textureIndex;
+            s_Data->QuadBufferPtr++;
         }
 
-        s_Data->IndexCount += 6;
+        s_Data->QuadIndexCount += 6;
         s_Data->RendererStats.QuadCount++;
+    }
+
+    void Renderer2D::drawLine(const glm::vec2& p0, const glm::vec2& p1, const glm::vec4& color)
+    {
+        if (s_Data->LineIndexCount >= MaxLineIndexCount)
+        {
+            endLineBatch();
+            flushLines();
+            beginLineBatch();
+        }
+
+        s_Data->LineBufferPtr->position = p0;
+        s_Data->LineBufferPtr->color = color;
+        s_Data->LineBufferPtr++;
+
+        s_Data->LineBufferPtr->position = p1;
+        s_Data->LineBufferPtr->color = color;
+        s_Data->LineBufferPtr++;
+
+        s_Data->LineIndexCount += 2;
+
+        s_Data->RendererStats.LineCount++;
     }
 
     Renderer2D::Stats& Renderer2D::getStats()

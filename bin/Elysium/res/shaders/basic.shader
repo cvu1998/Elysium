@@ -1,8 +1,8 @@
 #shader vertex
 #version 330 core
 
-//index of attribute in glVertexAttribPointer
-layout(location = 0) in vec4 positions;
+// Index of attribute in glVertexAttribPointer
+layout(location = 0) in vec4 a_Position;
 layout(location = 1) in vec2 a_TextureCoord;
 
 out vec2 v_TexCoord;
@@ -11,7 +11,7 @@ uniform mat4 u_ViewProjection;
 
 void main()
 {
-   gl_Position = u_ViewProjection * positions;
+   gl_Position = u_ViewProjection * a_Position;
    v_TexCoord = a_TextureCoord;
 };
 

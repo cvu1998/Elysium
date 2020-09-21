@@ -31,7 +31,7 @@ struct VertexBufferElement
             case DataType::FLOAT:          return sizeof(GL_FLOAT);
             case DataType::UNSIGNED_INT:   return sizeof(GL_UNSIGNED_INT);
             case DataType::UNSIGNED_BYTE:  return sizeof(GL_UNSIGNED_BYTE);
-            case DataType::QUAD_VERTEX:    return sizeof(Vertex);
+            case DataType::QUAD_VERTEX:    return sizeof(QuadVertex);
         }
         ASSERT(false);
         return 0;
@@ -61,7 +61,7 @@ public:
    }
 
    template<>
-   void push<Vertex>(unsigned int count)
+   void push<QuadVertex>(unsigned int count)
    {
        m_Elements.push_back({ count, GL_FLOAT, GL_FALSE });
        m_Stride = VertexBufferElement::getSizeOfType(DataType::QUAD_VERTEX);

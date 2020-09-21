@@ -12,9 +12,13 @@ namespace Elysium
     class Renderer2D
     {
     private:
-        static void beginBatch();
-        static void endBatch();
-        static void flush();
+        static void beginQuadBatch();
+        static void endQuadBatch();
+        static void flushQuads();
+
+        static void beginLineBatch();
+        static void endLineBatch();
+        static void flushLines();
 
     public:
         /***ONLY CALL ONCE***/
@@ -39,9 +43,13 @@ namespace Elysium
         static void drawQuadWithRotation(const glm::vec2& position, const glm::vec2& size, float rotation, const TextureData& texture,
             const glm::vec4& color = { 1.0f, 1.0f, 1.0f, 1.0f });
 
+        static void drawLine(const glm::vec2& p0, const glm::vec2& p1,
+            const glm::vec4& color = { 1.0f, 1.0f, 1.0f, 1.0f });
+
         struct Stats {
             unsigned int DrawCount = 0;
             unsigned int QuadCount = 0;
+            unsigned int LineCount = 0;
         };
 
         static Stats& getStats();

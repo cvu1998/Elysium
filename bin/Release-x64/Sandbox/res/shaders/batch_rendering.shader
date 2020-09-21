@@ -1,8 +1,8 @@
 #shader vertex
 #version 330 core
 
-//index of attribute in glVertexAttribPointer
-layout(location = 0) in vec4 positions;
+// Index of attribute in glVertexAttribPointer
+layout(location = 0) in vec4 a_Position;
 layout(location = 1) in vec4 a_Color;
 layout(location = 2) in vec2 a_TextureCoord;
 layout(location = 3) in float a_TextureID;
@@ -15,7 +15,7 @@ out float v_TextureID;
 
 void main()
 {
-   gl_Position = u_ViewProjection * positions;
+   gl_Position = u_ViewProjection * a_Position;
    v_Color = a_Color;
    v_TextureCoord = a_TextureCoord;
    v_TextureID = a_TextureID;

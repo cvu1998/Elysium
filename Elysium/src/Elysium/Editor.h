@@ -71,7 +71,11 @@ namespace Elysium
 
         SceneData m_Data;
 
+        #ifdef _DEBUG
+        char m_Filename[256] = "res/scenes/Test";
+        #else
         char m_Filename[256] = "Scene";
+        #endif
 
     private:
         bool isWithinBounds(Vector2 position, Vector2 bottom, Vector2 top);

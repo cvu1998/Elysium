@@ -151,7 +151,31 @@ namespace Elysium
         }
         ImGui::End();
 
+        #ifdef _DEBUG
+        ImGui::Begin("Statistics");
+        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+        ImGui::Text("Number of Draw Calls: %d", Elysium::Renderer2D::getStats().DrawCount);
+        ImGui::Text("Number of Quads: %d", Elysium::Renderer2D::getStats().QuadCount);
+        ImGui::Text("Number of Lines: %d", Elysium::Renderer2D::getStats().LineCount);
+        ImGui::End();
+        #endif
+
+        Renderer2D::resetStats();
+
         Renderer2D::beginScene(m_CameraController.getCamera());
+        if (m_CameraController.getBoundsWidth() * m_CameraController.getBoundsHeight() <= 5000)
+        {
+            float leftBound = floor(m_CameraController.getCamera().getPosition().x - (m_CameraController.getBoundsWidth() * 0.5f));
+            float rightBound = ceil(m_CameraController.getCamera().getPosition().x + (m_CameraController.getBoundsWidth() * 0.5f));
+            for (float bottom = leftBound; bottom < rightBound; bottom++)
+            {
+                for (float left = leftBound; left < rightBound; left++)
+                {
+                    Renderer2D::drawLine({ left, bottom }, { left + 1.0f, bottom });
+                    Renderer2D::drawLine({ left, bottom }, { left, bottom + 1.0f });
+                }
+            }
+        }
         for (Quad& q : m_Data.Quads)
         {
             Renderer2D::drawQuadWithRotation({ q.Position[0], q.Position[1] }, { q.Size[0], q.Size[1] }, radians(q.Rotation),
