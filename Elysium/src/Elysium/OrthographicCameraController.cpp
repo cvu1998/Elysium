@@ -18,28 +18,28 @@ namespace Elysium
     {
         if (Input::isKeyPressed(ELY_KEY_UP))
         {
-            m_CameraPosition.x += -sin(glm::radians(m_CameraRotation)) * m_CameraTranslationSpeed * ts;
-            m_CameraPosition.y += cos(glm::radians(m_CameraRotation)) * m_CameraTranslationSpeed * ts;
+            m_CameraPosition.x += -sin(glm::radians(m_CameraRotation)) * CameraTranslationSpeed * ts;
+            m_CameraPosition.y += cos(glm::radians(m_CameraRotation)) * CameraTranslationSpeed * ts;
         }
         else if (Input::isKeyPressed(ELY_KEY_DOWN))
         {
-            m_CameraPosition.x -= -sin(glm::radians(m_CameraRotation)) * m_CameraTranslationSpeed * ts;
-            m_CameraPosition.y -= cos(glm::radians(m_CameraRotation)) * m_CameraTranslationSpeed * ts;
+            m_CameraPosition.x -= -sin(glm::radians(m_CameraRotation)) * CameraTranslationSpeed * ts;
+            m_CameraPosition.y -= cos(glm::radians(m_CameraRotation)) * CameraTranslationSpeed * ts;
         }
 
         if (Input::isKeyPressed(ELY_KEY_LEFT))
         {
-            m_CameraPosition.x -= cos(glm::radians(m_CameraRotation)) * m_CameraTranslationSpeed * ts;
-            m_CameraPosition.y -= sin(glm::radians(m_CameraRotation)) * m_CameraTranslationSpeed * ts;
+            m_CameraPosition.x -= cos(glm::radians(m_CameraRotation)) * CameraTranslationSpeed * ts;
+            m_CameraPosition.y -= sin(glm::radians(m_CameraRotation)) * CameraTranslationSpeed * ts;
         }
         else if (Input::isKeyPressed(ELY_KEY_RIGHT))
         {
-            m_CameraPosition.x += cos(glm::radians(m_CameraRotation)) * m_CameraTranslationSpeed * ts;
-            m_CameraPosition.y += sin(glm::radians(m_CameraRotation)) * m_CameraTranslationSpeed * ts;
+            m_CameraPosition.x += cos(glm::radians(m_CameraRotation)) * CameraTranslationSpeed * ts;
+            m_CameraPosition.y += sin(glm::radians(m_CameraRotation)) * CameraTranslationSpeed * ts;
         }
 
         if (Input::isKeyPressed(ELY_KEY_RIGHT_ALT))
-            m_CameraRotation += m_CameraRotationSpeed * ts;
+            m_CameraRotation += CameraRotationSpeed * ts;
 
         m_Camera.setPosition(m_CameraPosition);
         m_Camera.setRotation(glm::radians(m_CameraRotation));
@@ -54,7 +54,7 @@ namespace Elysium
 
     bool OrthographicCameraController::onMouseScrollEvent(MouseScrollEvent& event)
     {
-        m_ZoomLevel -= event.getYOffset();
+        m_ZoomLevel -= CameraZoomSpeed * event.getYOffset();
         m_ZoomLevel = std::max(m_ZoomLevel, 0.25f);
         m_Camera.setProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
         return false;

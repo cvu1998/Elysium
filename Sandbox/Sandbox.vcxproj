@@ -19,8 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Game\CellArea.cpp" />
     <ClCompile Include="src\Game\FlappyBird.cpp" />
     <ClCompile Include="src\Game\Tic-Tac-Toe.cpp" />
+    <ClCompile Include="src\Scenes\CellGrowthScene.cpp" />
     <ClCompile Include="src\Scenes\FlappyBirdScene.cpp" />
     <ClCompile Include="src\Scenes\RLTTTScene.cpp" />
     <ClCompile Include="src\Scenes\SoccerScene.cpp" />
@@ -41,9 +43,11 @@
     <ClCompile Include="src\test\Texture2D_Test.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Game\CellArea.h" />
     <ClInclude Include="src\Game\FlappyBird.h" />
     <ClInclude Include="src\Game\Tic-Tac-Toe.h" />
     <ClInclude Include="src\Game\Values.h" />
+    <ClInclude Include="src\Scenes\CellGrowthScene.h" />
     <ClInclude Include="src\Scenes\FlappyBirdScene.h" />
     <ClInclude Include="src\Scenes\RLTTTScene.h" />
     <ClInclude Include="src\Scenes\SoccerScene.h" />
@@ -65,7 +69,7 @@
   <ItemGroup>
     <None Include="res\shaders\basic.shader" />
     <None Include="res\shaders\batch_rendering.shader" />
-    <None Include="res\shaders\line.shader" />
+    <None Include="res\shaders\vertex_primitive.shader" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

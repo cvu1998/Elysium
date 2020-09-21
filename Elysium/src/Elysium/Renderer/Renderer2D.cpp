@@ -9,14 +9,18 @@ static const size_t MaxQuadVertexCount = MaxQuadCount * 4;
 static const size_t MaxQuadIndexCount = MaxQuadCount * 6;
 static const size_t MaxTextureCount = 32;
 
-static const uint32_t MaxLines = 10000;
-static const uint32_t MaxLineVertexCount = MaxLines * 2;
-static const uint32_t MaxLineIndexCount = MaxLines * 2;
+static const uint32_t MaxLineCount = 20000;
+static const uint32_t MaxLineVertexCount = MaxLineCount * 2;
+static const uint32_t MaxLineIndexCount = MaxLineCount * 2;
+
+static const uint32_t MaxPointCount = 40000;
 
 namespace Elysium
 {
     struct Renderer2DData
     {
+        // -----------Quads---------- //
+
         std::unique_ptr<VertexBuffer> QuadVertexBuffer;
         std::unique_ptr<IndexBuffer> QuadIndexBuffer;
         std::unique_ptr<VertexArray> QuadVertexArray;
@@ -36,6 +40,8 @@ namespace Elysium
         glm::vec2 TextureCoordinates[4] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f,  1.0f }, { 0.0f, 1.0f } };
         glm::vec2 QuadVertexPositions[4] = { {-0.5, -0.5 }, { 0.5, -0.5 }, { 0.5,  0.5 }, {-0.5,  0.5 } };
 
+        // -----------Lines---------- //
+
         std::unique_ptr<VertexBuffer> LineVertexBuffer;
         std::unique_ptr<IndexBuffer> LineIndexBuffer;
         std::unique_ptr<VertexArray> LineVertexArray;
@@ -44,8 +50,20 @@ namespace Elysium
 
         unsigned int LineIndexCount = 0;
 
-        LineVertex* LineBuffer = nullptr;
-        LineVertex* LineBufferPtr = nullptr;
+        Vertex* LineBuffer = nullptr;
+        Vertex* LineBufferPtr = nullptr;
+
+        // -----------Points---------- //
+
+        std::unique_ptr<VertexBuffer> PointVertexBuffer;
+        std::unique_ptr<VertexArray> PointVertexArray;
+
+        std::unique_ptr<Shader> PointShader;
+
+        unsigned int PointIndexCount = 0;
+
+        Vertex* PointBuffer = nullptr;
+        Vertex* PointBufferPtr = nullptr;
 
         glm::mat4 CameraViewProj;
 
@@ -66,7 +84,7 @@ namespace Elysium
         s_Data->QuadVertexArray = std::make_unique<VertexArray>();
         s_Data->QuadVertexArray->bind();
 
-        s_Data->QuadVertexBuffer = std::make_unique<VertexBuffer>((unsigned int)MaxQuadVertexCount);
+        s_Data->QuadVertexBuffer = std::make_unique<VertexBuffer>((unsigned int)MaxQuadVertexCount, DataType::QUAD_VERTEX);
 
         VertexBufferLayout quadLayout;
         quadLayout.push<float>(2);
@@ -111,31 +129,48 @@ namespace Elysium
 
         // -----------Lines---------- //
 
-        s_Data->LineBuffer = new LineVertex[MaxLineVertexCount];
+        s_Data->LineBuffer = new Vertex[MaxLineVertexCount];
 
         s_Data->LineVertexArray = std::make_unique<VertexArray>();
         s_Data->LineVertexArray->bind();
 
-        s_Data->LineVertexBuffer = std::make_unique<VertexBuffer>((unsigned int)MaxLineVertexCount);
+        s_Data->LineVertexBuffer = std::make_unique<VertexBuffer>((unsigned int)MaxLineVertexCount, DataType::VERTEX);
 
         VertexBufferLayout lineLayout;
         lineLayout.push<float>(2);
         lineLayout.push<float>(4);
         s_Data->LineVertexArray->addBuffer(*(s_Data->LineVertexBuffer), lineLayout);
 
-        unsigned int lineIndices[MaxQuadIndexCount];
+        unsigned int lineIndices[MaxLineIndexCount];
         for (size_t i = 0; i < MaxLineIndexCount; i++)
             lineIndices[i] = (unsigned int)i;
 
         s_Data->LineIndexBuffer = std::make_unique<IndexBuffer>(lineIndices, (unsigned int)MaxLineIndexCount);
 
-        s_Data->LineShader = std::make_unique<Shader>("res/shaders/line.shader");
+        s_Data->LineShader = std::make_unique<Shader>("res/shaders/vertex_primitive.shader");
+
+        // -----------Points---------- //
+
+        s_Data->PointBuffer = new Vertex[MaxPointCount];
+
+        s_Data->PointVertexArray = std::make_unique<VertexArray>();
+        s_Data->PointVertexArray->bind();
+
+        s_Data->PointVertexBuffer = std::make_unique<VertexBuffer>((unsigned int)MaxPointCount, DataType::VERTEX);
+
+        VertexBufferLayout pointLayout;
+        pointLayout.push<float>(2);
+        pointLayout.push<float>(4);
+        s_Data->PointVertexArray->addBuffer(*(s_Data->PointVertexBuffer), pointLayout);
+
+        s_Data->PointShader = std::make_unique<Shader>("res/shaders/vertex_primitive.shader");
     }
 
     void Renderer2D::Shutdown()
     {
         delete[] s_Data->QuadBuffer;
         delete[] s_Data->LineBuffer;
+        delete[] s_Data->PointBuffer;
         delete s_Data;
     }
 
@@ -144,12 +179,18 @@ namespace Elysium
         s_Data->CameraViewProj = camera.getViewProjectionMatrix();
 
         Renderer2D::beginQuadBatch();
-
         Renderer2D::beginLineBatch();
+        Renderer2D::beginPointBatch();
     }
 
     void Renderer2D::endScene()
     {
+        if (s_Data->PointBufferPtr != s_Data->PointBuffer)
+        {
+            Renderer2D::endPointBatch();
+            Renderer2D::flushPoints();
+        }
+
         if (s_Data->LineBufferPtr != s_Data->LineBuffer)
         {
             Renderer2D::endLineBatch();
@@ -186,6 +227,7 @@ namespace Elysium
         }
 
         s_Data->QuadVertexArray->bind();
+        s_Data->QuadIndexBuffer->bind();
         GL_ASSERT(glDrawElements(GL_TRIANGLES, s_Data->QuadIndexCount, GL_UNSIGNED_INT, nullptr));
         s_Data->RendererStats.DrawCount++;
 
@@ -211,10 +253,35 @@ namespace Elysium
         s_Data->LineShader->setUniformMat4f("u_ViewProjection", s_Data->CameraViewProj);
 
         s_Data->LineVertexArray->bind();
+        s_Data->LineIndexBuffer->bind();
         GL_ASSERT(glDrawElements(GL_LINES, s_Data->LineIndexCount, GL_UNSIGNED_INT, nullptr));
         s_Data->RendererStats.DrawCount++;
 
         s_Data->LineIndexCount = 0;
+    }
+
+    void Renderer2D::beginPointBatch()
+    {
+        s_Data->PointBufferPtr = s_Data->PointBuffer;
+    }
+
+    void Renderer2D::endPointBatch()
+    {
+        GLsizeiptr size = (uint8_t*)s_Data->PointBufferPtr - (uint8_t*)s_Data->PointBuffer;
+        s_Data->PointVertexBuffer->bind();
+        GL_ASSERT(glBufferSubData(GL_ARRAY_BUFFER, 0, size, s_Data->PointBuffer));
+    }
+
+    void Renderer2D::flushPoints()
+    {
+        s_Data->PointShader->bind();
+        s_Data->PointShader->setUniformMat4f("u_ViewProjection", s_Data->CameraViewProj);
+
+        s_Data->PointVertexArray->bind();
+        GL_ASSERT(glDrawArrays(GL_POINTS, 0, s_Data->PointIndexCount));
+        s_Data->RendererStats.DrawCount++;
+
+        s_Data->PointIndexCount = 0;
     }
 
     // -----------Draw Quad---------- //
@@ -391,6 +458,32 @@ namespace Elysium
         s_Data->LineIndexCount += 2;
 
         s_Data->RendererStats.LineCount++;
+    }
+
+    void Renderer2D::drawPoint(const glm::vec2& position, const glm::vec4& color)
+    {
+        if (s_Data->PointIndexCount >= MaxPointCount)
+        {
+            endPointBatch();
+            flushPoints();
+            beginPointBatch();
+        }
+
+        s_Data->PointBufferPtr->position = position;
+        s_Data->PointBufferPtr->color = color;
+        s_Data->PointBufferPtr++;
+
+        s_Data->PointIndexCount++;
+    }
+
+    void Renderer2D::setLineWidth(float width)
+    {
+        GL_ASSERT(glLineWidth(width));
+    }
+
+    void Renderer2D::setPointSize(float size)
+    {
+        GL_ASSERT(glPointSize(size));
     }
 
     Renderer2D::Stats& Renderer2D::getStats()

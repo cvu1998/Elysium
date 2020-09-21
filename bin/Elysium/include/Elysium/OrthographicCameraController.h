@@ -15,10 +15,12 @@ namespace Elysium
         OrthographicCamera m_Camera;
 
         glm::vec3 m_CameraPosition = { 0.0f, 0.0f, 0.0f };
-        float m_CameraTranslationSpeed = 3.0f;
-
         float m_CameraRotation = 0.0f;
-        float m_CameraRotationSpeed = 90.0f;
+
+    public:
+        float CameraTranslationSpeed = 3.0f;
+        float CameraRotationSpeed = 90.0f;
+        float CameraZoomSpeed = 1.0f;
 
     private:
         bool onMouseScrollEvent(MouseScrollEvent& event);
@@ -31,9 +33,6 @@ namespace Elysium
         inline float getBoundsHeight() { return 2 * m_ZoomLevel; }
         OrthographicCamera& getCamera() { return m_Camera; }
         const OrthographicCamera& getCamera() const { return m_Camera; }
-
-        inline const void setCameraTranslationSpeed(float translationSpeed) { m_CameraTranslationSpeed = translationSpeed; }
-        inline const void setCameraRotationSpeed(float rotationSpeed) { m_CameraRotationSpeed = rotationSpeed; }
 
         void onUpdate(Timestep ts);
         void onEvent(Event& event);

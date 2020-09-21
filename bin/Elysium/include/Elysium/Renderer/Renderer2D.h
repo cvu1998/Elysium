@@ -20,6 +20,10 @@ namespace Elysium
         static void endLineBatch();
         static void flushLines();
 
+        static void beginPointBatch();
+        static void endPointBatch();
+        static void flushPoints();
+
     public:
         /***ONLY CALL ONCE***/
         static void Init();
@@ -45,6 +49,12 @@ namespace Elysium
 
         static void drawLine(const glm::vec2& p0, const glm::vec2& p1,
             const glm::vec4& color = { 1.0f, 1.0f, 1.0f, 1.0f });
+
+        static void drawPoint(const glm::vec2& position,
+            const glm::vec4& color = { 1.0f, 1.0f, 1.0f, 1.0f });
+
+        static void setLineWidth(float width);
+        static void setPointSize(float size);
 
         struct Stats {
             unsigned int DrawCount = 0;

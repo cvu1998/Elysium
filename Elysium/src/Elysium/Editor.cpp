@@ -17,6 +17,7 @@ namespace Elysium
         m_WindowHeight(height),
         m_CameraController((float)m_WindowWidth / (float)m_WindowHeight, 5.0f)
     {
+        Renderer2D::setLineWidth(2.0f);
     }
 
     bool Editor::isWithinBounds(Vector2 position, Vector2 bottom, Vector2 top)
@@ -154,9 +155,9 @@ namespace Elysium
         #ifdef _DEBUG
         ImGui::Begin("Statistics");
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-        ImGui::Text("Number of Draw Calls: %d", Elysium::Renderer2D::getStats().DrawCount);
-        ImGui::Text("Number of Quads: %d", Elysium::Renderer2D::getStats().QuadCount);
-        ImGui::Text("Number of Lines: %d", Elysium::Renderer2D::getStats().LineCount);
+        ImGui::Text("Number of Draw Calls: %d", Renderer2D::getStats().DrawCount);
+        ImGui::Text("Number of Quads: %d", Renderer2D::getStats().QuadCount);
+        ImGui::Text("Number of Lines: %d", Renderer2D::getStats().LineCount);
         ImGui::End();
         #endif
 

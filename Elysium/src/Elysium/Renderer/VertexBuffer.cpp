@@ -2,14 +2,14 @@
 
 #include <glad/glad.h>
 
-#include "Elysium/Renderer/Shape.h"
 #include "Elysium/Utility.h"
 
-VertexBuffer::VertexBuffer(unsigned int numberofVertices)
+VertexBuffer::VertexBuffer(unsigned int numberofVertices, DataType type)
 {
+    unsigned int size = VertexBufferElement::getSizeOfType(type);
     glGenBuffers(1, &m_RendererID);
     glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(QuadVertex) * numberofVertices, nullptr, GL_DYNAMIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, size * numberofVertices, nullptr, GL_DYNAMIC_DRAW);
 }
 
 VertexBuffer::VertexBuffer(const void* data, unsigned int size) {

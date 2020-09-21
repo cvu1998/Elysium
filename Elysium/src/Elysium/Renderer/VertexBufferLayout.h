@@ -15,7 +15,8 @@ enum class DataType {
     FLOAT = GL_FLOAT,
     UNSIGNED_INT = GL_UNSIGNED_INT,
     UNSIGNED_BYTE = GL_UNSIGNED_BYTE,
-    QUAD_VERTEX = 0
+    QUAD_VERTEX = 0,
+    VERTEX = 1
 };
 
 struct VertexBufferElement 
@@ -28,10 +29,11 @@ struct VertexBufferElement
     {
         switch (type)
         {
-            case DataType::FLOAT:          return sizeof(GL_FLOAT);
-            case DataType::UNSIGNED_INT:   return sizeof(GL_UNSIGNED_INT);
-            case DataType::UNSIGNED_BYTE:  return sizeof(GL_UNSIGNED_BYTE);
-            case DataType::QUAD_VERTEX:    return sizeof(QuadVertex);
+        case DataType::FLOAT:          return sizeof(GL_FLOAT);
+        case DataType::UNSIGNED_INT:   return sizeof(GL_UNSIGNED_INT);
+        case DataType::UNSIGNED_BYTE:  return sizeof(GL_UNSIGNED_BYTE);
+        case DataType::QUAD_VERTEX:    return sizeof(QuadVertex);
+        case DataType::VERTEX:         return sizeof(Vertex);
         }
         ASSERT(false);
         return 0;

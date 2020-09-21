@@ -14,6 +14,7 @@
 *.obj
 *.opendb
 *.pdb
+*.recipe
 *.sqlite
 *.suo
 *.tlog
