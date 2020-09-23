@@ -8,8 +8,6 @@
 
 namespace Elysium
 {
-    static constexpr float s_MinimumFPS = 1.0f / 30.0f;
-
     Application* Application::s_Instance = nullptr;
 
     Application::Application(bool imgui) : m_ImGui(imgui), m_ClearColor{ 0.0f, 0.0f, 0.0f, 0.0f }
@@ -107,7 +105,7 @@ namespace Elysium
             Renderer::Clear({ m_ClearColor[0], m_ClearColor[1], m_ClearColor[2], m_ClearColor[3] });
 
             float time = (float)glfwGetTime();
-            Timestep timestep = std::min(0.0333f, time - m_LastFrameTime);
+            Timestep timestep = time - m_LastFrameTime;
             m_LastFrameTime = time;
 
             if (m_ImGui)

@@ -12,7 +12,7 @@ namespace test {
         VertexArray m_va;
         std::unique_ptr<VertexBuffer> m_vb;
         std::unique_ptr<IndexBuffer> m_ib;
-        Shader m_Shader;
+        Elysium::Shader m_Shader;
         std::vector<Texture> m_Textures;
 
         glm::vec3 m_Translation;

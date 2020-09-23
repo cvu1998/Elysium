@@ -11,7 +11,7 @@ namespace test {
         std::unique_ptr<VertexBuffer> m_vb;
         VertexBufferLayout m_Layout;
         std::unique_ptr<IndexBuffer> m_ib;
-        Shader m_Shader;
+        Elysium::Shader m_Shader;
         Texture m_Texture;
 
         glm::vec3 m_TranslationA;

@@ -8,7 +8,7 @@ void Renderer::Clear(glm::vec4 color)
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
-void Renderer::Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader, unsigned int count)
+void Renderer::Draw(const VertexArray& va, const IndexBuffer& ib, const Elysium::Shader& shader, unsigned int count)
 {
     shader.bind();
     va.bind();
