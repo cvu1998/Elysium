@@ -296,8 +296,8 @@ namespace Elysium
         }
 
         float textureIndex = 0.0f;
-        float halfLength = size.x / 2;
-        float halfWidth = size.y / 2;
+        float halfLength = size.x * 0.5f;
+        float halfWidth = size.y * 0.5f;
 
         for (size_t i = 0; i < 4; i++)
         {
@@ -342,8 +342,8 @@ namespace Elysium
             s_Data->TextureSlotIndex++;
         }
 
-        float halfLength = size.x / 2;
-        float halfWidth = size.y / 2;
+        float halfLength = size.x * 0.5f;
+        float halfWidth = size.y * 0.5f;
 
         for (size_t i = 0; i < 4; i++)
         {

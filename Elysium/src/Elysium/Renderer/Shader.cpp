@@ -65,7 +65,7 @@ namespace Elysium
         return location;
     }
 
-    ShaderProgramSource Shader::parseShader(const char* filepath)
+    Shader::ShaderProgramSource Shader::parseShader(const char* filepath)
     {
         std::ifstream stream(filepath);
         std::string line;

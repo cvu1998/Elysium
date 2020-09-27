@@ -17,16 +17,16 @@ namespace Elysium
         VERTEX_AND_FRAGMENT = 3
     };
 
-    struct ShaderProgramSource
-    {
-        std::string VertexSource;
-        std::string FragmentSource;
-        std::string ComputeSource;
-    };
-
     class Shader
     {
     private:
+        struct ShaderProgramSource
+        {
+            std::string VertexSource;
+            std::string FragmentSource;
+            std::string ComputeSource;
+        };
+
         const char* m_FilePath;
         unsigned int m_RendererID;
         mutable std::unordered_map<std::string, int> m_UniformLocationCache;

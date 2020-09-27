@@ -5,6 +5,7 @@
 class CellGrowthScene : public Elysium::Scene
 {
 private:
+    bool m_Pause = true;
     float m_AspectRatio = 0.0f;
 
     Elysium::OrthographicCameraController m_CameraController;
@@ -19,5 +20,4 @@ public:
     void onEvent(Elysium::Event& event) override;
 
     bool onWindowResizeEvent(Elysium::WindowResizeEvent& event);
-
 };
