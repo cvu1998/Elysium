@@ -24,7 +24,7 @@ namespace Elysium
             ELY_CORE_ERROR("Glad Init Error!");
         
         #ifdef _DEBUG
-        ELY_CORE_INFO("OpenGl version: {0}", glGetString(GL_VERSION));
+        ELY_CORE_INFO("OpenGL version: {0}", glGetString(GL_VERSION));
         #endif
 
         if (m_ImGui)

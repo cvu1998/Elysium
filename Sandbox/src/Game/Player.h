@@ -25,6 +25,4 @@ public:
     void onUpdate(Elysium::Timestep ts);
     void kickBall(Elysium::BodyHandle handle);
     void movePlayer(Elysium::PhysicalBody* body);
-
-    static void onCollision(Elysium::PhysicalBody& body, Elysium::PhysicalBody& collidee, const Elysium::CollisionInfo& info);
 };

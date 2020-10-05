@@ -2,11 +2,13 @@
 
 CellGrowthScene::CellGrowthScene(unsigned int width, unsigned int height) :
     Elysium::Scene("Cell Growth"),
-    m_CameraController((float)width / (float)height, 200.0f),
+    m_WindowWidth(width),
+    m_WindowHeight(height),
+    m_CameraController((float)width / (float)height, 500.0f),
     m_Cells({ (float)CellArea::NumberOfCell_X * 0.5f, CellArea::NumberOfCell_Y * 0.5f })
 {
     m_CameraController.CameraTranslationSpeed = 200.0f;
-    m_CameraController.CameraZoomSpeed = 5.0f;
+    m_CameraController.CameraZoomSpeed = 10.0f;
 }
 
 CellGrowthScene::~CellGrowthScene()
@@ -15,9 +17,14 @@ CellGrowthScene::~CellGrowthScene()
 
 void CellGrowthScene::onUpdate(Elysium::Timestep ts)
 {
+    Elysium::Vector2 cursorPosition = getCursorPosition();
+
     if (!m_Pause)
     {
         //m_Pause = true;
+        if (Elysium::Input::isMouseButtonPressed(ELY_MOUSE_BUTTON_1))
+            m_Cells.injectMedecine(cursorPosition);
+
         m_Cells.onUpdate(ts);
     }
 
@@ -32,9 +39,11 @@ void CellGrowthScene::onUpdate(Elysium::Timestep ts)
     ImGui::Begin("Cell Growth");
     ImGui::Checkbox("Pause Scene", &m_Pause);
     ImGui::Text("Number of Cells: %d", CellArea::NumberOfCells);
-    ImGui::Text("Number of Cancer Cells: %d", m_Cells.NumberOfCancerCell);
-    ImGui::Text("Number of Healthy Cells: %d", m_Cells.NumberOfHealthyCell);
-    ImGui::Text("Number of Medecine Cells: %d", m_Cells.NumberOfMedecineCell);
+    ImGui::Text("Number of Cells Accounted: %d", m_Cells.NumberOfCancerCells + m_Cells.NumberOfHealthyCells + m_Cells.NumberOfMedecineCells);
+    ImGui::Text("Number of Cancer Cells: %d", m_Cells.NumberOfCancerCells);
+    ImGui::Text("Number of Healthy Cells: %d", m_Cells.NumberOfHealthyCells);
+    ImGui::Text("Number of Medecine Cells: %d", m_Cells.NumberOfMedecineCells);
+    ImGui::Text("Cell Index: %d", m_Cells.getIndex(cursorPosition));
     ImGui::End();
 
     ImGui::Begin("Statistics");
@@ -45,12 +54,24 @@ void CellGrowthScene::onUpdate(Elysium::Timestep ts)
     Elysium::Renderer2D::resetStats();
 }
 
+Elysium::Vector2 CellGrowthScene::getCursorPosition()
+{
+    auto position = Elysium::Input::getMousePosition();
+
+    return  m_CameraController.getCamera().getScreenToWorldPosition(m_WindowWidth, m_WindowHeight, position);
+}
+
 void CellGrowthScene::onEvent(Elysium::Event& event)
 {
     m_CameraController.onEvent(event);
+
+    Elysium::EventDispatcher dispatcher(event);
+    dispatcher.Dispatch<Elysium::WindowResizeEvent>(BIND_EVENT_FUNCTION(CellGrowthScene::onWindowResizeEvent));
 }
 
 bool CellGrowthScene::onWindowResizeEvent(Elysium::WindowResizeEvent& event)
 {
+    m_WindowWidth = event.getWidth();
+    m_WindowHeight = event.getHeight();
     return false;
 }

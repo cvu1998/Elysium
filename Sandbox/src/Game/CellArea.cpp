@@ -1,74 +1,44 @@
 #include "CellArea.h"
 
-#include <set>
-
 CellArea::CellArea(Elysium::Vector2 offset)
 {
-    float cellSize = 5.0f;
-
     float percentage = Random::Float();
     constexpr size_t MinimumNumberOfCancerCell = NumberOfCells / 4;
-    NumberOfCancerCell = (unsigned int)(percentage * MinimumNumberOfCancerCell) + MinimumNumberOfCancerCell;
+    NumberOfCancerCells = (unsigned int)(percentage * MinimumNumberOfCancerCell) + MinimumNumberOfCancerCell;
     unsigned int counter = 0;
-    std::set<size_t>  Indexes;
-    while (counter < NumberOfCancerCell)
+    std::unordered_set<size_t> indexes;
+    while (counter < NumberOfCancerCells)
     {
         size_t index = (size_t)Random::Integer(0, NumberOfCells);
-        while (Indexes.find(index) != Indexes.end())
+        while (indexes.find(index) != indexes.end())
             index = (size_t)Random::Integer(0, NumberOfCells);
-        Indexes.insert(index);
+        indexes.insert(index);
         counter++;
     }
 
     for (size_t i = 0; i < NumberOfCells; i++)
     {
-        size_t partitionIndex = i % s_NumberOfCellPerPartition;
-        int32_t partition_x = (int32_t)(partitionIndex % NumberOfCell_X);
-        int32_t partition_y = (int32_t)(partitionIndex / NumberOfCell_X);
-        setNeighbor(i, partition_x, partition_y, NumberOfCell_X, s_NumberOfCellPerPartition_Y);
+        if (i < s_NumberOfCellsPerPartition)
+            setNeighbor((int)i);
 
-        Positions[i] = { ((float)(i % NumberOfCell_X) - offset.x) + cellSize, ((float)(i / NumberOfCell_X) - offset.y) + cellSize };
-        if (Indexes.find(i) != Indexes.end())
+        Positions[i] = { ((float)(i % NumberOfCell_X) - offset.x) * m_CellSize, ((float)(i / NumberOfCell_X) - offset.y) * m_CellSize };
+        if (indexes.find(i) != indexes.end())
         {
-            Colors[i] = { 1.0f, 0.0f, 0.0f, 1.0f };
-            Types[i] = CellType::CANCER;
+            Colors[i] = s_ColorRed;
+            m_Types[i] = CellType::CANCER;
         }
         else
         {
-            Colors[i] = { 0.0f, 1.0f, 0.0f, 1.0f };
-            Types[i] = CellType::HEALTHY;
-            NumberOfHealthyCell++;
+            Colors[i] = s_ColorGreen;
+            m_Types[i] = CellType::HEALTHY;
+            NumberOfHealthyCells++;
         }
     }
-    /*
-    for (size_t i = 0; i < NumberOfCells; i++)
-    {
-        size_t partitionIndex = i % s_NumberOfCellPerPartition;
-        int32_t partition_x = (int32_t)(partitionIndex % NumberOfCell_X);
-        int32_t partition_y = (int32_t)(partitionIndex / NumberOfCell_X);
-        setNeighbor(i, partition_x, partition_y, NumberOfCell_X, s_NumberOfCellPerPartition_Y);
 
-        Positions[i] = { ((float)(i % NumberOfCell_X) - offset.x) + cellSize, ((float)(i / NumberOfCell_X) - offset.y) + cellSize };;
-        if (i == 4 + ((i / NumberOfCell_Y) * NumberOfCell_X))
-        {
-            Colors[i] = { 1.0f, 0.0f, 0.0f, 1.0f };
-            Types[i] = CellType::CANCER;
-            NumberOfHealthyCell++;
-        }
-        else
-        {
-            Colors[i] = { 0.0f, 1.0f, 0.0f, 1.0f };
-            Types[i] = CellType::HEALTHY;
-            NumberOfCancerCell++;
-        }
-    }
-    */
+    Elysium::Renderer2D::setPointSize(m_CellSize);
 
-    Elysium::Renderer2D::setPointSize(cellSize);
-
-    const unsigned int processor_count = std::thread::hardware_concurrency();
-    ELY_INFO("Number of cell per partition: {0}", s_NumberOfCellPerPartition);
-    ELY_INFO("Number of threads: {0}", processor_count);
+    ELY_INFO("Number of cell per partition: {0}", s_NumberOfCellsPerPartition);
+    ELY_INFO("Number of threads: {0}", std::thread::hardware_concurrency());
 }
 
 void CellArea::onUpdate(Elysium::Timestep ts)
@@ -79,113 +49,191 @@ void CellArea::onUpdate(Elysium::Timestep ts)
     {
         m_CurrentTime -= UpdateTime;
 
-        NumberOfCancerCell = 0;
-        NumberOfHealthyCell = 0;
-        NumberOfMedecineCell = 0;
+        NumberOfCancerCells = 0;
+        NumberOfHealthyCells = 0;
+        NumberOfMedecineCells = 0;
 
-        /*
-        for (size_t i = 0; i < s_NumberOfThreads; i++)
+        if (!m_InputBuffer.empty())
         {
-            updateCellsInPartition(s_NumberOfCellPerPartition * i);
+            for (size_t i : m_InputBuffer)
+            {
+                for (int j : m_Neighbors[i % s_NumberOfCellsPerPartition])
+                {
+                    size_t index = j + ((i + 1) / s_NumberOfCellsPerPartition) * s_NumberOfCellsPerPartition;
+                    if (m_MedecineCells.find(index) == m_MedecineCells.end())
+                    {
+                        m_MedecineCells.insert({ index, { m_Types[index], (int)index - (int)i } });
+                        m_Types[index] = CellType::MEDECINE;
+                    }
+
+                }
+            }
+            m_InputBuffer.clear();
         }
-        */
+
         std::thread threads[s_NumberOfThreads];
+        CellType* partitions[s_NumberOfThreads];
+        PartitionStats stats[s_NumberOfThreads];
+        std::unordered_map<size_t, MedecineCell> medecineMap[s_NumberOfThreads];
         for (size_t i = 0; i < s_NumberOfThreads; i++)
         {
-            threads[i] = std::thread(&CellArea::updateCellsInPartition, this, s_NumberOfCellPerPartition * i);
+            partitions[i] = new CellType[s_NumberOfCellsPerPartition];
+            std::copy_n(m_Types.begin() + s_NumberOfCellsPerPartition * i, s_NumberOfCellsPerPartition, partitions[i]);
+            threads[i] = std::thread(&CellArea::updateCellsInPartition, this, partitions[i], std::ref(stats[i]), std::ref(medecineMap[i]), s_NumberOfCellsPerPartition * i);
         }
         for (size_t i = 0; i < s_NumberOfThreads; i++)
         {
             threads[i].join();
         }
+        m_MedecineCells.clear();
+
+        for (size_t i = 0; i < s_NumberOfThreads; i++)
+        {
+            m_MedecineCells.insert(medecineMap[i].begin(), medecineMap[i].end());
+            NumberOfCancerCells += stats[i].NumberOfCancerCells;
+            NumberOfHealthyCells += stats[i].NumberOfHealthyCells;
+            NumberOfMedecineCells += stats[i].NumberOfMedecineCells;
+            delete[] partitions[i];
+        }
     }
 }
 
-void CellArea::updateCellsInPartition(size_t min)
+void CellArea::updateCellsInPartition(CellType* partition, PartitionStats& stats, 
+    std::unordered_map<size_t, MedecineCell>& medecineMap,
+    size_t min)
 {
-    CellType partition[s_NumberOfCellPerPartition];
-    std::copy_n(Types.begin() + min, s_NumberOfCellPerPartition, partition);
-    for (size_t i = 0; i < s_NumberOfCellPerPartition; i++)
+    std::unordered_set<size_t> updatedMedecine;
+    for (size_t i = 0; i < s_NumberOfCellsPerPartition; i++)
     {
-        updateCell(partition, i, i + min);
-    }
-
-    for (size_t i = 0; i < s_NumberOfCellPerPartition; i++)
-    {
-        switch (Types[i + min])
+        switch (partition[i])
         {
         case CellType::CANCER:
-            NumberOfCancerCell++;
+        {
+            size_t counter = 0;
+            size_t medecineCells[8];
+            for (int j : m_Neighbors[i])
+            {
+                if (partition[j] == CellType::MEDECINE)
+                    medecineCells[counter++] = (size_t)j + min;
+            }
+
+            if (counter >= 6)
+            {
+                m_Types[i + min] = CellType::HEALTHY;
+                for (size_t j = 0; j < counter; j++)
+                {
+                    m_Types[medecineCells[j]] = CellType::HEALTHY;
+                    updatedMedecine.insert(medecineCells[j]);
+                }
+            }
+        }
             break;
         case CellType::HEALTHY:
-            NumberOfHealthyCell++;
+        {
+            uint8_t cancerCount = 0;
+            for (int j : m_Neighbors[i])
+                cancerCount += partition[j] == CellType::CANCER ? 1 : 0;
+
+            if (cancerCount >= 6)
+                m_Types[i + min] = CellType::CANCER;
+        }
+            break;
+        }
+    }
+
+    for (size_t i = 0; i < s_NumberOfCellsPerPartition; i++)
+    {
+        switch (m_Types[i + min])
+        {
+        case CellType::CANCER:
+            Colors[i + min] = s_ColorRed;
+            stats.NumberOfCancerCells++;
+            break;
+        case CellType::HEALTHY:
+            Colors[i + min] = s_ColorGreen;
+            stats.NumberOfHealthyCells++;
             break;
         case CellType::MEDECINE:
-            NumberOfMedecineCell++;
+            moveMedecineCells(i + min, medecineMap, updatedMedecine);
+            Colors[i + min] = s_ColorYellow;
+            stats.NumberOfMedecineCells++;
             break;
         }
     }
 }
 
-void CellArea::updateCell(CellType* partition, size_t partitionIndex, size_t index)
+void CellArea::moveMedecineCells(size_t cellIndex,
+    std::unordered_map<size_t, MedecineCell>& medecineMap,
+    std::unordered_set<size_t>& updatedMedecine)
 {
-    switch (partition[partitionIndex])
+    if (updatedMedecine.find(cellIndex) == updatedMedecine.end())
     {
-    case CellType::CANCER:
-        break;
-    case CellType::HEALTHY:
+        auto iterators = m_MedecineCells.equal_range(cellIndex);
+        for (auto it = iterators.first; it != iterators.second; it++)
         {
-            uint8_t count = 0;
-            for (int32_t i : Neighbors[index])
+            if (it->second.PreviousType != CellType::MEDECINE)
+                m_Types[cellIndex] = it->second.PreviousType;
+
+            int index = (int)cellIndex + it->second.offset;
+            int xOffset = abs(it->second.offset) == 1 ? it->second.offset : abs(it->second.offset) - (int)NumberOfCell_X;
+            int yOffset = it->second.offset / (int)NumberOfCell_Y;
+            int x = (int)cellIndex % NumberOfCell_X;
+            int y = (int)cellIndex / NumberOfCell_X;
+            if (x + xOffset >= 0 && (size_t)(x + xOffset) < NumberOfCell_X && y + yOffset >= 0 && (size_t)(y + yOffset) < NumberOfCell_Y &&
+                index >= 0 && index < NumberOfCells)
             {
-                if (partition[i] == CellType::CANCER)
-                    count++;
+                updatedMedecine.insert({ cellIndex });
+                medecineMap.insert({ (size_t)index, { m_Types[index], it->second.offset } });
+                m_Types[index] = CellType::MEDECINE;
             }
-            
-            if (count >= 6)
-            {
-                Colors[index] = { 1.0f, 0.0f, 0.0f, 1.0f };
-                Types[index] = CellType::CANCER;
-            }
-        }   
-        break;
-    case CellType::MEDECINE:
-        break;
+        }
     }
 }
 
-void CellArea::setNeighbor(size_t index, int32_t row, int32_t column, int32_t bound_x, int32_t bound_y)
+void CellArea::setNeighbor(int index)
 {
-    int32_t x = row - 1;
-    int32_t y = column - 1;
-    if (x >= 0 && x < bound_x && y >= 0 && y < bound_y)
-        Neighbors[index].push_back(x + y * bound_x);
-    x = row;
-    y = column - 1;
-    if (x >= 0 && x < bound_x && y >= 0 && y < bound_y)
-        Neighbors[index].push_back(x + y * bound_x);
-    x = row + 1;
-    y = column - 1;
-    if (x >= 0 && x < bound_x && y >= 0 && y < bound_y)
-        Neighbors[index].push_back(x + y * bound_x);
-    x = row - 1;
-    y = column;
-    if (x >= 0 && x < bound_x && y >= 0 && y < bound_y)
-        Neighbors[index].push_back(x + y * bound_x);
-    x = row + 1;
-    y = column;
-    if (x >= 0 && x < bound_x && y >= 0 && y < bound_y)
-        Neighbors[index].push_back(x + y * bound_x);
-    x = row - 1;
-    y = column + 1;
-    if (x >= 0 && x < bound_x && y >= 0 && y < bound_y)
-        Neighbors[index].push_back(x + y * bound_x);
-    x = row;
-    y = column + 1;
-    if (x >= 0 && x < bound_x && y >= 0 && y < bound_y)
-        Neighbors[index].push_back(x + y * bound_x);
-    x = row + 1;
-    y = column + 1;
-    if (x >= 0 && x < bound_x && y >= 0 && y < bound_y)
-        Neighbors[index].push_back(x + y * bound_x);
+    for (size_t i = 0; i < 8; i++)
+    {
+        int partitionIndex = s_NeighborIndexes[i] + index;
+        if (partitionIndex >= 0 && partitionIndex < s_NumberOfCellsPerPartition)
+            m_Neighbors[index].push_back(partitionIndex);
+    }
+}
+
+size_t CellArea::getIndex(const Elysium::Vector2& position)
+{
+    size_t x = 0;
+    for (size_t i = 0; i < NumberOfCell_X; i++)
+    {
+        if (position.x <= Positions[i].x && i == 0)
+        {
+            x = 0;
+            break;
+        }
+        else if (position.x <= Positions[i].x)
+        {
+            x = i - 1;
+            break;
+        }
+        else if (position.x > Positions[i].x && i == NumberOfCell_X - 1)
+        {
+            x = NumberOfCell_X - 1;
+            break;
+        }
+    }
+    int y = -1;
+    for (size_t i = 0; i < NumberOfCells; i += NumberOfCell_X)
+    {
+        y++;
+        if (position.y <= Positions[i].y)
+            break;
+        else if (position.y > Positions[i].y && i == NumberOfCell_Y - 1)
+            break;
+    }
+    return x + (size_t)y * NumberOfCell_X;
+}
+
+void CellArea::injectMedecine(const Elysium::Vector2& position)
+{
+    m_InputBuffer.insert(getIndex(position));
 }

@@ -98,6 +98,7 @@
       <ConformanceMode>false</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)\Glad\include\;$(ProjectDir)src\;$(ProjectDir)src\vendor\;$(ProjectDir)src\vendor\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -124,6 +125,7 @@ xcopy "$(ProjectDir)src\*.inl" "$(SolutionDir)bin\Elysium\include\" /S /Y /I</Co
       <ConformanceMode>false</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)\Glad\include\;$(ProjectDir)src\;$(ProjectDir)src\vendor\;$(ProjectDir)src\vendor\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -152,6 +154,7 @@ xcopy "$(ProjectDir)src\*.inl" "$(SolutionDir)bin\Elysium\include\" /S /Y /I</Co
       <ConformanceMode>false</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)\Glad\include\;$(ProjectDir)src\;$(ProjectDir)src\vendor\;$(ProjectDir)src\vendor\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -182,6 +185,7 @@ xcopy "$(ProjectDir)src\*.inl" "$(SolutionDir)bin\Elysium\include\" /S /Y /I</Co
       <ConformanceMode>false</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)\Glad\include\;$(ProjectDir)src\;$(ProjectDir)src\vendor\;$(ProjectDir)src\vendor\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

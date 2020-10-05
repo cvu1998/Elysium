@@ -217,6 +217,7 @@ namespace Elysium
     void PhysicsSystem::onUpdate(Timestep ts)
     {
         m_Time += ts;
+        ts = std::min(1.0f / 30.0f, (float)ts);
         for (uint32_t i = 0; i < m_Bodies.size(); i++)
         {
             if (m_Bodies[i].Status != BodyStatus::INACTIVE)

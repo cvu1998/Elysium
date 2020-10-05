@@ -35,7 +35,8 @@ namespace Elysium
     class TabularControlRLAgent : public RLAgent
     {
     private:
-        struct hash_pair {
+        struct hash_pair 
+        {
             size_t operator()(const State_Action_Pair& pair) const
             {
                 std::string string(pair.State.getCode() + std::to_string((unsigned int)pair.Action));

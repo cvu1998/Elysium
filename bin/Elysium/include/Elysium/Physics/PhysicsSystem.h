@@ -37,6 +37,7 @@ namespace Elysium
         void createPhysicalBody(BodyHandle* handle, BodyType type, const char* name, float mass, const Vector2& initialPosition, const Vector2& size,
             PhysicalBody::Collision_Callback callback = nullptr);
 
+        inline float getTime() { return m_Time; }
         inline void setGravitaionnalAccel(float acceleration) { m_GravitationalAccel = acceleration; }
         inline float getGravitaionnalAccel() const { return m_GravitationalAccel; }
 

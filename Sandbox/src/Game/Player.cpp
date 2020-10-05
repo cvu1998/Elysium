@@ -4,7 +4,22 @@
 
 Player::Player() : m_RunAnimation(m_FrameRate)
 {
-    m_Player = e_PhysicsSystem.createPhysicalBody(Elysium::BodyType::DYNAMIC, "Player", 50.0f, { -27.5f, 20.0f }, { 2.0f, 2.0f }, Player::onCollision);
+    m_Player = e_PhysicsSystem.createPhysicalBody(Elysium::BodyType::DYNAMIC, "Player", 50.0f, { -27.5f, 20.0f }, { 2.0f, 2.0f }, [](Elysium::PhysicalBody& body, Elysium::PhysicalBody& collidee, const Elysium::CollisionInfo& info)
+        {
+            if (info.CollisionInfoPair.first.Normal.y > 0.01f)
+            {
+                if (Elysium::Input::isKeyPressed(ELY_KEY_W))
+                {
+                    body.Impulse.y += 10.0f * body.getMass();
+                    body.CallbackExecutions++;
+                }
+
+                if (Elysium::Input::isKeyPressed(ELY_KEY_A))
+                    body.Impulse.x += -40.0f * body.getMass() * info.ts;
+                else if (Elysium::Input::isKeyPressed(ELY_KEY_D))
+                    body.Impulse.x += 40.0f * body.getMass() * info.ts;
+            }
+        });
 
     m_Player->setRadius(1.0f);
     m_Player->setNumberOfCallbackExecution(1);
@@ -88,22 +103,5 @@ void Player::movePlayer(Elysium::PhysicalBody* body)
 
             }
         }
-    }
-}
-
-void Player::onCollision(Elysium::PhysicalBody& body, Elysium::PhysicalBody& collidee, const Elysium::CollisionInfo& info)
-{
-    if (info.CollisionInfoPair.first.Normal.y > 0.01f)
-    {
-        if (Elysium::Input::isKeyPressed(ELY_KEY_W))
-        {
-            body.Impulse.y += 10.0f * body.getMass();
-            body.CallbackExecutions++;
-        }
-
-        if (Elysium::Input::isKeyPressed(ELY_KEY_A))
-            body.Impulse.x += -40.0f * body.getMass()  * info.ts;
-        else if (Elysium::Input::isKeyPressed(ELY_KEY_D))
-            body.Impulse.x += 40.0f * body.getMass() * info.ts;
     }
 }
