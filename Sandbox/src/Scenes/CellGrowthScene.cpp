@@ -21,9 +21,12 @@ void CellGrowthScene::onUpdate(Elysium::Timestep ts)
 
     if (!m_Pause)
     {
-        //m_Pause = true;
-        if (Elysium::Input::isMouseButtonPressed(ELY_MOUSE_BUTTON_1))
+        m_Cooldown += ts;
+        if (Elysium::Input::isMouseButtonPressed(ELY_MOUSE_BUTTON_1) && m_Cooldown >= 0.0f)
+        {
             m_Cells.injectMedecine(cursorPosition);
+            m_Cooldown = -0.1f;
+        }
 
         m_Cells.onUpdate(ts);
     }

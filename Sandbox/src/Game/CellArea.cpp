@@ -57,15 +57,20 @@ void CellArea::onUpdate(Elysium::Timestep ts)
         {
             for (size_t i : m_InputBuffer)
             {
+                int counter = 0;
+                int numberOfCells = Random::Integer(1, 8);
                 for (int j : m_Neighbors[i % s_NumberOfCellsPerPartition])
                 {
+                    counter++;
+                    if (counter >= numberOfCells)
+                        break;
+
                     size_t index = j + ((i + 1) / s_NumberOfCellsPerPartition) * s_NumberOfCellsPerPartition;
                     if (m_MedecineCells.find(index) == m_MedecineCells.end())
                     {
                         m_MedecineCells.insert({ index, { m_Types[index], (int)index - (int)i } });
                         m_Types[index] = CellType::MEDECINE;
                     }
-
                 }
             }
             m_InputBuffer.clear();
@@ -175,8 +180,9 @@ void CellArea::moveMedecineCells(size_t cellIndex,
                 m_Types[cellIndex] = it->second.PreviousType;
 
             int index = (int)cellIndex + it->second.offset;
-            int xOffset = abs(it->second.offset) == 1 ? it->second.offset : abs(it->second.offset) - (int)NumberOfCell_X;
-            int yOffset = it->second.offset / (int)NumberOfCell_Y;
+            int xOffset = (it->second.offset < 0) ? it->second.offset + (int)NumberOfCell_X : it->second.offset - (int)NumberOfCell_X;
+            xOffset = abs(it->second.offset) == 1 ? it->second.offset : xOffset;
+            int yOffset = (it->second.offset < 0) ? (it->second.offset - 1) / (int)NumberOfCell_Y : (it->second.offset + 1) / (int)NumberOfCell_Y;
             int x = (int)cellIndex % NumberOfCell_X;
             int y = (int)cellIndex / NumberOfCell_X;
             if (x + xOffset >= 0 && (size_t)(x + xOffset) < NumberOfCell_X && y + yOffset >= 0 && (size_t)(y + yOffset) < NumberOfCell_Y &&
@@ -194,8 +200,15 @@ void CellArea::setNeighbor(int index)
 {
     for (size_t i = 0; i < 8; i++)
     {
+        int x1 = index % (int)NumberOfCell_X;
+        int y1 = index / (int)NumberOfCell_X;
         int partitionIndex = s_NeighborIndexes[i] + index;
-        if (partitionIndex >= 0 && partitionIndex < s_NumberOfCellsPerPartition)
+        int x2 = partitionIndex % (int)NumberOfCell_X;
+        int y2 = partitionIndex / (int)NumberOfCell_X;
+        int xOffset = (s_NeighborIndexes[i] < 0) ? s_NeighborIndexes[i] + (int)NumberOfCell_X : s_NeighborIndexes[i] - (int)NumberOfCell_X;
+        xOffset = abs(s_NeighborIndexes[i]) == 1 ? s_NeighborIndexes[i] : xOffset;
+        int yOffset = (s_NeighborIndexes[i] < 0) ? (s_NeighborIndexes[i] - 1) / (int)NumberOfCell_Y : (s_NeighborIndexes[i] + 1) / (int)NumberOfCell_Y;
+        if (x1 + xOffset == x2 && y1 + yOffset == y2 && partitionIndex >= 0 && partitionIndex < s_NumberOfCellsPerPartition)
             m_Neighbors[index].push_back(partitionIndex);
     }
 }

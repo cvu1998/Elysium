@@ -6,6 +6,7 @@ class CellGrowthScene : public Elysium::Scene
 {
 private:
     bool m_Pause = true;
+    float m_Cooldown = 0.0f;
     unsigned int m_WindowWidth;
     unsigned int m_WindowHeight;
 

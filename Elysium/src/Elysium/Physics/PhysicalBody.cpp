@@ -1,6 +1,6 @@
 #include "PhysicalBody.h"
 
-#include <set>
+#include <unordered_set>
 
 namespace Elysium
 {
@@ -129,8 +129,8 @@ namespace Elysium
         std::vector<Vector2> vertices = getVertices();
         std::vector<Vector2> normals;
 
-        std::set<float> polarAngles;
-        std::pair<std::set<float>::iterator, bool> valid;
+        std::unordered_set<float> polarAngles;
+        std::pair<std::unordered_set<float>::iterator, bool> valid;
         if (vertices.size() > 0)
         {
             for (size_t i = 0; i < vertices.size() - 1; i++)
