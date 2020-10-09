@@ -38,12 +38,6 @@ private:
         CellType PreviousType = CellType::NONE;
         int offset = 0;
     };
-    
-    struct MedecineIndex
-    {
-        size_t index = 0;
-        int offset = 0;
-    };
 
     static constexpr size_t s_NumberOfThreads = 4;
     static constexpr size_t s_NumberOfCellsPerPartition = NumberOfCells / s_NumberOfThreads;
