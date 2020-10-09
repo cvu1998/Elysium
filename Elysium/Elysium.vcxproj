@@ -108,7 +108,9 @@
       <Command>rmdir "$(SolutionDir)bin\Elysium\include\Elysium\" /s /q
 xcopy "$(ProjectDir)src\*.h" "$(SolutionDir)bin\Elysium\include\" /S /Y /I
 xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\Elysium\include\" /S /Y /I
-xcopy "$(ProjectDir)src\*.inl" "$(SolutionDir)bin\Elysium\include\" /S /Y /I</Command>
+xcopy "$(ProjectDir)src\*.inl" "$(SolutionDir)bin\Elysium\include\" /S /Y /I
+mkdir "$(SolutionDir)bin\Elysium\lib\$(Configuration)-$(Platform)\"
+xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\*.lib" "$(SolutionDir)bin\Elysium\lib\$(Configuration)-$(Platform)\" /S /Y /I</Command>
     </PostBuildEvent>
     <Lib>
       <AdditionalDependencies>Glad.lib</AdditionalDependencies>
@@ -141,7 +143,9 @@ xcopy "$(ProjectDir)src\*.inl" "$(SolutionDir)bin\Elysium\include\" /S /Y /I</Co
       <Command>rmdir "$(SolutionDir)bin\Elysium\include\Elysium\" /s /q
 xcopy "$(ProjectDir)src\*.h" "$(SolutionDir)bin\Elysium\include\" /S /Y /I
 xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\Elysium\include\" /S /Y /I
-xcopy "$(ProjectDir)src\*.inl" "$(SolutionDir)bin\Elysium\include\" /S /Y /I</Command>
+xcopy "$(ProjectDir)src\*.inl" "$(SolutionDir)bin\Elysium\include\" /S /Y /I
+mkdir "$(SolutionDir)bin\Elysium\lib\$(Configuration)-$(Platform)\"
+xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\*.lib" "$(SolutionDir)bin\Elysium\lib\$(Configuration)-$(Platform)\" /S /Y /I</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -166,7 +170,9 @@ xcopy "$(ProjectDir)src\*.inl" "$(SolutionDir)bin\Elysium\include\" /S /Y /I</Co
       <Command>rmdir "$(SolutionDir)bin\Elysium\include\Elysium\" /s /q
 xcopy "$(ProjectDir)src\*.h" "$(SolutionDir)bin\Elysium\include\" /S /Y /I
 xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\Elysium\include\" /S /Y /I
-xcopy "$(ProjectDir)src\*.inl" "$(SolutionDir)bin\Elysium\include\" /S /Y /I</Command>
+xcopy "$(ProjectDir)src\*.inl" "$(SolutionDir)bin\Elysium\include\" /S /Y /I
+mkdir "$(SolutionDir)bin\Elysium\lib\$(Configuration)-$(Platform)\"
+xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\*.lib" "$(SolutionDir)bin\Elysium\lib\$(Configuration)-$(Platform)\" /S /Y /I</Command>
     </PostBuildEvent>
     <Lib>
       <AdditionalDependencies>Glad.lib</AdditionalDependencies>
@@ -203,7 +209,9 @@ xcopy "$(ProjectDir)src\*.inl" "$(SolutionDir)bin\Elysium\include\" /S /Y /I</Co
       <Command>rmdir "$(SolutionDir)bin\Elysium\include\Elysium\" /s /q
 xcopy "$(ProjectDir)src\*.h" "$(SolutionDir)bin\Elysium\include\" /S /Y /I
 xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\Elysium\include\" /S /Y /I
-xcopy "$(ProjectDir)src\*.inl" "$(SolutionDir)bin\Elysium\include\" /S /Y /I</Command>
+xcopy "$(ProjectDir)src\*.inl" "$(SolutionDir)bin\Elysium\include\" /S /Y /I
+mkdir "$(SolutionDir)bin\Elysium\lib\$(Configuration)-$(Platform)\"
+xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\*.lib" "$(SolutionDir)bin\Elysium\lib\$(Configuration)-$(Platform)\" /S /Y /I</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
