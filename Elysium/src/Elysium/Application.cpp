@@ -34,12 +34,16 @@ namespace Elysium
             ImGui_ImplGlfw_InitForOpenGL(m_Window->getGLFWWindow(), true);
             ImGui_ImplOpenGL3_Init(glsl_version);
             ImGui::StyleColorsDark();
+
+            ImGuiIO& io = ImGui::GetIO();
+            io.ConfigFlags = ImGuiConfigFlags_DockingEnable;
         }
         Renderer2D::Init();
     }
 
     Application::~Application()
     {
+        m_SceneManager.unloadScene();
         if (m_ImGui)
         {
             ImGui_ImplOpenGL3_Shutdown();

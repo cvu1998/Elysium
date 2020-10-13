@@ -1,0 +1,5 @@
+xcopy /E /Y "imgui.ini" "..\bin\Elysium\"
+xcopy /E /Y "imgui.ini" "..\bin\Release-x64\Sandbox\"
+xcopy /E /Y "imgui.ini" "..\bin\Release-Win32\Sandbox\"
+xcopy /E /Y "imgui.ini" "..\bin\Debug-x64\Sandbox\"
+xcopy /E /Y "imgui.ini" "..\bin\Debug-Win32\Sandbox\"

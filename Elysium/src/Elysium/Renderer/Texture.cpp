@@ -54,7 +54,7 @@ void Texture::bind(unsigned int slot) const
     GL_ASSERT(glBindTexture(GL_TEXTURE_2D, m_Data.m_RendererID));
 }
 
-void Texture::unBind() const
+void Texture::unbind() const
 {
     GL_ASSERT(glBindTexture(GL_TEXTURE_2D, 0))
 }

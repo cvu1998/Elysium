@@ -7,13 +7,12 @@ CellArea::CellArea(Elysium::Vector2 offset)
     NumberOfCancerCells = (unsigned int)(percentage * MinimumNumberOfCancerCell) + MinimumNumberOfCancerCell;
     unsigned int counter = 0;
     std::unordered_set<size_t> indexes;
-    while (counter < NumberOfCancerCells)
+    while (counter++ < NumberOfCancerCells)
     {
         size_t index = (size_t)Random::Integer(0, NumberOfCells);
         while (indexes.find(index) != indexes.end())
             index = (size_t)Random::Integer(0, NumberOfCells);
         indexes.insert(index);
-        counter++;
     }
 
     for (size_t i = 0; i < NumberOfCells; i++)

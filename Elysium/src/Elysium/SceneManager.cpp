@@ -8,11 +8,6 @@ namespace Elysium
 
     SceneManager::~SceneManager()
     {
-        if (m_CurrentScene)
-        {
-            delete m_CurrentScene;
-            m_CurrentScene = nullptr;
-        }
     }
 
     void SceneManager::onUpdate(Timestep ts)

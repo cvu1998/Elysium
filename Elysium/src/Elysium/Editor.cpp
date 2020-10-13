@@ -2,11 +2,9 @@
 
 #include <string>
 
-#include <imgui/imgui.h>
-#include <imgui/imgui_impl_glfw.h>
-#include <imgui/imgui_impl_opengl3.h>
-
+#include "Elysium/ImGuiUtility.h"
 #include "Elysium/Input.h"
+#include "Elysium/Log.h"
 #include "Elysium/MouseCodes.h"
 
 namespace Elysium
@@ -17,7 +15,17 @@ namespace Elysium
         m_WindowHeight(height),
         m_CameraController((float)m_WindowWidth / (float)m_WindowHeight, 5.0f)
     {
+        FramebufferSpecification specification;
+        specification.Width = width;
+        specification.Height = height;
+        m_Framebuffer = std::make_unique<Framebuffer>(specification);
+
         Renderer2D::setLineWidth(2.0f);
+    }
+
+    Editor::~Editor()
+    {
+        Renderer::setViewport(0, 0, m_WindowWidth, m_WindowHeight);
     }
 
     bool Editor::isWithinBounds(Vector2 position, Vector2 bottom, Vector2 top)
@@ -30,8 +38,10 @@ namespace Elysium
     Vector2 Editor::getCursorPosition()
     {
         auto position = Elysium::Input::getMousePosition();
+        position.first -= m_ViewportPosition.x;
+        position.second -= m_ViewportPosition.y;
 
-        return  m_CameraController.getCamera().getScreenToWorldPosition(m_WindowWidth, m_WindowHeight, position);
+        return m_CameraController.getCamera().getScreenToWorldPosition((unsigned int)m_ViewportSize.x, (unsigned int)m_ViewportSize.y, position);
     }
 
     void Editor::saveSceneToFile()
@@ -52,7 +62,8 @@ namespace Elysium
 
     void Editor::onUpdate(Timestep ts)
     {
-        m_CameraController.onUpdate(ts);
+        if (m_ViewportFocus)
+            m_CameraController.onUpdate(ts);
 
         Vector2 cursorPosition = getCursorPosition();
 
@@ -98,71 +109,9 @@ namespace Elysium
             }
         }
 
-        ImGui::Begin("Editor Layer");
-        ImGui::InputText("Filename", m_Filename, 256);
-        if (ImGui::Button("Save Scene to File"))
-        {
-            saveSceneToFile();
-        }
-        if (ImGui::Button("Open Scene from File"))
-        {
-            m_Data.Quads.clear();
-            m_Current = nullptr;
-
-            std::string filename = m_Filename;
-            filename += ".ely";
-            getSceneFromFile(filename.c_str(), m_Data.Quads);
-        }
-        if (ImGui::Button("Add Quad"))
-        {
-            m_Data.Quads.emplace_back();
-            m_Current = &m_Data.Quads[m_Data.Quads.size() - 1];
-            m_Current->Position[0] = m_CameraController.getCamera().getPosition().x;
-            m_Current->Position[1] = m_CameraController.getCamera().getPosition().y;
-        }
-        if (ImGui::Button("Remove Current Quad"))
-        {
-            if (m_Current)
-            {
-                auto it = std::find(m_Data.Quads.begin(), m_Data.Quads.end(), *m_Current);
-                if (it != m_Data.Quads.end())
-                    m_Data.Quads.erase(it);
-            }
-            m_Current = nullptr;
-        }
-        if (ImGui::Button("Clear Scene"))
-        {
-            m_Data.Quads.clear();
-            m_Current = nullptr;
-        }
-        ImGui::Text("Camera Bounds Height: %f", m_CameraController.getBoundsHeight());
-        ImGui::Text("Camera Position: %f, %f", m_CameraController.getCamera().getPosition().x, m_CameraController.getCamera().getPosition().y);
-        ImGui::Text("Cursor Position: %f, %f", cursorPosition.x, cursorPosition.y);
-        ImGui::InputFloat("Set Camera Translation Speed", &m_TranslationSpeed);
-        if (m_Current && m_SameCurrent)
-        {
-            char quadTag[64];
-            strcpy_s(quadTag, 64, m_Current->Tag.data());
-            ImGui::InputText("Object Tag", quadTag, 64);
-            ImGui::InputFloat2("Position of quad", m_Current->Position);
-            ImGui::SliderFloat("Rotation of quad", &(m_Current->Rotation), 0.0f, 360.0f);
-            ImGui::InputFloat2("Size of quad", m_Current->Size);
-            ImGui::ColorEdit4("Color of quad", m_Current->Color);
-            m_Current->Tag = quadTag;
-        }
-        ImGui::End();
-
-        #ifdef _DEBUG
-        ImGui::Begin("Statistics");
-        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-        ImGui::Text("Number of Draw Calls: %d", Renderer2D::getStats().DrawCount);
-        ImGui::Text("Number of Quads: %d", Renderer2D::getStats().QuadCount);
-        ImGui::Text("Number of Lines: %d", Renderer2D::getStats().LineCount);
-        ImGui::End();
-        #endif
-
+        m_Framebuffer->bind();
+        Renderer::Clear();
         Renderer2D::resetStats();
-
         Renderer2D::beginScene(m_CameraController.getCamera());
         if (m_CameraController.getBoundsWidth() * m_CameraController.getBoundsHeight() <= 5000)
         {
@@ -183,6 +132,85 @@ namespace Elysium
                 { q.Color[0], q.Color[1], q.Color[2], q.Color[3] });
         }
         Renderer2D::endScene();
+        m_Framebuffer->unbind();
+
+        createImGuiDockspace([&]()
+        {
+            ImGui::Begin("Editor");
+            ImGui::InputText("Filename", m_Filename, 256);
+            if (ImGui::Button("Save Scene to File"))
+            {
+                saveSceneToFile();
+            }
+            if (ImGui::Button("Open Scene from File"))
+            {
+                m_Data.Quads.clear();
+                m_Current = nullptr;
+
+                std::string filename = m_Filename;
+                filename += ".ely";
+                getSceneFromFile(filename.c_str(), m_Data.Quads);
+            }
+            if (ImGui::Button("Add Quad"))
+            {
+                m_Data.Quads.emplace_back();
+                m_Current = &m_Data.Quads[m_Data.Quads.size() - 1];
+                m_Current->Position[0] = m_CameraController.getCamera().getPosition().x;
+                m_Current->Position[1] = m_CameraController.getCamera().getPosition().y;
+            }
+            if (ImGui::Button("Remove Current Quad"))
+            {
+                if (m_Current)
+                {
+                    auto it = std::find(m_Data.Quads.begin(), m_Data.Quads.end(), *m_Current);
+                    if (it != m_Data.Quads.end())
+                        m_Data.Quads.erase(it);
+                }
+                m_Current = nullptr;
+            }
+            if (ImGui::Button("Clear Scene"))
+            {
+                m_Data.Quads.clear();
+                m_Current = nullptr;
+            }
+            ImGui::Text("Camera Bounds Height: %f", m_CameraController.getBoundsHeight());
+            ImGui::Text("Camera Position: %f, %f", m_CameraController.getCamera().getPosition().x, m_CameraController.getCamera().getPosition().y);
+            ImGui::Text("Cursor Position: %f, %f", cursorPosition.x, cursorPosition.y);
+            ImGui::Text("Set Camera Translation Speed");
+            ImGui::InputFloat("\0", &m_TranslationSpeed);
+            if (m_Current && m_SameCurrent)
+            {
+                ImGui::Begin("Properties");
+                char quadTag[64];
+                strcpy_s(quadTag, 64, m_Current->Tag.data());
+                ImGui::InputText("Object Tag", quadTag, 64);
+                ImGui::InputFloat2("Position of quad", m_Current->Position);
+                ImGui::SliderFloat("Rotation of quad", &(m_Current->Rotation), 0.0f, 360.0f);
+                ImGui::InputFloat2("Size of quad", m_Current->Size);
+                ImGui::ColorEdit4("Color of quad", m_Current->Color);
+                m_Current->Tag = quadTag;
+                ImGui::End();
+            }
+            ImGui::End();
+
+            ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
+            ImGui::Begin("Viewport");
+            m_ViewportFocus = ImGui::IsWindowFocused();
+            ImVec2 viewportPosition = ImGui::GetWindowPos();
+            ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
+            m_ViewportPosition = { viewportPosition.x, viewportPosition.y };
+            if (m_ViewportSize != *((Vector2*)&viewportPanelSize))
+            {
+                m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
+                m_Framebuffer->resize((unsigned int)m_ViewportSize.x, (unsigned int)m_ViewportSize.y);
+
+                m_CameraController.resizeBounds(m_ViewportSize.x, m_ViewportSize.y);
+            }
+            unsigned int textureID = m_Framebuffer->getColorAttachmentID();
+            ImGui::Image((void*)textureID, ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+            ImGui::End();
+            ImGui::PopStyleVar();
+        });
     }
 
     void Editor::onEvent(Elysium::Event& event)
@@ -191,7 +219,11 @@ namespace Elysium
         dispatcher.Dispatch<MouseButtonPressedEvent>(BIND_EVENT_FUNCTION(Editor::onMousePressedEvent));
         dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FUNCTION(Editor::onWindowResizeEvent));
 
-        m_CameraController.onEvent(event);
+        if (m_ViewportFocus)
+        {
+            m_CameraController.onEvent(event);
+            m_CameraController.resizeBounds(m_ViewportSize.x, m_ViewportSize.y);
+        }
     }
 
     bool Editor::onMousePressedEvent(Elysium::MouseButtonPressedEvent& event)

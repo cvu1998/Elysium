@@ -14,7 +14,7 @@ public:
     ~VertexBuffer();
 
     void bind() const;
-    void unBind() const;
+    void unbind() const;
 
     inline unsigned int getRendererID() const { return m_RendererID; };
 };

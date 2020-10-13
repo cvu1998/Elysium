@@ -2,13 +2,13 @@
 
 #include <fstream>
 #include <vector>
-#include <unordered_map>
 
 #include "Math.h"
 #include "OrthographicCameraController.h"
 #include "Scene.h"
 #include "Timestep.h"
 
+#include "Renderer/Framebuffer.h"
 #include "Renderer/Renderer2D.h"
 
 namespace Elysium 
@@ -57,7 +57,6 @@ namespace Elysium
     class Editor : public Scene
     {
     private:
-
         unsigned int m_WindowWidth;
         unsigned int m_WindowHeight;
 
@@ -70,6 +69,11 @@ namespace Elysium
         bool m_SameCurrent = false;
 
         SceneData m_Data;
+
+        bool m_ViewportFocus = false;
+        Vector2 m_ViewportPosition = { 0.0f, 0.0f };
+        Vector2 m_ViewportSize = { 0.0f, 0.0f };
+        std::unique_ptr<Framebuffer> m_Framebuffer;
 
         #ifdef _DEBUG
         char m_Filename[256] = "res/scenes/Test";
@@ -86,6 +90,7 @@ namespace Elysium
 
     public:
         Editor(unsigned int width, unsigned int height);
+        ~Editor();
 
         void onUpdate(Timestep ts) override;
         void onEvent(Elysium::Event& event) override;

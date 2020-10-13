@@ -8,10 +8,10 @@ namespace Elysium
     {
     }
 
-    PhysicalBody::PhysicalBody(BodyType type,const char* name, float mass, const Vector2& initialPosition, const Vector2& size,
+    PhysicalBody::PhysicalBody(BodyType type,const char* tag, float mass, const Vector2& initialPosition, const Vector2& size,
         Collision_Callback callback) :
         Type(type),
-        Name(name),
+        Tag(tag),
         Position(initialPosition),
         Size(size),
         Callback(callback)

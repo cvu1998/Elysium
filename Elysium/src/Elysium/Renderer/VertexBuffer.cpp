@@ -27,6 +27,6 @@ void VertexBuffer::bind() const {
     glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
 }
 
-void VertexBuffer::unBind() const {
+void VertexBuffer::unbind() const {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }

@@ -48,7 +48,7 @@ namespace Elysium
             const CollisionInfo& collisionInfo);
 
     private:
-        const char* Name = nullptr;
+        const char* Tag = nullptr;
         float Mass = 0.0f;
         float Inertia = 0.0f;
         float Radius = 0.0f;
@@ -97,16 +97,16 @@ namespace Elysium
 
     private:
         PhysicalBody();
-        PhysicalBody(BodyType type, const char* name, float mass, const Vector2& initialPosition, const Vector2& size,
+        PhysicalBody(BodyType type, const char* tag, float mass, const Vector2& initialPosition, const Vector2& size,
             Collision_Callback callback);
 
         Vector2 tranformVertex(const Vector2& vertex) const;
 
     public:
-        static PhysicalBody createPhysicalBody(BodyType type, const char* name, float mass, const Vector2& initialPosition, const Vector2& size,
+        static PhysicalBody createPhysicalBody(BodyType type, const char* tag, float mass, const Vector2& initialPosition, const Vector2& size,
             Collision_Callback callback);
 
-        inline const char* getName() const { return Name; }
+        inline const char* getTag() const { return Tag; }
         inline float getMass() const { return Mass; }
         inline const Vector2& getSize() const { return Size; }
 

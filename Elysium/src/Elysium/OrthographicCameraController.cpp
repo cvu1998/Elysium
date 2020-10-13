@@ -2,43 +2,50 @@
 
 #include <algorithm> 
 
-#include "Input.h"
-#include "KeyCodes.h"
+#include "Elysium/Input.h"
+#include "Elysium/Log.h"
 
 namespace Elysium
 {
-    OrthographicCameraController::OrthographicCameraController(float aspectRatio, float zoomLevel) : 
+    OrthographicCameraController::OrthographicCameraController(float aspectRatio, float zoomLevel, const InputKeys& cameraInputKeys) :
         m_AspectRatio(aspectRatio), 
         m_ZoomLevel(zoomLevel),
-        m_Camera(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel)
+        m_Camera(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel),
+        CameraInputKeys(cameraInputKeys)
     {
+    }
+
+    void OrthographicCameraController::resizeBounds(float width, float height)
+    {
+        m_AspectRatio = width / height;
+        m_Camera.setProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
     }
 
     void OrthographicCameraController::onUpdate(Timestep ts)
     {
-        if (Input::isKeyPressed(ELY_KEY_UP))
+        if (Input::isKeyPressed(CameraInputKeys.MoveUpKeyCode))
         {
             m_CameraPosition.x += -sin(glm::radians(m_CameraRotation)) * CameraTranslationSpeed * ts;
             m_CameraPosition.y += cos(glm::radians(m_CameraRotation)) * CameraTranslationSpeed * ts;
         }
-        else if (Input::isKeyPressed(ELY_KEY_DOWN))
+        else if (Input::isKeyPressed(CameraInputKeys.MoveDownKeyCode))
         {
             m_CameraPosition.x -= -sin(glm::radians(m_CameraRotation)) * CameraTranslationSpeed * ts;
             m_CameraPosition.y -= cos(glm::radians(m_CameraRotation)) * CameraTranslationSpeed * ts;
         }
 
-        if (Input::isKeyPressed(ELY_KEY_LEFT))
+        if (Input::isKeyPressed(CameraInputKeys.MoveLeftKeyCode))
         {
             m_CameraPosition.x -= cos(glm::radians(m_CameraRotation)) * CameraTranslationSpeed * ts;
             m_CameraPosition.y -= sin(glm::radians(m_CameraRotation)) * CameraTranslationSpeed * ts;
         }
-        else if (Input::isKeyPressed(ELY_KEY_RIGHT))
+        else if (Input::isKeyPressed(CameraInputKeys.MoveRightKeyCode))
         {
             m_CameraPosition.x += cos(glm::radians(m_CameraRotation)) * CameraTranslationSpeed * ts;
             m_CameraPosition.y += sin(glm::radians(m_CameraRotation)) * CameraTranslationSpeed * ts;
         }
 
-        if (Input::isKeyPressed(ELY_KEY_RIGHT_ALT))
+        if (Input::isKeyPressed(CameraInputKeys.RotateKeyCode))
             m_CameraRotation += CameraRotationSpeed * ts;
 
         m_Camera.setPosition(m_CameraPosition);
@@ -62,8 +69,7 @@ namespace Elysium
 
     bool OrthographicCameraController::onWindowResizeEvent(WindowResizeEvent& event)
     {
-        m_AspectRatio = (float)event.getWidth() / (float)event.getHeight();
-        m_Camera.setProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
+        resizeBounds((float)event.getWidth(), (float)event.getHeight());
         return false;
     }
 }

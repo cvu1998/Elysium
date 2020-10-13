@@ -45,7 +45,7 @@ public:
     ~Texture();
 
     void bind(unsigned int slot=0) const;
-    void unBind() const;
+    void unbind() const;
 
     inline const TextureData& getTextureData() const { return m_Data; }
 };

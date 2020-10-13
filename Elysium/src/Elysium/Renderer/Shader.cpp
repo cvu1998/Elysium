@@ -27,7 +27,7 @@ namespace Elysium
         GL_ASSERT(glUseProgram(m_RendererID));
     }
 
-    void Shader::unBind() const
+    void Shader::unbind() const
     {
         GL_ASSERT(glUseProgram(0));
     }

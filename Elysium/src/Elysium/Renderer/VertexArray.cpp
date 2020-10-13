@@ -18,7 +18,7 @@ void VertexArray::bind() const
     GL_ASSERT(glBindVertexArray(m_RendererID));
 }
 
-void VertexArray::unBind() const
+void VertexArray::unbind() const
 {
     GL_ASSERT(glBindVertexArray(0));
 }

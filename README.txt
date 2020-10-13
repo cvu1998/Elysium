@@ -11,3 +11,4 @@ In order to link the engine:
 ...\Dependencies\lib\$(Platform)\
 ...\Elysium\lib\$(Configuration)-$(Platform)\
 4. Add additional dependencies or link to glfw3.h as well as Elysium.lib
+5. Move the file imgui.ini and res folder to the one containing your generated executable and start-up project

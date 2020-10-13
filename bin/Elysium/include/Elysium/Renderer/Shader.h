@@ -36,7 +36,7 @@ namespace Elysium
         ~Shader();
 
         void bind() const;
-        void unBind() const;
+        void unbind() const;
 
         void setUniform1i(const char* name, int value);
 
