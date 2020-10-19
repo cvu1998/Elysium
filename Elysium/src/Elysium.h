@@ -25,6 +25,7 @@
 #include "Elysium/Physics/PhysicalBody.h"
 
 #include "Elysium/Editor.h"
+#include "Elysium/ImGuiUtility.h"
 
 // ---Networking---
 #include "Elysium/Network/UDPClient.h"

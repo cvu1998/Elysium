@@ -4,7 +4,6 @@
 *.filters
 *FileListAbsolute.txt
 *.idb
-*.ini
 *.ilk
 *.iobj
 *.ipdb
