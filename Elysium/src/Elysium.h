@@ -26,6 +26,10 @@
 
 #include "Elysium/Editor.h"
 
+// ---Networking---
+#include "Elysium/Network/UDPClient.h"
+#include "Elysium/Network/UDPServer.h"
+
 // ---Log---
 #include "Elysium/Log.h"
 

@@ -2,7 +2,9 @@
 
 SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Scene("Sandbox"),
     m_Camera(-m_Height * (float)(width / height), m_Height * (float)(width / height), -m_Height * 0.5f, m_Height * 0.5f),
-    m_ParticleSystem(100, m_Camera)
+    m_ParticleSystem(100, m_Camera),
+    m_Client(48000, "127.0.0.1"),
+    m_Server(48000)
 {
     m_Textures.reserve(15);
     m_Textures.emplace_back("res/texture/meadow.png");
@@ -147,6 +149,20 @@ void SandboxScene::onUpdate(Elysium::Timestep ts)
     ImGui::End();
 
     Elysium::Renderer2D::resetStats();
+
+    int clientMessage = Random::Integer(0, 2);
+    int serverMessage = Random::Integer(0, 2);
+    ELY_INFO("Client message: {0}", m_Messages[clientMessage].c_str());
+    char clientData[1024];
+    m_Client.sendData((int)m_Messages[clientMessage].length() + 1, m_Messages[clientMessage].c_str());
+    if (m_Server.receiveData((int)m_Messages[clientMessage].length() + 1, clientData) == Elysium::NetworkResult::SUCCESS)
+        ELY_INFO("Server recv message from Client: {0}", clientData);
+
+    ELY_INFO("Server message: {0}", m_Messages[serverMessage].c_str());
+    char serverData[1024];
+    m_Server.sendData((int)m_Messages[serverMessage].length() + 1, m_Messages[serverMessage].c_str());
+    if (m_Client.receiveData((int)m_Messages[serverMessage].length() + 1, serverData) == Elysium::NetworkResult::SUCCESS)
+        ELY_INFO("Client recv message from Server: {0}", serverData);
 }
 
 void SandboxScene::onEvent(Elysium::Event& event)

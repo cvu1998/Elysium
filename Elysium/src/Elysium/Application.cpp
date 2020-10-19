@@ -39,6 +39,11 @@ namespace Elysium
             io.ConfigFlags = ImGuiConfigFlags_DockingEnable;
         }
         Renderer2D::Init();
+
+        WSADATA wsaData;
+        int res = WSAStartup(MAKEWORD(2, 2), &wsaData);
+        if (res != NO_ERROR) 
+            ELY_CORE_ERROR("WSAStartup failed with error!");
     }
 
     Application::~Application()
@@ -51,6 +56,8 @@ namespace Elysium
             ImGui::DestroyContext();
         }
         Renderer2D::Shutdown();
+
+        WSACleanup();
     }
 
     void Application::onEvent(Event& event)

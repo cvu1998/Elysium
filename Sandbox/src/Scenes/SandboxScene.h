@@ -27,6 +27,11 @@ private:
     Elysium::BodyHandle m_Circle;
     TextureData m_BallTexture;
 
+    std::string m_Messages[3] = { "Je suis Samuel", "He was here", "Well hello there!" };
+
+    Elysium::UDPClient m_Client;
+    Elysium::UDPServer m_Server;
+
 public:
     SandboxScene(unsigned int height, unsigned int width);
     ~SandboxScene();
