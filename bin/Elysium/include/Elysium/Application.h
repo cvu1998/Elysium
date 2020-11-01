@@ -28,13 +28,11 @@ namespace Elysium
         SceneManager m_SceneManager;
 
     protected:
-        Application(bool imgui=false);
+        Application(const std::string& title="Elysium Engine", unsigned int width=1280, unsigned int height=720, 
+            bool imgui=true);
         ~Application();
 
         virtual void onEvent(Event& event) final;
-
-        virtual void pushLayer(Layer* layer) final;
-        virtual void pushOverlay(Layer* overlay) final;
 
         bool onWindowCloseEvent(WindowCloseEvent& event);
         bool onWindowResizeEvent(WindowResizeEvent& event);
@@ -43,6 +41,8 @@ namespace Elysium
 
     public:
         static Application& Get() { return *s_Instance; }
+        static std::string openFile(const char* filter);
+        static std::string saveFile(const char* filter);
 
         virtual Window& getWindow() final { return *m_Window; }
         virtual const Window& getWindow() const final { return *m_Window; }

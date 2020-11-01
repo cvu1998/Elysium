@@ -8,18 +8,17 @@ FlappyBirdScene::FlappyBirdScene(unsigned int width, unsigned int height) :
     e_PhysicsSystem.setGravitaionnalAccel(20.0f);
 
     std::vector<Elysium::Quad> quads;
-    Elysium::Editor::getSceneFromFile("res/scenes/Flappy.ely", quads);
+    if (!Elysium::Editor::Deserialize("res/scenes/Flappy.elysium", quads))
+        ELY_ERROR("Scene deserialization error!");
 
     for (const Elysium::Quad& quad : quads)
     {
         if (quad.Tag == "Bird")
         {
-            m_InitialPosition = { quad.Position[0], quad.Position[1] };
-
             m_Bird.Body = e_PhysicsSystem.createPhysicalBody(Elysium::BodyType::DYNAMIC, "Bird", 10.0f,
-                m_InitialPosition, { quad.Size[0], quad.Size[1] }, FlappyBird::onCollision);
+                quad.Position, quad.Size, FlappyBird::onCollision);
             m_Bird.Body->AllowRotation = false;
-            m_Bird.Body->setRadius(quad.Size[0]);
+            m_Bird.Body->setRadius((quad.Size.x + quad.Size.y) * 0.5f);
             m_Bird.Body->setNumberOfCallbackExecution(1);
 
             m_Bird.Body->Impulse.x += m_InitialImpulse * m_Bird.Body->getMass();
@@ -27,14 +26,14 @@ FlappyBirdScene::FlappyBirdScene(unsigned int width, unsigned int height) :
         else if (quad.Tag == "Ground")
         {
             m_Ground = e_PhysicsSystem.createPhysicalBody(Elysium::BodyType::STATIC, "Ground", 0.0f,
-                { quad.Position[0], quad.Position[1] }, { quad.Size[0], quad.Size[1] });
+                quad.Position, quad.Size);
             m_Ceiling = e_PhysicsSystem.createPhysicalBody(Elysium::BodyType::STATIC, "Ceiling", 0.0f,
-                { quad.Position[0], quad.Position[1] }, { quad.Size[0], quad.Size[1] });
+                quad.Position, quad.Size);
         }
         else if (quad.Tag == "Ceiling")
         {
             m_Ceiling = e_PhysicsSystem.createPhysicalBody(Elysium::BodyType::STATIC, "Ceiling", 0.0f,
-                { quad.Position[0], quad.Position[1] }, { quad.Size[0], quad.Size[1] });
+                quad.Position, quad.Size);
         }
     }
     m_SavedPosition = m_Bird.Body->Position.x - m_PipeDistance;

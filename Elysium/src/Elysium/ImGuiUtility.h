@@ -3,6 +3,7 @@
 #include <functional>
 
 #include <imgui/imgui.h>
+#include <imgui/imgui_internal.h>
 #include <imgui/imgui_impl_glfw.h>
 #include <imgui/imgui_impl_opengl3.h>
 
@@ -10,6 +11,23 @@
 
 namespace Elysium
 {
+    static void drawImGuiLabelWithColumn(const char* label, std::function<void(void)> function, float columnWidth = 100.0f)
+    {
+        ImGui::PushID(label);
+
+        ImGui::Columns(2);
+
+        ImGui::SetColumnWidth(0, columnWidth);
+        ImGui::Text(label);
+        ImGui::NextColumn();
+
+        function();
+
+        ImGui::Columns(1);
+
+        ImGui::PopID();
+    }
+
     static void createImGuiDockspace(std::function<void (void)> function)
     {
         static bool dockspaceOpen = true;

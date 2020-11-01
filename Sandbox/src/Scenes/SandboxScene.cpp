@@ -3,8 +3,8 @@
 SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Scene("Sandbox"),
     m_Camera(-m_Height * (float)(width / height), m_Height * (float)(width / height), -m_Height * 0.5f, m_Height * 0.5f),
     m_ParticleSystem(100, m_Camera),
-    m_Client(48000, "127.0.0.1"),
-    m_Server(48000)
+    m_Client(8888, "127.0.0.1"),
+    m_Server(8888)
 {
     m_Textures.reserve(15);
     m_Textures.emplace_back("res/texture/meadow.png");

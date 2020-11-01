@@ -6,18 +6,23 @@
 #include "Elysium/Renderer/Renderer2D.h"
 #include "Elysium/Timestep.h"
 
+#include <commdlg.h>
+#define GLFW_EXPOSE_NATIVE_WIN32
+#include <GLFW/glfw3native.h>
+
 namespace Elysium
 {
     Application* Application::s_Instance = nullptr;
 
-    Application::Application(bool imgui) : m_ImGui(imgui), m_ClearColor{ 0.0f, 0.0f, 0.0f, 0.0f }
+    Application::Application(const std::string& title, unsigned int width, unsigned int height, 
+        bool imgui) : m_ImGui(imgui), m_ClearColor{ 0.0f, 0.0f, 0.0f, 0.0f }
     {
         Log::Init();
 
         ELY_LOG_ASSERT(!s_Instance, "Application already exists!");
         s_Instance = this;
 
-        m_Window = std::unique_ptr<Window>(Window::Create());
+        m_Window = std::unique_ptr<Window>(Window::Create( { title, width, height } ));
         m_Window->setEventCallback(BIND_EVENT_FUNCTION(Application::onEvent));
 
         if (m_Window->getStatus() == 0)
@@ -36,7 +41,7 @@ namespace Elysium
             ImGui::StyleColorsDark();
 
             ImGuiIO& io = ImGui::GetIO();
-            io.ConfigFlags = ImGuiConfigFlags_DockingEnable;
+            io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
         }
         Renderer2D::Init();
 
@@ -79,16 +84,6 @@ namespace Elysium
         }
     }
 
-    void Application::pushLayer(Layer* layer)
-    {
-        m_LayerStack.pushLayer(layer);
-    }
-
-    void Application::pushOverlay(Layer* overlay)
-    {
-        m_LayerStack.pushOverlay(overlay);
-    }
-
     bool Application::onWindowCloseEvent(WindowCloseEvent& event)
     {
         m_Running = false;
@@ -107,6 +102,44 @@ namespace Elysium
         Renderer::setViewport(0, 0, event.getWidth(), event.getHeight());
 
         return false;
+    }
+
+    std::string Application::openFile(const char* filter)
+    {
+        OPENFILENAMEA ofn;
+        CHAR szFile[260] = { 0 };
+        ZeroMemory(&ofn, sizeof(OPENFILENAME));
+        ofn.lStructSize = sizeof(OPENFILENAME);
+        ofn.hwndOwner = glfwGetWin32Window((GLFWwindow*)Application::Get().getWindow().getGLFWWindow());
+        ofn.lpstrFile = szFile;
+        ofn.nMaxFile = sizeof(szFile);
+        ofn.lpstrFilter = filter;
+        ofn.nFilterIndex = 1;
+        ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
+        if (GetOpenFileNameA(&ofn) == TRUE)
+        {
+            return ofn.lpstrFile;
+        }
+        return std::string();
+    }
+
+    std::string Application::saveFile(const char* filter)
+    {
+        OPENFILENAMEA ofn;
+        CHAR szFile[260] = { 0 };
+        ZeroMemory(&ofn, sizeof(OPENFILENAME));
+        ofn.lStructSize = sizeof(OPENFILENAME);
+        ofn.hwndOwner = glfwGetWin32Window((GLFWwindow*)Application::Get().getWindow().getGLFWWindow());
+        ofn.lpstrFile = szFile;
+        ofn.nMaxFile = sizeof(szFile);
+        ofn.lpstrFilter = filter;
+        ofn.nFilterIndex = 1;
+        ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
+        if (GetSaveFileNameA(&ofn) == TRUE)
+        {
+            return ofn.lpstrFile;
+        }
+        return std::string();
     }
 
     void Application::Run()

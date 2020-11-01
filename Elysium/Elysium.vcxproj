@@ -134,7 +134,7 @@ xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\*.lib" "$(Solution
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>glfw3.lib;Glad.lib;</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;Glad.lib;Comdlg32.lib</AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\lib\$(Platform)\;$(SolutionDir)bin\$(Configuration)-$(Platform)\Glad\</AdditionalLibraryDirectories>
@@ -200,7 +200,7 @@ xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\*.lib" "$(Solution
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>glfw3.lib;Glad.lib;</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;Glad.lib;Comdlg32.lib</AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\lib\$(Platform)\;$(SolutionDir)bin\$(Configuration)-$(Platform)\Glad\</AdditionalLibraryDirectories>

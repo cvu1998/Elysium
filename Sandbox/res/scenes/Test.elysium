@@ -1,0 +1,25 @@
+Scene
+-Quad
+--Tag=White
+--Position=0, 2
+--Size=2, 2
+--Rotation=45
+--Color=1, 1, 1, 1
+-Quad
+--Tag=Yellow
+--Position=0, -2
+--Size=2, 2
+--Rotation=45
+--Color=1, 1, 0, 1
+-Quad
+--Tag=Blue
+--Position=2, 0
+--Size=2, 2
+--Rotation=0
+--Color=0, 0, 1, 1
+-Quad
+--Tag=Red
+--Position=-2, 0
+--Size=2.1, 2
+--Rotation=0
+--Color=1, 0, 0, 1

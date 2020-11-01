@@ -14,7 +14,7 @@ namespace Elysium
         std::string Title;
         unsigned int Width, Height;
 
-        WindowProperties(const std::string& title = "Elysium Engine", unsigned int width = 1280, unsigned int height = 720) :
+        WindowProperties(const std::string& title, unsigned int width, unsigned int height) :
             Title(title), Width(width), Height(height) { }
     };
 
@@ -54,6 +54,6 @@ namespace Elysium
         void setVSync(bool enabled);
         inline bool isVSync() const { return m_Data.VSync; };
 
-        static Window* Create(const WindowProperties& properties = WindowProperties());
+        static Window* Create(const WindowProperties& properties);
     };
 }

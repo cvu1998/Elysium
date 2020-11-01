@@ -2,6 +2,7 @@
 
 #include <string>
 
+#include "Elysium/Application.h"
 #include "Elysium/ImGuiUtility.h"
 #include "Elysium/Input.h"
 #include "Elysium/Log.h"
@@ -44,14 +45,13 @@ namespace Elysium
         return m_CameraController.getCamera().getScreenToWorldPosition((unsigned int)m_ViewportSize.x, (unsigned int)m_ViewportSize.y, position);
     }
 
-    void Editor::saveSceneToFile()
+    void Editor::Serialize(const char* filepath)
     {
         if (!m_Data.Quads.empty())
         {
-            std::string filename(m_Filename);
-            filename += ".ely";
-            std::ofstream sceneFile(filename);
+            std::ofstream sceneFile(filepath);
 
+            sceneFile << "Scene" << '\n';
             for (Quad& q : m_Data.Quads)
             {
                 q.saveQuad(sceneFile);
@@ -67,12 +67,15 @@ namespace Elysium
 
         Vector2 cursorPosition = getCursorPosition();
 
+        if (Elysium::Input::isMouseButtonPressed(ELY_MOUSE_BUTTON_1) &&
+            Elysium::Input::isKeyPressed(ELY_KEY_LEFT_SHIFT))
+            m_Marker = cursorPosition;
+
         if (m_Current)
         {
             m_SameCurrent = true;
-            Vector2 position = { m_Current->Position[0], m_Current->Position[1] };
-            Vector2 size = { m_Current->Size[0] * 0.5f, m_Current->Size[1] * 0.5f };
-            if (!isWithinBounds(cursorPosition, position - size, position + size))
+            Vector2 size = m_Current->Size * 0.5f;
+            if (!isWithinBounds(cursorPosition, m_Current->Position - size, m_Current->Position + size))
             {
                 m_Repeat = 0;
                 m_CurrentIsMoving = false;
@@ -83,22 +86,20 @@ namespace Elysium
         {
             if (m_Current)
             {
-                Vector2 position = { m_Current->Position[0], m_Current->Position[1] };
-                Vector2 size = { m_Current->Size[0] * 0.5f, m_Current->Size[1] * 0.5f };
-                if (isWithinBounds(cursorPosition, position - size, position + size))
+                Vector2 size = m_Current->Size * 0.5f;
+                if (isWithinBounds(cursorPosition, m_Current->Position - size, m_Current->Position + size))
                 {
                     if (m_CurrentIsMoving)
                     {
-                        m_Current->Position[0] = cursorPosition.x;
-                        m_Current->Position[1] = cursorPosition.y;
+                        m_Current->Position.x = cursorPosition.x;
+                        m_Current->Position.y = cursorPosition.y;
                     }
                 }
             }
             for (Quad& q : m_Data.Quads)
             {
-                Vector2 position = { q.Position[0], q.Position[1] };
-                Vector2 size = { q.Size[0] * 0.5f, q.Size[1] * 0.5f };
-                if (isWithinBounds(cursorPosition, position - size, position + size))
+                Vector2 size = q.Size * 0.5f;
+                if (isWithinBounds(cursorPosition, q.Position - size, q.Position + size))
                 {
                     if (!m_CurrentIsMoving)
                     {
@@ -113,52 +114,69 @@ namespace Elysium
         Renderer::Clear();
         Renderer2D::resetStats();
         Renderer2D::beginScene(m_CameraController.getCamera());
-        if (m_CameraController.getBoundsWidth() * m_CameraController.getBoundsHeight() <= 5000)
+        if (m_CameraController.getBoundsWidth() * m_CameraController.getBoundsHeight() <= 5000.0f)
         {
             float leftBound = floor(m_CameraController.getCamera().getPosition().x - (m_CameraController.getBoundsWidth() * 0.5f));
             float rightBound = ceil(m_CameraController.getCamera().getPosition().x + (m_CameraController.getBoundsWidth() * 0.5f));
-            for (float bottom = leftBound; bottom < rightBound; bottom++)
+            float bottomBound = floor(m_CameraController.getCamera().getPosition().y - (m_CameraController.getBoundsHeight() * 0.5f));
+            float topBound = ceil(m_CameraController.getCamera().getPosition().y + (m_CameraController.getBoundsHeight() * 0.5f));
+            for (float bottom = bottomBound; bottom < topBound; bottom++)
             {
                 for (float left = leftBound; left < rightBound; left++)
                 {
-                    Renderer2D::drawLine({ left, bottom }, { left + 1.0f, bottom });
-                    Renderer2D::drawLine({ left, bottom }, { left, bottom + 1.0f });
+                    Renderer2D::drawLine({ left, bottom }, { left + 1.0f, bottom }, { 0.5f, 0.5f, 0.5f, 1.0f });
+                    Renderer2D::drawLine({ left, bottom }, { left, bottom + 1.0f }, { 0.5f, 0.5f, 0.5f, 1.0f });
                 }
             }
         }
         for (Quad& q : m_Data.Quads)
         {
-            Renderer2D::drawQuadWithRotation({ q.Position[0], q.Position[1] }, { q.Size[0], q.Size[1] }, radians(q.Rotation),
-                { q.Color[0], q.Color[1], q.Color[2], q.Color[3] });
+            Renderer2D::drawQuadWithRotation(q.Position, q.Size, radians(q.Rotation), q.Color);
         }
         Renderer2D::endScene();
         m_Framebuffer->unbind();
 
         createImGuiDockspace([&]()
         {
-            ImGui::Begin("Editor");
-            ImGui::InputText("Filename", m_Filename, 256);
-            if (ImGui::Button("Save Scene to File"))
+            if (ImGui::BeginMenuBar())
             {
-                saveSceneToFile();
-            }
-            if (ImGui::Button("Open Scene from File"))
-            {
-                m_Data.Quads.clear();
-                m_Current = nullptr;
+                if (ImGui::BeginMenu("File"))
+                {
+                    if (ImGui::MenuItem("New"))
+                    {
+                        m_Data.Quads.clear();
+                        m_Current = nullptr;
+                    }
+                    if (ImGui::MenuItem("Open Scene"))
+                    {
+                        std::string filepath = Application::openFile("Elysium Scene (*.elysium)\0*.elysium\0");
+                        if (!(filepath.empty()))
+                        {
+                            m_Data.Quads.clear();
+                            m_Current = nullptr;
 
-                std::string filename = m_Filename;
-                filename += ".ely";
-                getSceneFromFile(filename.c_str(), m_Data.Quads);
+                            Deserialize(filepath.c_str(), m_Data.Quads);
+                        }
+                    }
+                    if (ImGui::MenuItem("Save Scene"))
+                    {
+                        std::string filepath = Application::saveFile("Elysium Scene (*.elysium)\0*.elysium\0");
+                        if (!(filepath.empty()))
+                            Serialize(filepath.c_str());
+                    }
+                    ImGui::EndMenu();
+                }
+                ImGui::EndMenuBar();
             }
+
+            ImGui::Begin("Editor");
             if (ImGui::Button("Add Quad"))
             {
                 m_Data.Quads.emplace_back();
                 m_Current = &m_Data.Quads[m_Data.Quads.size() - 1];
-                m_Current->Position[0] = m_CameraController.getCamera().getPosition().x;
-                m_Current->Position[1] = m_CameraController.getCamera().getPosition().y;
+                m_Current->Position = m_Marker;
             }
-            if (ImGui::Button("Remove Current Quad"))
+            if (ImGui::Button("Remove Quad"))
             {
                 if (m_Current)
                 {
@@ -168,27 +186,56 @@ namespace Elysium
                 }
                 m_Current = nullptr;
             }
-            if (ImGui::Button("Clear Scene"))
-            {
-                m_Data.Quads.clear();
-                m_Current = nullptr;
-            }
-            ImGui::Text("Camera Bounds Height: %f", m_CameraController.getBoundsHeight());
             ImGui::Text("Camera Position: %f, %f", m_CameraController.getCamera().getPosition().x, m_CameraController.getCamera().getPosition().y);
             ImGui::Text("Cursor Position: %f, %f", cursorPosition.x, cursorPosition.y);
-            ImGui::Text("Set Camera Translation Speed");
-            ImGui::InputFloat("\0", &m_TranslationSpeed);
+            drawImGuiLabelWithColumn("Camera Translation Speed", [&]()
+                {
+                    ImGui::InputFloat("##", &m_TranslationSpeed);
+                    m_CameraController.CameraTranslationSpeed = m_TranslationSpeed;
+                }, 190.0f);
+
             if (m_Current && m_SameCurrent)
             {
                 ImGui::Begin("Properties");
                 char quadTag[64];
-                strcpy_s(quadTag, 64, m_Current->Tag.data());
-                ImGui::InputText("Object Tag", quadTag, 64);
-                ImGui::InputFloat2("Position of quad", m_Current->Position);
-                ImGui::SliderFloat("Rotation of quad", &(m_Current->Rotation), 0.0f, 360.0f);
-                ImGui::InputFloat2("Size of quad", m_Current->Size);
-                ImGui::ColorEdit4("Color of quad", m_Current->Color);
-                m_Current->Tag = quadTag;
+                strcpy_s(quadTag, 64, m_Current->Tag.c_str());
+                drawImGuiLabelWithColumn("Tag", [&]()
+                    {
+                        ImGui::InputText("##", quadTag, 64);
+                        m_Current->Tag = quadTag;
+                    });
+                drawImGuiLabelWithColumn("Position", [&]()
+                    {
+                        ImGui::PushMultiItemsWidths(2, ImGui::CalcItemWidth());
+                        ImGui::DragFloat("##X", &m_Current->Position.x, 0.1f, 0.0f, 0.0f, "%.2f");
+                        ImGui::PopItemWidth();
+                        ImGui::SameLine();
+                        ImGui::DragFloat("##Y", &m_Current->Position.y, 0.1f, 0.0f, 0.0f, "%.2f");
+                        ImGui::PopItemWidth();
+                    });
+                drawImGuiLabelWithColumn("Rotation", [&]()
+                    {
+                        ImGui::SliderFloat("##", &(m_Current->Rotation), 0.0f, 360.0f);
+                    });
+                drawImGuiLabelWithColumn("Size", [&]()
+                    {
+                        ImGui::PushMultiItemsWidths(2, ImGui::CalcItemWidth());
+                        float size = m_Current->Size.x;
+                        ImGui::DragFloat("##X", &m_Current->Size.x, 0.1f, 0.0f, 0.0f, "%.2f");
+                        if (!(m_Current->Size.x > 0.0f))
+                            m_Current->Size.x = size;
+                        ImGui::PopItemWidth();
+                        ImGui::SameLine();
+                        size = m_Current->Size.y;
+                        ImGui::DragFloat("##Y", &m_Current->Size.y, 0.1f, 0.0f, 0.0f, "%.2f");
+                        if (!(m_Current->Size.y > 0.0f))
+                            m_Current->Size.y = size;
+                        ImGui::PopItemWidth();
+                    });
+                drawImGuiLabelWithColumn("Color", [&]()
+                    {
+                        ImGui::ColorEdit4("##", (float*)&m_Current->Color);
+                    });
                 ImGui::End();
             }
             ImGui::End();
@@ -232,9 +279,8 @@ namespace Elysium
 
         if (m_Current)
         {
-            Vector2 position = { m_Current->Position[0], m_Current->Position[1] };
-            Vector2 size = { m_Current->Size[0] * 0.5f, m_Current->Size[1] * 0.5f };
-            if (isWithinBounds(cursorPosition, position - size, position + size))
+            Vector2 size = m_Current->Size * 0.5f;
+            if (isWithinBounds(cursorPosition, m_Current->Position - size, m_Current->Position + size))
             {
                 if (++m_Repeat > 1)
                     m_CurrentIsMoving = true;
@@ -251,12 +297,15 @@ namespace Elysium
         return false;
     }
 
-    void Editor::getSceneFromFile(const char* filename, std::vector<Quad>& quads)
+    bool Editor::Deserialize(const char* filepath, std::vector<Quad>& quads)
     {
-        std::ifstream sceneFile(filename);
+        std::ifstream sceneFile(filepath);
         if (sceneFile.is_open())
         {
             std::string line;
+            getline(sceneFile, line);
+            if (line != "Scene")
+                return false;
             QuadData dataType = QuadData::UNKNOWN;
 
             bool Complete = false;
@@ -264,7 +313,9 @@ namespace Elysium
             Quad quad;
             while (getline(sceneFile, line))
             {
-                if (line.find("Tag") != std::string::npos)
+                if (line.find("Quad") != std::string::npos)
+                    continue;
+                else if (line.find("Tag") != std::string::npos)
                     dataType = QuadData::TAG;
                 else if (line.find("Position") != std::string::npos)
                     dataType = QuadData::POSITION;
@@ -282,27 +333,33 @@ namespace Elysium
                 switch (dataType)
                 {
                 case QuadData::TAG:
-                    quad.Tag = line.substr(4, std::string::npos);
+                    quad.Tag = line.substr(6, std::string::npos);
                     break;
                 case QuadData::POSITION:
-                    quad.Position[0] = std::stof(line.substr(9, pos));
-                    quad.Position[1] = std::stof(line.substr(pos + 2, std::string::npos));
+                    quad.Position.x = std::stof(line.substr(11, pos));
+                    quad.Position.y = std::stof(line.substr(pos + 2, std::string::npos));
                     break;
                 case QuadData::SIZE:
-                    quad.Size[0] = std::stof(line.substr(5, pos));
-                    quad.Size[1] = std::stof(line.substr(pos + 2, std::string::npos));
+                    quad.Size.x = std::stof(line.substr(7, pos));
+                    quad.Size.y = std::stof(line.substr(pos + 2, std::string::npos));
                     break;
                 case QuadData::ROTATION:
-                    quad.Rotation = std::stof(line.substr(9, std::string::npos));
+                    quad.Rotation = std::stof(line.substr(11, std::string::npos));
                     break;
                 case QuadData::COLOR:
-                    quad.Color[0] = std::stof(line.substr(6, pos));
-                    for (size_t i = 1; i < 4; i++)
-                    {
-                        line = line.substr(pos + 2, std::string::npos);
-                        pos = line.find(",");
-                        quad.Color[i] = std::stof(line.substr(0, pos));
-                    }
+                    quad.Color.r = std::stof(line.substr(8, pos));
+
+                    line = line.substr(pos + 2, std::string::npos);
+                    pos = line.find(",");
+                    quad.Color.g = std::stof(line.substr(0, pos));
+
+                    line = line.substr(pos + 2, std::string::npos);
+                    pos = line.find(",");
+                    quad.Color.b = std::stof(line.substr(0, pos));
+
+                    line = line.substr(pos + 2, std::string::npos);
+                    pos = line.find(",");
+                    quad.Color.a = std::stof(line.substr(0, pos));
                     Complete = true;
                     break;
                 }
@@ -315,6 +372,8 @@ namespace Elysium
                 }
             }
             sceneFile.close();
+            return true;
         }
+        return false;
     }
 }

@@ -12,9 +12,8 @@ private:
     bool m_VSync = true;
 
 public:
-    Application(bool imgui=false) : Elysium::Application(imgui)
+    Application() : Elysium::Application()
     {
-        m_Window->setVSync(m_VSync);
     }
 
     ~Application()
@@ -74,7 +73,7 @@ public:
 
 int main(void)
 {
-    Application* application = new Application(true);
+    Application* application = new Application();
     application->Run();
     delete application;
     return 0;
