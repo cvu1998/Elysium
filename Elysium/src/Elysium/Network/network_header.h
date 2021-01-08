@@ -15,4 +15,10 @@ namespace Elysium
         FAILED = -1,
         SUCCESS = 0
     };
+
+    enum class SocketMode
+    {
+        BLOCKING = 0,
+        NON_BLOCKING = 1
+    };
 }

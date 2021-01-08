@@ -15,7 +15,9 @@ namespace Elysium
         UDPClient(short remotePort, const char* remote_host);
         ~UDPClient();
 
-        NetworkResult receiveData(int dataSize, char* data);
-        NetworkResult sendData(int dataSize, const char* data);
+        NetworkResult receiveData(int dataSize, char* data, SocketMode mode = SocketMode::BLOCKING);
+        NetworkResult sendData(int dataSize, const char* data, SocketMode mode = SocketMode::BLOCKING);
+
+        void setRemoteAddress(short remotePort, const char* remoteHost);
     };
 }

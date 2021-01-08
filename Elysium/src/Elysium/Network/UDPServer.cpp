@@ -29,8 +29,9 @@ namespace Elysium
         closesocket(m_LocalSocket);
     }
 
-    NetworkResult UDPServer::receiveData(int dataSize, char* data)
+    NetworkResult UDPServer::receiveData(int dataSize, char* data, SocketMode mode)
     {
+        ioctlsocket(m_LocalSocket, FIONBIO, (u_long*)(&mode));
         if (recvfrom(m_LocalSocket, data, dataSize, 0, (SOCKADDR*)&m_RemoteAddress, &m_RemoteAddressSize) == SOCKET_ERROR)
             return NetworkResult::FAILED;
 
@@ -41,8 +42,9 @@ namespace Elysium
         return NetworkResult::SUCCESS;
     }
 
-    NetworkResult UDPServer::sendData(int dataSize, const char* data)
+    NetworkResult UDPServer::sendData(int dataSize, const char* data, SocketMode mode)
     {
+        ioctlsocket(m_LocalSocket, FIONBIO, (u_long*)(&mode));
         if (sendto(m_LocalSocket, data, dataSize, 0, (SOCKADDR*)&m_RemoteAddress, m_RemoteAddressSize) == SOCKET_ERROR)
             return NetworkResult::FAILED;
         return NetworkResult::SUCCESS;

@@ -1,0 +1,19 @@
+Scene
+-Quad
+--Tag=Bird
+--Position=0, 21
+--Size=0.5, 0.5
+--Rotation=0
+--Color=1, 1, 1, 1
+-Quad
+--Tag=Ground
+--Position=0, 0
+--Size=3000, 2
+--Rotation=0
+--Color=1, 1, 1, 1
+-Quad
+--Tag=Ceiling
+--Position=0, 42
+--Size=3000, 2
+--Rotation=0
+--Color=1, 1, 1, 1

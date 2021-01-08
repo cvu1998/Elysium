@@ -17,7 +17,7 @@ namespace Elysium
         UDPServer(short localPort);
         ~UDPServer();
 
-        NetworkResult receiveData(int dataSize, char* data);
-        NetworkResult sendData(int dataSize, const char* data);
+        NetworkResult receiveData(int dataSize, char* data, SocketMode mode = SocketMode::BLOCKING);
+        NetworkResult sendData(int dataSize, const char* data, SocketMode mode = SocketMode::BLOCKING);
     };
 }

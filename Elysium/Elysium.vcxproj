@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -96,7 +96,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>GLFW_INCLUDE_NONE;_WINSOCK_DEPRECATED_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)\Glad\include\;$(ProjectDir)src\;$(ProjectDir)src\vendor\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)\Glad\include\;$(ProjectDir)src\;$(ProjectDir)src\vendor\;$(INTELOCLSDKROOT)include\CL\</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
@@ -113,10 +113,10 @@ mkdir "$(SolutionDir)bin\Elysium\lib\$(Configuration)-$(Platform)\"
 xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\*.lib" "$(SolutionDir)bin\Elysium\lib\$(Configuration)-$(Platform)\" /S /Y /I</Command>
     </PostBuildEvent>
     <Lib>
-      <AdditionalDependencies>glfw3.lib;Glad.lib;</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;Glad.lib;OpenCL.lib;Comdlg32.lib</AdditionalDependencies>
     </Lib>
     <Lib>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\lib\$(Platform)\;$(SolutionDir)bin\$(Configuration)-$(Platform)\Glad\</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\lib\$(Platform)\;$(SolutionDir)bin\$(Configuration)-$(Platform)\Glad\;$(INTELOCLSDKROOT)lib\x86\</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -125,7 +125,7 @@ xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\*.lib" "$(Solution
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>GLFW_INCLUDE_NONE;_WINSOCK_DEPRECATED_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)\Glad\include\;$(ProjectDir)src\;$(ProjectDir)src\vendor\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)\Glad\include\;$(ProjectDir)src\;$(ProjectDir)src\vendor\;$(INTELOCLSDKROOT)include\CL\</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
@@ -134,10 +134,10 @@ xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\*.lib" "$(Solution
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>glfw3.lib;Glad.lib;Comdlg32.lib</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;Glad.lib;OpenCL.lib;Comdlg32.lib</AdditionalDependencies>
     </Lib>
     <Lib>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\lib\$(Platform)\;$(SolutionDir)bin\$(Configuration)-$(Platform)\Glad\</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\lib\$(Platform)\;$(SolutionDir)bin\$(Configuration)-$(Platform)\Glad\;$(INTELOCLSDKROOT)lib\$(Platform)\</AdditionalLibraryDirectories>
     </Lib>
     <PostBuildEvent>
       <Command>rmdir "$(SolutionDir)bin\Elysium\include\Elysium\" /s /q
@@ -156,7 +156,7 @@ xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\*.lib" "$(Solution
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>GLFW_INCLUDE_NONE;_WINSOCK_DEPRECATED_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)\Glad\include\;$(ProjectDir)src\;$(ProjectDir)src\vendor\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)\Glad\include\;$(ProjectDir)src\;$(ProjectDir)src\vendor\;$(INTELOCLSDKROOT)include\CL\</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
@@ -175,10 +175,10 @@ mkdir "$(SolutionDir)bin\Elysium\lib\$(Configuration)-$(Platform)\"
 xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\*.lib" "$(SolutionDir)bin\Elysium\lib\$(Configuration)-$(Platform)\" /S /Y /I</Command>
     </PostBuildEvent>
     <Lib>
-      <AdditionalDependencies>glfw3.lib;Glad.lib;</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;Glad.lib;OpenCL.lib;Comdlg32.lib</AdditionalDependencies>
     </Lib>
     <Lib>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\lib\$(Platform)\;$(SolutionDir)bin\$(Configuration)-$(Platform)\Glad\</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\lib\$(Platform)\;$(SolutionDir)bin\$(Configuration)-$(Platform)\Glad\;$(INTELOCLSDKROOT)lib\x86\</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -189,7 +189,7 @@ xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\*.lib" "$(Solution
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>GLFW_INCLUDE_NONE;_WINSOCK_DEPRECATED_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)\Glad\include\;$(ProjectDir)src\;$(ProjectDir)src\vendor\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)\Glad\include\;$(ProjectDir)src\;$(ProjectDir)src\vendor\;$(INTELOCLSDKROOT)include\CL\</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
@@ -200,10 +200,10 @@ xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\*.lib" "$(Solution
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>glfw3.lib;Glad.lib;Comdlg32.lib</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;Glad.lib;OpenCL.lib;Comdlg32.lib</AdditionalDependencies>
     </Lib>
     <Lib>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\lib\$(Platform)\;$(SolutionDir)bin\$(Configuration)-$(Platform)\Glad\</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\lib\$(Platform)\;$(SolutionDir)bin\$(Configuration)-$(Platform)\Glad\;$(INTELOCLSDKROOT)lib\$(Platform)\</AdditionalLibraryDirectories>
     </Lib>
     <PostBuildEvent>
       <Command>rmdir "$(SolutionDir)bin\Elysium\include\Elysium\" /s /q
