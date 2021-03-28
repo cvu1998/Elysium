@@ -26,14 +26,14 @@ m_Camera(-m_Height * (float)(width / height), m_Height* (float)(width / height),
     m_Player.m_TextureData = m_Player.m_IdleTexture;
 
     for (size_t i = 4; i < m_Textures.size(); i++)
-        m_Player.m_RunAnimation.Textures[i - 4] = m_Textures[i].getTextureData();
+        m_Player.RunAnimation.Textures[i - 4] = m_Textures[i].getTextureData();
 
 
     m_Adversary.m_IdleTexture = m_Textures[0].getTextureData();
     m_Adversary.m_TextureData = m_Adversary.m_IdleTexture;
 
     for (size_t i = 4; i < m_Textures.size(); i++)
-        m_Adversary.m_RunAnimation.Textures[i - 4] = m_Textures[i].getTextureData();
+        m_Adversary.RunAnimation.Textures[i - 4] = m_Textures[i].getTextureData();
 
     m_GroundTexture = m_Textures[1].getTextureData();
     m_GroundTexture.subtextureCoordinates({ 0, 6 }, { 128, 128 });

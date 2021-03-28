@@ -4,12 +4,8 @@ PerformanceScene::PerformanceScene(unsigned int width, unsigned int height) : Sc
 m_Camera(-m_Height * (float)(width / height), m_Height * (float)(width / height), -m_Height * 0.5f, m_Height * 0.5f),
 m_ParticleSystem(100, m_Camera)
 {
-    m_Textures.reserve(15);
-    m_Textures.emplace_back("res/texture/meadow.png");
-    m_Textures.emplace_back("res/texture/Vader.png");
-    m_Textures.emplace_back("res/texture/alec.png");
+    m_Textures.reserve(11);
     m_Textures.emplace_back("res/texture/Idle (1).png");
-    m_Textures.emplace_back("res/texture/RPGpack_sheet_2X.png");
     m_Textures.emplace_back("res/texture/platformPack_tilesheet.png");
     m_Textures.emplace_back("res/texture/background.png");
 
@@ -22,7 +18,7 @@ m_ParticleSystem(100, m_Camera)
     m_Textures.emplace_back("res/texture/Run (7).png");
     m_Textures.emplace_back("res/texture/Run (8).png");
 
-    m_Background = m_Textures[6].getTextureData();
+    m_Background = m_Textures[2].getTextureData();
     m_Background.repeatTexture({ 15.0f, 1.0f });
 
     m_Particle.Position = { 0.0f, 0.0f };
@@ -53,20 +49,17 @@ m_ParticleSystem(100, m_Camera)
 
     // ---------------------------------------------------------------------------------- //
 
-    m_Player.m_IdleTexture = m_Textures[3].getTextureData();
+    m_Player.m_IdleTexture = m_Textures[0].getTextureData();
     m_Player.m_TextureData = m_Player.m_IdleTexture;
 
-    for (size_t i = 7; i < m_Textures.size(); i++)
-        m_Player.m_RunAnimation.Textures[i - 7] = m_Textures[i].getTextureData();
+    for (size_t i = 3; i < m_Textures.size(); i++)
+        m_Player.RunAnimation.Textures[i - 3] = m_Textures[i].getTextureData();
 
-    m_GroundTexture = m_Textures[5].getTextureData();
+    m_GroundTexture = m_Textures[1].getTextureData();
     m_GroundTexture.subtextureCoordinates({ 0, 6 }, { 128, 128 });
 
-    m_BoxTexture = m_Textures[5].getTextureData();
+    m_BoxTexture = m_Textures[1].getTextureData();
     m_BoxTexture.subtextureCoordinates({ 4, 1 }, { 128, 128 });
-
-    m_BallTexture = m_Textures[5].getTextureData();
-    m_BallTexture.subtextureCoordinates({ 10, 6 }, { 128, 128 });
 
     e_PhysicsSystem.createPhysicalBody(&m_Ground, Elysium::BodyType::STATIC, "Ground", 10.0f, { 0.0f, 0.0f }, { 5000.0f, 2.0f });
 

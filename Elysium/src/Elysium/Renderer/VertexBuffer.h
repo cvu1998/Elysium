@@ -2,7 +2,8 @@
 
 #include "Elysium/Renderer/VertexBufferLayout.h"
 
-class VertexBuffer {
+class VertexBuffer 
+{
 private:
     unsigned int m_RendererID;
 

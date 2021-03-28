@@ -26,7 +26,8 @@ namespace Elysium
         void setProjection(float left, float right, float bottom, float top);
 
         inline const glm::vec3& getPosition() const { return m_Position; }
-        inline void setPosition(const glm::vec3& position) {
+        inline void setPosition(const glm::vec3& position) 
+        {
             m_Position = position;
             recalculateViewMatrix();
         }

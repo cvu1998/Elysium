@@ -22,7 +22,6 @@ private:
     std::array<Elysium::BodyHandle, 5000> m_GroundLayers;
     std::array<Elysium::BodyHandle, 250> m_Boxes;
     TextureData m_BoxTexture;
-    TextureData m_BallTexture;
 
     size_t m_Index = 0;
     float m_SpawnTime = 0.0f;

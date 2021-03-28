@@ -113,7 +113,7 @@ mkdir "$(SolutionDir)bin\Elysium\lib\$(Configuration)-$(Platform)\"
 xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\*.lib" "$(SolutionDir)bin\Elysium\lib\$(Configuration)-$(Platform)\" /S /Y /I</Command>
     </PostBuildEvent>
     <Lib>
-      <AdditionalDependencies>glfw3.lib;Glad.lib;OpenCL.lib;Comdlg32.lib</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;Glad.lib;Comdlg32.lib</AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\lib\$(Platform)\;$(SolutionDir)bin\$(Configuration)-$(Platform)\Glad\;$(INTELOCLSDKROOT)lib\x86\</AdditionalLibraryDirectories>
@@ -134,7 +134,7 @@ xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\*.lib" "$(Solution
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>glfw3.lib;Glad.lib;OpenCL.lib;Comdlg32.lib</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;Glad.lib;Comdlg32.lib</AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\lib\$(Platform)\;$(SolutionDir)bin\$(Configuration)-$(Platform)\Glad\;$(INTELOCLSDKROOT)lib\$(Platform)\</AdditionalLibraryDirectories>
@@ -175,7 +175,7 @@ mkdir "$(SolutionDir)bin\Elysium\lib\$(Configuration)-$(Platform)\"
 xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\*.lib" "$(SolutionDir)bin\Elysium\lib\$(Configuration)-$(Platform)\" /S /Y /I</Command>
     </PostBuildEvent>
     <Lib>
-      <AdditionalDependencies>glfw3.lib;Glad.lib;OpenCL.lib;Comdlg32.lib</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;Glad.lib;Comdlg32.lib</AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\lib\$(Platform)\;$(SolutionDir)bin\$(Configuration)-$(Platform)\Glad\;$(INTELOCLSDKROOT)lib\x86\</AdditionalLibraryDirectories>
@@ -200,7 +200,7 @@ xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\*.lib" "$(Solution
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>glfw3.lib;Glad.lib;OpenCL.lib;Comdlg32.lib</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;Glad.lib;Comdlg32.lib</AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\lib\$(Platform)\;$(SolutionDir)bin\$(Configuration)-$(Platform)\Glad\;$(INTELOCLSDKROOT)lib\$(Platform)\</AdditionalLibraryDirectories>
@@ -216,6 +216,8 @@ xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\*.lib" "$(Solution
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Elysium\AI\TabularRLAgent.cpp" />
+    <ClCompile Include="src\Elysium\ImGuiUtility.cpp" />
+    <ClCompile Include="src\Elysium\MathUtility.cpp" />
     <ClCompile Include="src\Elysium\Network\UDPClient.cpp" />
     <ClCompile Include="src\Elysium\Network\UDPServer.cpp" />
     <ClCompile Include="src\Elysium\Renderer\Framebuffer.cpp" />
@@ -397,6 +399,7 @@ xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\*.lib" "$(Solution
     <ClInclude Include="src\Elysium\AI\LinearRLAgent.h" />
     <ClInclude Include="src\Elysium\AI\TabularRLAgent.h" />
     <ClInclude Include="src\Elysium\ImGuiUtility.h" />
+    <ClInclude Include="src\Elysium\MathUtility.h" />
     <ClInclude Include="src\Elysium\Network\network_header.h" />
     <ClInclude Include="src\Elysium\Network\UDPClient.h" />
     <ClInclude Include="src\Elysium\Network\UDPServer.h" />

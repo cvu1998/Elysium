@@ -18,6 +18,7 @@
 #include "Elysium/Animation.h"
 #include "Elysium/ArrayList.h"
 #include "Elysium/Math.h"
+#include "Elysium/MathUtility.h"
 #include "Elysium/Random.h"
 #include "Elysium/Timer.h"
 
@@ -41,7 +42,6 @@
 #include "Elysium/Renderer/Texture.h"
 
 // ---AI---
-#include "Elysium/AI/BinaryFeatureVector.h"
 #include "Elysium/AI/LinearRLAgent.h"
 #include "Elysium/AI/TabularRLAgent.h"
 #include "Elysium/AI/State.h"

@@ -13,7 +13,7 @@ private:
 public:
     float m_FrameRate = 9.0f;
     bool m_PlayerLookingRight = true;
-    Elysium::Animation<s_RunAnimationSize> m_RunAnimation;
+    Elysium::Animation<s_RunAnimationSize> RunAnimation;
     TextureData m_TextureData;
     TextureData m_IdleTexture; 
 

@@ -2,16 +2,11 @@
 
 SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Scene("Sandbox"),
     m_Camera(-m_Height * (float)(width / height), m_Height * (float)(width / height), -m_Height * 0.5f, m_Height * 0.5f),
-    m_ParticleSystem(100, m_Camera),
-    m_Client(8888, "127.0.0.1"),
-    m_Server(8888)
+    m_ParticleSystem(100, m_Camera)
 {
-    m_Textures.reserve(15);
-    m_Textures.emplace_back("res/texture/meadow.png");
-    m_Textures.emplace_back("res/texture/Vader.png");
-    m_Textures.emplace_back("res/texture/alec.png");
+    m_Textures.reserve(12);
+    m_Textures.emplace_back("res/texture/soccer_ball.png");
     m_Textures.emplace_back("res/texture/Idle (1).png");
-    m_Textures.emplace_back("res/texture/RPGpack_sheet_2X.png");
     m_Textures.emplace_back("res/texture/platformPack_tilesheet.png");
     m_Textures.emplace_back("res/texture/background.png");
 
@@ -24,7 +19,7 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Scene("San
     m_Textures.emplace_back("res/texture/Run (7).png");
     m_Textures.emplace_back("res/texture/Run (8).png");
 
-    m_Background = m_Textures[6].getTextureData();
+    m_Background = m_Textures[3].getTextureData();
     m_Background.repeatTexture({ 15.0f, 1.0f });
 
     m_Particle.Position = { 0.0f, 0.0f };
@@ -55,41 +50,41 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Scene("San
 
     // ---------------------------------------------------------------------------------- //
 
-    m_Player.m_IdleTexture = m_Textures[3].getTextureData();
+    m_Player.m_IdleTexture = m_Textures[1].getTextureData();
     m_Player.m_TextureData = m_Player.m_IdleTexture;
 
-    for (size_t i = 7; i < m_Textures.size(); i++)
-        m_Player.m_RunAnimation.Textures[i - 7] = m_Textures[i].getTextureData();
+    for (size_t i = 4; i < m_Textures.size(); i++)
+        m_Player.RunAnimation.Textures[i - 4] = m_Textures[i].getTextureData();
 
-    m_GroundTexture = m_Textures[5].getTextureData();
+    m_GroundTexture = m_Textures[2].getTextureData();
     m_GroundTexture.subtextureCoordinates({ 0, 6 }, { 128, 128 });
 
-    m_BoxTexture = m_Textures[5].getTextureData();
+    m_BoxTexture = m_Textures[2].getTextureData();
     m_BoxTexture.subtextureCoordinates({ 4, 1 }, { 128, 128 });
 
-    m_BallTexture = m_Textures[5].getTextureData();
-    m_BallTexture.subtextureCoordinates({ 10, 6 }, { 128, 128 });
+    m_BallTexture = m_Textures[0].getTextureData();
 
     e_PhysicsSystem.createPhysicalBody(&m_Ground, Elysium::BodyType::STATIC, "Ground", 10.0f, { 0.0f, 0.0f }, { 500.0f, 2.0f });
     e_PhysicsSystem.createPhysicalBody(&m_MoveableBox, Elysium::BodyType::DYNAMIC, "Box", 10.0f, { 4.5f, 25.0f }, { 2.0f, 2.0f });
     e_PhysicsSystem.createPhysicalBody(&m_Ball, Elysium::BodyType::DYNAMIC, "Ball", 1.0f, { -2.0f, 10.0f }, { 2.0f, 2.0f });
-    e_PhysicsSystem.createPhysicalBody(&m_Box, Elysium::BodyType::STATIC, "sBox", 10.0f, { 2.5f, 2.0f }, { 2.0f, 2.0f });
-    e_PhysicsSystem.createPhysicalBody(&m_sBox, Elysium::BodyType::STATIC, "sBox", 10.0f, { 4.5f, 2.0f }, { 2.0f, 2.0f });
+    e_PhysicsSystem.createPhysicalBody(&m_Box, Elysium::BodyType::STATIC, "Static-Box-Left", 10.0f, { 2.5f, 2.0f }, { 2.0f, 2.0f });
+    e_PhysicsSystem.createPhysicalBody(&m_sBox, Elysium::BodyType::STATIC, "Static-Box-Right", 10.0f, { 4.5f, 2.0f }, { 2.0f, 2.0f });
 
 
     e_PhysicsSystem.createPhysicalBody(&m_Circle, Elysium::BodyType::DYNAMIC, "Circle", 1.0f, { -5.0f, 10.0f }, { 2.0f, 2.0f });
 
     Elysium::PhysicalBody* ground = e_PhysicsSystem.getPhysicalBody(m_Ground);
     ground->setFrictionCoefficient(0.5f);
-    //ground.setElasticityCoefficient(1.0f);
-
-    //ground.Rotation = Elysium::radians(10.0f);
+    ground->Rotation = glm::radians(10.0f);
 
     Elysium::PhysicalBody* ball = e_PhysicsSystem.getPhysicalBody(m_Ball);
     ball->setRadius(1.0f);
     ball->setElasticityCoefficient(1.0f);
+
     Elysium::PhysicalBody* circle = e_PhysicsSystem.getPhysicalBody(m_Circle);
     circle->setRadius(1.0f);
+
+    e_PhysicsSystem.logInfo("Box");
 }
 
 SandboxScene::~SandboxScene()
@@ -149,20 +144,6 @@ void SandboxScene::onUpdate(Elysium::Timestep ts)
     ImGui::End();
 
     Elysium::Renderer2D::resetStats();
-
-    int clientMessage = Random::Integer(0, 2);
-    int serverMessage = Random::Integer(0, 2);
-    ELY_INFO("Client message: {0}", m_Messages[clientMessage].c_str());
-    char clientData[1024];
-    m_Client.sendData((int)m_Messages[clientMessage].length() + 1, m_Messages[clientMessage].c_str());
-    if (m_Server.receiveData((int)m_Messages[clientMessage].length() + 1, clientData) == Elysium::NetworkResult::SUCCESS)
-        ELY_INFO("Server recv message from Client: {0}", clientData);
-
-    ELY_INFO("Server message: {0}", m_Messages[serverMessage].c_str());
-    char serverData[1024];
-    m_Server.sendData((int)m_Messages[serverMessage].length() + 1, m_Messages[serverMessage].c_str());
-    if (m_Client.receiveData((int)m_Messages[serverMessage].length() + 1, serverData) == Elysium::NetworkResult::SUCCESS)
-        ELY_INFO("Client recv message from Server: {0}", serverData);
 }
 
 void SandboxScene::onEvent(Elysium::Event& event)

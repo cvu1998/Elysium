@@ -19,10 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Game\CellArea.cpp" />
     <ClCompile Include="src\Game\FlappyBird.cpp" />
     <ClCompile Include="src\Game\Tic-Tac-Toe.cpp" />
-    <ClCompile Include="src\Scenes\CellGrowthScene.cpp" />
     <ClCompile Include="src\Scenes\FlappyBirdScene.cpp" />
     <ClCompile Include="src\Scenes\RLTTTScene.cpp" />
     <ClCompile Include="src\Scenes\SoccerScene.cpp" />
@@ -34,20 +32,11 @@
     <ClCompile Include="src\Game\Systems.cpp" />
     <ClCompile Include="src\Scenes\PerformanceScene.cpp" />
     <ClCompile Include="src\Scenes\SandboxScene.cpp" />
-    <ClCompile Include="src\Scenes\TestScene.cpp" />
-    <ClCompile Include="src\test\BatchRendering_Test.cpp" />
-    <ClCompile Include="src\test\ClearColor_Test.cpp" />
-    <ClCompile Include="src\test\DynamicBatchRendering_Test.cpp" />
-    <ClCompile Include="src\test\ScreenSaver_Test.cpp" />
-    <ClCompile Include="src\test\Test.cpp" />
-    <ClCompile Include="src\test\Texture2D_Test.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Game\CellArea.h" />
     <ClInclude Include="src\Game\FlappyBird.h" />
     <ClInclude Include="src\Game\Tic-Tac-Toe.h" />
     <ClInclude Include="src\Game\Values.h" />
-    <ClInclude Include="src\Scenes\CellGrowthScene.h" />
     <ClInclude Include="src\Scenes\FlappyBirdScene.h" />
     <ClInclude Include="src\Scenes\RLTTTScene.h" />
     <ClInclude Include="src\Scenes\SoccerScene.h" />
@@ -58,13 +47,6 @@
     <ClInclude Include="src\Game\Systems.h" />
     <ClInclude Include="src\Scenes\PerformanceScene.h" />
     <ClInclude Include="src\Scenes\SandboxScene.h" />
-    <ClInclude Include="src\Scenes\TestScene.h" />
-    <ClInclude Include="src\test\BatchRendering_Test.h" />
-    <ClInclude Include="src\test\ClearColor_Test.h" />
-    <ClInclude Include="src\test\DynamicBatchRendering_Test.h" />
-    <ClInclude Include="src\test\ScreenSaver_Test.h" />
-    <ClInclude Include="src\test\Test.h" />
-    <ClInclude Include="src\test\Texture2D_Test.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\basic.shader" />

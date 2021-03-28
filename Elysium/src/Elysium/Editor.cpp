@@ -2,6 +2,9 @@
 
 #include <string>
 
+#include <imgui/imgui.h>
+#include <imgui/imgui_internal.h>
+
 #include "Elysium/Application.h"
 #include "Elysium/ImGuiUtility.h"
 #include "Elysium/Input.h"
@@ -110,7 +113,7 @@ namespace Elysium
             }
         }
 
-        m_Framebuffer->bind();
+        m_Framebuffer->Bind();
         Renderer::Clear();
         Renderer2D::resetStats();
         Renderer2D::beginScene(m_CameraController.getCamera());
@@ -131,12 +134,12 @@ namespace Elysium
         }
         for (Quad& q : m_Data.Quads)
         {
-            Renderer2D::drawQuadWithRotation(q.Position, q.Size, radians(q.Rotation), q.Color);
+            Renderer2D::drawQuadWithRotation(q.Position, q.Size, glm::radians(q.Rotation), q.Color);
         }
         Renderer2D::endScene();
-        m_Framebuffer->unbind();
+        m_Framebuffer->Unbind();
 
-        createImGuiDockspace([&]()
+        ImGuiUtility::createImGuiDockspace([&]()
         {
             if (ImGui::BeginMenuBar())
             {
@@ -188,7 +191,7 @@ namespace Elysium
             }
             ImGui::Text("Camera Position: %f, %f", m_CameraController.getCamera().getPosition().x, m_CameraController.getCamera().getPosition().y);
             ImGui::Text("Cursor Position: %f, %f", cursorPosition.x, cursorPosition.y);
-            drawImGuiLabelWithColumn("Camera Translation Speed", [&]()
+            ImGuiUtility::drawImGuiLabelWithColumn("Camera Translation Speed", [&]()
                 {
                     ImGui::InputFloat("##", &m_TranslationSpeed);
                     m_CameraController.CameraTranslationSpeed = m_TranslationSpeed;
@@ -199,12 +202,12 @@ namespace Elysium
                 ImGui::Begin("Properties");
                 char quadTag[64];
                 strcpy_s(quadTag, 64, m_Current->Tag.c_str());
-                drawImGuiLabelWithColumn("Tag", [&]()
+                ImGuiUtility::drawImGuiLabelWithColumn("Tag", [&]()
                     {
                         ImGui::InputText("##", quadTag, 64);
                         m_Current->Tag = quadTag;
                     });
-                drawImGuiLabelWithColumn("Position", [&]()
+                ImGuiUtility::drawImGuiLabelWithColumn("Position", [&]()
                     {
                         ImGui::PushMultiItemsWidths(2, ImGui::CalcItemWidth());
                         ImGui::DragFloat("##X", &m_Current->Position.x, 0.1f, 0.0f, 0.0f, "%.2f");
@@ -213,11 +216,11 @@ namespace Elysium
                         ImGui::DragFloat("##Y", &m_Current->Position.y, 0.1f, 0.0f, 0.0f, "%.2f");
                         ImGui::PopItemWidth();
                     });
-                drawImGuiLabelWithColumn("Rotation", [&]()
+                ImGuiUtility::drawImGuiLabelWithColumn("Rotation", [&]()
                     {
                         ImGui::SliderFloat("##", &(m_Current->Rotation), 0.0f, 360.0f);
                     });
-                drawImGuiLabelWithColumn("Size", [&]()
+                ImGuiUtility::drawImGuiLabelWithColumn("Size", [&]()
                     {
                         ImGui::PushMultiItemsWidths(2, ImGui::CalcItemWidth());
                         float size = m_Current->Size.x;
@@ -232,7 +235,7 @@ namespace Elysium
                             m_Current->Size.y = size;
                         ImGui::PopItemWidth();
                     });
-                drawImGuiLabelWithColumn("Color", [&]()
+                ImGuiUtility::drawImGuiLabelWithColumn("Color", [&]()
                     {
                         ImGui::ColorEdit4("##", (float*)&m_Current->Color);
                     });
@@ -249,7 +252,7 @@ namespace Elysium
             if (m_ViewportSize != *((Vector2*)&viewportPanelSize))
             {
                 m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
-                m_Framebuffer->resize((unsigned int)m_ViewportSize.x, (unsigned int)m_ViewportSize.y);
+                m_Framebuffer->Resize((unsigned int)m_ViewportSize.x, (unsigned int)m_ViewportSize.y);
 
                 m_CameraController.resizeBounds(m_ViewportSize.x, m_ViewportSize.y);
             }

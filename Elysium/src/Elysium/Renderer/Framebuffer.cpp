@@ -19,18 +19,18 @@ namespace Elysium
         glDeleteTextures(1, &m_DepthAttachment);
     }
 
-    void Framebuffer::bind()
+    void Framebuffer::Bind()
     {
         glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
         glViewport(0, 0, m_Specification.Width, m_Specification.Height);
     }
 
-    void Framebuffer::unbind()
+    void Framebuffer::Unbind()
     {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
-    void Framebuffer::resize(unsigned int width, unsigned int height)
+    void Framebuffer::Resize(unsigned int width, unsigned int height)
     {
         m_Specification.Width = width;
         m_Specification.Height = height;

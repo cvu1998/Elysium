@@ -302,10 +302,10 @@ namespace Elysium
         for (size_t i = 0; i < 4; i++)
         {
 
-            s_Data->QuadBufferPtr->position = { position.x + halfLength * s_Data->PositionSign[i].x,
+            s_Data->QuadBufferPtr->Position = { position.x + halfLength * s_Data->PositionSign[i].x,
                 position.y + halfWidth * s_Data->PositionSign[i].y };
 
-            s_Data->QuadBufferPtr->color = color;
+            s_Data->QuadBufferPtr->Color = color;
             s_Data->QuadBufferPtr->TextureCoordinates = s_Data->TextureCoordinates[i];
             s_Data->QuadBufferPtr->TextureID = textureIndex;
             s_Data->QuadBufferPtr++;
@@ -324,8 +324,8 @@ namespace Elysium
             beginQuadBatch();
         }
 
-        unsigned int textureID = texture.getRendererID();
         float textureIndex = 0.0f;
+        unsigned int textureID = texture.getRendererID();
         for (unsigned int i = 1; i < s_Data->TextureSlotIndex; i++)
         {
             if (s_Data->TextureSlots[i] == textureID)
@@ -338,8 +338,7 @@ namespace Elysium
         if (textureIndex == 0.0f)
         {
             textureIndex = (float)s_Data->TextureSlotIndex;
-            s_Data->TextureSlots[s_Data->TextureSlotIndex] = textureID;
-            s_Data->TextureSlotIndex++;
+            s_Data->TextureSlots[s_Data->TextureSlotIndex++] = textureID;
         }
 
         float halfLength = size.x * 0.5f;
@@ -347,10 +346,10 @@ namespace Elysium
 
         for (size_t i = 0; i < 4; i++)
         {
-            s_Data->QuadBufferPtr->position = { position.x + halfLength * s_Data->PositionSign[i].x,
+            s_Data->QuadBufferPtr->Position = { position.x + halfLength * s_Data->PositionSign[i].x,
                 position.y + halfWidth * s_Data->PositionSign[i].y };
 
-            s_Data->QuadBufferPtr->color = color;
+            s_Data->QuadBufferPtr->Color = color;
             s_Data->QuadBufferPtr->TextureCoordinates = texture.TextureCoordinates[i];
             s_Data->QuadBufferPtr->TextureID = textureIndex;
             s_Data->QuadBufferPtr++;
@@ -378,11 +377,11 @@ namespace Elysium
 
         for (size_t i = 0; i < 4; i++)
         {
-            s_Data->QuadBufferPtr->position = (glm::vec2) (Complex::scaleXY(Complex(s_Data->QuadVertexPositions[i].x, s_Data->QuadVertexPositions[i].y), size.x, size.y)
+            s_Data->QuadBufferPtr->Position = (glm::vec2) (Complex::scaleXY(Complex(s_Data->QuadVertexPositions[i].x, s_Data->QuadVertexPositions[i].y), size.x, size.y)
                 * transform
                 + translation);
 
-            s_Data->QuadBufferPtr->color = color;
+            s_Data->QuadBufferPtr->Color = color;
             s_Data->QuadBufferPtr->TextureCoordinates = s_Data->TextureCoordinates[i];
             s_Data->QuadBufferPtr->TextureID = textureIndex;
             s_Data->QuadBufferPtr++;
@@ -415,8 +414,7 @@ namespace Elysium
         if (textureIndex == 0.0f)
         {
             textureIndex = (float)s_Data->TextureSlotIndex;
-            s_Data->TextureSlots[s_Data->TextureSlotIndex] = textureID;
-            s_Data->TextureSlotIndex++;
+            s_Data->TextureSlots[s_Data->TextureSlotIndex++] = textureID;
         }
 
         Complex transform(cos(rotation), sin(rotation));
@@ -424,11 +422,11 @@ namespace Elysium
 
         for (size_t i = 0; i < 4; i++)
         {
-            s_Data->QuadBufferPtr->position = (glm::vec2) (Complex::scaleXY(Complex(s_Data->QuadVertexPositions[i].x, s_Data->QuadVertexPositions[i].y), size.x, size.y)
+            s_Data->QuadBufferPtr->Position = (glm::vec2) (Complex::scaleXY(Complex(s_Data->QuadVertexPositions[i].x, s_Data->QuadVertexPositions[i].y), size.x, size.y)
                 * transform
                 + translation);
 
-            s_Data->QuadBufferPtr->color = color;
+            s_Data->QuadBufferPtr->Color = color;
             s_Data->QuadBufferPtr->TextureCoordinates = texture.TextureCoordinates[i];
             s_Data->QuadBufferPtr->TextureID = textureIndex;
             s_Data->QuadBufferPtr++;
@@ -447,12 +445,12 @@ namespace Elysium
             beginLineBatch();
         }
 
-        s_Data->LineBufferPtr->position = p0;
-        s_Data->LineBufferPtr->color = color;
+        s_Data->LineBufferPtr->Position = p0;
+        s_Data->LineBufferPtr->Color = color;
         s_Data->LineBufferPtr++;
 
-        s_Data->LineBufferPtr->position = p1;
-        s_Data->LineBufferPtr->color = color;
+        s_Data->LineBufferPtr->Position = p1;
+        s_Data->LineBufferPtr->Color = color;
         s_Data->LineBufferPtr++;
 
         s_Data->LineIndexCount += 2;
@@ -469,8 +467,8 @@ namespace Elysium
             beginPointBatch();
         }
 
-        s_Data->PointBufferPtr->position = position;
-        s_Data->PointBufferPtr->color = color;
+        s_Data->PointBufferPtr->Position = position;
+        s_Data->PointBufferPtr->Color = color;
         s_Data->PointBufferPtr++;
 
         s_Data->PointIndexCount++;

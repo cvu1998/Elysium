@@ -49,7 +49,8 @@ namespace Elysium
 
     private:
         const char* Tag = nullptr;
-        float Mass = 0.0f;
+        float Mass = std::numeric_limits<float>::max();
+        float AngularVelocity = 0.0f;
         float Inertia = 0.0f;
         float Radius = 0.0f;
         Vector2 Size = { 1.0f, 1.0f };
@@ -67,7 +68,9 @@ namespace Elysium
             }
         };
 
-        std::unordered_map<Vector2, Vector2, Hash_Vector2> Normals;
+        Vector2 Normal = { 0.0f, 0.0f };
+
+        Vector2 ContactImpulse = { 0.0f, 0.0f };
         Vector2 ContactNormal = { 0.0f, 0.0f };
 
         std::vector<Vector2> m_ModelVertices;
@@ -119,7 +122,12 @@ namespace Elysium
 
         inline void setNumberOfCallbackExecution(unsigned int number) { NumberOfExecution = number; }
 
-        void setModelVertices(const std::vector<Vector2>& vertices) { m_ModelVertices = vertices; }
+        void setModelVertices(const std::vector<Vector2>& vertices, float inertia) 
+        {
+            m_ModelVertices = vertices;
+            Inertia = inertia;
+        }
+
         const std::vector<Vector2>& getModelVertices() const { return m_ModelVertices; }
         std::vector<Vector2>getVertices() const;
 

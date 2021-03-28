@@ -1,4 +1,3 @@
-#include "Scenes/CellGrowthScene.h"
 #include "Scenes/Connect4Scene.h"
 #include "Scenes/FlappyBirdScene.h"
 #include "Scenes/PerformanceScene.h"
@@ -59,11 +58,6 @@ public:
         {
             m_SceneManager.unloadScene();
             m_SceneManager.loadScene(new SoccerScene(m_Window->getWidth(), m_Window->getHeight()));
-        }
-        if (ImGui::Button("Cell Growth"))
-        {
-            m_SceneManager.unloadScene();
-            m_SceneManager.loadScene(new CellGrowthScene(m_Window->getWidth(), m_Window->getHeight()));
         }
         ImGui::End();
 

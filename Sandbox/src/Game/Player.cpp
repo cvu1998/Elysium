@@ -2,7 +2,7 @@
 
 #include "Values.h"
 
-Player::Player() : m_RunAnimation(m_FrameRate)
+Player::Player() : RunAnimation(m_FrameRate)
 {
     m_Player = e_PhysicsSystem.createPhysicalBody(Elysium::BodyType::DYNAMIC, "Player", 50.0f, { -27.5f, 20.0f }, { 2.0f, 2.0f }, [](Elysium::PhysicalBody& body, Elysium::PhysicalBody& collidee, const Elysium::CollisionInfo& info)
         {
@@ -21,7 +21,7 @@ Player::Player() : m_RunAnimation(m_FrameRate)
             }
         });
 
-    m_Player->setRadius(1.0f);
+    m_Player->AllowRotation = false;
     m_Player->setNumberOfCallbackExecution(1);
 }
 
@@ -29,34 +29,33 @@ void Player::onUpdate(Elysium::Timestep ts)
 {
     if (Elysium::Input::isKeyPressed(ELY_KEY_A))
     {
-        m_RunAnimation.updateAnimation(ts);
+        RunAnimation.updateAnimation(ts);
         if (m_PlayerLookingRight)
         {
-            m_RunAnimation.reflectAroundYAxis();
+            RunAnimation.reflectAroundYAxis();
             m_PlayerLookingRight = false;
         }
         m_Player->Impulse.x += -2.0f * m_Player->getMass() * ts;
-        m_TextureData = m_RunAnimation.getCurrentTexture();
+        m_TextureData = RunAnimation.getCurrentTexture();
     }
     else if (Elysium::Input::isKeyPressed(ELY_KEY_D))
     {
-        m_RunAnimation.updateAnimation(ts);
+        RunAnimation.updateAnimation(ts);
         if (!m_PlayerLookingRight)
         {
-            m_RunAnimation.reflectAroundYAxis();
+            RunAnimation.reflectAroundYAxis();
             m_PlayerLookingRight = true;
         }
         m_Player->Impulse.x += 2.0f * m_Player->getMass() * ts;
-        m_TextureData = m_RunAnimation.getCurrentTexture();
+        m_TextureData = RunAnimation.getCurrentTexture();
     }
     else
     {
-        m_RunAnimation.reset();
+        RunAnimation.reset();
         m_TextureData = m_IdleTexture;
         if (!m_PlayerLookingRight)
             m_TextureData.reflectAroundYAxis();
     }
-    m_Cooldown += ts;
 }
 
 void Player::kickBall(Elysium::BodyHandle handle)

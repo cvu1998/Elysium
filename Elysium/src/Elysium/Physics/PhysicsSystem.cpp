@@ -1,10 +1,11 @@
 #include "PhysicsSystem.h"
 
 #include <algorithm>
+#include <string.h>
 
 #define NOMINMAX
 #include "Elysium/Log.h"
-#include "Elysium/Math.h"
+#include "Elysium/MathUtility.h"
 
 namespace Elysium
 {
@@ -47,12 +48,11 @@ namespace Elysium
 
     void PhysicsSystem::updateBody(PhysicalBody& body, Timestep ts)
     {
-        for (auto& impulse : body.Normals)
-        {
-            body.ContactNormal += impulse.first;
-            body.Impulse += impulse.first * impulse.second;
-        }
-        body.Normals.clear();
+        body.ContactNormal = Math::normalize(body.ContactNormal);
+        body.Impulse += body.ContactImpulse * body.ContactNormal;
+
+        body.Normal += body.ContactNormal;
+        body.Normal = Math::normalize(body.Normal);
 
         body.Acceleration = body.Force / body.Mass;
         body.Velocity = body.Velocity + (body.Impulse / body.Mass) + (body.Acceleration * (float)ts);
@@ -63,20 +63,22 @@ namespace Elysium
             body.Force.y = -m_GravitationalAccel * body.Mass;
     }
 
-    void PhysicsSystem::applyCollisionResponse(PhysicalBody& body, const PhysicalBody& otherBody, const Vector2& normal, Timestep ts)
+    void PhysicsSystem::applyCollisionResponse(PhysicalBody& body, const PhysicalBody& otherBody, const Vector2& normal, float overlap,
+        Timestep ts)
     {
         /***** Normal Force *****/
         body.Force += abs(body.Force) * normal;
 
-        Vector2 impulse = { 0.0f, 0.0f };
+        float averageElasticity = (body.ElasticityCoefficient + otherBody.ElasticityCoefficient) * 0.5f;
+        Vector2 impulse = abs(body.Velocity) * body.Mass * (averageElasticity) * overlap;
 
         if (body.Type == BodyType::DYNAMIC)
-            impulse = abs(otherBody.Velocity / body.Mass);
+            impulse += abs(otherBody.Velocity * otherBody.Mass / body.Mass) * (float)ts;
 
-        float averageElasticity = (body.ElasticityCoefficient + otherBody.ElasticityCoefficient) * 0.5f;
-        impulse += abs(body.Velocity) * body.Mass * (averageElasticity);
+        body.ContactImpulse.x = glm::max(impulse.x, body.ContactImpulse.x);
+        body.ContactImpulse.y = glm::max(impulse.y, body.ContactImpulse.y);
 
-        body.Normals[normal] = max(impulse, body.Normals[normal]);
+        body.ContactNormal += normal;
 
         /***** Friction *****/
         Vector2 frictionDirection = { 0.0f, 0.0f };
@@ -84,7 +86,7 @@ namespace Elysium
         {
             frictionDirection = { fabs(normal.y),  fabs(normal.x) };
             frictionDirection = -(frictionDirection * normalize(body.Velocity));
-            body.Impulse += abs(body.Velocity) * frictionDirection * body.Mass * body.getFrictionCoefficient() * (float)(ts * 10.0f);
+            body.Impulse += abs(body.Velocity) * body.Mass * glm::dot(frictionDirection, body.Size * body.Size) * body.getFrictionCoefficient() * (float)(ts);
         }
     }
 
@@ -111,7 +113,7 @@ namespace Elysium
                 info.Collision = false;
                 return;
             }
-            Vector2 normal = normalize(body2.Position - body1.Position);
+            Vector2 normal = glm::normalize(body2.Position - body1.Position);
             info.CollisionInfoPair.second.Normal = normal;
             info.CollisionInfoPair.first.Normal = -normal;
 
@@ -121,15 +123,17 @@ namespace Elysium
             float max2 = dot(body2.Position + (normal * body2.Radius), normal);
             float overlap1 = fabs(std::min(max1, max2) - std::max(min1, min2));
 
-            info.minOverlap = std::min(max1, max2) - std::max(min1, min2);
+            info.minOverlap = glm::min(max1, max2) - glm::max(min1, min2);
             return;
         }
+
         std::vector<Vector2>& vertices1 = body1.getVertices();
         std::vector<Vector2>& vertices2 = body2.getVertices();
         std::vector<Vector2> normals;
-        for (Vector2& normal : body1.getNormals())
+
+        for (const Vector2& normal : body1.getNormals())
             normals.push_back(normalize(normal));
-        for (Vector2& normal : body2.getNormals())
+        for (const Vector2& normal : body2.getNormals())
             normals.push_back(normalize(normal));
 
         float overlap = 0.0f;
@@ -184,27 +188,35 @@ namespace Elysium
             {
                 collisionNormal = normal;
                 info.minOverlap = overlap;
-                if (max2 > max1)
-                {
-                    firstIsMax = false;
-                }
-                else
-                {
-                    firstIsMax = true;
-                }
+                firstIsMax = !(max2 > max1);
             }
         }
 
         if (firstIsMax)
         {
             info.CollisionInfoPair.first.Normal = collisionNormal;
-            info.CollisionInfoPair.second.Normal = collisionNormal * -1.0f;
+            info.CollisionInfoPair.second.Normal = -collisionNormal;
         }
         else
         {
             info.CollisionInfoPair.second.Normal = collisionNormal;
-            info.CollisionInfoPair.first.Normal = collisionNormal * -1.0f;
+            info.CollisionInfoPair.first.Normal = -collisionNormal;
         }
+    }
+
+    void PhysicsSystem::printInfo(BodyHandle i)
+    {
+        ELY_CORE_TRACE("-----Body Tag: {0}-----", m_Bodies[i].Tag);
+        ELY_CORE_TRACE("Position: {0}, {1}", m_Bodies[i].Position.x, m_Bodies[i].Position.y);
+        ELY_CORE_TRACE("Velocity: {0}, {1}", m_Bodies[i].Velocity.x, m_Bodies[i].Velocity.y);
+        ELY_CORE_TRACE("Acceleration: {0}, {1}", m_Bodies[i].Acceleration.x, m_Bodies[i].Acceleration.y);
+        ELY_CORE_TRACE("Rotation: {0}", m_Bodies[i].Rotation);
+        ELY_CORE_TRACE("Force: {0}, {1}", m_Bodies[i].Force.x, m_Bodies[i].Force.y);
+        ELY_CORE_TRACE("Contact Impulse: {0}, {1}", m_Bodies[i].ContactImpulse.x, m_Bodies[i].ContactImpulse.y);
+        ELY_CORE_TRACE("Impulse: {0}, {1}", m_Bodies[i].Impulse.x, m_Bodies[i].Impulse.y);
+        ELY_CORE_TRACE("Contact Normal: {0}, {1}", m_Bodies[i].ContactNormal.x, m_Bodies[i].ContactNormal.y);
+        ELY_CORE_TRACE("Normal: {0}, {1}", m_Bodies[i].Normal.x, m_Bodies[i].Normal.y);
+        ELY_CORE_TRACE("-----Body Tag: {0}-----", m_Bodies[i].Tag);
     }
 
     void PhysicsSystem::removePhysicalBody(BodyHandle body)
@@ -212,6 +224,18 @@ namespace Elysium
         m_Bodies[body].Status = BodyStatus::INACTIVE;
         m_InactiveBodies.push_back(body);
         std::sort(m_InactiveBodies.begin(), m_InactiveBodies.end(), std::greater());
+    }
+
+    void PhysicsSystem::logInfo(const char* tag)
+    {
+        for (uint32_t i = 0; i < m_Bodies.size(); i++)
+        {
+            if (m_Bodies[i].Status != BodyStatus::INACTIVE && strcmp(m_Bodies[i].Tag, tag) == 0)
+            {
+                m_LoggedBodies.insert(i); 
+                break;
+            }
+        }
     }
 
     void PhysicsSystem::onUpdate(Timestep ts)
@@ -226,26 +250,30 @@ namespace Elysium
                 {
                 case BodyType::DYNAMIC:
                     updateBody(m_Bodies[i], ts);
-                    if (m_Bodies[i].Radius > 0.0f)
-                        m_Bodies[i].ContactNormal = (isNaN(normalize(m_Bodies[i].ContactNormal)) || isinf(normalize(m_Bodies[i].ContactNormal))) ?
-                            m_Bodies[i].ContactNormal : normalize(m_Bodies[i].ContactNormal);
-                    else
-                        m_Bodies[i].ContactNormal = (isNaN(normalize(m_Bodies[i].Impulse)) || isinf(normalize(m_Bodies[i].Impulse))) ?
-                        m_Bodies[i].ContactNormal : normalize(m_Bodies[i].Impulse);
-
                     if (m_Bodies[i].AllowRotation)
-                        m_Bodies[i].Rotation += (cross(m_Bodies[i].ContactNormal, m_Bodies[i].Velocity) / m_Bodies[i].Inertia) * (float)ts;
+                    {
+                        Vector2 magnitudeVector = m_Bodies[i].Velocity;
+
+                        m_Bodies[i].AngularVelocity = Math::cross(m_Bodies[i].Normal, magnitudeVector) / m_Bodies[i].Inertia;
+                        m_Bodies[i].Rotation += m_Bodies[i].AngularVelocity * (float)ts;
+                    }
                     break;
                 case BodyType::KINEMATIC:
                     updateBody(m_Bodies[i], ts);
                     break;
-                default:
+                case BodyType::STATIC:
                     m_Bodies[i].Acceleration = { 0.0f, 0.0f };
                     m_Bodies[i].Velocity = { 0.0f, 0.0f };
 
                     m_Bodies[i].Force = { 0.0f, 0.0f };
                 }
+
+                if (m_LoggedBodies.find(i) != m_LoggedBodies.end())
+                    printInfo(i);
+
                 m_Bodies[i].Impulse = { 0.0f, 0.0f };
+                m_Bodies[i].ContactImpulse = { 0.0f, 0.0f };
+                m_Bodies[i].ContactNormal = { 0.0f, 0.0f };
                 m_Bodies[i].CallbackExecutions = 0;
 
                 m_Bodies[i].MaximumVertex = m_Bodies[i].getMaxVertex();
@@ -295,30 +323,19 @@ namespace Elysium
                         Vector2 iNormal = info.CollisionInfoPair.first.Normal;
                         Vector2 jNormal = info.CollisionInfoPair.second.Normal;
 
-                        float magnitude1 = fabs(dot(m_Bodies[i].Velocity, iNormal));
-                        float magnitude2 = fabs(dot(m_Bodies[j].Velocity, jNormal));
-                        if (magnitude1 > magnitude2)
+                        float magnitude1 = (m_Bodies[i].Velocity.x * m_Bodies[i].Velocity.x) + (m_Bodies[i].Velocity.y * m_Bodies[i].Velocity.y);
+                        float magnitude2 = (m_Bodies[j].Velocity.x * m_Bodies[j].Velocity.x) + (m_Bodies[j].Velocity.y * m_Bodies[j].Velocity.y);
+                        if (magnitude1 >= magnitude2)
                             m_Bodies[i].Position = m_Bodies[i].Position + (info.minOverlap * iNormal);
                         else
                              m_Bodies[j].Position = m_Bodies[j].Position + (info.minOverlap * jNormal);
 
                         if (m_Bodies[i].Type != BodyType::STATIC)
-                            applyCollisionResponse(m_Bodies[i], m_Bodies[j], iNormal, ts);
+                            applyCollisionResponse(m_Bodies[i], m_Bodies[j], iNormal, info.minOverlap, ts);
 
                         if (m_Bodies[j].Type != BodyType::STATIC)
-                            applyCollisionResponse(m_Bodies[j], m_Bodies[i], jNormal, ts);
-#ifdef LOG
-                        ELY_CORE_TRACE("NarrowPhaseCollision: {0}, {1}", m_Bodies[i].Name, m_Bodies[j].Name);
-                        ELY_CORE_TRACE("CollisionInfo Overlap: {0}", info.minOverlap);
-                        ELY_CORE_TRACE("CollisionInfo Normal: {0}: {1}, {2}", m_Bodies[i].Name, iNormal.x, iNormal.y);
-                        ELY_CORE_TRACE("CollisionInfo Normal: {0}: {1}, {2}", m_Bodies[j].Name, jNormal.x, jNormal.y);
-                        ELY_CORE_TRACE("CollisionInfo Velocity: {0}: {1}, {2}", m_Bodies[i].Name, m_Bodies[i].Velocity.x, m_Bodies[i].Velocity.y);
-                        ELY_CORE_TRACE("CollisionInfo Velocity: {0}: {1}, {2}", m_Bodies[j].Name, m_Bodies[j].Velocity.x, m_Bodies[j].Velocity.y);
-                        ELY_CORE_TRACE("CollisionInfo Force: {0}: {1}, {2}", m_Bodies[i].Name, m_Bodies[i].Force.x, m_Bodies[i].Force.y);
-                        ELY_CORE_TRACE("CollisionInfo Force: {0}: {1}, {2}", m_Bodies[j].Name, m_Bodies[j].Force.x, m_Bodies[j].Force.y);
-                        ELY_CORE_TRACE("CollisionInfo Impulse: {0}: {1}, {2}", m_Bodies[i].Name, m_Bodies[i].Impulse.x, m_Bodies[i].Impulse.y);
-                        ELY_CORE_TRACE("CollisionInfo Impulse: {0}: {1}, {2}", m_Bodies[j].Name, m_Bodies[j].Impulse.x, m_Bodies[j].Impulse.y);
-#endif
+                            applyCollisionResponse(m_Bodies[j], m_Bodies[i], jNormal, info.minOverlap, ts);
+
                         if (m_Bodies[i].Callback && m_Bodies[i].CallbackExecutions < m_Bodies[i].NumberOfExecution)
                             m_Bodies[i].Callback(m_Bodies[i], m_Bodies[j], { true, info.minOverlap, ts,
                                 std::make_pair(info.CollisionInfoPair.first, info.CollisionInfoPair.second) });

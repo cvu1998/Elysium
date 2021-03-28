@@ -25,13 +25,10 @@ namespace Elysium
         m_ModelVertices.emplace_back( halfLength,  halfWidth);
         m_ModelVertices.emplace_back(-halfLength,  halfWidth);
 
-        Mass = INFINITY;
         if (type == BodyType::DYNAMIC || type == BodyType::KINEMATIC)
         {
             Mass = fabs(mass);
-
-            float radius = std::max(Size.x * 0.5f, Size.y * 0.5f);
-            Inertia = 0.5f * Mass * radius * radius;
+            Inertia = (size.x * size.y * size.y * size.y) / 12.0f;
         }
     }
 
@@ -46,14 +43,10 @@ namespace Elysium
         {
             Radius = radius;
             Size = { 2.0f * radius, 2.0f * radius };
+            Inertia = (Size.x * Size.y * Size.y * Size.y) / 12.0f;
 
-            Inertia = 0.5f * Mass * Radius * Radius;
+            m_ModelVertices.clear();
         }
-        else
-        {
-            Radius = 0.0f;
-        }
-
     }
 
     void PhysicalBody::setElasticityCoefficient(float coefficient)
@@ -149,8 +142,5 @@ namespace Elysium
         Velocity = { 0.0f, 0.0f };
         Acceleration = { 0.0f, 0.0f };
         Rotation = 0.0f;
-
-        ContactNormal = { 0.0f, 0.0f };
-        Normals.clear();
     }
 }

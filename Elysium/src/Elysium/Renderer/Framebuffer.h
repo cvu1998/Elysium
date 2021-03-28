@@ -23,10 +23,10 @@ namespace Elysium
         Framebuffer(const FramebufferSpecification& specification);
         ~Framebuffer();
 
-        void bind();
-        void unbind();
+        void Bind();
+        void Unbind();
 
-        void resize(unsigned int width, unsigned int height);
+        void Resize(unsigned int width, unsigned int height);
 
         inline unsigned int getColorAttachmentID() const { return m_ColorAttachment; };
 

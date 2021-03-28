@@ -1,9 +1,9 @@
 #pragma once
 
+#include <unordered_set>
+
 #include "Elysium/Math.h"
 #include "Elysium/Physics/PhysicalBody.h"
-
-//#define LOG
 
 namespace Elysium
 {
@@ -18,14 +18,19 @@ namespace Elysium
         ArrayList<PhysicalBody> m_Bodies;
         std::vector<BodyHandle> m_InactiveBodies;
 
+        std::unordered_set<size_t> m_LoggedBodies;
+
     public:
         bool Gravity = true;
 
     private:
         void updateBody(PhysicalBody& body, Timestep ts);
-        void applyCollisionResponse(PhysicalBody& body, const PhysicalBody& otherBody, const Vector2& normal, Timestep ts);
+        void applyCollisionResponse(PhysicalBody& body, const PhysicalBody& otherBody, const Vector2& normal, float overlap,
+            Timestep ts);
         bool checkBroadPhase(const PhysicalBody& body1, const PhysicalBody& body2);
         void checkNarrowPhase(const PhysicalBody& body1, const PhysicalBody& body2, CollisionInfo& info);
+
+        void printInfo(BodyHandle i);
 
     public:
         PhysicsSystem(float acceleration);
@@ -46,11 +51,14 @@ namespace Elysium
         {
             m_Bodies.clear();
             m_InactiveBodies.clear();
+            m_LoggedBodies.clear();
         }
 
         inline PhysicalBody* getPhysicalBody(BodyHandle identifier) { return &m_Bodies[identifier]; };
         inline const PhysicalBody& readPhysicalBody(BodyHandle identifier) const { return m_Bodies[identifier]; };
         void removePhysicalBody(BodyHandle body);
+
+        void logInfo(const char* tag);
 
         void onUpdate(Timestep ts);
     };

@@ -310,11 +310,11 @@ void FlappyBirdScene::onUpdate(Elysium::Timestep ts)
     }
     else if (m_Bird.Body->Velocity.y > 0.0f)
     {
-        rotation = Elysium::radians(30.0f);
+        rotation = glm::radians(30.0f);
     }
     else if (m_Bird.Body->Velocity.y < 0.0f)
     {
-        rotation = Elysium::radians(-30.0f);
+        rotation = glm::radians(-30.0f);
     }
 
     m_Ground->Position.x = m_Bird.Body->Position.x;
