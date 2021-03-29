@@ -2,7 +2,8 @@
 
 SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Scene("Sandbox"),
     m_Camera(-m_Height * (float)(width / height), m_Height * (float)(width / height), -m_Height * 0.5f, m_Height * 0.5f),
-    m_ParticleSystem(100, m_Camera)
+    m_ParticleSystem(100, m_Camera),
+    m_Player({ { -12.5f, 20.0f } })
 {
     m_Textures.reserve(12);
     m_Textures.emplace_back("res/texture/soccer_ball.png");
@@ -64,25 +65,24 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Scene("San
 
     m_BallTexture = m_Textures[0].getTextureData();
 
-    e_PhysicsSystem.createPhysicalBody(&m_Ground, Elysium::BodyType::STATIC, "Ground", 10.0f, { 0.0f, 0.0f }, { 500.0f, 2.0f });
-    e_PhysicsSystem.createPhysicalBody(&m_MoveableBox, Elysium::BodyType::DYNAMIC, "Box", 10.0f, { 4.5f, 25.0f }, { 2.0f, 2.0f });
-    e_PhysicsSystem.createPhysicalBody(&m_Ball, Elysium::BodyType::DYNAMIC, "Ball", 1.0f, { -2.0f, 10.0f }, { 2.0f, 2.0f });
-    e_PhysicsSystem.createPhysicalBody(&m_Box, Elysium::BodyType::STATIC, "Static-Box-Left", 10.0f, { 2.5f, 2.0f }, { 2.0f, 2.0f });
-    e_PhysicsSystem.createPhysicalBody(&m_sBox, Elysium::BodyType::STATIC, "Static-Box-Right", 10.0f, { 4.5f, 2.0f }, { 2.0f, 2.0f });
+    e_PhysicsSystem.createPhysicalBody(&m_Ground, Elysium::BodyType::STATIC, Elysium::ModelType::QUAD, "Ground", 10.0f, { 0.0f, 0.0f }, { 500.0f, 2.0f });
+    e_PhysicsSystem.createPhysicalBody(&m_MoveableBox, Elysium::BodyType::DYNAMIC, Elysium::ModelType::QUAD, "Box", 10.0f, { 4.5f, 25.0f }, { 2.0f, 2.0f });
+    e_PhysicsSystem.createPhysicalBody(&m_Box, Elysium::BodyType::STATIC, Elysium::ModelType::QUAD, "Static-Box-Left", 10.0f, { 2.5f, 2.0f }, { 2.0f, 2.0f });
+    e_PhysicsSystem.createPhysicalBody(&m_sBox, Elysium::BodyType::STATIC, Elysium::ModelType::QUAD, "Static-Box-Right", 10.0f, { 4.5f, 2.0f }, { 2.0f, 2.0f });
 
-
-    e_PhysicsSystem.createPhysicalBody(&m_Circle, Elysium::BodyType::DYNAMIC, "Circle", 1.0f, { -5.0f, 10.0f }, { 2.0f, 2.0f });
+    e_PhysicsSystem.createPhysicalBody(&m_Ball, Elysium::BodyType::DYNAMIC, Elysium::ModelType::CIRCLE, "Ball", 1.0f, { -2.0f, 10.0f }, { 2.0f, 2.0f });
+    e_PhysicsSystem.createPhysicalBody(&m_Circle, Elysium::BodyType::DYNAMIC, Elysium::ModelType::CIRCLE, "Circle", 1.0f, { -5.0f, 10.0f }, { 2.0f, 2.0f });
 
     Elysium::PhysicalBody* ground = e_PhysicsSystem.getPhysicalBody(m_Ground);
-    ground->setFrictionCoefficient(0.5f);
-    ground->Rotation = glm::radians(10.0f);
+    ground->setFrictionCoefficient(1.0f);
+    //ground->Rotation = glm::radians(10.0f);
 
     Elysium::PhysicalBody* ball = e_PhysicsSystem.getPhysicalBody(m_Ball);
-    ball->setRadius(1.0f);
     ball->setElasticityCoefficient(1.0f);
 
     Elysium::PhysicalBody* circle = e_PhysicsSystem.getPhysicalBody(m_Circle);
-    circle->setRadius(1.0f);
+
+    m_Player.Ball = e_PhysicsSystem.getPhysicalBody(m_Ball);
 
     e_PhysicsSystem.logInfo("Box");
 }
@@ -119,7 +119,6 @@ void SandboxScene::onUpdate(Elysium::Timestep ts)
     e_PhysicsSystem.onUpdate(ts);
 
     m_Player.onUpdate(ts);
-    m_Player.kickBall(m_Ball);
 
     Elysium::Renderer2D::beginScene(m_Camera);
     Elysium::Renderer2D::drawQuad({ 0.0f, 15.0f }, { 1000.0f, 30.0f }, m_Background);
@@ -151,6 +150,8 @@ void SandboxScene::onEvent(Elysium::Event& event)
     Elysium::EventDispatcher dispatcher(event);
     dispatcher.Dispatch<Elysium::KeyPressedEvent>(BIND_EVENT_FUNCTION(SandboxScene::onKeyPressedEvent));
     dispatcher.Dispatch<Elysium::WindowResizeEvent>(BIND_EVENT_FUNCTION(SandboxScene::onWindowResizeEvent));
+
+    m_Player.onEvent(event);
 }
 
 bool SandboxScene::onKeyPressedEvent(Elysium::KeyPressedEvent& event)

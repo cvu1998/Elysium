@@ -15,24 +15,24 @@ FlappyBirdScene::FlappyBirdScene(unsigned int width, unsigned int height) :
     {
         if (quad.Tag == "Bird")
         {
-            m_Bird.Body = e_PhysicsSystem.createPhysicalBody(Elysium::BodyType::DYNAMIC, "Bird", 10.0f,
+            m_InitialPosition = quad.Position;
+            m_Bird.Body = e_PhysicsSystem.createPhysicalBody(Elysium::BodyType::DYNAMIC, Elysium::ModelType::CIRCLE, "Bird", 10.0f,
                 quad.Position, quad.Size, FlappyBird::onCollision);
             m_Bird.Body->AllowRotation = false;
-            m_Bird.Body->setRadius((quad.Size.x + quad.Size.y) * 0.5f);
             m_Bird.Body->setNumberOfCallbackExecution(1);
 
             m_Bird.Body->Impulse.x += m_InitialImpulse * m_Bird.Body->getMass();
         }
         else if (quad.Tag == "Ground")
         {
-            m_Ground = e_PhysicsSystem.createPhysicalBody(Elysium::BodyType::STATIC, "Ground", 0.0f,
+            m_Ground = e_PhysicsSystem.createPhysicalBody(Elysium::BodyType::STATIC, Elysium::ModelType::QUAD, "Ground", 0.0f,
                 quad.Position, quad.Size);
-            m_Ceiling = e_PhysicsSystem.createPhysicalBody(Elysium::BodyType::STATIC, "Ceiling", 0.0f,
+            m_Ceiling = e_PhysicsSystem.createPhysicalBody(Elysium::BodyType::STATIC, Elysium::ModelType::QUAD, "Ceiling", 0.0f,
                 quad.Position, quad.Size);
         }
         else if (quad.Tag == "Ceiling")
         {
-            m_Ceiling = e_PhysicsSystem.createPhysicalBody(Elysium::BodyType::STATIC, "Ceiling", 0.0f,
+            m_Ceiling = e_PhysicsSystem.createPhysicalBody(Elysium::BodyType::STATIC, Elysium::ModelType::QUAD, "Ceiling", 0.0f,
                 quad.Position, quad.Size);
         }
     }
@@ -106,11 +106,11 @@ void FlappyBirdScene::generateRandomPipe(float xposition)
         }
         Elysium::BodyHandle handle;
 
-        e_PhysicsSystem.createPhysicalBody(&handle, Elysium::BodyType::STATIC, "Lower", 0.0f,
+        e_PhysicsSystem.createPhysicalBody(&handle, Elysium::BodyType::STATIC, Elysium::ModelType::QUAD, "Lower", 0.0f,
             { xposition, lowerPosition }, { 3.0f, lowerSize });
         e_PhysicsSystem.getPhysicalBody(handle)->setElasticityCoefficient(0.5f);
         m_LowerPipes.push_back(handle);
-        e_PhysicsSystem.createPhysicalBody(&handle, Elysium::BodyType::STATIC, "Upper", 0.0f,
+        e_PhysicsSystem.createPhysicalBody(&handle, Elysium::BodyType::STATIC, Elysium::ModelType::QUAD, "Upper", 0.0f,
             { xposition, upperPosition }, { 3.0f, upperSize });
         e_PhysicsSystem.getPhysicalBody(handle)->setElasticityCoefficient(0.5f);
         m_UpperPipes.push_back(handle);

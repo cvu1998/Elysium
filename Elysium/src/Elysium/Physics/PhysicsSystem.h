@@ -24,11 +24,12 @@ namespace Elysium
         bool Gravity = true;
 
     private:
+        bool checkBroadPhase(const PhysicalBody& body1, const PhysicalBody& body2);
+        void checkNarrowPhase(const PhysicalBody& body1, const PhysicalBody& body2, CollisionInfo& info);
+
         void updateBody(PhysicalBody& body, Timestep ts);
         void applyCollisionResponse(PhysicalBody& body, const PhysicalBody& otherBody, const Vector2& normal, float overlap,
             Timestep ts);
-        bool checkBroadPhase(const PhysicalBody& body1, const PhysicalBody& body2);
-        void checkNarrowPhase(const PhysicalBody& body1, const PhysicalBody& body2, CollisionInfo& info);
 
         void printInfo(BodyHandle i);
 
@@ -36,11 +37,18 @@ namespace Elysium
         PhysicsSystem(float acceleration);
         ~PhysicsSystem();
 
-        PhysicalBody* createPhysicalBody(BodyType type, const char* name, float mass, const Vector2& initialPosition, const Vector2& size,
+        PhysicalBody* createPhysicalBody(BodyType type, ModelType model, const char* name, float mass,
+            const Vector2& initialPosition, const Vector2& size,
             PhysicalBody::Collision_Callback callback = nullptr);
 
-        void createPhysicalBody(BodyHandle* handle, BodyType type, const char* name, float mass, const Vector2& initialPosition, const Vector2& size,
+        void createPhysicalBody(BodyHandle* handle, BodyType type, ModelType model, const char* name, float mass,
+            const Vector2& initialPosition, const Vector2& size,
             PhysicalBody::Collision_Callback callback = nullptr);
+
+        void removePhysicalBody(BodyHandle body);
+
+        inline PhysicalBody* getPhysicalBody(BodyHandle identifier) { return &m_Bodies[identifier]; };
+        inline const PhysicalBody& readPhysicalBody(BodyHandle identifier) const { return m_Bodies[identifier]; };
 
         inline float getTime() { return m_Time; }
         inline void setGravitaionnalAccel(float acceleration) { m_GravitationalAccel = acceleration; }
@@ -53,10 +61,6 @@ namespace Elysium
             m_InactiveBodies.clear();
             m_LoggedBodies.clear();
         }
-
-        inline PhysicalBody* getPhysicalBody(BodyHandle identifier) { return &m_Bodies[identifier]; };
-        inline const PhysicalBody& readPhysicalBody(BodyHandle identifier) const { return m_Bodies[identifier]; };
-        void removePhysicalBody(BodyHandle body);
 
         void logInfo(const char* tag);
 

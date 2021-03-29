@@ -18,76 +18,42 @@ namespace Elysium
     {
     }
 
-    PhysicalBody* PhysicsSystem::createPhysicalBody(BodyType type, const char* name, float mass, const Vector2& initialPosition, const Vector2& size, PhysicalBody::Collision_Callback callback)
-    {
-        if (m_InactiveBodies.empty())
-        {
-            m_Bodies.push_back(PhysicalBody::createPhysicalBody(type, name, mass, initialPosition, size, callback));
-            return &m_Bodies[m_Bodies.size() - 1];
-        }
-        BodyHandle body = m_InactiveBodies.back();
-        m_InactiveBodies.pop_back();
-        m_Bodies[body] = PhysicalBody(type, name, mass, initialPosition, size, callback);
-        return &m_Bodies[body];
-    }
-
-    void PhysicsSystem::createPhysicalBody(BodyHandle* handle, BodyType type, const char* name, float mass, const Vector2& initialPosition, const Vector2& size,
+    PhysicalBody* PhysicsSystem::createPhysicalBody(BodyType type, ModelType model, const char* name, float mass,
+        const Vector2& initialPosition, const Vector2& size, 
         PhysicalBody::Collision_Callback callback)
     {
         if (m_InactiveBodies.empty())
         {
-            m_Bodies.push_back(PhysicalBody::createPhysicalBody(type, name, mass, initialPosition, size, callback));
+            m_Bodies.push_back(PhysicalBody(type, model, name, mass, initialPosition, size, callback));
+            return &m_Bodies[m_Bodies.size() - 1];
+        }
+        BodyHandle body = m_InactiveBodies.back();
+        m_InactiveBodies.pop_back();
+        m_Bodies[body] = PhysicalBody(type, model, name, mass, initialPosition, size, callback);
+        return &m_Bodies[body];
+    }
+
+    void PhysicsSystem::createPhysicalBody(BodyHandle* handle, BodyType type, ModelType model, const char* name, float mass,
+        const Vector2& initialPosition, const Vector2& size,
+        PhysicalBody::Collision_Callback callback)
+    {
+        if (m_InactiveBodies.empty())
+        {
+            m_Bodies.push_back(PhysicalBody(type, model, name, mass, initialPosition, size, callback));
             *handle = (BodyHandle)m_Bodies.size() - 1;
             return;
         }
         BodyHandle body = m_InactiveBodies.back();
         m_InactiveBodies.pop_back();
-        m_Bodies[body] = PhysicalBody(type, name, mass, initialPosition, size, callback);
+        m_Bodies[body] = PhysicalBody(type, model, name, mass, initialPosition, size, callback);
         *handle = body;
     }
 
-    void PhysicsSystem::updateBody(PhysicalBody& body, Timestep ts)
+    void PhysicsSystem::removePhysicalBody(BodyHandle body)
     {
-        body.ContactNormal = Math::normalize(body.ContactNormal);
-        body.Impulse += body.ContactImpulse * body.ContactNormal;
-
-        body.Normal += body.ContactNormal;
-        body.Normal = Math::normalize(body.Normal);
-
-        body.Acceleration = body.Force / body.Mass;
-        body.Velocity = body.Velocity + (body.Impulse / body.Mass) + (body.Acceleration * (float)ts);
-        body.Position = body.Position + (body.Velocity * (float)ts);
-
-        body.Force = { 0.0f, 0.0f };
-        if (Gravity)
-            body.Force.y = -m_GravitationalAccel * body.Mass;
-    }
-
-    void PhysicsSystem::applyCollisionResponse(PhysicalBody& body, const PhysicalBody& otherBody, const Vector2& normal, float overlap,
-        Timestep ts)
-    {
-        /***** Normal Force *****/
-        body.Force += abs(body.Force) * normal;
-
-        float averageElasticity = (body.ElasticityCoefficient + otherBody.ElasticityCoefficient) * 0.5f;
-        Vector2 impulse = abs(body.Velocity) * body.Mass * (averageElasticity) * overlap;
-
-        if (body.Type == BodyType::DYNAMIC)
-            impulse += abs(otherBody.Velocity * otherBody.Mass / body.Mass) * (float)ts;
-
-        body.ContactImpulse.x = glm::max(impulse.x, body.ContactImpulse.x);
-        body.ContactImpulse.y = glm::max(impulse.y, body.ContactImpulse.y);
-
-        body.ContactNormal += normal;
-
-        /***** Friction *****/
-        Vector2 frictionDirection = { 0.0f, 0.0f };
-        if (body.Velocity.x * body.Velocity.x + body.Velocity.y * body.Velocity.y > 0.0f)
-        {
-            frictionDirection = { fabs(normal.y),  fabs(normal.x) };
-            frictionDirection = -(frictionDirection * normalize(body.Velocity));
-            body.Impulse += abs(body.Velocity) * body.Mass * glm::dot(frictionDirection, body.Size * body.Size) * body.getFrictionCoefficient() * (float)(ts);
-        }
+        m_Bodies[body].Status = BodyStatus::INACTIVE;
+        m_InactiveBodies.push_back(body);
+        std::sort(m_InactiveBodies.begin(), m_InactiveBodies.end(), std::greater());
     }
 
     bool PhysicsSystem::checkBroadPhase(const PhysicalBody& body1, const PhysicalBody& body2)
@@ -104,37 +70,44 @@ namespace Elysium
 
     void PhysicsSystem::checkNarrowPhase(const PhysicalBody& body1, const PhysicalBody& body2, CollisionInfo& info)
     {
-        if (body1.Radius > 0.0f && body2.Radius > 0.0f)
+        if (body1.Model == ModelType::CIRCLE && body2.Model == ModelType::CIRCLE)
         {
+            float radius1 = body1.Size.x * 0.5f;
+            float radius2 = body2.Size.x * 0.5f;
             float distance = (body2.Position.x - body1.Position.x) * (body2.Position.x - body1.Position.x) +
                 (body2.Position.y - body1.Position.y) * (body2.Position.y - body1.Position.y);
-            if (distance > (body2.Radius + body1.Radius) * (body2.Radius + body1.Radius))
+            if (distance > (radius2 + radius1) * (radius2 + radius1))
             {
                 info.Collision = false;
                 return;
             }
+
             Vector2 normal = glm::normalize(body2.Position - body1.Position);
             info.CollisionInfoPair.second.Normal = normal;
             info.CollisionInfoPair.first.Normal = -normal;
 
-            float min1 = dot(body1.Position - (normal * body1.Radius), normal);
-            float max1 = dot(body1.Position + (normal * body1.Radius), normal);
-            float min2 = dot(body2.Position - (normal * body2.Radius), normal);
-            float max2 = dot(body2.Position + (normal * body2.Radius), normal);
+            float min1 = glm::dot(body1.Position - (normal * radius1), normal);
+            float max1 = glm::dot(body1.Position + (normal * radius1), normal);
+            float min2 = glm::dot(body2.Position - (normal * radius2), normal);
+            float max2 = glm::dot(body2.Position + (normal * radius2), normal);
             float overlap1 = fabs(std::min(max1, max2) - std::max(min1, min2));
 
             info.minOverlap = glm::min(max1, max2) - glm::max(min1, min2);
             return;
         }
 
-        std::vector<Vector2>& vertices1 = body1.getVertices();
-        std::vector<Vector2>& vertices2 = body2.getVertices();
+        std::vector<Vector2> vertices1;
+        std::vector<Vector2> vertices2;
+
+        body1.getVertices(vertices1);
+        body2.getVertices(vertices2);
+
         std::vector<Vector2> normals;
 
-        for (const Vector2& normal : body1.getNormals())
-            normals.push_back(normalize(normal));
-        for (const Vector2& normal : body2.getNormals())
-            normals.push_back(normalize(normal));
+        for (const Vector2& normal : body1.Normals)
+            normals.push_back(normal);
+        for (const Vector2& normal : body2.Normals)
+            normals.push_back(normal);
 
         float overlap = 0.0f;
         Vector2 collisionNormal = { 0.0f, 0.0f };
@@ -143,9 +116,9 @@ namespace Elysium
         {
             float min1 = std::numeric_limits<float>::max();
             float max1 = -std::numeric_limits<float>::max();
-            if (body1.Radius > 0.0f)
+            if (body1.Model== ModelType::CIRCLE)
             {
-                Vector2 circleVertex = normal * body1.Radius;
+                Vector2 circleVertex = normal * body1.Size.x * 0.5f;
                 min1 = dot(body1.Position - (circleVertex), normal);
                 max1 = dot(body1.Position + (circleVertex), normal);
             }
@@ -161,9 +134,9 @@ namespace Elysium
 
             float min2 = std::numeric_limits<float>::max();
             float max2 = -std::numeric_limits<float>::max();
-            if (body2.Radius > 0.0f)
+            if (body2.Model == ModelType::CIRCLE)
             {
-                Vector2 circleVertex = normal * body2.Radius;
+                Vector2 circleVertex = normal * body2.Size.x * 0.5f;
                 min2 = dot(body2.Position - (circleVertex), normal);
                 max2 = dot(body2.Position + (circleVertex), normal);
             }
@@ -204,6 +177,18 @@ namespace Elysium
         }
     }
 
+    void PhysicsSystem::logInfo(const char* tag)
+    {
+        for (uint32_t i = 0; i < m_Bodies.size(); i++)
+        {
+            if (m_Bodies[i].Status != BodyStatus::INACTIVE && strcmp(m_Bodies[i].Tag, tag) == 0)
+            {
+                m_LoggedBodies.insert(i);
+                break;
+            }
+        }
+    }
+
     void PhysicsSystem::printInfo(BodyHandle i)
     {
         ELY_CORE_TRACE("-----Body Tag: {0}-----", m_Bodies[i].Tag);
@@ -219,22 +204,47 @@ namespace Elysium
         ELY_CORE_TRACE("-----Body Tag: {0}-----", m_Bodies[i].Tag);
     }
 
-    void PhysicsSystem::removePhysicalBody(BodyHandle body)
+    void PhysicsSystem::updateBody(PhysicalBody& body, Timestep ts)
     {
-        m_Bodies[body].Status = BodyStatus::INACTIVE;
-        m_InactiveBodies.push_back(body);
-        std::sort(m_InactiveBodies.begin(), m_InactiveBodies.end(), std::greater());
+        body.ContactNormal = Math::normalize(body.ContactNormal);
+        body.Impulse += body.ContactImpulse * body.ContactNormal;
+
+        body.Normal += body.ContactNormal;
+        body.Normal = Math::normalize(body.Normal);
+
+        body.Acceleration = body.Force / body.Mass;
+        body.Velocity = body.Velocity + (body.Impulse / body.Mass) + (body.Acceleration * (float)ts);
+        body.Position = body.Position + (body.Velocity * (float)ts);
+
+        body.Force = { 0.0f, 0.0f };
+        if (Gravity)
+            body.Force.y = -m_GravitationalAccel * body.Mass;
     }
 
-    void PhysicsSystem::logInfo(const char* tag)
+    void PhysicsSystem::applyCollisionResponse(PhysicalBody& body, const PhysicalBody& otherBody, const Vector2& normal, float overlap,
+        Timestep ts)
     {
-        for (uint32_t i = 0; i < m_Bodies.size(); i++)
+        /***** Normal Force *****/
+        body.Force += abs(body.Force) * normal;
+
+        float averageElasticity = (body.ElasticityCoefficient + otherBody.ElasticityCoefficient) * 0.5f;
+        Vector2 impulse = abs(body.Velocity) * body.Mass * (averageElasticity);
+
+        if (body.Type == BodyType::DYNAMIC)
+            impulse += abs(otherBody.Velocity * otherBody.Mass / body.Mass) * (float)ts;
+
+        body.ContactImpulse.x = glm::max(impulse.x, body.ContactImpulse.x);
+        body.ContactImpulse.y = glm::max(impulse.y, body.ContactImpulse.y);
+
+        body.ContactNormal += normal;
+
+        /***** Friction *****/
+        Vector2 frictionDirection = { 0.0f, 0.0f };
+        if (body.Velocity.x * body.Velocity.x + body.Velocity.y * body.Velocity.y > 0.0f)
         {
-            if (m_Bodies[i].Status != BodyStatus::INACTIVE && strcmp(m_Bodies[i].Tag, tag) == 0)
-            {
-                m_LoggedBodies.insert(i); 
-                break;
-            }
+            frictionDirection = { fabs(normal.y),  fabs(normal.x) };
+            frictionDirection = -(frictionDirection * normalize(body.Velocity));
+            body.Impulse += abs(body.Velocity) * body.Mass * glm::dot(frictionDirection, 2.0f * body.Size * body.Size) * body.getFrictionCoefficient() * (float)(ts);
         }
     }
 
@@ -252,10 +262,17 @@ namespace Elysium
                     updateBody(m_Bodies[i], ts);
                     if (m_Bodies[i].AllowRotation)
                     {
-                        Vector2 magnitudeVector = m_Bodies[i].Velocity;
-
-                        m_Bodies[i].AngularVelocity = Math::cross(m_Bodies[i].Normal, magnitudeVector) / m_Bodies[i].Inertia;
-                        m_Bodies[i].Rotation += m_Bodies[i].AngularVelocity * (float)ts;
+                        switch (m_Bodies[i].Model)
+                        {
+                        case ModelType::CIRCLE:
+                            m_Bodies[i].AngularVelocity = Math::cross(m_Bodies[i].Normal, m_Bodies[i].Velocity) / m_Bodies[i].Inertia;
+                            m_Bodies[i].Rotation += m_Bodies[i].AngularVelocity * (float)ts;
+                            break;
+                        case ModelType::QUAD:
+                        {
+                        }
+                            break;
+                        }
                     }
                     break;
                 case BodyType::KINEMATIC:
@@ -268,8 +285,10 @@ namespace Elysium
                     m_Bodies[i].Force = { 0.0f, 0.0f };
                 }
 
+#ifdef __DEBUG
                 if (m_LoggedBodies.find(i) != m_LoggedBodies.end())
                     printInfo(i);
+#endif
 
                 m_Bodies[i].Impulse = { 0.0f, 0.0f };
                 m_Bodies[i].ContactImpulse = { 0.0f, 0.0f };
@@ -278,6 +297,7 @@ namespace Elysium
 
                 m_Bodies[i].MaximumVertex = m_Bodies[i].getMaxVertex();
                 m_Bodies[i].MinimumVertex = m_Bodies[i].getMinVertex();
+                m_Bodies[i].updateNormals();
             }
         }
 
@@ -323,11 +343,11 @@ namespace Elysium
                         Vector2 iNormal = info.CollisionInfoPair.first.Normal;
                         Vector2 jNormal = info.CollisionInfoPair.second.Normal;
 
-                        float magnitude1 = (m_Bodies[i].Velocity.x * m_Bodies[i].Velocity.x) + (m_Bodies[i].Velocity.y * m_Bodies[i].Velocity.y);
-                        float magnitude2 = (m_Bodies[j].Velocity.x * m_Bodies[j].Velocity.x) + (m_Bodies[j].Velocity.y * m_Bodies[j].Velocity.y);
-                        if (magnitude1 >= magnitude2)
+                        float magnitude1 = glm::length(m_Bodies[i].Velocity);
+                        float magnitude2 = glm::length(m_Bodies[j].Velocity);
+                        if (magnitude1 > magnitude2)
                             m_Bodies[i].Position = m_Bodies[i].Position + (info.minOverlap * iNormal);
-                        else
+                        if (magnitude2 > magnitude1)
                              m_Bodies[j].Position = m_Bodies[j].Position + (info.minOverlap * jNormal);
 
                         if (m_Bodies[i].Type != BodyType::STATIC)

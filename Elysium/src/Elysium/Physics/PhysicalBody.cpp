@@ -4,13 +4,11 @@
 
 namespace Elysium
 {
-    PhysicalBody::PhysicalBody()
-    {
-    }
-
-    PhysicalBody::PhysicalBody(BodyType type,const char* tag, float mass, const Vector2& initialPosition, const Vector2& size,
+    PhysicalBody::PhysicalBody(BodyType type, ModelType model, const char* tag, float mass, 
+        const Vector2& initialPosition, const Vector2& size,
         Collision_Callback callback) :
         Type(type),
+        Model(model),
         Tag(tag),
         Position(initialPosition),
         Size(size),
@@ -18,34 +16,32 @@ namespace Elysium
     {
         float halfLength = size.x * 0.5f;
         float halfWidth = size.y * 0.5f;
-        
-        m_ModelVertices.reserve(4);
-        m_ModelVertices.emplace_back(-halfLength, -halfWidth);
-        m_ModelVertices.emplace_back( halfLength, -halfWidth);
-        m_ModelVertices.emplace_back( halfLength,  halfWidth);
-        m_ModelVertices.emplace_back(-halfLength,  halfWidth);
+
+        switch (model)
+        {
+        case ModelType::QUAD:
+            m_ModelVertices.reserve(4);
+            m_ModelVertices.emplace_back(-halfLength, -halfWidth);
+            m_ModelVertices.emplace_back( halfLength, -halfWidth);
+            m_ModelVertices.emplace_back( halfLength,  halfWidth);
+            m_ModelVertices.emplace_back(-halfLength,  halfWidth);
+
+            m_Normals.reserve(4);
+            m_Normals.emplace_back( 0.0f, -1.0f);
+            m_Normals.emplace_back( 1.0f,  0.0f);
+            m_Normals.emplace_back( 0.0f,  1.0f);
+            m_Normals.emplace_back(-1.0f,  0.0f);
+
+            Normals = m_Normals;
+            break;
+        case ModelType::CIRCLE:
+            break;
+        }
 
         if (type == BodyType::DYNAMIC || type == BodyType::KINEMATIC)
         {
             Mass = fabs(mass);
             Inertia = (size.x * size.y * size.y * size.y) / 12.0f;
-        }
-    }
-
-    PhysicalBody PhysicalBody::createPhysicalBody(BodyType type, const char* name, float mass, const Vector2& initialPosition, const Vector2& size, Collision_Callback callback)
-    {
-        return PhysicalBody(type, name, mass, initialPosition, size, callback);
-    }
-
-    void PhysicalBody::setRadius(float radius)
-    {
-        if (radius > 0.0f)
-        {
-            Radius = radius;
-            Size = { 2.0f * radius, 2.0f * radius };
-            Inertia = (Size.x * Size.y * Size.y * Size.y) / 12.0f;
-
-            m_ModelVertices.clear();
         }
     }
 
@@ -63,30 +59,28 @@ namespace Elysium
 
     Vector2 PhysicalBody::tranformVertex(const Vector2& vertex) const
     {
-        Complex transform(cos(Rotation), sin(Rotation));
+        Complex transform(glm::cos(Rotation), glm::sin(Rotation));
         Complex translation(Position.x, Position.y);
 
         return (Vector2)(Complex(vertex.x, vertex.y) * transform + translation);
     }
 
-    std::vector<Vector2> PhysicalBody::getVertices() const
+    void PhysicalBody::getVertices(std::vector<Vector2>& vertices) const
     {
-        std::vector<Vector2> vertices;
-
         for (const Vector2& vertex : m_ModelVertices)
             vertices.push_back(tranformVertex(vertex));
-
-        return vertices;
     }
 
     Vector2 PhysicalBody::getMaxVertex() const
     {
-        Vector2 array[4];
         Vector2 halfSize = Size * 0.5f;
-        array[0] = tranformVertex(+halfSize);
-        array[1] = tranformVertex(-halfSize);
-        array[2] = tranformVertex({ +halfSize.x, -halfSize.y});
-        array[3] = tranformVertex({ -halfSize.x, +halfSize.y });
+        Vector2 array[4] = 
+        {
+            tranformVertex(+halfSize),
+            tranformVertex(-halfSize),
+            tranformVertex({ +halfSize.x, -halfSize.y}),
+            tranformVertex({ -halfSize.x, +halfSize.y })
+        };
 
         for (size_t i = 1; i < 4; i++)
         {
@@ -100,12 +94,14 @@ namespace Elysium
 
     Vector2 PhysicalBody::getMinVertex() const
     {
-        Vector2 array[4];
         Vector2 halfSize = Size * 0.5f;
-        array[0] = tranformVertex(+halfSize);
-        array[1] = tranformVertex(-halfSize);
-        array[2] = tranformVertex({ +halfSize.x, -halfSize.y });
-        array[3] = tranformVertex({ -halfSize.x, +halfSize.y });
+        Vector2 array[4] =
+        {
+            tranformVertex(+halfSize),
+            tranformVertex(-halfSize),
+            tranformVertex({ +halfSize.x, -halfSize.y}),
+            tranformVertex({ -halfSize.x, +halfSize.y })
+        };
 
         for (size_t i = 1; i < 4; i++)
         {
@@ -117,24 +113,11 @@ namespace Elysium
         return array[0];
     }
 
-    std::vector<Vector2> PhysicalBody::getNormals() const
+    void PhysicalBody::updateNormals()
     {
-        std::vector<Vector2> vertices = getVertices();
-        std::vector<Vector2> normals;
-
-        std::unordered_set<float> polarAngles;
-        std::pair<std::unordered_set<float>::iterator, bool> valid;
-        if (vertices.size() > 0)
-        {
-            for (size_t i = 0; i < vertices.size() - 1; i++)
-            {
-                Vector2 normal = { -(vertices[i].y - vertices[i + 1].y), vertices[i].x - vertices[i + 1].x };
-                valid = polarAngles.insert(fabs(atan2(normal.y, normal.x)));
-                if (valid.second)
-                    normals.push_back(normal);
-            }
-        }
-        return normals;
+        Complex transform(glm::cos(Rotation), glm::sin(Rotation));
+        for (size_t i = 0; i < Normals.size(); ++i)
+            Normals[i] = glm::normalize((Vector2)(Complex(m_Normals[i].x, m_Normals[i].y) * transform));
     }
 
     void PhysicalBody::resetValues()

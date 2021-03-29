@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Game/Adversary.h"
 #include "Game/Player.h"
 
 class SoccerScene : public Elysium::Scene
@@ -13,7 +12,7 @@ private:
     TextureData m_Background;
 
     Player m_Player;
-    Adversary m_Adversary;
+    Player m_Adversary;
 
     bool m_GameOver = false;
     uint32_t m_BlueScore = 0;

@@ -1,7 +1,10 @@
 #include "SoccerScene.h"
 
 SoccerScene::SoccerScene(unsigned int width, unsigned int height) : Scene("Soccer"),
-m_Camera(-m_Height * (float)(width / height), m_Height* (float)(width / height), 0.0f, m_Height)
+m_Camera(-m_Height * (float)(width / height), m_Height* (float)(width / height), 0.0f, m_Height),
+m_Player({ -27.5f, 20.0f }),
+m_Adversary({ 27.5f, 20.0f }, ELY_KEY_UP, ELY_KEY_LEFT, ELY_KEY_RIGHT,
+    ELY_KEY_DOWN, ELY_KEY_RIGHT_SHIFT, ELY_KEY_SLASH)
 {
     m_Textures.reserve(12);
     m_Textures.emplace_back("res/texture/Idle (1).png");
@@ -40,22 +43,21 @@ m_Camera(-m_Height * (float)(width / height), m_Height* (float)(width / height),
 
     m_BallTexture = m_Textures[3].getTextureData();
 
-    e_PhysicsSystem.createPhysicalBody(&m_Ground, Elysium::BodyType::STATIC, "Ground", 10.0f, { 0.0f, 0.0f }, { 500.0f, 2.0f });
-    e_PhysicsSystem.createPhysicalBody(&m_Ball, Elysium::BodyType::DYNAMIC, "Ball", 1.0f, { 0.0f, 10.0f }, { 2.0f, 2.0f });
+    e_PhysicsSystem.createPhysicalBody(&m_Ground, Elysium::BodyType::STATIC, Elysium::ModelType::QUAD, "Ground", 10.0f, { 0.0f, 0.0f }, { 500.0f, 2.0f });
+    e_PhysicsSystem.createPhysicalBody(&m_Ball, Elysium::BodyType::DYNAMIC, Elysium::ModelType::CIRCLE, "Ball", 1.0f, { 0.0f, 10.0f }, { 2.0f, 2.0f });
 
-    e_PhysicsSystem.createPhysicalBody(&m_Rectangles[0], Elysium::BodyType::STATIC, "Rectangle", 0.0f, { 0.0f, 29.0f }, { 60.0f, 2.0f });
-    e_PhysicsSystem.createPhysicalBody(&m_Rectangles[1], Elysium::BodyType::STATIC, "Rectangle", 0.0f, { -30.0f, 20.0f }, { 2.0f, 30.0f });
-    e_PhysicsSystem.createPhysicalBody(&m_Rectangles[2], Elysium::BodyType::STATIC, "Rectangle", 0.0f, { 30.0f, 20.0f }, { 2.0f, 30.0f });
+    e_PhysicsSystem.createPhysicalBody(&m_Rectangles[0], Elysium::BodyType::STATIC, Elysium::ModelType::QUAD, "Rectangle", 0.0f, { 0.0f, 29.0f }, { 60.0f, 2.0f });
+    e_PhysicsSystem.createPhysicalBody(&m_Rectangles[1], Elysium::BodyType::STATIC, Elysium::ModelType::QUAD, "Rectangle", 0.0f, { -30.0f, 20.0f }, { 2.0f, 30.0f });
+    e_PhysicsSystem.createPhysicalBody(&m_Rectangles[2], Elysium::BodyType::STATIC, Elysium::ModelType::QUAD, "Rectangle", 0.0f, { 30.0f, 20.0f }, { 2.0f, 30.0f });
 
     Elysium::PhysicalBody* ground = e_PhysicsSystem.getPhysicalBody(m_Ground);
-    ground->setFrictionCoefficient(0.75f);
-    //ground.setElasticityCoefficient(1.0f);
-
-    //ground.Rotation = Elysium::radians(10.0f);
+    ground->setFrictionCoefficient(1.0f);
 
     Elysium::PhysicalBody* ball = e_PhysicsSystem.getPhysicalBody(m_Ball);
-    ball->setRadius(1.0f);
     ball->setElasticityCoefficient(1.0f);
+
+    m_Player.Ball = e_PhysicsSystem.getPhysicalBody(m_Ball);
+    m_Adversary.Ball = e_PhysicsSystem.getPhysicalBody(m_Ball);
 
     m_Camera.setPosition({ 0.0f, -1.0f, 0.0f });
 }
@@ -76,10 +78,9 @@ void SoccerScene::onUpdate(Elysium::Timestep ts)
         adversary->Position = { 27.5f, 20.0f };
         player->Position = { -27.5f, 20.0f };
 
-        e_PhysicsSystem.createPhysicalBody(&m_Ball, Elysium::BodyType::DYNAMIC, "Ball", 1.0f, { 0.0f, 10.0f }, { 2.0f, 2.0f });
+        e_PhysicsSystem.createPhysicalBody(&m_Ball, Elysium::BodyType::DYNAMIC, Elysium::ModelType::CIRCLE, "Ball", 1.0f, { 0.0f, 10.0f }, { 2.0f, 2.0f });
             
         Elysium::PhysicalBody* ball = e_PhysicsSystem.getPhysicalBody(m_Ball);
-        ball->setRadius(1.0f);
         ball->setElasticityCoefficient(1.0f);
 
         m_GameOver = false;
@@ -101,11 +102,7 @@ void SoccerScene::onUpdate(Elysium::Timestep ts)
     e_PhysicsSystem.onUpdate(ts);
 
     m_Adversary.onUpdate(ts);
-    m_Adversary.kickBall(m_Ball);
-    m_Adversary.movePlayer(player);
     m_Player.onUpdate(ts);
-    m_Player.kickBall(m_Ball);
-    m_Player.movePlayer(adversary);
 
     if (ball.Position.x > 30.0f)
     {
@@ -156,6 +153,9 @@ void SoccerScene::onEvent(Elysium::Event& event)
     Elysium::EventDispatcher dispatcher(event);
     dispatcher.Dispatch<Elysium::KeyPressedEvent>(BIND_EVENT_FUNCTION(SoccerScene::onKeyPressedEvent));
     dispatcher.Dispatch<Elysium::WindowResizeEvent>(BIND_EVENT_FUNCTION(SoccerScene::onWindowResizeEvent));
+
+    m_Player.onEvent(event);
+    m_Adversary.onEvent(event);
 }
 
 bool SoccerScene::onKeyPressedEvent(Elysium::KeyPressedEvent& event)

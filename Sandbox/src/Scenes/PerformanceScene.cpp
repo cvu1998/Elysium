@@ -2,7 +2,8 @@
 
 PerformanceScene::PerformanceScene(unsigned int width, unsigned int height) : Scene("Stress Test"),
 m_Camera(-m_Height * (float)(width / height), m_Height * (float)(width / height), -m_Height * 0.5f, m_Height * 0.5f),
-m_ParticleSystem(100, m_Camera)
+m_ParticleSystem(100, m_Camera),
+m_Player({ { -12.5f, 20.0f } })
 {
     m_Textures.reserve(11);
     m_Textures.emplace_back("res/texture/Idle (1).png");
@@ -61,12 +62,12 @@ m_ParticleSystem(100, m_Camera)
     m_BoxTexture = m_Textures[1].getTextureData();
     m_BoxTexture.subtextureCoordinates({ 4, 1 }, { 128, 128 });
 
-    e_PhysicsSystem.createPhysicalBody(&m_Ground, Elysium::BodyType::STATIC, "Ground", 10.0f, { 0.0f, 0.0f }, { 5000.0f, 2.0f });
+    e_PhysicsSystem.createPhysicalBody(&m_Ground, Elysium::BodyType::STATIC, Elysium::ModelType::QUAD, "Ground", 10.0f, { 0.0f, 0.0f }, { 5000.0f, 2.0f });
 
     float depth = -((float)m_GroundLayers.size() * 2.0f);
     for (size_t i = 0; i < m_GroundLayers.size(); i++)
     {
-        e_PhysicsSystem.createPhysicalBody(&m_GroundLayers[i], Elysium::BodyType::STATIC, "Layer", 10.0f, { 0.0f, depth + (float)(2.0f * i) }, { 500.0f, 2.0f });
+        e_PhysicsSystem.createPhysicalBody(&m_GroundLayers[i], Elysium::BodyType::STATIC, Elysium::ModelType::QUAD, "Layer", 10.0f, { 0.0f, depth + (float)(2.0f * i) }, { 500.0f, 2.0f });
     }
 }
 
@@ -85,7 +86,7 @@ void PerformanceScene::onUpdate(Elysium::Timestep ts)
     {
         float x = (Random::Float() * 200.0f) - 100.0f;
         Elysium::Vector2 position = { x, 20.0f };
-        e_PhysicsSystem.createPhysicalBody(&m_Boxes[m_Index], Elysium::BodyType::DYNAMIC, "Box", 5.0f, position, { 2.0f, 2.0f });
+        e_PhysicsSystem.createPhysicalBody(&m_Boxes[m_Index], Elysium::BodyType::DYNAMIC, Elysium::ModelType::QUAD, "Box", 5.0f, position, { 2.0f, 2.0f });
 
         m_Index++;
         m_SpawnTime = 0.0f;
@@ -147,6 +148,8 @@ void PerformanceScene::onEvent(Elysium::Event& event)
 {
     Elysium::EventDispatcher dispatcher(event);
     dispatcher.Dispatch<Elysium::WindowResizeEvent>(BIND_EVENT_FUNCTION(PerformanceScene::onWindowResizeEvent));
+
+    m_Player.onEvent(event);
 }
 
 bool PerformanceScene::onWindowResizeEvent(Elysium::WindowResizeEvent& event)
