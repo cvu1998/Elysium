@@ -22,8 +22,8 @@
 #include "Elysium/Random.h"
 #include "Elysium/Timer.h"
 
-#include "Elysium/Physics/PhysicsSystem.h"
-#include "Elysium/Physics/PhysicalBody.h"
+#include "Elysium/Physics/PhysicsSystem2D.h"
+#include "Elysium/Physics/PhysicalBody2D.h"
 
 #include "Elysium/Editor.h"
 #include "Elysium/ImGuiUtility.h"

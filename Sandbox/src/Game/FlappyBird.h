@@ -5,10 +5,10 @@
 class FlappyBird
 {
 public:
-    Elysium::PhysicalBody* Body = nullptr;
+    Elysium::PhysicalBody2D* Body = nullptr;
     bool UseRLAgent = true;
     bool PauseBird = false;
-    TextureData m_TextureData;
+    Elysium::TextureData m_TextureData;
 
 public:
     FlappyBird();
@@ -17,5 +17,5 @@ public:
     void onEvent(Elysium::Event& event);
     bool onKeyPressedEvent(Elysium::KeyPressedEvent& event);
 
-    static void onCollision(Elysium::PhysicalBody& body, Elysium::PhysicalBody& collidee, const Elysium::CollisionInfo& info);
+    static void onCollision(Elysium::PhysicalBody2D& body, Elysium::PhysicalBody2D& collidee, const Elysium::CollisionInfo& info);
 };

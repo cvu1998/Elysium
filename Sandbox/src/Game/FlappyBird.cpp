@@ -28,7 +28,7 @@ bool FlappyBird::onKeyPressedEvent(Elysium::KeyPressedEvent& event)
     return false;
 }
 
-void FlappyBird::onCollision(Elysium::PhysicalBody& body, Elysium::PhysicalBody& collidee, const Elysium::CollisionInfo& info)
+void FlappyBird::onCollision(Elysium::PhysicalBody2D& body, Elysium::PhysicalBody2D& collidee, const Elysium::CollisionInfo& info)
 {
     body.CallbackExecutions++;
 }

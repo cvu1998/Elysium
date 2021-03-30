@@ -39,18 +39,20 @@ namespace Elysium
         // |      |
         // v0----v1
         static void drawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color);
-        static void drawQuad(const glm::vec2& position, const glm::vec2& size, const TextureData& texture,
+        static void drawQuad(const glm::vec2& position, const glm::vec2& size, const TextureData& texture, 
+            const glm::vec2& tillingFactor = { 1.0f, 1.0f },
             const glm::vec4& color = { 1.0f, 1.0f, 1.0f, 1.0f });
 
         // ---Rotation in radians---
         static void drawQuadWithRotation(const glm::vec2& position, const glm::vec2& size, float rotation, const glm::vec4& color);
         static void drawQuadWithRotation(const glm::vec2& position, const glm::vec2& size, float rotation, const TextureData& texture,
+            const glm::vec2& tillingFactor = { 1.0f, 1.0f },
             const glm::vec4& color = { 1.0f, 1.0f, 1.0f, 1.0f });
 
-        static void drawLine(const glm::vec2& p0, const glm::vec2& p1,
+        static void drawLine(const glm::vec3& p0, const glm::vec3& p1,
             const glm::vec4& color = { 1.0f, 1.0f, 1.0f, 1.0f });
 
-        static void drawPoint(const glm::vec2& position,
+        static void drawPoint(const glm::vec3& position,
             const glm::vec4& color = { 1.0f, 1.0f, 1.0f, 1.0f });
 
         static void setLineWidth(float width);

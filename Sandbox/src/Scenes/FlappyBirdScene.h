@@ -20,7 +20,9 @@ public:
         readWeightVectorFromFile("res/AI/FlappyBirdWeightVector.rl");
     }
 
-    void getStateActionFeatures(const Elysium::PhysicalBody* body, const Elysium::PhysicalBody* lowerPipe, const Elysium::PhysicalBody* upperPipe,
+    void getStateActionFeatures(const Elysium::PhysicalBody2D* body, 
+        const Elysium::PhysicalBody2D* lowerPipe, 
+        const Elysium::PhysicalBody2D* upperPipe,
         Elysium::Action action, std::array<float, FeatureSize>& stateActionFeatures)
     {
         float halfSizeLowerPipeY = lowerPipe->getSize().y * 0.5f;
@@ -104,29 +106,29 @@ private:
     bool m_PauseScene = true;
 
     Elysium::OrthographicCamera m_Camera;
-    Texture m_SpriteSheet;
+    Elysium::Texture m_SpriteSheet;
 
     Elysium::Vector2 m_InitialPosition = { 0.0f, 0.0f };
     FlappyBird m_Bird;
-    TextureData m_BirdSprite;
+    Elysium::TextureData m_BirdSprite;
     float m_SavedPosition = 0.0f;
     float m_InitialImpulse = 5.0f;
 
-    Elysium::PhysicalBody* m_Ground = nullptr;
-    TextureData m_GroundSprite;
-    Elysium::PhysicalBody* m_Ceiling = nullptr;
-    TextureData m_CeilingSprite;
+    Elysium::PhysicalBody2D* m_Ground = nullptr;
+    Elysium::TextureData m_GroundSprite;
+    Elysium::PhysicalBody2D* m_Ceiling = nullptr;
+    Elysium::TextureData m_CeilingSprite;
 
-    TextureData m_Background;
+    Elysium::TextureData m_Background;
     std::deque<float>m_BackgroundPositions;
     float m_BackgroundPosition = 0.0f;
 
-    TextureData m_LowerSprite;
-    TextureData m_UpperSprite;
+    Elysium::TextureData m_LowerSprite;
+    Elysium::TextureData m_UpperSprite;
     std::deque<Elysium::BodyHandle> m_LowerPipes;
     std::deque<Elysium::BodyHandle> m_UpperPipes;
-    Elysium::PhysicalBody* m_LowerPipe = nullptr;
-    Elysium::PhysicalBody* m_UpperPipe = nullptr;
+    Elysium::PhysicalBody2D* m_LowerPipe = nullptr;
+    Elysium::PhysicalBody2D* m_UpperPipe = nullptr;
     size_t m_Score = 0;
     size_t m_PipeIndex = 0;
     size_t m_BestScore = 0;

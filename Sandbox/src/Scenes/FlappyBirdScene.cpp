@@ -5,7 +5,7 @@ FlappyBirdScene::FlappyBirdScene(unsigned int width, unsigned int height) :
     m_Camera(-m_Height * (float)(width / height), m_Height* (float)(width / height), -m_Height * 0.5f, m_Height * 0.5f),
     m_SpriteSheet("res/texture/Flappy-Bird-Sprite.png")
 {
-    e_PhysicsSystem.setGravitaionnalAccel(20.0f);
+    e_PhysicsSystem2D.setGravitaionnalAccel(20.0f);
 
     std::vector<Elysium::Quad> quads;
     if (!Elysium::Editor::Deserialize("res/scenes/Flappy.elysium", quads))
@@ -16,7 +16,7 @@ FlappyBirdScene::FlappyBirdScene(unsigned int width, unsigned int height) :
         if (quad.Tag == "Bird")
         {
             m_InitialPosition = quad.Position;
-            m_Bird.Body = e_PhysicsSystem.createPhysicalBody(Elysium::BodyType::DYNAMIC, Elysium::ModelType::CIRCLE, "Bird", 10.0f,
+            m_Bird.Body = e_PhysicsSystem2D.createPhysicalBody(Elysium::BodyType::DYNAMIC, Elysium::ModelType::CIRCLE, "Bird", 10.0f,
                 quad.Position, quad.Size, FlappyBird::onCollision);
             m_Bird.Body->AllowRotation = false;
             m_Bird.Body->setNumberOfCallbackExecution(1);
@@ -25,14 +25,14 @@ FlappyBirdScene::FlappyBirdScene(unsigned int width, unsigned int height) :
         }
         else if (quad.Tag == "Ground")
         {
-            m_Ground = e_PhysicsSystem.createPhysicalBody(Elysium::BodyType::STATIC, Elysium::ModelType::QUAD, "Ground", 0.0f,
+            m_Ground = e_PhysicsSystem2D.createPhysicalBody(Elysium::BodyType::STATIC, Elysium::ModelType::QUAD, "Ground", 0.0f,
                 quad.Position, quad.Size);
-            m_Ceiling = e_PhysicsSystem.createPhysicalBody(Elysium::BodyType::STATIC, Elysium::ModelType::QUAD, "Ceiling", 0.0f,
+            m_Ceiling = e_PhysicsSystem2D.createPhysicalBody(Elysium::BodyType::STATIC, Elysium::ModelType::QUAD, "Ceiling", 0.0f,
                 quad.Position, quad.Size);
         }
         else if (quad.Tag == "Ceiling")
         {
-            m_Ceiling = e_PhysicsSystem.createPhysicalBody(Elysium::BodyType::STATIC, Elysium::ModelType::QUAD, "Ceiling", 0.0f,
+            m_Ceiling = e_PhysicsSystem2D.createPhysicalBody(Elysium::BodyType::STATIC, Elysium::ModelType::QUAD, "Ceiling", 0.0f,
                 quad.Position, quad.Size);
         }
     }
@@ -64,15 +64,15 @@ FlappyBirdScene::FlappyBirdScene(unsigned int width, unsigned int height) :
     m_UpperSprite.subtextureCoordinates({ 2, 0 }, { 28, 168 }, { 0, 28 });
 
     generateRandomPipe(15.0f);
-    m_LowerPipe = e_PhysicsSystem.getPhysicalBody(m_LowerPipes[m_PipeIndex]);
-    m_UpperPipe = e_PhysicsSystem.getPhysicalBody(m_UpperPipes[m_PipeIndex]);
+    m_LowerPipe = e_PhysicsSystem2D.getPhysicalBody(m_LowerPipes[m_PipeIndex]);
+    m_UpperPipe = e_PhysicsSystem2D.getPhysicalBody(m_UpperPipes[m_PipeIndex]);
 }
 
 FlappyBirdScene::~FlappyBirdScene()
 {
-    e_PhysicsSystem.clear();
+    e_PhysicsSystem2D.clear();
 
-    e_PhysicsSystem.setGravitaionnalAccel(10.0f);
+    e_PhysicsSystem2D.setGravitaionnalAccel(10.0f);
 }
 
 void FlappyBirdScene::generateRandomPipe(float xposition)
@@ -106,13 +106,13 @@ void FlappyBirdScene::generateRandomPipe(float xposition)
         }
         Elysium::BodyHandle handle;
 
-        e_PhysicsSystem.createPhysicalBody(&handle, Elysium::BodyType::STATIC, Elysium::ModelType::QUAD, "Lower", 0.0f,
+        e_PhysicsSystem2D.createPhysicalBody(&handle, Elysium::BodyType::STATIC, Elysium::ModelType::QUAD, "Lower", 0.0f,
             { xposition, lowerPosition }, { 3.0f, lowerSize });
-        e_PhysicsSystem.getPhysicalBody(handle)->setElasticityCoefficient(0.5f);
+        e_PhysicsSystem2D.getPhysicalBody(handle)->setElasticityCoefficient(0.5f);
         m_LowerPipes.push_back(handle);
-        e_PhysicsSystem.createPhysicalBody(&handle, Elysium::BodyType::STATIC, Elysium::ModelType::QUAD, "Upper", 0.0f,
+        e_PhysicsSystem2D.createPhysicalBody(&handle, Elysium::BodyType::STATIC, Elysium::ModelType::QUAD, "Upper", 0.0f,
             { xposition, upperPosition }, { 3.0f, upperSize });
-        e_PhysicsSystem.getPhysicalBody(handle)->setElasticityCoefficient(0.5f);
+        e_PhysicsSystem2D.getPhysicalBody(handle)->setElasticityCoefficient(0.5f);
         m_UpperPipes.push_back(handle);
 }
 
@@ -143,11 +143,11 @@ void FlappyBirdScene::updateEnvironment(Elysium::Timestep ts)
 
                 for (Elysium::BodyHandle handle : m_LowerPipes)
                 {
-                    e_PhysicsSystem.removePhysicalBody(handle);
+                    e_PhysicsSystem2D.removePhysicalBody(handle);
                 }
                 for (Elysium::BodyHandle handle : m_UpperPipes)
                 {
-                    e_PhysicsSystem.removePhysicalBody(handle);
+                    e_PhysicsSystem2D.removePhysicalBody(handle);
                 }
                 m_LowerPipes.clear();
                 m_UpperPipes.clear();
@@ -166,8 +166,8 @@ void FlappyBirdScene::updateEnvironment(Elysium::Timestep ts)
                 m_Score = 0;
                 m_PipeIndex = 0;
                 m_NumberOfEpisodes++;
-                m_LowerPipe = e_PhysicsSystem.getPhysicalBody(m_LowerPipes[m_PipeIndex]);
-                m_UpperPipe = e_PhysicsSystem.getPhysicalBody(m_UpperPipes[m_PipeIndex]);
+                m_LowerPipe = e_PhysicsSystem2D.getPhysicalBody(m_LowerPipes[m_PipeIndex]);
+                m_UpperPipe = e_PhysicsSystem2D.getPhysicalBody(m_UpperPipes[m_PipeIndex]);
             }
         }
         m_Cooldown += ts;
@@ -176,7 +176,7 @@ void FlappyBirdScene::updateEnvironment(Elysium::Timestep ts)
     {
         m_Bird.onUpdate(ts);
     }
-    e_PhysicsSystem.onUpdate(ts);
+    e_PhysicsSystem2D.onUpdate(ts);
 
     if (m_Bird.Body->Position.x - m_SavedPosition >= m_PipeDistance)
     {
@@ -196,8 +196,8 @@ void FlappyBirdScene::updateEnvironment(Elysium::Timestep ts)
     {
         m_PipeIndex++;
         m_Score++;
-        m_LowerPipe = e_PhysicsSystem.getPhysicalBody(m_LowerPipes[m_PipeIndex]);
-        m_UpperPipe = e_PhysicsSystem.getPhysicalBody(m_UpperPipes[m_PipeIndex]);
+        m_LowerPipe = e_PhysicsSystem2D.getPhysicalBody(m_LowerPipes[m_PipeIndex]);
+        m_UpperPipe = e_PhysicsSystem2D.getPhysicalBody(m_UpperPipes[m_PipeIndex]);
     }
 }
 
@@ -276,16 +276,16 @@ void FlappyBirdScene::onUpdate(Elysium::Timestep ts)
         }
     }
 
-    Elysium::PhysicalBody* pipe = e_PhysicsSystem.getPhysicalBody(m_LowerPipes.front());
+    Elysium::PhysicalBody2D* pipe = e_PhysicsSystem2D.getPhysicalBody(m_LowerPipes.front());
     while(pipe->Position.x < m_Bird.Body->Position.x - 50.0f)
     {
-        e_PhysicsSystem.removePhysicalBody(m_LowerPipes.front());
-        e_PhysicsSystem.removePhysicalBody(m_UpperPipes.front());
+        e_PhysicsSystem2D.removePhysicalBody(m_LowerPipes.front());
+        e_PhysicsSystem2D.removePhysicalBody(m_UpperPipes.front());
         m_LowerPipes.pop_front();
         m_UpperPipes.pop_front();
         m_PipeIndex--;
 
-        pipe = e_PhysicsSystem.getPhysicalBody(m_LowerPipes.front());
+        pipe = e_PhysicsSystem2D.getPhysicalBody(m_LowerPipes.front());
     }
 
     while (m_BackgroundPositions.front() < m_Bird.Body->Position.x - 50.0f)
@@ -324,10 +324,10 @@ void FlappyBirdScene::onUpdate(Elysium::Timestep ts)
 
     for (size_t i = 0; i < m_UpperPipes.size(); i++)
     {
-        Elysium::PhysicalBody* body = e_PhysicsSystem.getPhysicalBody(m_LowerPipes[i]);
+        Elysium::PhysicalBody2D* body = e_PhysicsSystem2D.getPhysicalBody(m_LowerPipes[i]);
         Elysium::Renderer2D::drawQuad(body->Position, body->getSize(), m_LowerSprite);
 
-        body = e_PhysicsSystem.getPhysicalBody(m_UpperPipes[i]);
+        body = e_PhysicsSystem2D.getPhysicalBody(m_UpperPipes[i]);
         Elysium::Renderer2D::drawQuad(body->Position, body->getSize(), m_UpperSprite);
     }
 

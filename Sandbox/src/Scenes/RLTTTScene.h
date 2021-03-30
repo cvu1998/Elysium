@@ -72,12 +72,12 @@ private:
     float m_Height = 30.0f;
 
     Elysium::OrthographicCamera m_Camera;
-    Texture m_SpriteSheet;
+    Elysium::Texture m_SpriteSheet;
 
     std::array<Elysium::Vector2, 9> m_Coins;
     std::array<uint32_t, 9> m_CoinsTextureIndexes = { 0 };
     Elysium::BodyHandle m_CoinIndex = 0;
-    std::array<TextureData, 2> m_CoinTextures; // 1 Blue, 2 Red
+    std::array<Elysium::TextureData, 2> m_CoinTextures; // 1 Blue, 2 Red
 
     TTTGrid m_Grid;
     uint32_t m_Turn = 1;

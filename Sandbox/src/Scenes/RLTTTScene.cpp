@@ -9,7 +9,7 @@ RLTTTScene::RLTTTScene(unsigned int width, unsigned int height) :
     m_Agent(0.1f, 0.8f),
     m_Minimax(&m_Grid)
 {
-    e_PhysicsSystem.clear();
+    e_PhysicsSystem2D.clear();
     m_CoinTextures[0] = m_SpriteSheet.getTextureData();
     m_CoinTextures[0].subtextureCoordinates({ 10, 6 }, { 128, 128 });
 
@@ -350,7 +350,7 @@ void RLTTTScene::onUpdate(Elysium::Timestep ts)
     if (m_MoveCooldown < 0.0f)
         m_MoveCooldown += ts;
 
-    e_PhysicsSystem.onUpdate(ts);
+    e_PhysicsSystem2D.onUpdate(ts);
 
     Elysium::Renderer2D::beginScene(m_Camera);
     float position = 3.0f;

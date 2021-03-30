@@ -8,8 +8,8 @@ private:
     float m_Height = 30.0f;
 
     Elysium::OrthographicCamera m_Camera;
-    std::vector<Texture> m_Textures;
-    TextureData m_Background;
+    std::vector<Elysium::Texture> m_Textures;
+    Elysium::TextureData m_Background;
 
     Elysium::ParticleProperties m_Particle;
     Elysium::ParticleProperties m_Particle2;
@@ -17,11 +17,11 @@ private:
 
     Player m_Player;
 
-    TextureData m_GroundTexture;
+    Elysium::TextureData m_GroundTexture;
     Elysium::BodyHandle m_Ground;
     std::array<Elysium::BodyHandle, 5000> m_GroundLayers;
     std::array<Elysium::BodyHandle, 250> m_Boxes;
-    TextureData m_BoxTexture;
+    Elysium::TextureData m_BoxTexture;
 
     size_t m_Index = 0;
     float m_SpawnTime = 0.0f;

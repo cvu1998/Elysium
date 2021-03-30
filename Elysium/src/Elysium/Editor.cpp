@@ -127,8 +127,8 @@ namespace Elysium
             {
                 for (float left = leftBound; left < rightBound; left++)
                 {
-                    Renderer2D::drawLine({ left, bottom }, { left + 1.0f, bottom }, { 0.5f, 0.5f, 0.5f, 1.0f });
-                    Renderer2D::drawLine({ left, bottom }, { left, bottom + 1.0f }, { 0.5f, 0.5f, 0.5f, 1.0f });
+                    Renderer2D::drawLine({ left, bottom, 0.0f }, { left + 1.0f, bottom, 0.0f }, { 0.5f, 0.5f, 0.5f, 1.0f });
+                    Renderer2D::drawLine({ left, bottom, 0.0f }, { left, bottom + 1.0f, 0.0f }, { 0.5f, 0.5f, 0.5f, 1.0f });
                 }
             }
         }

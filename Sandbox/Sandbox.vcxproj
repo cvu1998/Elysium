@@ -47,9 +47,9 @@
     <ClInclude Include="src\Scenes\SandboxScene.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\shaders\basic.shader" />
-    <None Include="res\shaders\batch_rendering.shader" />
-    <None Include="res\shaders\vertex_primitive.shader" />
+    <None Include="res\shaders\basic.glsl" />
+    <None Include="res\shaders\batch_rendering.glsl" />
+    <None Include="res\shaders\vertex_primitive.glsl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

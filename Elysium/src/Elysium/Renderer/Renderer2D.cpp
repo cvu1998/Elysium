@@ -90,6 +90,7 @@ namespace Elysium
         quadLayout.push<float>(2);
         quadLayout.push<float>(4);
         quadLayout.push<float>(2);
+        quadLayout.push<float>(2);
         quadLayout.push<float>(1);
         s_Data->QuadVertexArray->addBuffer(*(s_Data->QuadVertexBuffer), quadLayout);
 
@@ -119,7 +120,7 @@ namespace Elysium
             s_Data->TextureSlots[i] = 0;
         }
 
-        s_Data->QuadShader = std::make_unique<Shader>("res/shaders/batch_rendering.shader");
+        s_Data->QuadShader = std::make_unique<Shader>("res/shaders/batch_rendering.glsl");
         s_Data->QuadShader->bind();
 
         int sampler[32];
@@ -137,7 +138,7 @@ namespace Elysium
         s_Data->LineVertexBuffer = std::make_unique<VertexBuffer>((unsigned int)MaxLineVertexCount, DataType::VERTEX);
 
         VertexBufferLayout lineLayout;
-        lineLayout.push<float>(2);
+        lineLayout.push<float>(3);
         lineLayout.push<float>(4);
         s_Data->LineVertexArray->addBuffer(*(s_Data->LineVertexBuffer), lineLayout);
 
@@ -147,7 +148,7 @@ namespace Elysium
 
         s_Data->LineIndexBuffer = std::make_unique<IndexBuffer>(lineIndices, (unsigned int)MaxLineIndexCount);
 
-        s_Data->LineShader = std::make_unique<Shader>("res/shaders/vertex_primitive.shader");
+        s_Data->LineShader = std::make_unique<Shader>("res/shaders/vertex_primitive.glsl");
 
         // -----------Points---------- //
 
@@ -159,11 +160,11 @@ namespace Elysium
         s_Data->PointVertexBuffer = std::make_unique<VertexBuffer>((unsigned int)MaxPointCount, DataType::VERTEX);
 
         VertexBufferLayout pointLayout;
-        pointLayout.push<float>(2);
+        pointLayout.push<float>(3);
         pointLayout.push<float>(4);
         s_Data->PointVertexArray->addBuffer(*(s_Data->PointVertexBuffer), pointLayout);
 
-        s_Data->PointShader = std::make_unique<Shader>("res/shaders/vertex_primitive.shader");
+        s_Data->PointShader = std::make_unique<Shader>("res/shaders/vertex_primitive.glsl");
     }
 
     void Renderer2D::Shutdown()
@@ -307,6 +308,7 @@ namespace Elysium
 
             s_Data->QuadBufferPtr->Color = color;
             s_Data->QuadBufferPtr->TextureCoordinates = s_Data->TextureCoordinates[i];
+            s_Data->QuadBufferPtr->TilingFactor = { 1.0f, 1.0f };
             s_Data->QuadBufferPtr->TextureID = textureIndex;
             s_Data->QuadBufferPtr++;
         }
@@ -315,7 +317,9 @@ namespace Elysium
         s_Data->RendererStats.QuadCount++;
     }
 
-    void Renderer2D::drawQuad(const glm::vec2& position, const glm::vec2& size, const TextureData& texture, const glm::vec4& color)
+    void Renderer2D::drawQuad(const glm::vec2& position, const glm::vec2& size, const TextureData& texture,
+        const glm::vec2& tillingFactor,
+        const glm::vec4& color)
     {
         if (s_Data->QuadIndexCount >= MaxQuadIndexCount || s_Data->TextureSlotIndex > 32)
         {
@@ -351,6 +355,7 @@ namespace Elysium
 
             s_Data->QuadBufferPtr->Color = color;
             s_Data->QuadBufferPtr->TextureCoordinates = texture.TextureCoordinates[i];
+            s_Data->QuadBufferPtr->TilingFactor = tillingFactor;
             s_Data->QuadBufferPtr->TextureID = textureIndex;
             s_Data->QuadBufferPtr++;
         }
@@ -383,6 +388,7 @@ namespace Elysium
 
             s_Data->QuadBufferPtr->Color = color;
             s_Data->QuadBufferPtr->TextureCoordinates = s_Data->TextureCoordinates[i];
+            s_Data->QuadBufferPtr->TilingFactor = { 1.0f, 1.0f };
             s_Data->QuadBufferPtr->TextureID = textureIndex;
             s_Data->QuadBufferPtr++;
         }
@@ -391,7 +397,9 @@ namespace Elysium
         s_Data->RendererStats.QuadCount++;
     }
 
-    void Renderer2D::drawQuadWithRotation(const glm::vec2& position, const glm::vec2& size, float rotation, const TextureData& texture, const glm::vec4& color)
+    void Renderer2D::drawQuadWithRotation(const glm::vec2& position, const glm::vec2& size, float rotation, const TextureData& texture,
+        const glm::vec2& tillingFactor,
+        const glm::vec4& color)
     {
         if (s_Data->QuadIndexCount >= MaxQuadIndexCount || s_Data->TextureSlotIndex > 32)
         {
@@ -428,6 +436,7 @@ namespace Elysium
 
             s_Data->QuadBufferPtr->Color = color;
             s_Data->QuadBufferPtr->TextureCoordinates = texture.TextureCoordinates[i];
+            s_Data->QuadBufferPtr->TilingFactor = tillingFactor;
             s_Data->QuadBufferPtr->TextureID = textureIndex;
             s_Data->QuadBufferPtr++;
         }
@@ -436,7 +445,7 @@ namespace Elysium
         s_Data->RendererStats.QuadCount++;
     }
 
-    void Renderer2D::drawLine(const glm::vec2& p0, const glm::vec2& p1, const glm::vec4& color)
+    void Renderer2D::drawLine(const glm::vec3& p0, const glm::vec3& p1, const glm::vec4& color)
     {
         if (s_Data->LineIndexCount >= MaxLineIndexCount)
         {
@@ -458,7 +467,7 @@ namespace Elysium
         s_Data->RendererStats.LineCount++;
     }
 
-    void Renderer2D::drawPoint(const glm::vec2& position, const glm::vec4& color)
+    void Renderer2D::drawPoint(const glm::vec3& position, const glm::vec4& color)
     {
         if (s_Data->PointIndexCount >= MaxPointCount)
         {

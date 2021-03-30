@@ -2,4 +2,4 @@
 
 #include <Elysium.h>
 
-extern Elysium::PhysicsSystem e_PhysicsSystem;
+extern Elysium::PhysicsSystem2D e_PhysicsSystem2D;

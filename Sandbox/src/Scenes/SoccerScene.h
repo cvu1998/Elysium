@@ -8,8 +8,8 @@ private:
     float m_Height = 30.0f;
 
     Elysium::OrthographicCamera m_Camera;
-    std::vector<Texture> m_Textures;
-    TextureData m_Background;
+    std::vector<Elysium::Texture> m_Textures;
+    Elysium::TextureData m_Background;
 
     Player m_Player;
     Player m_Adversary;
@@ -21,9 +21,9 @@ private:
     std::array<Elysium::BodyHandle, 3> m_Rectangles;
 
     Elysium::BodyHandle m_Ground;
-    TextureData m_GroundTexture;
+    Elysium::TextureData m_GroundTexture;
     Elysium::BodyHandle m_Ball;
-    TextureData m_BallTexture;
+    Elysium::TextureData m_BallTexture;
 
 public:
     SoccerScene(unsigned int height, unsigned int width);

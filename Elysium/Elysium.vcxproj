@@ -232,8 +232,8 @@ xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\*.lib" "$(Solution
     <ClCompile Include="src\Elysium\Application.cpp" />
     <ClCompile Include="src\Elysium\OrthographicCameraController.cpp" />
     <ClCompile Include="src\Elysium\ParticleSystem.cpp" />
-    <ClCompile Include="src\Elysium\Physics\PhysicalBody.cpp" />
-    <ClCompile Include="src\Elysium\Physics\PhysicsSystem.cpp" />
+    <ClCompile Include="src\Elysium\Physics\PhysicalBody2D.cpp" />
+    <ClCompile Include="src\Elysium\Physics\PhysicsSystem2D.cpp" />
     <ClCompile Include="src\Elysium\Random.cpp" />
     <ClCompile Include="src\Elysium\Renderer\Camera.cpp" />
     <ClCompile Include="src\Elysium\Renderer\Renderer2D.cpp" />
@@ -404,6 +404,7 @@ xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\*.lib" "$(Solution
     <ClInclude Include="src\Elysium\Network\UDPClient.h" />
     <ClInclude Include="src\Elysium\Network\UDPServer.h" />
     <ClInclude Include="src\Elysium\Renderer\Framebuffer.h" />
+    <ClInclude Include="src\Elysium\Renderer\VertexData.h" />
     <ClInclude Include="src\Elysium\SceneManager.h" />
     <ClInclude Include="src\Elysium\Editor.h" />
     <ClInclude Include="src\Elysium\AI\RLAgent.h" />
@@ -423,8 +424,8 @@ xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\*.lib" "$(Solution
     <ClInclude Include="src\Elysium\Events\MouseEvent.h" />
     <ClInclude Include="src\Elysium\OrthographicCameraController.h" />
     <ClInclude Include="src\Elysium\ParticleSystem.h" />
-    <ClInclude Include="src\Elysium\Physics\PhysicalBody.h" />
-    <ClInclude Include="src\Elysium\Physics\PhysicsSystem.h" />
+    <ClInclude Include="src\Elysium\Physics\PhysicalBody2D.h" />
+    <ClInclude Include="src\Elysium\Physics\PhysicsSystem2D.h" />
     <ClInclude Include="src\Elysium\Random.h" />
     <ClInclude Include="src\Elysium\Math.h" />
     <ClInclude Include="src\Elysium\Renderer\Camera.h" />
@@ -433,7 +434,6 @@ xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\*.lib" "$(Solution
     <ClInclude Include="src\Elysium\Renderer\Shader.h" />
     <ClInclude Include="src\Elysium\Renderer\IndexBuffer.h" />
     <ClInclude Include="src\Elysium\Renderer\Renderer.h" />
-    <ClInclude Include="src\Elysium\Renderer\Shape.h" />
     <ClInclude Include="src\Elysium\Scene.h" />
     <ClInclude Include="src\Elysium\Timer.h" />
     <ClInclude Include="src\Elysium\Window.h" />

@@ -8,9 +8,9 @@ Player::Player(const Elysium::Vector2& position, int up, int left, int right,
     KickKey(kick), LobKey(lob), SwapKey(swap),
     RunAnimation(m_FrameRate)
 {
-    m_Player = e_PhysicsSystem.createPhysicalBody(Elysium::BodyType::DYNAMIC, Elysium::ModelType::QUAD,
+    m_Player = e_PhysicsSystem2D.createPhysicalBody(Elysium::BodyType::DYNAMIC, Elysium::ModelType::QUAD,
         "Player", 50.0f, position, { 2.0f, 2.0f },
-        [this](Elysium::PhysicalBody& body, Elysium::PhysicalBody& collidee, const Elysium::CollisionInfo& info)
+        [this](Elysium::PhysicalBody2D& body, Elysium::PhysicalBody2D& collidee, const Elysium::CollisionInfo& info)
         {
             if (info.CollisionInfoPair.first.Normal.y > 0.01f)
             {

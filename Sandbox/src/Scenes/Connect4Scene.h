@@ -10,12 +10,12 @@ private:
     float m_Height = 30.0f;
 
     Elysium::OrthographicCamera m_Camera;
-    Texture m_SpriteSheet;
+    Elysium::Texture m_SpriteSheet;
 
     std::array<Elysium::BodyHandle, 9> m_Rectangles;
-    std::array<std::pair<Elysium::PhysicalBody*, uint32_t>, 42> m_Coins = { std::make_pair(nullptr, 0) };
+    std::array<std::pair<Elysium::PhysicalBody2D*, uint32_t>, 42> m_Coins = { std::make_pair(nullptr, 0) };
     Elysium::BodyHandle m_CoinIndex = 0;
-    std::array<TextureData, 2> m_CoinTextures; // 1 Blue, 2 Red
+    std::array<Elysium::TextureData, 2> m_CoinTextures; // 1 Blue, 2 Red
 
     Connect4Grid m_Grid;
     uint32_t m_Turn = 1;

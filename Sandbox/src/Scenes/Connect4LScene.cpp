@@ -13,17 +13,17 @@ m_SpriteSheet("res/texture/platformPack_tilesheet.png")
     m_CoinTextures[1].subtextureCoordinates({ 11, 5 }, { 128, 128 });
 
 
-    e_PhysicsSystem.createPhysicalBody(&m_Rectangles[8], Elysium::BodyType::STATIC, Elysium::ModelType::QUAD, "Rectangle", 0.0f, { 0.0f, -1.0f }, { 25.5f, 2.0f });
+    e_PhysicsSystem2D.createPhysicalBody(&m_Rectangles[8], Elysium::BodyType::STATIC, Elysium::ModelType::QUAD, "Rectangle", 0.0f, { 0.0f, -1.0f }, { 25.5f, 2.0f });
 
     for (size_t i = 0; i < m_Rectangles.size() - 1; i++)
-        e_PhysicsSystem.createPhysicalBody(&m_Rectangles[i], Elysium::BodyType::STATIC, Elysium::ModelType::QUAD, "Rectangle", 0.0f, { (float)(-12.25f + 3.5f * i), 6.5f }, { 1.0f, 13.0f });
+        e_PhysicsSystem2D.createPhysicalBody(&m_Rectangles[i], Elysium::BodyType::STATIC, Elysium::ModelType::QUAD, "Rectangle", 0.0f, { (float)(-12.25f + 3.5f * i), 6.5f }, { 1.0f, 13.0f });
 
     m_Camera.setPosition({ 0.0f, 5.0f, 0.0f });
 }
 
 Connect4Scene::~Connect4Scene()
 {
-    e_PhysicsSystem.clear();
+    e_PhysicsSystem2D.clear();
 }
 
 void Connect4Scene::onUpdate(Elysium::Timestep ts)
@@ -33,7 +33,7 @@ void Connect4Scene::onUpdate(Elysium::Timestep ts)
         if (m_Restart)
         {
             m_Coins.fill(std::make_pair(nullptr, 0));
-            e_PhysicsSystem.clear();
+            e_PhysicsSystem2D.clear();
 
             m_CoinIndex = 0;
             m_GameOver = false;
@@ -41,22 +41,22 @@ void Connect4Scene::onUpdate(Elysium::Timestep ts)
 
             m_Grid.clear();
 
-            e_PhysicsSystem.createPhysicalBody(&m_Rectangles[8], Elysium::BodyType::STATIC, Elysium::ModelType::QUAD, "Rectangle", 0.0f, { 0.0f, -1.0f }, { 25.5f, 2.0f });
+            e_PhysicsSystem2D.createPhysicalBody(&m_Rectangles[8], Elysium::BodyType::STATIC, Elysium::ModelType::QUAD, "Rectangle", 0.0f, { 0.0f, -1.0f }, { 25.5f, 2.0f });
 
             for (size_t i = 0; i < m_Rectangles.size() - 1; i++)
-                e_PhysicsSystem.createPhysicalBody(&m_Rectangles[i], Elysium::BodyType::STATIC, Elysium::ModelType::QUAD, "Rectangle", 0.0f, { (float)(-12.25f + 3.5f * i), 6.5f }, { 1.0f, 13.0f });
+                e_PhysicsSystem2D.createPhysicalBody(&m_Rectangles[i], Elysium::BodyType::STATIC, Elysium::ModelType::QUAD, "Rectangle", 0.0f, { (float)(-12.25f + 3.5f * i), 6.5f }, { 1.0f, 13.0f });
         }
     }
 
     if (m_MoveCooldown < 0.0f)
         m_MoveCooldown += ts;
 
-    e_PhysicsSystem.onUpdate(ts);
+    e_PhysicsSystem2D.onUpdate(ts);
 
     Elysium::Renderer2D::beginScene(m_Camera);
     for (Elysium::BodyHandle& body : m_Rectangles)
     {
-        const Elysium::PhysicalBody& rectangle = e_PhysicsSystem.readPhysicalBody(body);
+        const Elysium::PhysicalBody2D& rectangle = e_PhysicsSystem2D.readPhysicalBody(body);
         Elysium::Renderer2D::drawQuad(rectangle.Position, rectangle.getSize(), { 0.0f, 0.0f, 1.0f, 1.0f });
     }
     for (size_t i = 0; i < m_CoinIndex; i++)
@@ -139,7 +139,7 @@ bool Connect4Scene::onMousePressedEvent(Elysium::MouseButtonPressedEvent& event)
 
             if (m_Grid.isValid(column))
             {
-                m_Coins[m_CoinIndex].first = e_PhysicsSystem.createPhysicalBody(Elysium::BodyType::DYNAMIC, Elysium::ModelType::CIRCLE, 
+                m_Coins[m_CoinIndex].first = e_PhysicsSystem2D.createPhysicalBody(Elysium::BodyType::DYNAMIC, Elysium::ModelType::CIRCLE,
                     "Coin", 1.0f, 
                     { xposition, 15.0f }, { 2.0f, 2.0f });
                 m_Coins[m_CoinIndex++].second = m_Turn;
