@@ -9,7 +9,7 @@
 #include "Elysium/Timestep.h"
 
 #include "Elysium/Renderer/Camera.h"
-#include "Elysium/Renderer/Renderer2D.h"
+#include "Elysium/Renderer/Renderer.h"
 
 namespace Elysium
 {

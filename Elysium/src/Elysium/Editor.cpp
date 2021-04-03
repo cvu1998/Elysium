@@ -24,12 +24,12 @@ namespace Elysium
         specification.Height = height;
         m_Framebuffer = std::make_unique<Framebuffer>(specification);
 
-        Renderer2D::setLineWidth(2.0f);
+        Renderer::setLineWidth(2.0f);
     }
 
     Editor::~Editor()
     {
-        Renderer::setViewport(0, 0, m_WindowWidth, m_WindowHeight);
+        RendererUtility::setViewport(0, 0, m_WindowWidth, m_WindowHeight);
     }
 
     bool Editor::isWithinBounds(Vector2 position, Vector2 bottom, Vector2 top)
@@ -114,9 +114,9 @@ namespace Elysium
         }
 
         m_Framebuffer->Bind();
-        Renderer::Clear();
-        Renderer2D::resetStats();
-        Renderer2D::beginScene(m_CameraController.getCamera());
+        RendererUtility::Clear();
+        Renderer::resetStats();
+        Renderer::beginScene(m_CameraController.getCamera());
         if (m_CameraController.getBoundsWidth() * m_CameraController.getBoundsHeight() <= 5000.0f)
         {
             float leftBound = floor(m_CameraController.getCamera().getPosition().x - (m_CameraController.getBoundsWidth() * 0.5f));
@@ -127,16 +127,16 @@ namespace Elysium
             {
                 for (float left = leftBound; left < rightBound; left++)
                 {
-                    Renderer2D::drawLine({ left, bottom, 0.0f }, { left + 1.0f, bottom, 0.0f }, { 0.5f, 0.5f, 0.5f, 1.0f });
-                    Renderer2D::drawLine({ left, bottom, 0.0f }, { left, bottom + 1.0f, 0.0f }, { 0.5f, 0.5f, 0.5f, 1.0f });
+                    Renderer::drawLine({ left, bottom, 0.0f }, { left + 1.0f, bottom, 0.0f }, { 0.5f, 0.5f, 0.5f, 1.0f });
+                    Renderer::drawLine({ left, bottom, 0.0f }, { left, bottom + 1.0f, 0.0f }, { 0.5f, 0.5f, 0.5f, 1.0f });
                 }
             }
         }
         for (Quad& q : m_Data.Quads)
         {
-            Renderer2D::drawQuadWithRotation(q.Position, q.Size, glm::radians(q.Rotation), q.Color);
+            Renderer::drawQuadWithRotation(q.Position, q.Size, glm::radians(q.Rotation), q.Color);
         }
-        Renderer2D::endScene();
+        Renderer::endScene();
         m_Framebuffer->Unbind();
 
         ImGuiUtility::createImGuiDockspace([&]()

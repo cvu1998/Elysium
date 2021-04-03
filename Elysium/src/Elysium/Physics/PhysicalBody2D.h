@@ -6,7 +6,6 @@
 #include "Elysium/ArrayList.h"
 #include "Elysium/Math.h"
 #include "Elysium/Timestep.h"
-#include "Elysium/Renderer/Renderer2D.h"
 
 namespace Elysium
 {
@@ -24,7 +23,7 @@ namespace Elysium
         ACTIVE = 1
     };
 
-    enum class ModelType
+    enum class Collider
     {
         QUAD = 0,
         CIRCLE =  1
@@ -57,7 +56,7 @@ namespace Elysium
     private:
         BodyType Type = BodyType::NONE;
         BodyStatus Status = BodyStatus::ACTIVE;
-        ModelType Model = ModelType::QUAD;
+        Collider Model = Collider::QUAD;
 
         const char* Tag = nullptr;
         float Mass = std::numeric_limits<float>::max();
@@ -99,7 +98,7 @@ namespace Elysium
 
     private:
         PhysicalBody2D() { }
-        PhysicalBody2D(BodyType type, ModelType model, const char* tag, float mass,
+        PhysicalBody2D(BodyType type, Collider collider, const char* tag, float mass,
             const Vector2& initialPosition, const Vector2& size,
             Collision_Callback callback);
 

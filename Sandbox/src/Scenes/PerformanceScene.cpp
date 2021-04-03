@@ -61,12 +61,12 @@ m_Player({ { -12.5f, 20.0f } })
     m_BoxTexture = m_Textures[1].getTextureData();
     m_BoxTexture.subtextureCoordinates({ 4, 1 }, { 128, 128 });
 
-    e_PhysicsSystem2D.createPhysicalBody(&m_Ground, Elysium::BodyType::STATIC, Elysium::ModelType::QUAD, "Ground", 10.0f, { 0.0f, 0.0f }, { 5000.0f, 2.0f });
+    e_PhysicsSystem2D.createPhysicalBody(&m_Ground, Elysium::BodyType::STATIC, Elysium::Collider::QUAD, "Ground", 10.0f, { 0.0f, 0.0f }, { 5000.0f, 2.0f });
 
     float depth = -((float)m_GroundLayers.size() * 2.0f);
     for (size_t i = 0; i < m_GroundLayers.size(); i++)
     {
-        e_PhysicsSystem2D.createPhysicalBody(&m_GroundLayers[i], Elysium::BodyType::STATIC, Elysium::ModelType::QUAD, "Layer", 10.0f, { 0.0f, depth + (float)(2.0f * i) }, { 500.0f, 2.0f });
+        e_PhysicsSystem2D.createPhysicalBody(&m_GroundLayers[i], Elysium::BodyType::STATIC, Elysium::Collider::QUAD, "Layer", 10.0f, { 0.0f, depth + (float)(2.0f * i) }, { 500.0f, 2.0f });
     }
 }
 
@@ -85,7 +85,7 @@ void PerformanceScene::onUpdate(Elysium::Timestep ts)
     {
         float x = (Elysium::Random::Float() * 200.0f) - 100.0f;
         Elysium::Vector2 position = { x, 20.0f };
-        e_PhysicsSystem2D.createPhysicalBody(&m_Boxes[m_Index], Elysium::BodyType::DYNAMIC, Elysium::ModelType::QUAD, "Box", 5.0f, position, { 2.0f, 2.0f });
+        e_PhysicsSystem2D.createPhysicalBody(&m_Boxes[m_Index], Elysium::BodyType::DYNAMIC, Elysium::Collider::QUAD, "Box", 5.0f, position, { 2.0f, 2.0f });
 
         m_Index++;
         m_SpawnTime = 0.0f;
@@ -93,9 +93,9 @@ void PerformanceScene::onUpdate(Elysium::Timestep ts)
 
     m_Camera.setPosition({ player->Position.x, player->Position.y + (player->getSize().y * 4.0f), 0.0f });
 
-    Elysium::Renderer2D::beginScene(m_Camera);
-    Elysium::Renderer2D::drawQuad({ 0.0f, 15.0f }, { 1000.0f, 30.0f }, m_Background, { 15.0f, 1.0f });
-    Elysium::Renderer2D::endScene();
+    Elysium::Renderer::beginScene(m_Camera);
+    Elysium::Renderer::drawQuad({ 0.0f, 15.0f }, { 1000.0f, 30.0f }, m_Background, { 15.0f, 1.0f });
+    Elysium::Renderer::endScene();
 
     auto mousePosition = Elysium::Input::getMousePosition();
     auto width = Elysium::Application::Get().getWindow().getWidth();
@@ -114,33 +114,33 @@ void PerformanceScene::onUpdate(Elysium::Timestep ts)
 
     m_Player.onUpdate(ts);
 
-    Elysium::Renderer2D::beginScene(m_Camera);
-    Elysium::Renderer2D::drawQuad(player->Position, player->getSize(), m_Player.m_TextureData);
-    Elysium::Renderer2D::drawQuad(ground.Position, ground.getSize(), m_GroundTexture);
+    Elysium::Renderer::beginScene(m_Camera);
+    Elysium::Renderer::drawQuad(player->Position, player->getSize(), m_Player.m_TextureData);
+    Elysium::Renderer::drawQuad(ground.Position, ground.getSize(), m_GroundTexture);
     for (Elysium::BodyHandle& body : m_GroundLayers)
     {
         const Elysium::PhysicalBody2D& layer = e_PhysicsSystem2D.readPhysicalBody(body);
-        Elysium::Renderer2D::drawQuad(layer.Position, layer.getSize(), m_GroundTexture);
+        Elysium::Renderer::drawQuad(layer.Position, layer.getSize(), m_GroundTexture);
     }
     unsigned int number = 0;
     for (size_t i = 0; i < m_Index; i++)
     {
         const Elysium::PhysicalBody2D& b = e_PhysicsSystem2D.readPhysicalBody(m_Boxes[i]);
-        Elysium::Renderer2D::drawQuadWithRotation(b.Position, b.getSize(), b.Rotation, m_BoxTexture);
+        Elysium::Renderer::drawQuadWithRotation(b.Position, b.getSize(), b.Rotation, m_BoxTexture);
         if (b.Position.y > 0.0f)
             number++;
     }
-    Elysium::Renderer2D::endScene();
+    Elysium::Renderer::endScene();
 
     ImGui::Begin("Statistics");
     ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-    ImGui::Text("Number of Draw Calls: %d", Elysium::Renderer2D::getStats().DrawCount);
-    ImGui::Text("Number of Quads: %d", Elysium::Renderer2D::getStats().QuadCount);
+    ImGui::Text("Number of Draw Calls: %d", Elysium::Renderer::getStats().DrawCount);
+    ImGui::Text("Number of Quads: %d", Elysium::Renderer::getStats().QuadCount);
     ImGui::Text("Number of Boxes: %d / %d", m_Index, m_Boxes.size());
     ImGui::Text("Number of Valid Boxes: %d / %d", number, m_Index);
     ImGui::End();
 
-    Elysium::Renderer2D::resetStats();
+    Elysium::Renderer::resetStats();
 }
 
 void PerformanceScene::onEvent(Elysium::Event& event)

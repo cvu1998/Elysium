@@ -16,7 +16,7 @@ FlappyBirdScene::FlappyBirdScene(unsigned int width, unsigned int height) :
         if (quad.Tag == "Bird")
         {
             m_InitialPosition = quad.Position;
-            m_Bird.Body = e_PhysicsSystem2D.createPhysicalBody(Elysium::BodyType::DYNAMIC, Elysium::ModelType::CIRCLE, "Bird", 10.0f,
+            m_Bird.Body = e_PhysicsSystem2D.createPhysicalBody(Elysium::BodyType::DYNAMIC, Elysium::Collider::CIRCLE, "Bird", 10.0f,
                 quad.Position, quad.Size, FlappyBird::onCollision);
             m_Bird.Body->AllowRotation = false;
             m_Bird.Body->setNumberOfCallbackExecution(1);
@@ -25,14 +25,14 @@ FlappyBirdScene::FlappyBirdScene(unsigned int width, unsigned int height) :
         }
         else if (quad.Tag == "Ground")
         {
-            m_Ground = e_PhysicsSystem2D.createPhysicalBody(Elysium::BodyType::STATIC, Elysium::ModelType::QUAD, "Ground", 0.0f,
+            m_Ground = e_PhysicsSystem2D.createPhysicalBody(Elysium::BodyType::STATIC, Elysium::Collider::QUAD, "Ground", 0.0f,
                 quad.Position, quad.Size);
-            m_Ceiling = e_PhysicsSystem2D.createPhysicalBody(Elysium::BodyType::STATIC, Elysium::ModelType::QUAD, "Ceiling", 0.0f,
+            m_Ceiling = e_PhysicsSystem2D.createPhysicalBody(Elysium::BodyType::STATIC, Elysium::Collider::QUAD, "Ceiling", 0.0f,
                 quad.Position, quad.Size);
         }
         else if (quad.Tag == "Ceiling")
         {
-            m_Ceiling = e_PhysicsSystem2D.createPhysicalBody(Elysium::BodyType::STATIC, Elysium::ModelType::QUAD, "Ceiling", 0.0f,
+            m_Ceiling = e_PhysicsSystem2D.createPhysicalBody(Elysium::BodyType::STATIC, Elysium::Collider::QUAD, "Ceiling", 0.0f,
                 quad.Position, quad.Size);
         }
     }
@@ -107,11 +107,11 @@ void FlappyBirdScene::generateRandomPipe(float xposition)
     }
     Elysium::BodyHandle handle;
 
-    e_PhysicsSystem2D.createPhysicalBody(&handle, Elysium::BodyType::STATIC, Elysium::ModelType::QUAD, "Lower", 0.0f,
+    e_PhysicsSystem2D.createPhysicalBody(&handle, Elysium::BodyType::STATIC, Elysium::Collider::QUAD, "Lower", 0.0f,
         { xposition, lowerPosition }, { 3.0f, lowerSize });
     e_PhysicsSystem2D.getPhysicalBody(handle)->setElasticityCoefficient(0.5f);
     m_LowerPipes.push_back(handle);
-    e_PhysicsSystem2D.createPhysicalBody(&handle, Elysium::BodyType::STATIC, Elysium::ModelType::QUAD, "Upper", 0.0f,
+    e_PhysicsSystem2D.createPhysicalBody(&handle, Elysium::BodyType::STATIC, Elysium::Collider::QUAD, "Upper", 0.0f,
         { xposition, upperPosition }, { 3.0f, upperSize });
     e_PhysicsSystem2D.getPhysicalBody(handle)->setElasticityCoefficient(0.5f);
     m_UpperPipes.push_back(handle);
@@ -328,26 +328,26 @@ void FlappyBirdScene::onUpdate(Elysium::Timestep ts)
     m_Ground->Position.x = m_Bird.Body->Position.x;
     m_Ceiling->Position.x = m_Bird.Body->Position.x;
 
-    Elysium::Renderer2D::beginScene(m_Camera);
+    Elysium::Renderer::beginScene(m_Camera);
     for (float position : m_BackgroundPositions)
     {
-        Elysium::Renderer2D::drawQuad({ position, 21.0f }, { 22.5f, 40.0f }, m_Background);
+        Elysium::Renderer::drawQuad({ position, 21.0f }, { 22.5f, 40.0f }, m_Background);
     }
 
-    Elysium::Renderer2D::drawQuadWithRotation(m_Bird.Body->Position, { 3.0f, 3.0f }, rotation, m_BirdSprite);
+    Elysium::Renderer::drawQuadWithRotation(m_Bird.Body->Position, { 3.0f, 3.0f }, rotation, m_BirdSprite);
 
     for (size_t i = 0; i < m_UpperPipes.size(); i++)
     {
         Elysium::PhysicalBody2D* body = e_PhysicsSystem2D.getPhysicalBody(m_LowerPipes[i]);
-        Elysium::Renderer2D::drawQuad(body->Position, body->getSize(), m_LowerSprite);
+        Elysium::Renderer::drawQuad(body->Position, body->getSize(), m_LowerSprite);
 
         body = e_PhysicsSystem2D.getPhysicalBody(m_UpperPipes[i]);
-        Elysium::Renderer2D::drawQuad(body->Position, body->getSize(), m_UpperSprite);
+        Elysium::Renderer::drawQuad(body->Position, body->getSize(), m_UpperSprite);
     }
 
-    Elysium::Renderer2D::drawQuad({ m_Bird.Body->Position.x, m_Ground->Position.y }, m_Ground->getSize(), m_GroundSprite);
-    Elysium::Renderer2D::drawQuad({ m_Bird.Body->Position.x, m_Ceiling->Position.y }, m_Ceiling->getSize(), m_CeilingSprite);
-    Elysium::Renderer2D::endScene();
+    Elysium::Renderer::drawQuad({ m_Bird.Body->Position.x, m_Ground->Position.y }, m_Ground->getSize(), m_GroundSprite);
+    Elysium::Renderer::drawQuad({ m_Bird.Body->Position.x, m_Ceiling->Position.y }, m_Ceiling->getSize(), m_CeilingSprite);
+    Elysium::Renderer::endScene();
 
     ImGui::Begin("Flappy Bird");
     ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);

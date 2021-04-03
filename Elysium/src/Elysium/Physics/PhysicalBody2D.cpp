@@ -4,11 +4,11 @@
 
 namespace Elysium
 {
-    PhysicalBody2D::PhysicalBody2D(BodyType type, ModelType model, const char* tag, float mass,
+    PhysicalBody2D::PhysicalBody2D(BodyType type, Collider collider, const char* tag, float mass,
         const Vector2& initialPosition, const Vector2& size,
         Collision_Callback callback) :
         Type(type),
-        Model(model),
+        Model(collider),
         Tag(tag),
         Position(initialPosition),
         Size(size),
@@ -17,9 +17,9 @@ namespace Elysium
         float halfLength = size.x * 0.5f;
         float halfWidth = size.y * 0.5f;
 
-        switch (model)
+        switch (collider)
         {
-        case ModelType::QUAD:
+        case Collider::QUAD:
             m_ModelVertices.reserve(4);
             m_ModelVertices.emplace_back(-halfLength, -halfWidth);
             m_ModelVertices.emplace_back( halfLength, -halfWidth);
@@ -34,7 +34,7 @@ namespace Elysium
 
             Normals = m_Normals;
             break;
-        case ModelType::CIRCLE:
+        case Collider::CIRCLE:
             break;
         }
 

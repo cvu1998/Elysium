@@ -18,34 +18,34 @@ namespace Elysium
     {
     }
 
-    PhysicalBody2D* PhysicsSystem2D::createPhysicalBody(BodyType type, ModelType model, const char* name, float mass,
+    PhysicalBody2D* PhysicsSystem2D::createPhysicalBody(BodyType type, Collider collider, const char* name, float mass,
         const Vector2& initialPosition, const Vector2& size, 
         PhysicalBody2D::Collision_Callback callback)
     {
         if (m_InactiveBodies.empty())
         {
-            m_Bodies.push_back(PhysicalBody2D(type, model, name, mass, initialPosition, size, callback));
+            m_Bodies.push_back(PhysicalBody2D(type, collider, name, mass, initialPosition, size, callback));
             return &m_Bodies[m_Bodies.size() - 1];
         }
         BodyHandle body = m_InactiveBodies.back();
         m_InactiveBodies.pop_back();
-        m_Bodies[body] = PhysicalBody2D(type, model, name, mass, initialPosition, size, callback);
+        m_Bodies[body] = PhysicalBody2D(type, collider, name, mass, initialPosition, size, callback);
         return &m_Bodies[body];
     }
 
-    void PhysicsSystem2D::createPhysicalBody(BodyHandle* handle, BodyType type, ModelType model, const char* name, float mass,
+    void PhysicsSystem2D::createPhysicalBody(BodyHandle* handle, BodyType type, Collider collider, const char* name, float mass,
         const Vector2& initialPosition, const Vector2& size,
         PhysicalBody2D::Collision_Callback callback)
     {
         if (m_InactiveBodies.empty())
         {
-            m_Bodies.push_back(PhysicalBody2D(type, model, name, mass, initialPosition, size, callback));
+            m_Bodies.push_back(PhysicalBody2D(type, collider, name, mass, initialPosition, size, callback));
             *handle = (BodyHandle)m_Bodies.size() - 1;
             return;
         }
         BodyHandle body = m_InactiveBodies.back();
         m_InactiveBodies.pop_back();
-        m_Bodies[body] = PhysicalBody2D(type, model, name, mass, initialPosition, size, callback);
+        m_Bodies[body] = PhysicalBody2D(type, collider, name, mass, initialPosition, size, callback);
         *handle = body;
     }
 
@@ -70,7 +70,7 @@ namespace Elysium
 
     void PhysicsSystem2D::checkNarrowPhase(const PhysicalBody2D& body1, const PhysicalBody2D& body2, CollisionInfo& info)
     {
-        if (body1.Model == ModelType::CIRCLE && body2.Model == ModelType::CIRCLE)
+        if (body1.Model == Collider::CIRCLE && body2.Model == Collider::CIRCLE)
         {
             float radius1 = body1.Size.x * 0.5f;
             float radius2 = body2.Size.x * 0.5f;
@@ -116,7 +116,7 @@ namespace Elysium
         {
             float min1 = std::numeric_limits<float>::max();
             float max1 = -std::numeric_limits<float>::max();
-            if (body1.Model== ModelType::CIRCLE)
+            if (body1.Model== Collider::CIRCLE)
             {
                 Vector2 circleVertex = normal * body1.Size.x * 0.5f;
                 min1 = dot(body1.Position - (circleVertex), normal);
@@ -134,7 +134,7 @@ namespace Elysium
 
             float min2 = std::numeric_limits<float>::max();
             float max2 = -std::numeric_limits<float>::max();
-            if (body2.Model == ModelType::CIRCLE)
+            if (body2.Model == Collider::CIRCLE)
             {
                 Vector2 circleVertex = normal * body2.Size.x * 0.5f;
                 min2 = dot(body2.Position - (circleVertex), normal);
@@ -264,11 +264,11 @@ namespace Elysium
                     {
                         switch (m_Bodies[i].Model)
                         {
-                        case ModelType::CIRCLE:
+                        case Collider::CIRCLE:
                             m_Bodies[i].AngularVelocity = Math::cross(m_Bodies[i].Normal, m_Bodies[i].Velocity) / m_Bodies[i].Inertia;
                             m_Bodies[i].Rotation += m_Bodies[i].AngularVelocity * (float)ts;
                             break;
-                        case ModelType::QUAD:
+                        case Collider::QUAD:
                         {
                         }
                             break;

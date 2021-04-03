@@ -235,10 +235,10 @@ xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\*.lib" "$(Solution
     <ClCompile Include="src\Elysium\Physics\PhysicsSystem2D.cpp" />
     <ClCompile Include="src\Elysium\Random.cpp" />
     <ClCompile Include="src\Elysium\Renderer\Camera.cpp" />
-    <ClCompile Include="src\Elysium\Renderer\Renderer2D.cpp" />
+    <ClCompile Include="src\Elysium\Renderer\Renderer.cpp" />
     <ClCompile Include="src\Elysium\Renderer\Shader.cpp" />
     <ClCompile Include="src\Elysium\Renderer\IndexBuffer.cpp" />
-    <ClCompile Include="src\Elysium\Renderer\Renderer.cpp" />
+    <ClCompile Include="src\Elysium\Renderer\RendererUtility.cpp" />
     <ClCompile Include="src\Elysium\Scene.cpp" />
     <ClCompile Include="src\Elysium\Timer.cpp" />
     <ClCompile Include="src\Elysium\Window.cpp" />
@@ -428,10 +428,10 @@ xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\*.lib" "$(Solution
     <ClInclude Include="src\Elysium\Math.h" />
     <ClInclude Include="src\Elysium\Renderer\Camera.h" />
     <ClInclude Include="src\Elysium\MouseCodes.h" />
-    <ClInclude Include="src\Elysium\Renderer\Renderer2D.h" />
+    <ClInclude Include="src\Elysium\Renderer\Renderer.h" />
     <ClInclude Include="src\Elysium\Renderer\Shader.h" />
     <ClInclude Include="src\Elysium\Renderer\IndexBuffer.h" />
-    <ClInclude Include="src\Elysium\Renderer\Renderer.h" />
+    <ClInclude Include="src\Elysium\Renderer\RendererUtility.h" />
     <ClInclude Include="src\Elysium\Scene.h" />
     <ClInclude Include="src\Elysium\Timer.h" />
     <ClInclude Include="src\Elysium\Window.h" />

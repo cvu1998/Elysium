@@ -144,29 +144,29 @@ void RLTTTScene::onUpdate(Elysium::Timestep ts)
 
     e_PhysicsSystem2D.onUpdate(ts);
 
-    Elysium::Renderer2D::beginScene(m_Camera);
+    Elysium::Renderer::beginScene(m_Camera);
     float position = 3.0f;
     float size = 18.0f;
     float pos = 6.0f;
-    Elysium::Renderer2D::drawQuad({ 0.0f, position }, { size, 2.0f }, { 0.0f, 0.0f, 1.0f, 1.0f });
-    Elysium::Renderer2D::drawQuad({ 0.0f, -position }, { size, 2.0f }, { 0.0f, 0.0f, 1.0f, 1.0f });
-    Elysium::Renderer2D::drawQuad({ position, 0.0f }, { 2.0f, size }, { 0.0f, 0.0f, 1.0f, 1.0f });
-    Elysium::Renderer2D::drawQuad({ -position, 0.0f }, { 2.0f, size }, { 0.0f, 0.0f, 1.0f, 1.0f });
+    Elysium::Renderer::drawQuad({ 0.0f, position }, { size, 2.0f }, { 0.0f, 0.0f, 1.0f, 1.0f });
+    Elysium::Renderer::drawQuad({ 0.0f, -position }, { size, 2.0f }, { 0.0f, 0.0f, 1.0f, 1.0f });
+    Elysium::Renderer::drawQuad({ position, 0.0f }, { 2.0f, size }, { 0.0f, 0.0f, 1.0f, 1.0f });
+    Elysium::Renderer::drawQuad({ -position, 0.0f }, { 2.0f, size }, { 0.0f, 0.0f, 1.0f, 1.0f });
 
     for (size_t i = 0; i < m_CoinIndex; i++)
     {
-        Elysium::Renderer2D::drawQuad(m_Coins[i], { 2.0f, 2.0f }, m_CoinTextures[m_CoinsTextureIndexes[i] - 1]);
+        Elysium::Renderer::drawQuad(m_Coins[i], { 2.0f, 2.0f }, m_CoinTextures[m_CoinsTextureIndexes[i] - 1]);
     }
-    Elysium::Renderer2D::endScene();
+    Elysium::Renderer::endScene();
 
     ImGui::Begin("Tic-Tac-Toe");
     ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-    ImGui::Text("Number of Draw Calls: %d", Elysium::Renderer2D::getStats().DrawCount);
-    ImGui::Text("Number of Quads: %d", Elysium::Renderer2D::getStats().QuadCount);
+    ImGui::Text("Number of Draw Calls: %d", Elysium::Renderer::getStats().DrawCount);
+    ImGui::Text("Number of Quads: %d", Elysium::Renderer::getStats().QuadCount);
     ImGui::Text("Red: %d : Blue %d, Draws: %d", m_RedScore, m_BlueScore, m_DrawCount);
     ImGui::End();
 
-    Elysium::Renderer2D::resetStats();
+    Elysium::Renderer::resetStats();
 }
 
 void RLTTTScene::onEvent(Elysium::Event& event)

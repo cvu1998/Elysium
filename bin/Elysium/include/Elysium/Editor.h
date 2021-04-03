@@ -9,7 +9,7 @@
 #include "Timestep.h"
 
 #include "Renderer/Framebuffer.h"
-#include "Renderer/Renderer2D.h"
+#include "Renderer/Renderer.h"
 
 namespace Elysium 
 {

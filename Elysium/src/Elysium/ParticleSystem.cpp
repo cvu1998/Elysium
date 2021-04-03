@@ -83,7 +83,7 @@ namespace Elysium
 			particle.Rotation += particle.RotationSpeed * ts;
 		}
 
-		Renderer2D::beginScene(*m_Camera);
+		Renderer::beginScene(*m_Camera);
 		for (auto& particle : m_ParticlePool)
 		{
 			if (!particle.Active)
@@ -97,10 +97,10 @@ namespace Elysium
 			float size = glm::lerp(particle.SizeEnd, particle.SizeBegin, lifeRatio);
 
 			if (!particle.TextureData.isDefault())
-				Renderer2D::drawQuadWithRotation(particle.Position, { size, size }, glm::radians(particle.Rotation), particle.TextureData, color);
+				Renderer::drawQuadWithRotation(particle.Position, { size, size }, glm::radians(particle.Rotation), particle.TextureData, color);
 			else
-				Renderer2D::drawQuadWithRotation(particle.Position, { size, size }, glm::radians(particle.Rotation), color);
+				Renderer::drawQuadWithRotation(particle.Position, { size, size }, glm::radians(particle.Rotation), color);
 		}
-		Renderer2D::endScene();
+		Renderer::endScene();
 	}
 }

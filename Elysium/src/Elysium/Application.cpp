@@ -3,7 +3,7 @@
 #include <algorithm>
 
 #include "Elysium/Log.h"
-#include "Elysium/Renderer/Renderer2D.h"
+#include "Elysium/Renderer/Renderer.h"
 #include "Elysium/Timestep.h"
 
 #include <commdlg.h>
@@ -43,7 +43,7 @@ namespace Elysium
             ImGuiIO& io = ImGui::GetIO();
             io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
         }
-        Renderer2D::Init();
+        Renderer::Init();
 
         WSADATA wsaData;
         int res = WSAStartup(MAKEWORD(2, 2), &wsaData);
@@ -61,7 +61,7 @@ namespace Elysium
             ImGui_ImplGlfw_Shutdown();
             ImGui::DestroyContext();
         }
-        Renderer2D::Shutdown();
+        Renderer::Shutdown();
 
         WSACleanup();
     }
@@ -100,7 +100,7 @@ namespace Elysium
         }
         m_Minimized = false;
 
-        Renderer::setViewport(0, 0, event.getWidth(), event.getHeight());
+        RendererUtility::setViewport(0, 0, event.getWidth(), event.getHeight());
 
         return false;
     }
@@ -147,7 +147,7 @@ namespace Elysium
     {
         while (m_Running)
         {
-            Renderer::Clear({ m_ClearColor[0], m_ClearColor[1], m_ClearColor[2], m_ClearColor[3] });
+            RendererUtility::Clear({ m_ClearColor[0], m_ClearColor[1], m_ClearColor[2], m_ClearColor[3] });
 
             float time = (float)glfwGetTime();
             Timestep timestep = time - m_LastFrameTime;

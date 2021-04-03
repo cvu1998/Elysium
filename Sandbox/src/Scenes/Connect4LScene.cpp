@@ -13,10 +13,10 @@ m_SpriteSheet("res/texture/platformPack_tilesheet.png")
     m_CoinTextures[1].subtextureCoordinates({ 11, 5 }, { 128, 128 });
 
 
-    e_PhysicsSystem2D.createPhysicalBody(&m_Rectangles[8], Elysium::BodyType::STATIC, Elysium::ModelType::QUAD, "Rectangle", 0.0f, { 0.0f, -1.0f }, { 25.5f, 2.0f });
+    e_PhysicsSystem2D.createPhysicalBody(&m_Rectangles[8], Elysium::BodyType::STATIC, Elysium::Collider::QUAD, "Rectangle", 0.0f, { 0.0f, -1.0f }, { 25.5f, 2.0f });
 
     for (size_t i = 0; i < m_Rectangles.size() - 1; i++)
-        e_PhysicsSystem2D.createPhysicalBody(&m_Rectangles[i], Elysium::BodyType::STATIC, Elysium::ModelType::QUAD, "Rectangle", 0.0f, { (float)(-12.25f + 3.5f * i), 6.5f }, { 1.0f, 13.0f });
+        e_PhysicsSystem2D.createPhysicalBody(&m_Rectangles[i], Elysium::BodyType::STATIC, Elysium::Collider::QUAD, "Rectangle", 0.0f, { (float)(-12.25f + 3.5f * i), 6.5f }, { 1.0f, 13.0f });
 
     m_Camera.setPosition({ 0.0f, 5.0f, 0.0f });
 }
@@ -41,10 +41,10 @@ void Connect4Scene::onUpdate(Elysium::Timestep ts)
 
             m_Grid.clear();
 
-            e_PhysicsSystem2D.createPhysicalBody(&m_Rectangles[8], Elysium::BodyType::STATIC, Elysium::ModelType::QUAD, "Rectangle", 0.0f, { 0.0f, -1.0f }, { 25.5f, 2.0f });
+            e_PhysicsSystem2D.createPhysicalBody(&m_Rectangles[8], Elysium::BodyType::STATIC, Elysium::Collider::QUAD, "Rectangle", 0.0f, { 0.0f, -1.0f }, { 25.5f, 2.0f });
 
             for (size_t i = 0; i < m_Rectangles.size() - 1; i++)
-                e_PhysicsSystem2D.createPhysicalBody(&m_Rectangles[i], Elysium::BodyType::STATIC, Elysium::ModelType::QUAD, "Rectangle", 0.0f, { (float)(-12.25f + 3.5f * i), 6.5f }, { 1.0f, 13.0f });
+                e_PhysicsSystem2D.createPhysicalBody(&m_Rectangles[i], Elysium::BodyType::STATIC, Elysium::Collider::QUAD, "Rectangle", 0.0f, { (float)(-12.25f + 3.5f * i), 6.5f }, { 1.0f, 13.0f });
         }
     }
 
@@ -53,27 +53,27 @@ void Connect4Scene::onUpdate(Elysium::Timestep ts)
 
     e_PhysicsSystem2D.onUpdate(ts);
 
-    Elysium::Renderer2D::beginScene(m_Camera);
+    Elysium::Renderer::beginScene(m_Camera);
     for (Elysium::BodyHandle& body : m_Rectangles)
     {
         const Elysium::PhysicalBody2D& rectangle = e_PhysicsSystem2D.readPhysicalBody(body);
-        Elysium::Renderer2D::drawQuad(rectangle.Position, rectangle.getSize(), { 0.0f, 0.0f, 1.0f, 1.0f });
+        Elysium::Renderer::drawQuad(rectangle.Position, rectangle.getSize(), { 0.0f, 0.0f, 1.0f, 1.0f });
     }
     for (size_t i = 0; i < m_CoinIndex; i++)
     {
-        Elysium::Renderer2D::drawQuad(m_Coins[i].first->Position, m_Coins[i].first->getSize(), m_CoinTextures[m_Coins[i].second - 1]);
+        Elysium::Renderer::drawQuad(m_Coins[i].first->Position, m_Coins[i].first->getSize(), m_CoinTextures[m_Coins[i].second - 1]);
     }
-    Elysium::Renderer2D::endScene();
+    Elysium::Renderer::endScene();
 
     ImGui::Begin("Statistics");
     ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-    ImGui::Text("Number of Draw Calls: %d", Elysium::Renderer2D::getStats().DrawCount);
-    ImGui::Text("Number of Quads: %d", Elysium::Renderer2D::getStats().QuadCount);
+    ImGui::Text("Number of Draw Calls: %d", Elysium::Renderer::getStats().DrawCount);
+    ImGui::Text("Number of Quads: %d", Elysium::Renderer::getStats().QuadCount);
     ImGui::Text("Red: %d : Blue %d", m_RedScore, m_BlueScore);
     ImGui::Checkbox("Restart", &m_Restart);
     ImGui::End();
 
-    Elysium::Renderer2D::resetStats();
+    Elysium::Renderer::resetStats();
 }
 
 void Connect4Scene::onEvent(Elysium::Event& event)
@@ -139,7 +139,7 @@ bool Connect4Scene::onMousePressedEvent(Elysium::MouseButtonPressedEvent& event)
 
             if (m_Grid.isValid(column))
             {
-                m_Coins[m_CoinIndex].first = e_PhysicsSystem2D.createPhysicalBody(Elysium::BodyType::DYNAMIC, Elysium::ModelType::CIRCLE,
+                m_Coins[m_CoinIndex].first = e_PhysicsSystem2D.createPhysicalBody(Elysium::BodyType::DYNAMIC, Elysium::Collider::CIRCLE,
                     "Coin", 1.0f, 
                     { xposition, 15.0f }, { 2.0f, 2.0f });
                 m_Coins[m_CoinIndex++].second = m_Turn;
