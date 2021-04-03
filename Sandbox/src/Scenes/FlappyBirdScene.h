@@ -2,32 +2,37 @@
 
 #include "Game/FlappyBird.h"
 
-static constexpr size_t FeatureSize = 20;
+static constexpr size_t FeatureVectorSize = 23;
 
-class FlappyBirdAgent : public Elysium::LinearRLAgent<FeatureSize>
+class FlappyBirdAgent : public Elysium::LinearRLAgent<FeatureVectorSize>
 {
 private:
-    float m_ExploreProbability = 0.05f;
+    float m_ExplorationProbability = 0.01f;
 
 public:
     unsigned int Action = 0;
     bool NewEpisode = true;
+    bool StopTraining = false;
     bool TrainAgent = true;
 
-    Elysium::BinaryFeatureVector<FeatureSize> CurrentFeatureVector;
-    Elysium::BinaryFeatureVector<FeatureSize> NextFeatureVector;
-    std::array<std::string, FeatureSize> FeatureNotes;
+    bool isExploring = true;
+
+    Elysium::BinaryFeatureVector<FeatureVectorSize> CurrentFeatureVector;
+    Elysium::BinaryFeatureVector<FeatureVectorSize> NextFeatureVector;
+    std::array<std::string, FeatureVectorSize> FeatureNotes;
 
 public:
-    FlappyBirdAgent() : Elysium::LinearRLAgent<FeatureSize>(0.01f, 0.1f, 0.0f)
+    FlappyBirdAgent() : Elysium::LinearRLAgent<FeatureVectorSize>(0.1f, 0.9f, 2.0f)
     {
         readWeightVectorFromFile("res/AI/FlappyBirdWeightVector.rl");
     }
 
+    inline float getExplorationProbability() const { return m_ExplorationProbability; }
+
     void getStateActionFeatures(const Elysium::PhysicalBody2D* body,
         const Elysium::PhysicalBody2D* lowerPipe,
         const Elysium::PhysicalBody2D* upperPipe,
-        Elysium::Action action, Elysium::BinaryFeatureVector<FeatureSize>& stateActionFeatures)
+        Elysium::Action action, Elysium::BinaryFeatureVector<FeatureVectorSize>& stateActionFeatures)
     {
         float halfSizeLowerPipeY = lowerPipe->getSize().y * 0.5f;
         float halfSizeUpperPipeY = upperPipe->getSize().y * 0.5f;
@@ -35,28 +40,32 @@ public:
         bool isBelowGap = body->Position.y < lowerPipe->Position.y + halfSizeLowerPipeY;
         bool isAboveGap = body->Position.y > upperPipe->Position.y - halfSizeUpperPipeY;
 
+        bool AboveMiddle = body->Position.y > lowerPipe->Position.y + halfSizeLowerPipeY + 2.0f;
+
         bool isBodyInPartion1 = body->Position.y <= lowerPipe->Position.y + halfSizeLowerPipeY + 0.5f &&
             body->Position.y > lowerPipe->Position.y + halfSizeLowerPipeY;
-        bool isBodyInPartion2 = body->Position.y <= lowerPipe->Position.y + halfSizeLowerPipeY + 1.0f &&
+        bool isBodyInPartion2 = body->Position.y <= lowerPipe->Position.y + halfSizeLowerPipeY + 0.75f &&
             body->Position.y > lowerPipe->Position.y + halfSizeLowerPipeY + 0.5f;
-        bool isBodyInPartion3 = body->Position.y <= lowerPipe->Position.y + halfSizeLowerPipeY + 1.5f &&
+        bool isBodyInPartion3 = body->Position.y <= lowerPipe->Position.y + halfSizeLowerPipeY + 1.0f &&
+            body->Position.y > lowerPipe->Position.y + halfSizeLowerPipeY + 0.75f;
+        bool isBodyInPartion4 = body->Position.y <= lowerPipe->Position.y + halfSizeLowerPipeY + 1.5f &&
             body->Position.y > lowerPipe->Position.y + halfSizeLowerPipeY + 1.0f;
-        bool isBodyInPartion4 = body->Position.y <= lowerPipe->Position.y + halfSizeLowerPipeY + 2.0f &&
+        bool isBodyInPartion5 = body->Position.y <= lowerPipe->Position.y + halfSizeLowerPipeY + 2.0f &&
             body->Position.y > lowerPipe->Position.y + halfSizeLowerPipeY + 1.5f;
-        bool isBodyInPartion5 = body->Position.y <= lowerPipe->Position.y + halfSizeLowerPipeY + 2.5f &&
+        bool isBodyInPartion6 = body->Position.y <= lowerPipe->Position.y + halfSizeLowerPipeY + 2.5f &&
             body->Position.y > lowerPipe->Position.y + halfSizeLowerPipeY + 2.0f;
-        bool isBodyInPartion6 = body->Position.y <= lowerPipe->Position.y + halfSizeLowerPipeY + 3.0f &&
+        bool isBodyInPartion7 = body->Position.y <= lowerPipe->Position.y + halfSizeLowerPipeY + 3.0f &&
             body->Position.y > lowerPipe->Position.y + halfSizeLowerPipeY + 2.5f;
-        bool isBodyInPartion7 = body->Position.y <= lowerPipe->Position.y + halfSizeLowerPipeY + 3.5f &&
+        bool isBodyInPartion8 = body->Position.y <= lowerPipe->Position.y + halfSizeLowerPipeY + 3.5f &&
             body->Position.y > lowerPipe->Position.y + halfSizeLowerPipeY + 3.0f;
-        bool isBodyInPartion8 = body->Position.y <= lowerPipe->Position.y + halfSizeLowerPipeY + 4.0f &&
+        bool isBodyInPartion9 = body->Position.y <= lowerPipe->Position.y + halfSizeLowerPipeY + 4.0f &&
             body->Position.y > lowerPipe->Position.y + halfSizeLowerPipeY + 3.5f;
 
         bool isBodyAbovePartion8 = body->Position.y > lowerPipe->Position.y + halfSizeLowerPipeY + 4.0f;
         bool isBodyBelowPartion1 = body->Position.y < lowerPipe->Position.y + halfSizeLowerPipeY + 0.5f;
 
-        stateActionFeatures.Array = 
-        { 
+        stateActionFeatures.Array =
+        {
             action == 0 && isBodyInPartion1,
             action == 1 && isBodyInPartion1,
             action == 0 && isBodyInPartion2,
@@ -73,11 +82,14 @@ public:
             action == 1 && isBodyInPartion7,
             action == 0 && isBodyInPartion8,
             action == 1 && isBodyInPartion8,
+            action == 0 && isBodyInPartion9,
+            action == 1 && isBodyInPartion9,
 
             action == 0 && isAboveGap,
             action == 1 && isAboveGap,
+            action == 1 && AboveMiddle,
             action == 0 && isBelowGap,
-            action == 1 && isBelowGap,
+            action == 1 && isBelowGap
         };
 
         FeatureNotes =
@@ -98,10 +110,13 @@ public:
             "Inside Partition 7 with Action 1",
             "Inside Partition 8 with Action 0",
             "Inside Partition 8 with Action 1",
+            "Inside Partition 9 with Action 0",
+            "Inside Partition 9 with Action 1",
             "Above Gap with Action 0",
             "Above Gap with Action 1",
+            "Above Middle With Action 1",
             "Below Gap with Action 0",
-            "Below Gap with Action 1",
+            "Below Gap with Action 1"
         };
     }
 
@@ -170,7 +185,7 @@ private:
     
     void updateEnvironment(Elysium::Timestep ts);
 
-    void chooseActionForAgent(Elysium::BinaryFeatureVector<FeatureSize>& featureVector);
+    void chooseActionForAgent(Elysium::BinaryFeatureVector<FeatureVectorSize>& featureVector);
 
 public:
     FlappyBirdScene(unsigned int width, unsigned int height);

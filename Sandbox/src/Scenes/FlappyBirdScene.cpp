@@ -119,7 +119,7 @@ void FlappyBirdScene::generateRandomPipe(float xposition)
 
 void FlappyBirdScene::updateEnvironment(Elysium::Timestep ts)
 {
-    if (m_Bird.PauseBird || m_Bird.Body->Position.y > 42.0f)
+    if (m_Bird.PauseBird)
     {
         if (m_Cooldown >= 0.0f)
         {
@@ -134,6 +134,8 @@ void FlappyBirdScene::updateEnvironment(Elysium::Timestep ts)
             {
                 m_Cooldown = 0.0f;
                 m_GameOver = false;
+
+                m_Agent.StopTraining = false;
 
                 m_Bird.Body->Position = m_InitialPosition;
                 m_Bird.PauseBird = false;
@@ -202,10 +204,10 @@ void FlappyBirdScene::updateEnvironment(Elysium::Timestep ts)
     }
 }
 
-void FlappyBirdScene::chooseActionForAgent(Elysium::BinaryFeatureVector<FeatureSize>& featureVector)
+void FlappyBirdScene::chooseActionForAgent(Elysium::BinaryFeatureVector<FeatureVectorSize>& featureVector)
 {
-    Elysium::BinaryFeatureVector<FeatureSize> stayFeatures;
-    Elysium::BinaryFeatureVector<FeatureSize> jumpFeatures;
+    Elysium::BinaryFeatureVector<FeatureVectorSize> stayFeatures;
+    Elysium::BinaryFeatureVector<FeatureVectorSize> jumpFeatures;
     m_Agent.getStateActionFeatures(m_Bird.Body, m_LowerPipe, m_UpperPipe, 0, stayFeatures);
     m_Agent.getStateActionFeatures(m_Bird.Body, m_LowerPipe, m_UpperPipe, 1, jumpFeatures);
 
@@ -219,76 +221,96 @@ void FlappyBirdScene::chooseActionForAgent(Elysium::BinaryFeatureVector<FeatureS
         break;
     case 1:
         featureVector = jumpFeatures;
-        m_Bird.Body->Velocity.y = 10.0f;
         break;
     }
 }
 
 void FlappyBirdScene::onUpdate(Elysium::Timestep ts)
 {
-    if (!m_PauseScene || m_Bird.Body->Position.y >= m_Ceiling->Position.y)
+    if (!m_PauseScene)
     {
-        if (m_Bird.UseRLAgent && m_Agent.NewEpisode && !m_GameOver)
-        {
-            m_Agent.saveWeightVectorToFile("res/AI/FlappyBirdWeightVector.rl");
-
-            m_Agent.NewEpisode = false;
-            chooseActionForAgent(m_Agent.CurrentFeatureVector);
-        }
         updateEnvironment(ts);
-
-        if (m_Bird.UseRLAgent && !m_Agent.NewEpisode)
+        //--- Episodic Semi-gradient Sarsa ---//
+        if (m_Bird.UseRLAgent && !m_Agent.StopTraining)
         {
-            chooseActionForAgent(m_Agent.NextFeatureVector);
-
-            switch (m_Agent.Action)
-            {
-            case 0:
-                break;
-            case 1:
+            if (m_Agent.Action == 1)
                 m_Bird.Body->Velocity.y = 10.0f;
-                break;
-            }
 
-            m_Agent.NewEpisode = m_GameOver;
-            bool isInGap = m_Bird.Body->Position.y > m_LowerPipe->Position.y + m_LowerPipe->getSize().y * 0.5f &&
-                m_Bird.Body->Position.y < m_UpperPipe->Position.y + m_UpperPipe->getSize().y * 0.5f && 
-                m_Bird.Body->Position.x > m_LowerPipe->Position.x - m_LowerPipe->getSize().x * 0.5f &&
-                m_Bird.Body->Position.x < m_LowerPipe->Position.x + m_LowerPipe->getSize().x * 0.5f;
-
-            float reward = m_GameOver ? -100.0f : 0.1f;
-
-            if (m_Agent.TrainAgent && !(m_Agent.CurrentFeatureVector == m_Agent.NextFeatureVector))
+            if (m_Agent.NewEpisode)
             {
-#ifdef _DEBUG
-                ELY_INFO("Reward: {0}", reward);
-                ELY_INFO("Next Features ---[");
-                for (size_t i = 0; i < m_Agent.NextFeatureVector.Array.size(); i++)
-                {
-                    if (m_Agent.NextFeatureVector.Array[i])
-                        ELY_INFO("{0}: {1}", m_Agent.FeatureNotes[i], m_Agent.NextFeatureVector[i]);
-                }
-                ELY_INFO("---]");
-#endif
-
-                m_Agent.updateWeightVectorSarsa(m_Agent.CurrentFeatureVector, m_Agent.NextFeatureVector, { reward, m_GameOver });
-                m_Agent.CurrentFeatureVector = m_Agent.NextFeatureVector;
+                m_Agent.saveWeightVectorToFile("res/AI/FlappyBirdWeightVector.rl");
+                chooseActionForAgent(m_Agent.CurrentFeatureVector);
+                m_Agent.NewEpisode = false;
             }
-            else if (m_GameOver)
+            else
             {
-                m_Agent.updateWeightVectorSarsa(m_Agent.CurrentFeatureVector, Elysium::BinaryFeatureVector<FeatureSize>(), { reward, m_GameOver });
-                ELY_INFO("Reward: {0}", reward);
-                ELY_INFO("Current Features ---[");
-                for (size_t i = 0; i < m_Agent.CurrentFeatureVector.Array.size(); i++)
+                bool isInGap = m_Bird.Body->Position.y > m_LowerPipe->Position.y + m_LowerPipe->getSize().y * 0.5f &&
+                    m_Bird.Body->Position.y < m_UpperPipe->Position.y + m_UpperPipe->getSize().y * 0.5f &&
+                    m_Bird.Body->Position.x < m_UpperPipe->Position.x + m_UpperPipe->getSize().x * 0.5f &&
+                    m_Bird.Body->Position.x > m_UpperPipe->Position.x - m_UpperPipe->getSize().x * 0.5f;
+
+                float reward = isInGap ? 1.0f : 0.0f;
+                reward = m_GameOver ? -10.0f : reward;
+
+                if (m_GameOver)
                 {
-                    if (m_Agent.CurrentFeatureVector[i])
-                        ELY_INFO("{0}: {1}", m_Agent.FeatureNotes[i], m_Agent.CurrentFeatureVector[i]);
+                    if (m_Agent.TrainAgent)
+                        m_Agent.updateWeightVectorSarsa(m_Agent.CurrentFeatureVector, m_Agent.NextFeatureVector, { reward, m_GameOver });
+
+                    #ifdef _DEBUG
+                    ELY_INFO("Reward: {0}", reward);
+                    ELY_INFO("Current Features ---[");
+                    for (size_t i = 0; i < m_Agent.CurrentFeatureVector.Array.size(); i++)
+                    {
+                        if (m_Agent.CurrentFeatureVector[i])
+                            ELY_INFO("{0}: {1}", m_Agent.FeatureNotes[i], m_Agent.CurrentFeatureVector[i]);
+                    }
+                    ELY_INFO("---]");
+                    m_Agent.printWeightVector();
+                    #endif
+
+                    m_Agent.NewEpisode = true;
+                    m_Agent.StopTraining = true;
                 }
-                ELY_INFO("---]");
-                m_Agent.printWeightVector();
+                else
+                {
+                    chooseActionForAgent(m_Agent.NextFeatureVector);
+
+                    if (!(m_Agent.CurrentFeatureVector == m_Agent.NextFeatureVector))
+                    {
+                        if (Elysium::Random::Float() < m_Agent.getExplorationProbability() && m_Agent.isExploring)
+                        {
+                            m_Agent.Action = (size_t)((bool)!m_Agent.Action);
+                            m_Agent.getStateActionFeatures(m_Bird.Body, m_LowerPipe, m_UpperPipe, m_Agent.Action, m_Agent.NextFeatureVector);
+                        }
+                        if (m_Agent.TrainAgent)
+                            m_Agent.updateWeightVectorSarsa(m_Agent.CurrentFeatureVector, m_Agent.NextFeatureVector, { reward, m_GameOver });
+
+                        #ifdef _DEBUG
+                        ELY_INFO("Reward: {0}", reward);
+                        ELY_INFO("Current Features ---[");
+                        for (size_t i = 0; i < m_Agent.CurrentFeatureVector.Array.size(); i++)
+                        {
+                            if (m_Agent.CurrentFeatureVector[i])
+                                ELY_INFO("{0}: {1}", m_Agent.FeatureNotes[i], m_Agent.CurrentFeatureVector[i]);
+                        }
+                        ELY_INFO("Next Features ---[");
+                        for (size_t i = 0; i < m_Agent.NextFeatureVector.Array.size(); i++)
+                        {
+                            if (m_Agent.NextFeatureVector.Array[i])
+                                ELY_INFO("{0}: {1}", m_Agent.FeatureNotes[i], m_Agent.NextFeatureVector[i]);
+                        }
+                        ELY_INFO("---]");
+                        #endif
+
+                        m_Agent.CurrentFeatureVector = m_Agent.NextFeatureVector;
+                    }
+                }
             }
         }
+        //--- Episodic Semi-gradient Sarsa ---//
     }
+
 
     Elysium::PhysicalBody2D* pipe = e_PhysicsSystem2D.getPhysicalBody(m_LowerPipes.front());
     while(pipe->Position.x < m_Bird.Body->Position.x - 50.0f)
@@ -354,6 +376,7 @@ void FlappyBirdScene::onUpdate(Elysium::Timestep ts)
     ImGui::Checkbox("Pause Scene", &m_PauseScene);
     ImGui::Checkbox("Flappy Bird Agent", &m_Bird.UseRLAgent);
     ImGui::Checkbox("Train Flappy Bird Agent", &m_Agent.TrainAgent);
+    ImGui::Checkbox("Keep Exploring", &m_Agent.isExploring);
     ImGui::Text("Score: %d", m_Score);
     if (m_Score > m_BestScore)
         m_BestScore = m_Score;

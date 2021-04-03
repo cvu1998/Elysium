@@ -13,11 +13,19 @@ namespace Elysium
     protected:
         std::array<float, N> WeightVector;
 
+        unsigned int Step = 1;
+        size_t Pivot = 0;
+        std::vector<float> Visits;
+
     public:
-        LinearRLAgent(float learningRate, float discountFactor, float defaultValue) :
-            RLAgent(learningRate, discountFactor, defaultValue)
+        LinearRLAgent(float learningRate, float discountFactor, float defaultValue, unsigned int step = 1) :
+            RLAgent(learningRate, discountFactor, defaultValue),
+            Step(step)
+
         {
             WeightVector.fill(defaultValue);
+
+            Visits.reserve(step);
         }
 
         float getValue(const BinaryFeatureVector<N>& currentFeatureVector)
@@ -34,22 +42,11 @@ namespace Elysium
         void updateWeightVectorSarsa(const BinaryFeatureVector<N>& currentFeatureVector, const BinaryFeatureVector<N>& nextFeaturesVector,
             const State& nextState)
         {
-            float currentValue = 0.0f;
-            #pragma omp simd
-            for (size_t i = 0; i < N; i++)
-            {
-                currentValue += WeightVector[i] * (float)currentFeatureVector[i];
-            }
+            float currentValue = getValue(currentFeatureVector);
 
             float nextValue = 0.0f;
             if (!nextState.isTerminal())
-            {
-                #pragma omp simd
-                for (size_t i = 0; i < N; i++)
-                {
-                    nextValue += WeightVector[i] * (float)nextFeaturesVector[i];
-                }
-            }
+                nextValue = getValue(nextFeaturesVector);
 
             #pragma omp simd
             for (size_t i = 0; i < N; i++)
