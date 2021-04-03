@@ -83,7 +83,7 @@ void PerformanceScene::onUpdate(Elysium::Timestep ts)
     m_SpawnTime += ts;
     if (m_Index < m_Boxes.size() && m_SpawnTime > 0.05f)
     {
-        float x = (Random::Float() * 200.0f) - 100.0f;
+        float x = (Elysium::Random::Float() * 200.0f) - 100.0f;
         Elysium::Vector2 position = { x, 20.0f };
         e_PhysicsSystem2D.createPhysicalBody(&m_Boxes[m_Index], Elysium::BodyType::DYNAMIC, Elysium::ModelType::QUAD, "Box", 5.0f, position, { 2.0f, 2.0f });
 

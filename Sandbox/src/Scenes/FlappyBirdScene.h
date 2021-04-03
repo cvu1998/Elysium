@@ -2,88 +2,115 @@
 
 #include "Game/FlappyBird.h"
 
-static constexpr size_t FeatureSize = 14;
+static constexpr size_t FeatureSize = 20;
 
 class FlappyBirdAgent : public Elysium::LinearRLAgent<FeatureSize>
 {
+private:
+    float m_ExploreProbability = 0.05f;
+
 public:
     unsigned int Action = 0;
     bool NewEpisode = true;
     bool TrainAgent = true;
 
     Elysium::BinaryFeatureVector<FeatureSize> CurrentFeatureVector;
+    Elysium::BinaryFeatureVector<FeatureSize> NextFeatureVector;
     std::array<std::string, FeatureSize> FeatureNotes;
 
 public:
-    FlappyBirdAgent() : Elysium::LinearRLAgent<FeatureSize>(5, 0.001f, 1.0f, 5.0f)
+    FlappyBirdAgent() : Elysium::LinearRLAgent<FeatureSize>(0.01f, 0.1f, 0.0f)
     {
         readWeightVectorFromFile("res/AI/FlappyBirdWeightVector.rl");
     }
 
-    void getStateActionFeatures(const Elysium::PhysicalBody2D* body, 
-        const Elysium::PhysicalBody2D* lowerPipe, 
+    void getStateActionFeatures(const Elysium::PhysicalBody2D* body,
+        const Elysium::PhysicalBody2D* lowerPipe,
         const Elysium::PhysicalBody2D* upperPipe,
-        Elysium::Action action, std::array<float, FeatureSize>& stateActionFeatures)
+        Elysium::Action action, Elysium::BinaryFeatureVector<FeatureSize>& stateActionFeatures)
     {
         float halfSizeLowerPipeY = lowerPipe->getSize().y * 0.5f;
         float halfSizeUpperPipeY = upperPipe->getSize().y * 0.5f;
 
-        bool isBodyInPartion1 = body->Position.y <= lowerPipe->Position.y + halfSizeLowerPipeY + 1.0f;
-        bool isBodyInPartion2 = body->Position.y <= lowerPipe->Position.y + halfSizeLowerPipeY + 2.0f && !isBodyInPartion1;
-        bool isBodyInPartion3 = body->Position.y <= lowerPipe->Position.y + halfSizeLowerPipeY + 3.0f && !isBodyInPartion2;
-        bool isBodyInPartion4 = body->Position.y <= lowerPipe->Position.y + halfSizeLowerPipeY + 4.0f && !isBodyInPartion3;
-        bool isBodyInPartion5 = body->Position.y <= lowerPipe->Position.y + halfSizeLowerPipeY + 5.0f && !isBodyInPartion4;
+        bool isBelowGap = body->Position.y < lowerPipe->Position.y + halfSizeLowerPipeY;
+        bool isAboveGap = body->Position.y > upperPipe->Position.y - halfSizeUpperPipeY;
 
-        bool isBelowGap = body->Position.y <= lowerPipe->Position.y + halfSizeLowerPipeY;
-        bool isAboveGap = body->Position.y >= upperPipe->Position.y - halfSizeUpperPipeY;
+        bool isBodyInPartion1 = body->Position.y <= lowerPipe->Position.y + halfSizeLowerPipeY + 0.5f &&
+            body->Position.y > lowerPipe->Position.y + halfSizeLowerPipeY;
+        bool isBodyInPartion2 = body->Position.y <= lowerPipe->Position.y + halfSizeLowerPipeY + 1.0f &&
+            body->Position.y > lowerPipe->Position.y + halfSizeLowerPipeY + 0.5f;
+        bool isBodyInPartion3 = body->Position.y <= lowerPipe->Position.y + halfSizeLowerPipeY + 1.5f &&
+            body->Position.y > lowerPipe->Position.y + halfSizeLowerPipeY + 1.0f;
+        bool isBodyInPartion4 = body->Position.y <= lowerPipe->Position.y + halfSizeLowerPipeY + 2.0f &&
+            body->Position.y > lowerPipe->Position.y + halfSizeLowerPipeY + 1.5f;
+        bool isBodyInPartion5 = body->Position.y <= lowerPipe->Position.y + halfSizeLowerPipeY + 2.5f &&
+            body->Position.y > lowerPipe->Position.y + halfSizeLowerPipeY + 2.0f;
+        bool isBodyInPartion6 = body->Position.y <= lowerPipe->Position.y + halfSizeLowerPipeY + 3.0f &&
+            body->Position.y > lowerPipe->Position.y + halfSizeLowerPipeY + 2.5f;
+        bool isBodyInPartion7 = body->Position.y <= lowerPipe->Position.y + halfSizeLowerPipeY + 3.5f &&
+            body->Position.y > lowerPipe->Position.y + halfSizeLowerPipeY + 3.0f;
+        bool isBodyInPartion8 = body->Position.y <= lowerPipe->Position.y + halfSizeLowerPipeY + 4.0f &&
+            body->Position.y > lowerPipe->Position.y + halfSizeLowerPipeY + 3.5f;
 
-        size_t index = 0;
-        stateActionFeatures[index++] = action == 0 && isBodyInPartion1 ? 1.0f : 0.0f;
-        stateActionFeatures[index++] = action == 1 && isBodyInPartion1 ? 1.0f : 0.0f;
-        stateActionFeatures[index++] = action == 0 && isBodyInPartion2 ? 1.0f : 0.0f;
-        stateActionFeatures[index++] = action == 1 && isBodyInPartion2 ? 1.0f : 0.0f;
-        stateActionFeatures[index++] = action == 0 && isBodyInPartion3 ? 1.0f : 0.0f;
-        stateActionFeatures[index++] = action == 1 && isBodyInPartion3 ? 1.0f : 0.0f;
-        stateActionFeatures[index++] = action == 0 && isBodyInPartion4 ? 1.0f : 0.0f;
-        stateActionFeatures[index++] = action == 1 && isBodyInPartion4 ? 1.0f : 0.0f;
-        stateActionFeatures[index++] = action == 0 && isBodyInPartion5 ? 1.0f : 0.0f;
-        stateActionFeatures[index++] = action == 1 && isBodyInPartion5 ? 1.0f : 0.0f;
+        bool isBodyAbovePartion8 = body->Position.y > lowerPipe->Position.y + halfSizeLowerPipeY + 4.0f;
+        bool isBodyBelowPartion1 = body->Position.y < lowerPipe->Position.y + halfSizeLowerPipeY + 0.5f;
 
-        stateActionFeatures[index++] = action == 0 && isAboveGap ? 1.0f : 0.0f;
-        stateActionFeatures[index++] = action == 1 && isAboveGap ? 1.0f : 0.0f;
-        stateActionFeatures[index++] = action == 0 && isBelowGap ? 1.0f : 0.0f;
-        stateActionFeatures[index++] = action == 1 && isBelowGap ? 1.0f : 0.0f;
+        stateActionFeatures.Array = 
+        { 
+            action == 0 && isBodyInPartion1,
+            action == 1 && isBodyInPartion1,
+            action == 0 && isBodyInPartion2,
+            action == 1 && isBodyInPartion2,
+            action == 0 && isBodyInPartion3,
+            action == 1 && isBodyInPartion3,
+            action == 0 && isBodyInPartion4,
+            action == 1 && isBodyInPartion4,
+            action == 0 && isBodyInPartion5,
+            action == 1 && isBodyInPartion5,
+            action == 0 && isBodyInPartion6,
+            action == 1 && isBodyInPartion6,
+            action == 0 && isBodyInPartion7,
+            action == 1 && isBodyInPartion7,
+            action == 0 && isBodyInPartion8,
+            action == 1 && isBodyInPartion8,
 
-        #ifdef _DEBUG
-        index = 0;
-        FeatureNotes[index++] = "Inside Gap 1 with Action 0";
-        FeatureNotes[index++] = "Inside Gap 1 with Action 1";
-        FeatureNotes[index++] = "Inside Gap 2 with Action 0";
-        FeatureNotes[index++] = "Inside Gap 2 with Action 1";
-        FeatureNotes[index++] = "Inside Gap 3 with Action 0";
-        FeatureNotes[index++] = "Inside Gap 3 with Action 1";
-        FeatureNotes[index++] = "Inside Gap 4 with Action 0";
-        FeatureNotes[index++] = "Inside Gap 4 with Action 1";
-        FeatureNotes[index++] = "Inside Gap 5 with Action 0";
-        FeatureNotes[index++] = "Inside Gap 5 with Action 1";
+            action == 0 && isAboveGap,
+            action == 1 && isAboveGap,
+            action == 0 && isBelowGap,
+            action == 1 && isBelowGap,
+        };
 
-        FeatureNotes[index++] = "Above Gap with Action 0";
-        FeatureNotes[index++] = "Above Gap with Action 1";
-        FeatureNotes[index++] = "Below Gap with Action 0";
-        FeatureNotes[index++] = "Below Gap with Action 1";
-        #endif
+        FeatureNotes =
+        {
+            "Inside Partition 1 with Action 0",
+            "Inside Partition 1 with Action 1",
+            "Inside Partition 2 with Action 0",
+            "Inside Partition 2 with Action 1",
+            "Inside Partition 3 with Action 0",
+            "Inside Partition 3 with Action 1",
+            "Inside Partition 4 with Action 0",
+            "Inside Partition 4 with Action 1",
+            "Inside Partition 5 with Action 0",
+            "Inside Partition 5 with Action 1",
+            "Inside Partition 6 with Action 0",
+            "Inside Partition 6 with Action 1",
+            "Inside Partition 7 with Action 0",
+            "Inside Partition 7 with Action 1",
+            "Inside Partition 8 with Action 0",
+            "Inside Partition 8 with Action 1",
+            "Above Gap with Action 0",
+            "Above Gap with Action 1",
+            "Below Gap with Action 0",
+            "Below Gap with Action 1",
+        };
     }
 
     void chooseAction(float stayValue, float jumpValue)
     {
         if (jumpValue > stayValue)
-        {
             Action = 1;
-        }
         else
-        {
             Action = 0;
-        }
     }
 
     void printWeightVector()

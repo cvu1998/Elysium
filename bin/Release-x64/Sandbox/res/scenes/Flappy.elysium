@@ -8,12 +8,12 @@ Scene
 -Quad
 --Tag=Ground
 --Position=0, 0
---Size=3000, 2
+--Size=3000, 6
 --Rotation=0
 --Color=1, 1, 1, 1
 -Quad
 --Tag=Ceiling
 --Position=0, 42
---Size=3000, 2
+--Size=3000, 6
 --Rotation=0
 --Color=1, 1, 1, 1

@@ -2,26 +2,29 @@
 
 #include <random>
 
-class Random
+namespace Elysium
 {
-private:
-	static std::mt19937 s_RandomEngine;
-	static std::uniform_int_distribution<std::mt19937::result_type> s_Distribution;
-
-public:
-	static void Init()
+	class Random
 	{
-		s_RandomEngine.seed(std::random_device()());
-	}
+	private:
+		static std::mt19937 s_RandomEngine;
+		static std::uniform_int_distribution<std::mt19937::result_type> s_Distribution;
 
-	static float Float()
-	{
-		return (float)s_Distribution(s_RandomEngine) / (float)std::numeric_limits<uint32_t>::max();
-	}
+	public:
+		static void Init()
+		{
+			s_RandomEngine.seed(std::random_device()());
+		}
 
-	static int Integer(int min, int max)
-	{
-		std::uniform_int_distribution<int> uni(min, max);
-		return uni(s_RandomEngine);
-	}
-};
+		static float Float()
+		{
+			return (float)s_Distribution(s_RandomEngine) / (float)std::numeric_limits<uint32_t>::max();
+		}
+
+		static int Integer(int min, int max)
+		{
+			std::uniform_int_distribution<int> uni(min, max);
+			return uni(s_RandomEngine);
+		}
+	};
+}

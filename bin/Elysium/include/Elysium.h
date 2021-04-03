@@ -43,5 +43,4 @@
 
 // ---AI---
 #include "Elysium/AI/LinearRLAgent.h"
-#include "Elysium/AI/TabularRLAgent.h"
 #include "Elysium/AI/State.h"

@@ -215,7 +215,7 @@ xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\*.lib" "$(Solution
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\Elysium\AI\TabularRLAgent.cpp" />
+    <ClCompile Include="src\Elysium\AI\State.cpp" />
     <ClCompile Include="src\Elysium\ImGuiUtility.cpp" />
     <ClCompile Include="src\Elysium\MathUtility.cpp" />
     <ClCompile Include="src\Elysium\Network\UDPClient.cpp" />
@@ -224,7 +224,6 @@ xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\*.lib" "$(Solution
     <ClCompile Include="src\Elysium\SceneManager.cpp" />
     <ClCompile Include="src\Elysium\Editor.cpp" />
     <ClCompile Include="src\Elysium\AI\RLAgent.cpp" />
-    <ClCompile Include="src\Elysium\AI\State.cpp" />
     <ClCompile Include="src\Elysium\Log.cpp" />
     <ClCompile Include="src\Elysium\Input.cpp" />
     <ClCompile Include="src\Elysium\LayerStack.cpp" />
@@ -397,7 +396,7 @@ xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\*.lib" "$(Solution
   <ItemGroup>
     <ClInclude Include="src\Elysium\AI\BinaryFeatureVector.h" />
     <ClInclude Include="src\Elysium\AI\LinearRLAgent.h" />
-    <ClInclude Include="src\Elysium\AI\TabularRLAgent.h" />
+    <ClInclude Include="src\Elysium\AI\State.h" />
     <ClInclude Include="src\Elysium\ImGuiUtility.h" />
     <ClInclude Include="src\Elysium\MathUtility.h" />
     <ClInclude Include="src\Elysium\Network\network_header.h" />
@@ -408,7 +407,6 @@ xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\*.lib" "$(Solution
     <ClInclude Include="src\Elysium\SceneManager.h" />
     <ClInclude Include="src\Elysium\Editor.h" />
     <ClInclude Include="src\Elysium\AI\RLAgent.h" />
-    <ClInclude Include="src\Elysium\AI\State.h" />
     <ClInclude Include="src\Elysium\Animation.h" />
     <ClInclude Include="src\Elysium\Log.h" />
     <ClInclude Include="src\Elysium\ArrayList.h" />

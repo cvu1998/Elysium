@@ -7,18 +7,17 @@ namespace Elysium
     class State
     {
     private:
-        std::string m_Code;
+        size_t m_Code;
         float m_Reward = 0.0f;
         bool m_Terminal = false;
 
     public:
-        State();
-        State(const std::string& code);
-        State(const std::string& code, float reward);
-        State(const std::string& code, float reward, bool terminal);
+        State(size_t code);
+        State(size_t code, float reward);
+        State(size_t code, float reward, bool terminal);
         State(float reward, bool terminal);
 
-        inline const char* getCode() const { return m_Code.c_str(); }
+        inline size_t getCode() const { return m_Code; }
         inline float getReward() const { return m_Reward; }
         inline bool isTerminal() const { return m_Terminal; }
 
@@ -26,7 +25,7 @@ namespace Elysium
 
     };
 
-    using Action = unsigned int;
+    using Action = size_t;
 
     struct State_Action_Pair
     {
@@ -42,7 +41,7 @@ namespace Elysium
 
         bool operator==(const State_Action_Pair& actionPair) const
         {
-            return ((0 == strcmp(this->State.getCode(), actionPair.State.getCode())) &&
+            return (this->State.getCode() == actionPair.State.getCode() &&
                 this->Action == actionPair.Action);
         }
     };
