@@ -13,7 +13,7 @@ namespace Elysium
 
     public:
         Layer(const char* name = "Layer");
-        virtual ~Layer();
+        virtual ~Layer() = default;
 
         virtual void onAttach() { }
         virtual void onDetach() { }

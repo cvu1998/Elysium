@@ -16,6 +16,8 @@ namespace Elysium
         size_t m_ArrayIndex = 0;
 
     public:
+        ArrayList() = default;
+
         ~ArrayList()
         {
             m_VectorIndex = 0;
@@ -25,6 +27,40 @@ namespace Elysium
                 delete[] m_ArrayList[i];
 
             m_ArrayList.clear();
+        }
+
+        ArrayList(const ArrayList<T>& other) : 
+            m_VectorIndex(other.m_VectorIndex),
+            m_ArrayIndex(other.m_VectorIndex)
+            m_ArrayList(other.m_ArrayList)
+        {
+        }
+
+        ArrayList(ArrayList<T>&& other) :
+            m_VectorIndex(other.m_VectorIndex),
+            m_ArrayIndex(other.m_VectorIndex),
+            m_ArrayList(std::move(other.m_ArrayList))
+        {
+        }
+
+        ArrayList<T>& operator=(const ArrayList<T>& other)
+        {
+            if (&other != this)
+            {
+                m_VectorIndex = other.m_VectorIndex;
+                m_ArrayIndex = other.m_VectorIndex;
+                m_ArrayList = other.m_ArrayList;
+            }
+        }
+
+        ArrayList<T>& operator=(ArrayList<T>&& other)
+        {
+            if (&other != this)
+            {
+                m_VectorIndex = other.m_VectorIndex;
+                m_ArrayIndex = other.m_VectorIndex;
+                m_ArrayList = std::move(other.m_ArrayList);
+            }
         }
 
         void push_back(const T& element)

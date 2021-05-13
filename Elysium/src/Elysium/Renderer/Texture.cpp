@@ -53,7 +53,7 @@ namespace Elysium
         GL_ASSERT(glBindTexture(GL_TEXTURE_2D, m_Data.m_RendererID));
 
         GL_ASSERT(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
-        GL_ASSERT(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
+        GL_ASSERT(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
         GL_ASSERT(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
         GL_ASSERT(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
 
@@ -61,7 +61,7 @@ namespace Elysium
         GL_ASSERT(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, &white));
     }
 
-    Texture::Texture(const char* filepath, GLenum wrapParams)
+    Texture::Texture(const char* filepath, GLenum wrapParams, GLenum filter)
         : m_FilePath(filepath), m_LocalBuffer(nullptr), m_BPP(0)
     {
         m_Data.m_Default = false;
@@ -72,12 +72,21 @@ namespace Elysium
         GL_ASSERT(glGenTextures(1, &m_Data.m_RendererID));
         GL_ASSERT(glBindTexture(GL_TEXTURE_2D, m_Data.m_RendererID));
 
-        GL_ASSERT(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
-        GL_ASSERT(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
+        GL_ASSERT(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter));
+        GL_ASSERT(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter));
         GL_ASSERT(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapParams));
         GL_ASSERT(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapParams));
 
         GL_ASSERT(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_Data.m_Width, m_Data.m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_LocalBuffer));
+
+        if (filter == GL_NEAREST_MIPMAP_NEAREST || filter == GL_LINEAR_MIPMAP_LINEAR)
+        {
+            glGenerateMipmap(GL_TEXTURE_2D);
+            GLfloat maxAnisotropy;
+            glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY, &maxAnisotropy);
+            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY, maxAnisotropy);
+        }
+
         GL_ASSERT(glBindTexture(GL_TEXTURE_2D, 0));
 
         if (m_LocalBuffer)

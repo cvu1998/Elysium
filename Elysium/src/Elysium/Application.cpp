@@ -14,13 +14,11 @@ namespace Elysium
 {
     Application* Application::s_Instance = nullptr;
 
-    Application::Application(const std::string& title, unsigned int width, unsigned int height, 
-        bool imgui) : m_ImGui(imgui), m_ClearColor{ 0.0f, 0.0f, 0.0f, 0.0f }
+    Application::Application(const UpdateFunction& updateFunction, 
+        const std::string& title, unsigned int width, unsigned int height, 
+        bool imgui) : m_Function(updateFunction), m_ImGui(imgui), ClearColor{ 0.0f, 0.0f, 0.0f, 0.0f }
     {
         Log::Init();
-
-        ELY_LOG_ASSERT(!s_Instance, "Application already exists!");
-        s_Instance = this;
 
         m_Window = std::unique_ptr<Window>(Window::Create( { title, width, height } ));
         m_Window->setEventCallback(BIND_EVENT_FUNCTION(Application::onEvent));
@@ -32,6 +30,7 @@ namespace Elysium
         ELY_CORE_INFO("OpenGL version: {0}", glGetString(GL_VERSION));
         #endif
 
+        m_Run = std::bind(&Application::runWithoutImGui, this);
         if (m_ImGui)
         {
             const char* glsl_version = "#version 130";
@@ -42,6 +41,8 @@ namespace Elysium
 
             ImGuiIO& io = ImGui::GetIO();
             io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+
+            m_Run = std::bind(&Application::runWithImGui, this);
         }
         Renderer::Init();
 
@@ -53,7 +54,7 @@ namespace Elysium
 
     Application::~Application()
     {
-        m_SceneManager.unloadScene();
+        SceneManager.unloadScene();
         if (m_ImGui)
         {
             ImGui_ImplOpenGL3_Shutdown();
@@ -72,9 +73,9 @@ namespace Elysium
         dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FUNCTION(Application::onWindowCloseEvent));
         dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FUNCTION(Application::onWindowResizeEvent));
 
-        m_SceneManager.onEvent(event);
+        SceneManager.onEvent(event);
 
-        for (auto it = m_LayerStack.end(); it != m_LayerStack.begin();)
+        for (auto it = LayerStack.end(); it != LayerStack.begin();)
         {
             if (*--it)
             {
@@ -103,6 +104,77 @@ namespace Elysium
         RendererUtility::setViewport(0, 0, event.getWidth(), event.getHeight());
 
         return false;
+    }
+
+    void Application::runWithImGui()
+    {
+        while (m_Running)
+        {
+            RendererUtility::Clear({ ClearColor[0], ClearColor[1], ClearColor[2], ClearColor[3] });
+
+            float time = (float)glfwGetTime();
+            Timestep timestep = time - m_LastFrameTime;
+            m_LastFrameTime = time;
+
+            ImGui_ImplOpenGL3_NewFrame();
+            ImGui_ImplGlfw_NewFrame();
+            ImGui::NewFrame();
+
+            if (!m_Minimized)
+            {
+                m_Function();
+
+                SceneManager.onUpdate(timestep);
+
+                for (Layer* layer : LayerStack)
+                {
+                    if (layer)
+                        layer->onUpdate(timestep);
+                }
+            }
+
+            ImGui::Render();
+            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+            m_Window->onUpdate();
+        }
+    }
+
+    void Application::runWithoutImGui()
+    {
+        while (m_Running)
+        {
+            RendererUtility::Clear({ ClearColor[0], ClearColor[1], ClearColor[2], ClearColor[3] });
+
+            float time = (float)glfwGetTime();
+            Timestep timestep = time - m_LastFrameTime;
+            m_LastFrameTime = time;
+
+            if (!m_Minimized)
+            {
+                m_Function();
+
+                SceneManager.onUpdate(timestep);
+
+                for (Layer* layer : LayerStack)
+                {
+                    if (layer)
+                        layer->onUpdate(timestep);
+                }
+            }
+
+            m_Window->onUpdate();
+        }
+    }
+
+    Application* Application::createApplication(const UpdateFunction& function, 
+        const std::string& title, 
+        unsigned int width, unsigned int height,
+        bool imgui)
+    {
+        if (!s_Instance)
+            s_Instance = new Application(function, title, width, height, imgui);
+        return s_Instance;
     }
 
     std::string Application::openFile(const char* filter)
@@ -145,49 +217,12 @@ namespace Elysium
 
     void Application::Run()
     {
-        while (m_Running)
-        {
-            RendererUtility::Clear({ m_ClearColor[0], m_ClearColor[1], m_ClearColor[2], m_ClearColor[3] });
-
-            float time = (float)glfwGetTime();
-            Timestep timestep = time - m_LastFrameTime;
-            m_LastFrameTime = time;
-
-            if (m_ImGui)
-            {
-                ImGui_ImplOpenGL3_NewFrame();
-                ImGui_ImplGlfw_NewFrame();
-                ImGui::NewFrame();
-            }
-
-            if (!m_Minimized)
-            {
-                this->ApplicationLogic();
-
-                m_SceneManager.onUpdate(timestep);
-
-                for (Layer* layer : m_LayerStack)
-                {
-                    if (layer)
-                        layer->onUpdate(timestep);
-                }
-            }
-
-            if (m_ImGui)
-            {
-                ImGui::Render();
-                ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-            }
-
-            m_Window->onUpdate();
-        }
+        m_Run();
     }
 
-    void Application::setClearColor(float r, float g, float b, float a)
+    void Application::Shutdown()
     {
-        m_ClearColor[0] = r;
-        m_ClearColor[1] = g;
-        m_ClearColor[2] = b;
-        m_ClearColor[3] = a;
+        delete s_Instance;
+        s_Instance = nullptr;
     }
 }

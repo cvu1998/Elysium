@@ -6,8 +6,4 @@ namespace Elysium
         m_DebugName(name)
     {
     }
-
-    Scene::~Scene()
-    {
-    }
 }

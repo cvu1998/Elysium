@@ -66,7 +66,6 @@ namespace Elysium
 		// Initial ParticlePoolSize
 		// Which is adjusted to a larger value in respect to the number of particles the user wants to emit
 		ParticleSystem(uint32_t poolSize, OrthographicCamera& camera);
-		~ParticleSystem();
 
 		// Emit a new particle
 		void Emit(const ParticleProperties& particleProperties);

@@ -4,19 +4,20 @@
 
 namespace Elysium
 {
-    class SceneManager
+    class SceneManager final
     {
     private:
         Scene* m_CurrentScene = nullptr;
 
     public:
-        SceneManager();
-        ~SceneManager();
+        SceneManager() = default;
 
         void onUpdate(Timestep ts);
         void onEvent(Event& event);
 
         void unloadScene();
         void loadScene(Scene* scene);
+        
+        inline bool isRunningScene() { return m_CurrentScene != nullptr; }
     };
 }

@@ -5,70 +5,58 @@
 #include "Scenes/SoccerScene.h"
 #include "Scenes/RLTTTScene.h"
 
-class Application : public Elysium::Application
-{
-private:
-    bool m_VSync = true;
-
-public:
-    Application() : Elysium::Application()
-    {
-    }
-
-    ~Application()
-    {
-    }
-
-    void ApplicationLogic() override
-    {
-        ImGui::Begin("Main Application");
-        ImGui::Checkbox("VSync", &m_VSync);
-        ImGui::ColorEdit4("Clear Color", m_ClearColor);
-        if (ImGui::Button("Editor"))
-        {
-            m_SceneManager.unloadScene();
-            m_SceneManager.loadScene(new Elysium::Editor(m_Window->getWidth(), m_Window->getHeight()));
-        }
-        if (ImGui::Button("Sandbox"))
-        {
-            m_SceneManager.unloadScene();
-            m_SceneManager.loadScene(new SandboxScene(m_Window->getWidth(), m_Window->getHeight()));
-        }
-        if (ImGui::Button("Stress Test"))
-        {
-            m_SceneManager.unloadScene();
-            m_SceneManager.loadScene(new PerformanceScene(m_Window->getWidth(), m_Window->getHeight()));;
-        }
-        if (ImGui::Button("Connect 4"))
-        {
-            m_SceneManager.unloadScene();
-            m_SceneManager.loadScene(new Connect4Scene(m_Window->getWidth(), m_Window->getHeight()));
-        }
-        if (ImGui::Button("Tic-Tac-Toe"))
-        {
-            m_SceneManager.unloadScene();
-            m_SceneManager.loadScene(new RLTTTScene(m_Window->getWidth(), m_Window->getHeight()));
-        }
-        if (ImGui::Button("Flappy Bird"))
-        {
-            m_SceneManager.unloadScene();
-            m_SceneManager.loadScene(new FlappyBirdScene(m_Window->getWidth(), m_Window->getHeight()));
-        }
-        if (ImGui::Button("Soccer"))
-        {
-            m_SceneManager.unloadScene();
-            m_SceneManager.loadScene(new SoccerScene(m_Window->getWidth(), m_Window->getHeight()));
-        }
-        ImGui::End();
-
-        m_Window->setVSync(m_VSync);
-    }
-};
-
 int main(void)
 {
-    Application* application = new Application();
+    bool VSync = false;
+    Elysium::Application* application = Elysium::Application::createApplication([&]()
+        {
+            unsigned int width = application->getWindow().getWidth();
+            unsigned int height = application->getWindow().getHeight();
+
+            ImGui::Begin("Main Application");
+            ImGui::Checkbox("VSync", &VSync);
+            ImGui::ColorEdit4("Clear Color", application->ClearColor);
+            if (ImGui::Button("Editor"))
+            {
+                application->SceneManager.unloadScene();
+                application->SceneManager.loadScene(new Elysium::Editor(width, height));
+            }
+            if (ImGui::Button("Sandbox"))
+            {
+                application->SceneManager.unloadScene();
+                application->SceneManager.loadScene(new SandboxScene(width, height));
+            }
+            if (ImGui::Button("Stress Test"))
+            {
+                application->SceneManager.unloadScene();
+                application->SceneManager.loadScene(new PerformanceScene(width, height));
+            }
+            if (ImGui::Button("Connect 4"))
+            {
+                application->SceneManager.unloadScene();
+                application->SceneManager.loadScene(new Connect4Scene(width, height));
+            }
+            if (ImGui::Button("Tic-Tac-Toe"))
+            {
+                application->SceneManager.unloadScene();
+                application->SceneManager.loadScene(new RLTTTScene(width, height));
+            }
+            if (ImGui::Button("Flappy Bird"))
+            {
+                application->SceneManager.unloadScene();
+                application->SceneManager.loadScene(new FlappyBirdScene(width, height));
+            }
+            if (ImGui::Button("Soccer"))
+            {
+                application->SceneManager.unloadScene();
+                application->SceneManager.loadScene(new SoccerScene(width, height));
+            }
+            ImGui::End();
+
+            application->getWindow().setVSync(VSync);
+        });
+
     application->Run();
-    delete application;
+    application->Shutdown();
     return 0;
 }

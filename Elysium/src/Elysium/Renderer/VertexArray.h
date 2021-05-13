@@ -11,7 +11,7 @@ namespace Elysium
         unsigned int m_RendererID;
     public:
         VertexArray();
-        ~VertexArray();
+        virtual ~VertexArray();
 
         void bind() const;
         void unbind() const;

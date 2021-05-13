@@ -33,7 +33,7 @@ namespace Elysium
 
     public:
         Shader(const char* filepath, ShaderType type = ShaderType::VERTEX_AND_FRAGMENT);
-        ~Shader();
+        virtual ~Shader();
 
         void bind() const;
         void unbind() const;

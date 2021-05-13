@@ -13,7 +13,7 @@ namespace Elysium
 
     public:
         Scene(const char* name = "Scene");
-        virtual ~Scene();
+        virtual ~Scene() = default;
 
         virtual void onUpdate(Timestep ts) = 0;
         virtual void onEvent(Event& event) { }

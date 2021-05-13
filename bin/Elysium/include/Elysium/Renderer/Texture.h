@@ -44,8 +44,8 @@ namespace Elysium
 
     public:
         Texture();
-        Texture(const char* filepath, GLenum wrapParams = GL_REPEAT);
-        ~Texture();
+        Texture(const char* filepath, GLenum wrapParams = GL_REPEAT, GLenum filter = GL_LINEAR_MIPMAP_LINEAR);
+        virtual ~Texture();
 
         void Bind(unsigned int slot = 0) const;
         void Unbind() const;

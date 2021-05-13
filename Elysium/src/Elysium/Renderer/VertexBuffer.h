@@ -14,7 +14,7 @@ namespace Elysium
         VertexBuffer(unsigned int numberofVertices, DataType type);
         /*STATIC RENDERING*/
         VertexBuffer(const void* data, unsigned int size);
-        ~VertexBuffer();
+        virtual ~VertexBuffer();
 
         void bind() const;
         void unbind() const;

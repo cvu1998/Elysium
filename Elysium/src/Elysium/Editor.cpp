@@ -152,7 +152,7 @@ namespace Elysium
                     }
                     if (ImGui::MenuItem("Open Scene"))
                     {
-                        std::string filepath = Application::openFile("Elysium Scene (*.elysium)\0*.elysium\0");
+                        std::string filepath = std::move(Application::openFile("Elysium Scene (*.elysium)\0*.elysium\0"));
                         if (!(filepath.empty()))
                         {
                             m_Data.Quads.clear();
@@ -163,7 +163,7 @@ namespace Elysium
                     }
                     if (ImGui::MenuItem("Save Scene"))
                     {
-                        std::string filepath = Application::saveFile("Elysium Scene (*.elysium)\0*.elysium\0");
+                        std::string filepath = std::move(Application::saveFile("Elysium Scene (*.elysium)\0*.elysium\0"));
                         if (!(filepath.empty()))
                             Serialize(filepath.c_str());
                     }

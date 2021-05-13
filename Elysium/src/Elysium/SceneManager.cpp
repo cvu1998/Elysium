@@ -2,14 +2,6 @@
 
 namespace Elysium
 {
-    SceneManager::SceneManager()
-    {
-    }
-
-    SceneManager::~SceneManager()
-    {
-    }
-
     void SceneManager::onUpdate(Timestep ts)
     {
         if (m_CurrentScene)

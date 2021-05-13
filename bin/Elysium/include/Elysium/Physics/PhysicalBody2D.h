@@ -97,7 +97,7 @@ namespace Elysium
         unsigned int CallbackExecutions = 0;
 
     private:
-        PhysicalBody2D() { }
+        PhysicalBody2D() = default;
         PhysicalBody2D(BodyType type, Collider collider, const char* tag, float mass,
             const Vector2& initialPosition, const Vector2& size,
             Collision_Callback callback);

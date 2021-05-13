@@ -14,17 +14,13 @@ namespace Elysium
     {
     }
 
-    PhysicsSystem2D::~PhysicsSystem2D()
-    {
-    }
-
     PhysicalBody2D* PhysicsSystem2D::createPhysicalBody(BodyType type, Collider collider, const char* name, float mass,
         const Vector2& initialPosition, const Vector2& size, 
         PhysicalBody2D::Collision_Callback callback)
     {
         if (m_InactiveBodies.empty())
         {
-            m_Bodies.push_back(PhysicalBody2D(type, collider, name, mass, initialPosition, size, callback));
+            m_Bodies.push_back(std::move(PhysicalBody2D(type, collider, name, mass, initialPosition, size, callback)));
             return &m_Bodies[m_Bodies.size() - 1];
         }
         BodyHandle body = m_InactiveBodies.back();
@@ -39,7 +35,7 @@ namespace Elysium
     {
         if (m_InactiveBodies.empty())
         {
-            m_Bodies.push_back(PhysicalBody2D(type, collider, name, mass, initialPosition, size, callback));
+            m_Bodies.push_back(std::move(PhysicalBody2D(type, collider, name, mass, initialPosition, size, callback)));
             *handle = (BodyHandle)m_Bodies.size() - 1;
             return;
         }

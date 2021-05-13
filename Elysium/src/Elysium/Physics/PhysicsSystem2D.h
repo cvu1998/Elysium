@@ -35,7 +35,6 @@ namespace Elysium
 
     public:
         PhysicsSystem2D(float acceleration);
-        ~PhysicsSystem2D();
 
         PhysicalBody2D* createPhysicalBody(BodyType type, Collider collider, const char* name, float mass,
             const Vector2& initialPosition, const Vector2& size,

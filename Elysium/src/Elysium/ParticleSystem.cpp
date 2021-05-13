@@ -16,10 +16,6 @@ namespace Elysium
 		m_ParticlePool.resize(poolSize);
 	}
 
-	ParticleSystem::~ParticleSystem()
-	{
-	}
-
 	void ParticleSystem::addParticle(const ParticleProperties& particleProperties, Particle& particle)
 	{
 		particle.Position = particleProperties.Position;

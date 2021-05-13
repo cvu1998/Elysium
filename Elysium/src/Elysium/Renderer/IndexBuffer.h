@@ -10,7 +10,7 @@ public:
     IndexBuffer(unsigned int count);
     /*STATIC RENDERING*/
     IndexBuffer(const unsigned int* data, unsigned int count);
-    ~IndexBuffer();
+    virtual ~IndexBuffer();
 
     void bind() const;
     void unbind() const;
