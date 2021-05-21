@@ -66,110 +66,153 @@ namespace Elysium
 
     void PhysicsSystem2D::checkNarrowPhase(const PhysicalBody2D& body1, const PhysicalBody2D& body2, CollisionInfo& info)
     {
-        if (body1.Model == Collider::CIRCLE && body2.Model == Collider::CIRCLE)
+        std::vector<Vector2> normals;
+
+        int result = (int)body1.Model | (int)body2.Model;
+        switch (result)
+        {
+        // CIRCLE-CIRCLE COLLISION
+        case 2:
         {
             float radius1 = body1.Size.x * 0.5f;
             float radius2 = body2.Size.x * 0.5f;
             float distance = (body2.Position.x - body1.Position.x) * (body2.Position.x - body1.Position.x) +
                 (body2.Position.y - body1.Position.y) * (body2.Position.y - body1.Position.y);
-            if (distance > (radius2 + radius1) * (radius2 + radius1))
+            if (distance < (radius2 + radius1) * (radius2 + radius1))
             {
-                info.Collision = false;
-                return;
+                info.Collision = true;
+
+                Vector2 normal = glm::normalize(body2.Position - body1.Position);
+                info.CollisionInfoPair.second.Normal = normal;
+                info.CollisionInfoPair.first.Normal = -normal;
+
+                float min1 = glm::dot(body1.Position - (normal * radius1), normal);
+                float max1 = glm::dot(body1.Position + (normal * radius1), normal);
+                float min2 = glm::dot(body2.Position - (normal * radius2), normal);
+                float max2 = glm::dot(body2.Position + (normal * radius2), normal);
+                float overlap1 = fabs(std::min(max1, max2) - std::max(min1, min2));
+
+                info.minOverlap = glm::min(max1, max2) - glm::max(min1, min2);
             }
-
-            Vector2 normal = glm::normalize(body2.Position - body1.Position);
-            info.CollisionInfoPair.second.Normal = normal;
-            info.CollisionInfoPair.first.Normal = -normal;
-
-            float min1 = glm::dot(body1.Position - (normal * radius1), normal);
-            float max1 = glm::dot(body1.Position + (normal * radius1), normal);
-            float min2 = glm::dot(body2.Position - (normal * radius2), normal);
-            float max2 = glm::dot(body2.Position + (normal * radius2), normal);
-            float overlap1 = fabs(std::min(max1, max2) - std::max(min1, min2));
-
-            info.minOverlap = glm::min(max1, max2) - glm::max(min1, min2);
-            return;
         }
-
-        std::vector<Vector2> vertices1;
-        std::vector<Vector2> vertices2;
-
-        body1.getVertices(vertices1);
-        body2.getVertices(vertices2);
-
-        std::vector<Vector2> normals;
-
-        for (const Vector2& normal : body1.Normals)
-            normals.push_back(normal);
-        for (const Vector2& normal : body2.Normals)
-            normals.push_back(normal);
-
-        float overlap = 0.0f;
-        Vector2 collisionNormal = { 0.0f, 0.0f };
-        bool firstIsMax = false;
-        for (Vector2& normal : normals)
+            break;
+        // QUAD-QUAD COLLISION
+        case 1:
         {
-            float min1 = std::numeric_limits<float>::max();
-            float max1 = -std::numeric_limits<float>::max();
-            if (body1.Model== Collider::CIRCLE)
+            std::vector<Vector2> vertices1;
+            std::vector<Vector2> vertices2;
+            body1.getVertices(vertices1);
+            body2.getVertices(vertices2);
+
+            for (const Vector2& normal : body1.Normals)
+                normals.push_back(normal);
+            for (const Vector2& normal : body2.Normals)
+                normals.push_back(normal);
+
+            float overlap = 0.0f;
+            Vector2 collisionNormal = { 0.0f, 0.0f };
+            bool firstIsMax = false;
+            for (Vector2& normal : normals)
             {
-                Vector2 circleVertex = normal * body1.Size.x * 0.5f;
-                min1 = dot(body1.Position - (circleVertex), normal);
-                max1 = dot(body1.Position + (circleVertex), normal);
-            }
-            else
-            {
+                float min1 = std::numeric_limits<float>::max();
+                float max1 = -std::numeric_limits<float>::max();
                 for (Vector2& vertex : vertices1)
                 {
                     float projection = dot(vertex, normal);
                     min1 = std::min(min1, projection);
                     max1 = std::max(max1, projection);
                 }
-            }
 
-            float min2 = std::numeric_limits<float>::max();
-            float max2 = -std::numeric_limits<float>::max();
-            if (body2.Model == Collider::CIRCLE)
-            {
-                Vector2 circleVertex = normal * body2.Size.x * 0.5f;
-                min2 = dot(body2.Position - (circleVertex), normal);
-                max2 = dot(body2.Position + (circleVertex), normal);
-            }
-            else
-            {
+                float min2 = std::numeric_limits<float>::max();
+                float max2 = -std::numeric_limits<float>::max();
                 for (Vector2& vertex : vertices2)
                 {
                     float projection = dot(vertex, normal);
                     min2 = std::min(min2, projection);
                     max2 = std::max(max2, projection);
                 }
+
+                if (!(max2 >= min1 && max1 >= min2))
+                    return;
+
+                overlap = std::min(max1, max2) - std::max(min1, min2);
+                if (overlap < info.minOverlap)
+                {
+                    collisionNormal = normal;
+                    info.minOverlap = overlap;
+                    firstIsMax = max1 > max2;
+                }
             }
 
-            if (!(max2 >= min1 && max1 >= min2))
+            info.Collision = true;
+            info.CollisionInfoPair.first.Normal = -collisionNormal;
+            info.CollisionInfoPair.second.Normal = collisionNormal;
+            if (firstIsMax)
             {
-                info.Collision = false;
-                return;
-            }
-
-            overlap = std::min(max1, max2) - std::max(min1, min2);
-            if (overlap < info.minOverlap)
-            {
-                collisionNormal = normal;
-                info.minOverlap = overlap;
-                firstIsMax = !(max2 > max1);
+                info.CollisionInfoPair.first.Normal = collisionNormal;
+                info.CollisionInfoPair.second.Normal = -collisionNormal;
             }
         }
+            break;
+        // CIRCLE-QUAD COLLISION
+        case 3:
+        {
+            bool circleFirst = true;
+            PhysicalBody2D circle = body1;
+            PhysicalBody2D quad = body2;
+            if (body2.Model == Collider::CIRCLE)
+            {
+                circleFirst = false;
+                circle = body2;
+                quad = body1;
+            }
 
-        if (firstIsMax)
-        {
-            info.CollisionInfoPair.first.Normal = collisionNormal;
-            info.CollisionInfoPair.second.Normal = -collisionNormal;
-        }
-        else
-        {
+            std::vector<Vector2> vertices;
+            quad.getVertices(vertices);
+
+            for (const Vector2& normal : quad.Normals)
+                normals.push_back(normal);
+
+            float overlap = 0.0f;
+            Vector2 collisionNormal = { 0.0f, 0.0f };
+            bool firstIsMax = false;
+            for (Vector2& normal : normals)
+            {
+                Vector2 circleVertex = normal * circle.Size.x * 0.5f;
+                float min1 = dot(circle.Position - (circleVertex), normal);
+                float max1 = dot(circle.Position + (circleVertex), normal);
+
+                float min2 = std::numeric_limits<float>::max();
+                float max2 = -std::numeric_limits<float>::max();
+                for (Vector2& vertex : vertices)
+                {
+                    float projection = dot(vertex, normal);
+                    min2 = std::min(min2, projection);
+                    max2 = std::max(max2, projection);
+                }
+
+                if (!(max2 >= min1 && max1 >= min2))
+                    return;
+
+                overlap = std::min(max1, max2) - std::max(min1, min2);
+                if (overlap < info.minOverlap)
+                {
+                    collisionNormal = normal;
+                    info.minOverlap = overlap;
+                    firstIsMax = max1 > max2;
+                }
+            }
+
+            info.Collision = true;
             info.CollisionInfoPair.second.Normal = collisionNormal;
             info.CollisionInfoPair.first.Normal = -collisionNormal;
+            if (firstIsMax && circleFirst || !firstIsMax && !circleFirst)
+            {
+                info.CollisionInfoPair.first.Normal = collisionNormal;
+                info.CollisionInfoPair.second.Normal = -collisionNormal;
+            }
+        }
+            break;
         }
     }
 
@@ -353,12 +396,14 @@ namespace Elysium
                             applyCollisionResponse(m_Bodies[j], m_Bodies[i], jNormal, info.minOverlap, ts);
 
                         if (m_Bodies[i].Callback && m_Bodies[i].CallbackExecutions < m_Bodies[i].NumberOfExecution)
-                            m_Bodies[i].Callback(m_Bodies[i], m_Bodies[j], { true, info.minOverlap, ts,
-                                std::make_pair(info.CollisionInfoPair.first, info.CollisionInfoPair.second) });
+                            m_Bodies[i].Callback(m_Bodies[i], m_Bodies[j], { true, info.minOverlap,
+                                std::make_pair(info.CollisionInfoPair.first, info.CollisionInfoPair.second),
+                                ts });
 
                         if (m_Bodies[j].Callback && m_Bodies[j].CallbackExecutions < m_Bodies[j].NumberOfExecution)
-                            m_Bodies[j].Callback(m_Bodies[j], m_Bodies[i],{ true, info.minOverlap, ts,
-                                    std::make_pair(info.CollisionInfoPair.second, info.CollisionInfoPair.first) });
+                            m_Bodies[j].Callback(m_Bodies[j], m_Bodies[i],{ true, info.minOverlap,
+                                    std::make_pair(info.CollisionInfoPair.second, info.CollisionInfoPair.first),
+                                ts });
                     }
                 }
             }

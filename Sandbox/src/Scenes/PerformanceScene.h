@@ -20,7 +20,7 @@ private:
     Elysium::TextureData m_GroundTexture;
     Elysium::BodyHandle m_Ground;
     std::array<Elysium::BodyHandle, 5000> m_GroundLayers;
-    std::array<Elysium::BodyHandle, 250> m_Boxes;
+    std::array<Elysium::BodyHandle, 1000> m_Boxes;
     Elysium::TextureData m_BoxTexture;
 
     size_t m_Index = 0;

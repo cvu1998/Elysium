@@ -114,7 +114,7 @@ namespace Elysium
         GL_ASSERT(glEnable(GL_BLEND));
         GL_ASSERT(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
-        s_Data->TextureSlots[0] = s_Data->White.getTextureData().getRendererID();
+        s_Data->TextureSlots[0] = s_Data->White.getTextureData().RendererID;
         for (size_t i = 1; i < MaxTextureCount; i++)
         {
             s_Data->TextureSlots[i] = 0;
@@ -329,7 +329,7 @@ namespace Elysium
         }
 
         float textureIndex = 0.0f;
-        unsigned int textureID = texture.getRendererID();
+        unsigned int textureID = texture.RendererID;
         for (unsigned int i = 1; i < s_Data->TextureSlotIndex; i++)
         {
             if (s_Data->TextureSlots[i] == textureID)
@@ -408,7 +408,7 @@ namespace Elysium
             beginQuadBatch();
         }
 
-        unsigned int textureID = texture.getRendererID();
+        unsigned int textureID = texture.RendererID;
         float textureIndex = 0.0f;
         for (unsigned int i = 1; i < s_Data->TextureSlotIndex; i++)
         {

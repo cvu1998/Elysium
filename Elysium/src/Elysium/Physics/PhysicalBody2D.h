@@ -25,8 +25,8 @@ namespace Elysium
 
     enum class Collider
     {
-        QUAD = 0,
-        CIRCLE =  1
+        QUAD = 1,
+        CIRCLE =  2
     };
 
     struct BodyCollisionInfo
@@ -36,10 +36,11 @@ namespace Elysium
 
     struct CollisionInfo
     {
-        bool Collision = true;
+        bool Collision = false;
         float minOverlap = std::numeric_limits<float>::max();
-        Timestep ts;
         std::pair<BodyCollisionInfo, BodyCollisionInfo> CollisionInfoPair;
+
+        Timestep ts;
     };
 
     class PhysiscsSystem2D;

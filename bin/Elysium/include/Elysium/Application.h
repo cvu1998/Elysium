@@ -12,8 +12,6 @@
 
 namespace Elysium 
 {
-    using UpdateFunction = std::function<void()>;
-
     class Application final
     {
     private:
@@ -24,6 +22,8 @@ namespace Elysium
         bool m_Running = true;
         bool m_Minimized = false;
         float m_LastFrameTime = 0.0f;
+
+        using UpdateFunction = std::function<void()>;
 
         UpdateFunction m_Run;
         UpdateFunction m_Function;

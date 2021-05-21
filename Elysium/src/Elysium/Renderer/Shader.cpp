@@ -42,6 +42,11 @@ namespace Elysium
         GL_ASSERT(glUniform1iv(getUniformLocation(name), value, sampler));
     }
 
+    void Shader::setUniform1f(const char* name, float v)
+    {
+        GL_ASSERT(glUniform1f(getUniformLocation(name), v));
+    }
+
     void Shader::setUniform4f(const char* name, float v0, float v1, float v2, float v3)
     {
         GL_ASSERT(glUniform4f(getUniformLocation(name), v0, v1, v2, v3));

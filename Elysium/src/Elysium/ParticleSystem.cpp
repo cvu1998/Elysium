@@ -6,14 +6,42 @@
 
 #include "Random.h"
 
+#include "Elysium/Log.h"
+
 namespace Elysium
 {
-	ParticleSystem::ParticleSystem(uint32_t poolSize, OrthographicCamera& camera) : 
-		m_InitialParticlePoolSize(poolSize), m_ParticlePoolSize(poolSize),
+	ParticleSystem::ParticleSystem(uint32_t poolSize, UpdateDevice device) :
+		m_ParticlePoolSize(poolSize),
 		m_PoolIndex(0),
-		m_Camera(&camera)
+		m_ComputeShader("res/shaders/particles.glsl", ShaderType::COMPUTE)
 	{
 		m_ParticlePool.resize(poolSize);
+		m_ParticleTextureData.resize(poolSize);
+
+		switch (device)
+		{
+		case UpdateDevice::CPU:
+			m_OnUpdate = std::bind(&ParticleSystem::onCPUUpdate, this, std::placeholders::_1);
+			break;
+		case UpdateDevice::GPU:
+			m_OnUpdate = std::bind(&ParticleSystem::onGPUUpdate, this, std::placeholders::_1);
+			glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 0, &m_WorkGroupSize);
+#ifdef _DEBUG
+			ELY_CORE_INFO("Work Group Size: {0}", m_WorkGroupSize);
+#endif
+
+			GL_ASSERT(glGenBuffers(1, &m_SSBO));
+			GL_ASSERT(glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_SSBO));
+			GL_ASSERT(glBufferData(GL_SHADER_STORAGE_BUFFER, m_ParticlePoolSize * sizeof(Particle), NULL, GL_STATIC_DRAW));
+			GL_ASSERT(glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, m_SSBO));
+			break;
+		}
+
+	}
+
+	ParticleSystem::~ParticleSystem()
+	{
+		GL_ASSERT(glDeleteBuffers(1, &m_SSBO));
 	}
 
 	void ParticleSystem::addParticle(const ParticleProperties& particleProperties, Particle& particle)
@@ -28,14 +56,44 @@ namespace Elysium
 
 		particle.ColorBegin = particleProperties.ColorBegin;
 		particle.ColorEnd = particleProperties.ColorEnd;
-		particle.TextureData = particleProperties.TextureData;
 
 		particle.SizeBegin = particleProperties.SizeBegin + particleProperties.SizeVariation * (Random::Float() - 0.5f);
 		particle.SizeEnd = particleProperties.SizeEnd;
 
 		particle.LifeTime = particleProperties.LifeTime;
 		particle.LifeRemaining = particleProperties.LifeTime;
+
 		particle.Active = true;
+	}
+
+	void ParticleSystem::onCPUUpdate(Timestep ts)
+	{
+		for (size_t i = 0; i < m_PoolIndex; ++i)
+		{
+			m_ParticlePool[i].LifeRemaining -= ts;
+			m_ParticlePool[i].Position += m_ParticlePool[i].Velocity * (float)ts;
+			m_ParticlePool[i].Rotation += m_ParticlePool[i].RotationSpeed * ts;
+
+			// Fade away particles
+			float lifeRatio = m_ParticlePool[i].LifeRemaining / m_ParticlePool[i].LifeTime;
+			m_ParticlePool[i].Color = glm::lerp(m_ParticlePool[i].ColorEnd, m_ParticlePool[i].ColorBegin, lifeRatio);
+			m_ParticlePool[i].Color.a = lifeRatio;
+
+			m_ParticlePool[i].Size = glm::lerp(m_ParticlePool[i].SizeEnd, m_ParticlePool[i].SizeBegin, lifeRatio);
+		}
+	}
+
+	void ParticleSystem::onGPUUpdate(Timestep ts)
+	{
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_SSBO);
+		glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, m_PoolIndex * sizeof(Particle), m_ParticlePool.data());
+
+		m_ComputeShader.bind();
+		m_ComputeShader.setUniform1f("u_Timestep", (float)ts);
+		glDispatchCompute((m_PoolIndex / m_WorkGroupSize) + 1, 1, 1);
+		glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+
+		glGetNamedBufferSubData(m_SSBO, 0, m_PoolIndex * sizeof(Particle), m_ParticlePool.data());
 	}
 
 	void ParticleSystem::Emit(const ParticleProperties& particleProperties)
@@ -45,57 +103,45 @@ namespace Elysium
 		if (!particle.Active)
 		{
 			addParticle(particleProperties, particle);
+			m_ParticleTextureData[m_PoolIndex++] = particleProperties.TextureData;
 		}
 		else
 		{
-			m_PoolIndex = m_ParticlePoolSize;
-			m_ParticlePoolSize += m_InitialParticlePoolSize * m_NumberOfResize;
-			m_ParticlePool.resize(m_ParticlePoolSize);
-
-			Particle& particle = m_ParticlePool[m_PoolIndex];
-
-			addParticle(particleProperties, particle);
-
-			m_NumberOfResize++;
+			if (!m_Warning)
+			{
+				ELY_CORE_WARN("Increase Pool Size!");
+				m_Warning = true;
+			}
 		}
-		m_PoolIndex = ++m_PoolIndex % m_ParticlePool.size();
 	}
 
-	void ParticleSystem::OnUpdate(Timestep ts)
+	void ParticleSystem::onUpdate(Timestep ts)
 	{
-		for (auto& particle : m_ParticlePool)
-		{
-			if (!particle.Active)
-				continue;
+		m_OnUpdate(ts);
+	}
 
-			if (particle.LifeRemaining <= 0.0f)
+	void ParticleSystem::onRender(const OrthographicCamera& camera)
+	{
+		Renderer::beginScene(camera);
+		for (size_t i = 0; i < m_PoolIndex; ++i)
+		{
+			if (m_ParticlePool[i].LifeRemaining <= 0.0f)
 			{
-				particle.Active = false;
+				m_ParticlePool[i].Active = false;
+
+				--m_PoolIndex;
+				std::swap(m_ParticlePool[i], m_ParticlePool[m_PoolIndex]);
+				std::swap(m_ParticleTextureData[i], m_ParticleTextureData[m_PoolIndex]);
 				continue;
 			}
 
-			particle.LifeRemaining -= ts;
-			particle.Position += particle.Velocity * (float)ts;
-			particle.Rotation += particle.RotationSpeed * ts;
-		}
+			TextureData particleTextureData = m_ParticleTextureData[i];
+			particleTextureData.RendererID = m_ParticleTextureData[i].RendererID > 1 ? m_ParticleTextureData[i].RendererID : 1;
 
-		Renderer::beginScene(*m_Camera);
-		for (auto& particle : m_ParticlePool)
-		{
-			if (!particle.Active)
-				continue;
 
-			// Fade away particles
-			float lifeRatio = particle.LifeRemaining / particle.LifeTime;
-			glm::vec4 color = glm::lerp(particle.ColorEnd, particle.ColorBegin, lifeRatio);
-			color.a = color.a * lifeRatio;
-
-			float size = glm::lerp(particle.SizeEnd, particle.SizeBegin, lifeRatio);
-
-			if (!particle.TextureData.isDefault())
-				Renderer::drawQuadWithRotation(particle.Position, { size, size }, glm::radians(particle.Rotation), particle.TextureData, color);
-			else
-				Renderer::drawQuadWithRotation(particle.Position, { size, size }, glm::radians(particle.Rotation), color);
+			Renderer::drawQuadWithRotation(m_ParticlePool[i].Position, { m_ParticlePool[i].Size, m_ParticlePool[i].Size }, glm::radians(m_ParticlePool[i].Rotation), particleTextureData,
+				{ 1.0f, 1.0f },
+				m_ParticlePool[i].Color);
 		}
 		Renderer::endScene();
 	}

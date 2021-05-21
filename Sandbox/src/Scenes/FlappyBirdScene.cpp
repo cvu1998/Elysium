@@ -3,7 +3,7 @@
 FlappyBirdScene::FlappyBirdScene(unsigned int width, unsigned int height) :
     Elysium::Scene("Flappy Bird"),
     m_Camera(-m_Height * (float)(width / height), m_Height* (float)(width / height), -m_Height * 0.5f, m_Height * 0.5f),
-    m_SpriteSheet("res/texture/Flappy-Bird-Sprite.png", GL_REPEAT, GL_NEAREST)
+    m_SpriteSheet("res/texture/Flappy-Bird-Sprite.png")
 {
     e_PhysicsSystem2D.setGravitaionnalAccel(20.0f);
 

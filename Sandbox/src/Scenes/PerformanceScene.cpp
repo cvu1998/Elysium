@@ -2,7 +2,7 @@
 
 PerformanceScene::PerformanceScene(unsigned int width, unsigned int height) : Scene("Stress Test"),
 m_Camera(-m_Height * (float)(width / height), m_Height * (float)(width / height), -m_Height * 0.5f, m_Height * 0.5f),
-m_ParticleSystem(100, m_Camera),
+m_ParticleSystem(17500, Elysium::UpdateDevice::CPU),
 m_Player({ { -12.5f, 20.0f } })
 {
     m_Textures.reserve(11);
@@ -84,7 +84,8 @@ void PerformanceScene::onUpdate(Elysium::Timestep ts)
     if (m_Index < m_Boxes.size() && m_SpawnTime > 0.05f)
     {
         float x = (Elysium::Random::Float() * 200.0f) - 100.0f;
-        Elysium::Vector2 position = { x, 20.0f };
+        const float y = (float)m_Boxes.size() / 10.0f;
+        Elysium::Vector2 position = { x, y };
         e_PhysicsSystem2D.createPhysicalBody(&m_Boxes[m_Index], Elysium::BodyType::DYNAMIC, Elysium::Collider::QUAD, "Box", 5.0f, position, { 2.0f, 2.0f });
 
         m_Index++;
@@ -109,7 +110,9 @@ void PerformanceScene::onUpdate(Elysium::Timestep ts)
         m_ParticleSystem.Emit(m_Particle);
         m_ParticleSystem.Emit(m_Particle2);
     }
-    m_ParticleSystem.OnUpdate(ts);
+    m_ParticleSystem.onUpdate(ts);
+    m_ParticleSystem.onRender(m_Camera);
+
     e_PhysicsSystem2D.onUpdate(ts);
 
     m_Player.onUpdate(ts);

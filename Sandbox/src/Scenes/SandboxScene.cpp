@@ -2,7 +2,7 @@
 
 SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Scene("Sandbox"),
     m_Camera(-m_Height * (float)(width / height), m_Height * (float)(width / height), -m_Height * 0.5f, m_Height * 0.5f),
-    m_ParticleSystem(100, m_Camera),
+    m_ParticleSystem(25000, Elysium::UpdateDevice::CPU),
     m_Player({ { -12.5f, 20.0f } })
 {
     m_Textures.reserve(12);
@@ -29,6 +29,7 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Scene("San
 
     m_Particle.ColorBegin = { 0.0f, 0.0f, 1.0f, 1.0f };
     m_Particle.ColorEnd = { 0.0f, 0.0f, 0.0f, 1.0f };
+    m_Particle.TextureData = m_Textures[0].getTextureData();
 
     m_Particle.SizeBegin = 0.5f, m_Particle.SizeEnd = 0.0f, m_Particle.SizeVariation = 0.3f;
 
@@ -123,7 +124,8 @@ void SandboxScene::onUpdate(Elysium::Timestep ts)
     Elysium::Renderer::drawQuad({ 0.0f, 15.0f }, { 1000.0f, 30.0f }, m_Background, { 15.0f, 1.0f });
     Elysium::Renderer::endScene();
 
-    m_ParticleSystem.OnUpdate(ts);
+    m_ParticleSystem.onUpdate(ts);
+    m_ParticleSystem.onRender(m_Camera);
 
     Elysium::Renderer::beginScene(m_Camera);
     Elysium::Renderer::drawQuad(player->Position, player->getSize(), m_Player.m_TextureData);

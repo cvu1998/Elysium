@@ -47,13 +47,11 @@ namespace Elysium
     Texture::Texture()
         : m_FilePath(nullptr), m_LocalBuffer(nullptr), m_BPP(0)
     {
-        m_Data.m_Default = true;
-
-        GL_ASSERT(glGenTextures(1, &m_Data.m_RendererID));
-        GL_ASSERT(glBindTexture(GL_TEXTURE_2D, m_Data.m_RendererID));
+        GL_ASSERT(glGenTextures(1, &m_Data.RendererID));
+        GL_ASSERT(glBindTexture(GL_TEXTURE_2D, m_Data.RendererID));
 
         GL_ASSERT(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
-        GL_ASSERT(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+        GL_ASSERT(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
         GL_ASSERT(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
         GL_ASSERT(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
 
@@ -64,16 +62,14 @@ namespace Elysium
     Texture::Texture(const char* filepath, GLenum wrapParams, GLenum filter)
         : m_FilePath(filepath), m_LocalBuffer(nullptr), m_BPP(0)
     {
-        m_Data.m_Default = false;
-
         stbi_set_flip_vertically_on_load(1);
         m_LocalBuffer = stbi_load(filepath, &m_Data.m_Width, &m_Data.m_Height, &m_BPP, 4);
 
-        GL_ASSERT(glGenTextures(1, &m_Data.m_RendererID));
-        GL_ASSERT(glBindTexture(GL_TEXTURE_2D, m_Data.m_RendererID));
+        GL_ASSERT(glGenTextures(1, &m_Data.RendererID));
+        GL_ASSERT(glBindTexture(GL_TEXTURE_2D, m_Data.RendererID));
 
         GL_ASSERT(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter));
-        GL_ASSERT(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter));
+        GL_ASSERT(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
         GL_ASSERT(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapParams));
         GL_ASSERT(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapParams));
 
@@ -95,13 +91,13 @@ namespace Elysium
 
     Texture::~Texture()
     {
-        GL_ASSERT(glDeleteTextures(1, &m_Data.m_RendererID));
+        GL_ASSERT(glDeleteTextures(1, &m_Data.RendererID));
     }
 
     void Texture::Bind(unsigned int slot) const
     {
         GL_ASSERT(glActiveTexture(GL_TEXTURE0 + slot));
-        GL_ASSERT(glBindTexture(GL_TEXTURE_2D, m_Data.m_RendererID));
+        GL_ASSERT(glBindTexture(GL_TEXTURE_2D, m_Data.RendererID));
     }
 
     void Texture::Unbind() const

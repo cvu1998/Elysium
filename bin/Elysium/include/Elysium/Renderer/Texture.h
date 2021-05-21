@@ -13,19 +13,16 @@ namespace Elysium
         friend class Texture;
 
     private:
-        unsigned int m_RendererID;
         int m_Width, m_Height;
 
-        bool m_Default = true;
-
     public:
+        unsigned int RendererID = 0;
+
         bool CoordinatesInverted = false;
         glm::vec2 TextureCoordinates[4] = { {0.0f, 0.0f}, {1.0f, 0.0f}, {1.0f, 1.0f}, {0.0f, 1.0f} };
 
-        inline unsigned int getRendererID() const { return m_RendererID; }
         inline int getHeight() const { return m_Height; }
         inline int getWidth() const { return m_Width; }
-        inline bool isDefault() const { return m_Default; }
 
         void reflectAroundXAxis();
         void reflectAroundYAxis();

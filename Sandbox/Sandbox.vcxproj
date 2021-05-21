@@ -49,6 +49,7 @@
   <ItemGroup>
     <None Include="res\shaders\basic.glsl" />
     <None Include="res\shaders\batch_rendering.glsl" />
+    <None Include="res\shaders\particles.glsl" />
     <None Include="res\shaders\vertex_primitive.glsl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

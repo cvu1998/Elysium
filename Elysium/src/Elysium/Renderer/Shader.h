@@ -41,6 +41,8 @@ namespace Elysium
         void setUniform1i(const char* name, int value);
 
         void setUniform1iv(const char* name, int value, int* sampler);
+
+        void setUniform1f(const char* name, float v);
         void setUniform4f(const char* name, float v0, float v1, float v2, float v3);
         void setUniformMat4f(const char* name, const glm::mat4& matrix);
 
