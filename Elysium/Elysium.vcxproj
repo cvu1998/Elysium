@@ -215,6 +215,7 @@ xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\*.lib" "$(Solution
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Elysium\AI\Matrix.cpp" />
     <ClCompile Include="src\Elysium\AI\Perceptron.cpp" />
     <ClCompile Include="src\Elysium\AI\State.cpp" />
     <ClCompile Include="src\Elysium\ImGuiUtility.cpp" />
@@ -395,6 +396,7 @@ xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\*.lib" "$(Solution
     <None Include="src\vendor\glm\gtx\wrap.inl" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Elysium\AI\Matrix.h" />
     <ClInclude Include="src\Elysium\AI\Perceptron.h" />
     <ClInclude Include="src\Elysium\AI\BinaryFeatureVector.h" />
     <ClInclude Include="src\Elysium\AI\LinearRLAgent.h" />

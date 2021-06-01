@@ -42,5 +42,7 @@
 #include "Elysium/Renderer/Texture.h"
 
 // ---AI---
+#include "Elysium/AI/Matrix.h"
+#include "Elysium/AI/Perceptron.h"
 #include "Elysium/AI/LinearRLAgent.h"
 #include "Elysium/AI/State.h"

@@ -84,7 +84,70 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Scene("San
 
     m_Player.Ball = e_PhysicsSystem2D.getPhysicalBody(m_Ball);
 
-    e_PhysicsSystem2D.logInfo("Box");
+    //----- MATRICES -----//
+    Elysium::Matrix A({ {1, 2, 3, 4, 5} });
+    Elysium::Matrix B( {6, 7, 8, 9, 10} );
+    Elysium::Matrix C;
+
+    C = Elysium::Matrix::Concatenate(A, B, false);
+    C.print();
+
+    C = Elysium::Matrix::Concatenate(Elysium::Matrix({ {1, 2}, {3, 4} }), Elysium::Matrix({ {1, 2}, {3, 4} }), false);
+    C.print();
+
+    A = Elysium::Matrix::Concatenate(A, B);
+    A.print();
+
+    C = Elysium::Matrix::Slice(A, 0, 0, 0, 4);
+    C.print();
+
+    C = Elysium::Matrix::Slice(A, 0, 0, 4, 5);
+    C.print();
+
+    //--- PERCEPTRON ---//
+    constexpr size_t epochs = 10;
+
+    Elysium::Matrix ANDGateData({ { 0.0f, 0.0f, 0.0f }, 
+                                { 1.0f, 0.0f, 0.0f }, 
+                                { 0.0f, 1.0f, 0.0f }, 
+                                { 1.0f, 1.0f, 1.0f } });
+    Elysium::Perceptron andPerceptron;
+
+    std::vector<float> andResults;
+
+    andPerceptron.fit(Elysium::Matrix::Slice(ANDGateData, 0, 0, 0, 2), Elysium::Matrix::Slice(ANDGateData, 0, 0, 2, 3), epochs);
+    andPerceptron.predict(Elysium::Matrix::Slice(ANDGateData, 0, 0, 0, 2), andResults);
+
+    for (float y : andResults)
+        ELY_INFO("AND Gate: {0}", y);
+
+    Elysium::Matrix ORGateData({ { 0.0f, 0.0f, 0.0f },
+                                { 1.0f, 0.0f, 1.0f },
+                                { 0.0f, 1.0f, 1.0f },
+                                { 1.0f, 1.0f, 1.0f } });
+    Elysium::Perceptron orPerceptron;
+
+    std::vector<float> orResults;
+
+    orPerceptron.fit(Elysium::Matrix::Slice(ORGateData, 0, 0, 0, 2), Elysium::Matrix::Slice(ORGateData, 0, 0, 2, 3), epochs);
+    orPerceptron.predict(Elysium::Matrix::Slice(ORGateData, 0, 0, 0, 2), orResults);
+
+    for (float y : orResults)
+        ELY_INFO("OR Gate: {0}", y);
+
+    Elysium::Matrix XORGateData({ { 0.0f, 0.0f, 0.0f },
+                                { 1.0f, 0.0f, 1.0f },
+                                { 0.0f, 1.0f, 1.0f },
+                                { 1.0f, 1.0f, 0.0f } });
+    Elysium::Perceptron xorPerceptron;
+
+    std::vector<float> xorResults;
+
+    xorPerceptron.fit(Elysium::Matrix::Slice(XORGateData, 0, 0, 0, 2), Elysium::Matrix::Slice(XORGateData, 0, 0, 2, 3), epochs);
+    xorPerceptron.predict(Elysium::Matrix::Slice(XORGateData, 0, 0, 0, 2), xorResults);
+
+    for (float y : xorResults)
+        ELY_INFO("XOR Gate: {0}", y);
 }
 
 SandboxScene::~SandboxScene()
