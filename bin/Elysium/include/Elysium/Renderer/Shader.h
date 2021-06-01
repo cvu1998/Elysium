@@ -4,7 +4,7 @@
 #include <unordered_map>
 #include <string>
 
-#include "Elysium/Utility.h"
+#include "Elysium/Renderer/Assert.h"
 
 namespace Elysium
 {

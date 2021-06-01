@@ -4,7 +4,7 @@
 
 #include <glm/glm.hpp>
 
-#include "Elysium/Utility.h"
+#include "Elysium/Renderer/Assert.h"
 
 namespace Elysium
 {

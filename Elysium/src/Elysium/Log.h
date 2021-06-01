@@ -45,4 +45,3 @@ namespace Elysium
 #define ELY_WARN(...)          ::Elysium::Log::getClientLogger()->warn(__VA_ARGS__)
 #define ELY_ERROR(...)         ::Elysium::Log::getClientLogger()->error(__VA_ARGS__)
 #define ELY_CRITICAL(...)      ::Elysium::Log::getClientLogger()->critical(__VA_ARGS__)
-

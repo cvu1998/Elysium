@@ -1,7 +1,7 @@
 #include "VertexArray.h"
 
 #include "VertexBufferLayout.h"
-#include "Elysium/Utility.h"
+#include "Elysium/Renderer/Assert.h"
 
 namespace Elysium
 {

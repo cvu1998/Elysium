@@ -15,7 +15,9 @@ namespace Elysium
         Perceptron() = default;
 
         void fit(const Matrix& x, const Matrix& y, size_t epochs = 1);
+
         void predict(const Matrix& x, std::vector<float>& results);
+        float score(const Matrix& x, const Matrix& y);
 
     private:
         float step(float x);

@@ -96,7 +96,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>GLFW_INCLUDE_NONE;_WINSOCK_DEPRECATED_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)\Glad\include\;$(ProjectDir)src\;$(ProjectDir)src\vendor\;$(INTELOCLSDKROOT)include\CL\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)\Glad\include\;$(ProjectDir)src\;$(ProjectDir)src\vendor\;$(ProjectDir)src\vendor\spdlog\include\</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
@@ -125,7 +125,7 @@ xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\*.lib" "$(Solution
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>GLFW_INCLUDE_NONE;_WINSOCK_DEPRECATED_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)\Glad\include\;$(ProjectDir)src\;$(ProjectDir)src\vendor\;$(INTELOCLSDKROOT)include\CL\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)\Glad\include\;$(ProjectDir)src\;$(ProjectDir)src\vendor\;$(ProjectDir)src\vendor\spdlog\include\</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
@@ -156,7 +156,7 @@ xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\*.lib" "$(Solution
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>GLFW_INCLUDE_NONE;_WINSOCK_DEPRECATED_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)\Glad\include\;$(ProjectDir)src\;$(ProjectDir)src\vendor\;$(INTELOCLSDKROOT)include\CL\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)\Glad\include\;$(ProjectDir)src\;$(ProjectDir)src\vendor\;$(ProjectDir)src\vendor\spdlog\include\</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
@@ -189,7 +189,7 @@ xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\*.lib" "$(Solution
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>GLFW_INCLUDE_NONE;_WINSOCK_DEPRECATED_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)\Glad\include\;$(ProjectDir)src\;$(ProjectDir)src\vendor\;$(INTELOCLSDKROOT)include\CL\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)\Glad\include\;$(ProjectDir)src\;$(ProjectDir)src\vendor\;$(ProjectDir)src\vendor\spdlog\include\</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
@@ -223,6 +223,7 @@ xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\*.lib" "$(Solution
     <ClCompile Include="src\Elysium\Network\UDPClient.cpp" />
     <ClCompile Include="src\Elysium\Network\UDPServer.cpp" />
     <ClCompile Include="src\Elysium\Renderer\Framebuffer.cpp" />
+    <ClCompile Include="src\Elysium\Renderer\Assert.cpp" />
     <ClCompile Include="src\Elysium\SceneManager.cpp" />
     <ClCompile Include="src\Elysium\Editor.cpp" />
     <ClCompile Include="src\Elysium\AI\RLAgent.cpp" />
@@ -407,6 +408,7 @@ xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\*.lib" "$(Solution
     <ClInclude Include="src\Elysium\Network\UDPClient.h" />
     <ClInclude Include="src\Elysium\Network\UDPServer.h" />
     <ClInclude Include="src\Elysium\Renderer\Framebuffer.h" />
+    <ClInclude Include="src\Elysium\Renderer\Assert.h" />
     <ClInclude Include="src\Elysium\Renderer\VertexData.h" />
     <ClInclude Include="src\Elysium\SceneManager.h" />
     <ClInclude Include="src\Elysium\Editor.h" />

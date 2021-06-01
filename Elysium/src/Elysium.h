@@ -28,6 +28,8 @@
 #include "Elysium/Editor.h"
 #include "Elysium/ImGuiUtility.h"
 
+#include "Elysium/Utility.h"
+
 // ---Networking---
 #include "Elysium/Network/UDPClient.h"
 #include "Elysium/Network/UDPServer.h"

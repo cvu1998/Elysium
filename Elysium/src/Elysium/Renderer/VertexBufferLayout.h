@@ -9,7 +9,7 @@
 #include <glad/glad.h>
 
 #include "Elysium/Renderer/VertexData.h"
-#include "Elysium/Utility.h"
+#include "Elysium/Renderer/Assert.h"
 
 namespace Elysium
 {

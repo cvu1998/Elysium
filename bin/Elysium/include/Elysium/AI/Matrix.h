@@ -21,7 +21,7 @@ namespace Elysium
         static Matrix Slice(const Matrix& input,
             size_t startColumn = 0, size_t endColumn = 0, size_t startRow = 0, size_t endRow = 0);
 
-        float operator()(size_t x, size_t y) const;
+        float operator()(size_t column, size_t row) const;
 
         void print();
     };

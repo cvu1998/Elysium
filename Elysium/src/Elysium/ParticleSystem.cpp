@@ -4,7 +4,7 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/compatibility.hpp>
 
-#include "Random.h"
+#include "Elysium/Random.h"
 
 #include "Elysium/Log.h"
 
@@ -93,7 +93,7 @@ namespace Elysium
 		glDispatchCompute((m_PoolIndex / m_WorkGroupSize) + 1, 1, 1);
 		glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 
-		glGetNamedBufferSubData(m_SSBO, 0, m_PoolIndex * sizeof(Particle), m_ParticlePool.data());
+		glGetBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, m_PoolIndex * sizeof(Particle), m_ParticlePool.data());
 	}
 
 	void ParticleSystem::Emit(const ParticleProperties& particleProperties)

@@ -2,7 +2,7 @@
 
 #include <glad/glad.h>
 
-#include "Elysium/Utility.h"
+#include "Elysium/Renderer/Assert.h"
 
 IndexBuffer::IndexBuffer(unsigned int count) : m_Count(count) {
 

@@ -1,16 +1,19 @@
-#ifdef _DEBUG
- #define ASSERT(x) if (!x) __debugbreak();
- #define GL_ASSERT(x) glClearError(); \
-         x; \
-         ASSERT( glLogCall(#x, __FILE__, __LINE__) )
-#else
- #define ASSERT(x) x;
- #define GL_ASSERT(x) x;
-#endif
+#pragma once
+
+#include <vector>
+
+#include "Elysium/Random.h"
 
 #define BIT(x) (1 << x)
 
 #define BIND_EVENT_FUNCTION(fn) std::bind(&fn, this, std::placeholders::_1)
 
-void glClearError();
-bool glLogCall(const char* function, const char* file, int line);
+namespace Elysium
+{
+    namespace Utility
+    {
+        void CreateRandomVector(std::vector<float>& vector, size_t size, float min, float max);
+
+        void RandomizeVector(std::vector<float>& vector, float min, float max);
+    }
+}

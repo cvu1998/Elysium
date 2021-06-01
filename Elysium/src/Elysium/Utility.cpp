@@ -1,20 +1,20 @@
 #include "Utility.h"
 
-#include <glad/glad.h>
-
-#include "Elysium/Log.h"
-
-void glClearError()
+namespace Elysium
 {
-    while (glGetError() != GL_NO_ERROR);
-}
-
-bool glLogCall(const char* function, const char* file, int line)
-{
-    while (GLenum error = glGetError())
+    namespace Utility
     {
-        ELY_CORE_ERROR("[OpenGL Error] (0x{0:x}): {1} in file:\n{2}: {3}", error, function, file, line);
-        return false;
+        void CreateRandomVector(std::vector<float>& vector, size_t size, float min, float max)
+        {
+            vector.reserve(size);
+            for (size_t i = 0; i < size; ++i)
+                vector.emplace_back(Elysium::Random::Float() * (max - min) - min);
+        }
+
+        void RandomizeVector(std::vector<float>& vector, float min, float max)
+        {
+            for (size_t i = 0; i < vector.size(); ++i)
+                vector[i] = Elysium::Random::Float() * (max - min) - min;
+        }
     }
-    return true;
 }
