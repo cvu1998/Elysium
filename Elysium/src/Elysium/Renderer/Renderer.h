@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Camera.h"
-#include "RendererUtility.h"
+#include "RenderUtility.h"
 #include "Texture.h"
 
 #include <array>

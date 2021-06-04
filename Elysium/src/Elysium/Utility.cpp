@@ -8,13 +8,13 @@ namespace Elysium
         {
             vector.reserve(size);
             for (size_t i = 0; i < size; ++i)
-                vector.emplace_back(Elysium::Random::Float() * (max - min) - min);
+                vector.emplace_back(Elysium::Random::Float() * (max - min) + min);
         }
 
         void RandomizeVector(std::vector<float>& vector, float min, float max)
         {
             for (size_t i = 0; i < vector.size(); ++i)
-                vector[i] = Elysium::Random::Float() * (max - min) - min;
+                vector[i] = Elysium::Random::Float() * (max - min) + min;
         }
     }
 }

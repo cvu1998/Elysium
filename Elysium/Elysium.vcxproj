@@ -96,7 +96,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>GLFW_INCLUDE_NONE;_WINSOCK_DEPRECATED_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)\Glad\include\;$(ProjectDir)src\;$(ProjectDir)src\vendor\;$(ProjectDir)src\vendor\spdlog\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)\Glad\include\;$(ProjectDir)src\;$(ProjectDir)src\vendor\</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
@@ -125,7 +125,7 @@ xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\*.lib" "$(Solution
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>GLFW_INCLUDE_NONE;_WINSOCK_DEPRECATED_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)\Glad\include\;$(ProjectDir)src\;$(ProjectDir)src\vendor\;$(ProjectDir)src\vendor\spdlog\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)\Glad\include\;$(ProjectDir)src\;$(ProjectDir)src\vendor\</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
@@ -156,7 +156,7 @@ xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\*.lib" "$(Solution
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>GLFW_INCLUDE_NONE;_WINSOCK_DEPRECATED_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)\Glad\include\;$(ProjectDir)src\;$(ProjectDir)src\vendor\;$(ProjectDir)src\vendor\spdlog\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)\Glad\include\;$(ProjectDir)src\;$(ProjectDir)src\vendor\</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
@@ -189,7 +189,7 @@ xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\*.lib" "$(Solution
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>GLFW_INCLUDE_NONE;_WINSOCK_DEPRECATED_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)\Glad\include\;$(ProjectDir)src\;$(ProjectDir)src\vendor\;$(ProjectDir)src\vendor\spdlog\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)\Glad\include\;$(ProjectDir)src\;$(ProjectDir)src\vendor\</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
@@ -215,6 +215,9 @@ xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\*.lib" "$(Solution
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Elysium\AI\AIUtility.cpp" />
+    <ClCompile Include="src\Elysium\AI\Dense.cpp" />
+    <ClCompile Include="src\Elysium\AI\HiddenLayer.cpp" />
     <ClCompile Include="src\Elysium\AI\Matrix.cpp" />
     <ClCompile Include="src\Elysium\AI\Perceptron.cpp" />
     <ClCompile Include="src\Elysium\AI\State.cpp" />
@@ -241,7 +244,7 @@ xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\*.lib" "$(Solution
     <ClCompile Include="src\Elysium\Renderer\Renderer.cpp" />
     <ClCompile Include="src\Elysium\Renderer\Shader.cpp" />
     <ClCompile Include="src\Elysium\Renderer\IndexBuffer.cpp" />
-    <ClCompile Include="src\Elysium\Renderer\RendererUtility.cpp" />
+    <ClCompile Include="src\Elysium\Renderer\RenderUtility.cpp" />
     <ClCompile Include="src\Elysium\Scene.cpp" />
     <ClCompile Include="src\Elysium\Timer.cpp" />
     <ClCompile Include="src\Elysium\Window.cpp" />
@@ -397,6 +400,9 @@ xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\*.lib" "$(Solution
     <None Include="src\vendor\glm\gtx\wrap.inl" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Elysium\AI\AIUtility.h" />
+    <ClInclude Include="src\Elysium\AI\Dense.h" />
+    <ClInclude Include="src\Elysium\AI\HiddenLayer.h" />
     <ClInclude Include="src\Elysium\AI\Matrix.h" />
     <ClInclude Include="src\Elysium\AI\Perceptron.h" />
     <ClInclude Include="src\Elysium\AI\BinaryFeatureVector.h" />
@@ -437,7 +443,7 @@ xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\*.lib" "$(Solution
     <ClInclude Include="src\Elysium\Renderer\Renderer.h" />
     <ClInclude Include="src\Elysium\Renderer\Shader.h" />
     <ClInclude Include="src\Elysium\Renderer\IndexBuffer.h" />
-    <ClInclude Include="src\Elysium\Renderer\RendererUtility.h" />
+    <ClInclude Include="src\Elysium\Renderer\RenderUtility.h" />
     <ClInclude Include="src\Elysium\Scene.h" />
     <ClInclude Include="src\Elysium\Timer.h" />
     <ClInclude Include="src\Elysium\Window.h" />

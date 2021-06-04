@@ -29,7 +29,7 @@ namespace Elysium
 
     Editor::~Editor()
     {
-        RendererUtility::setViewport(0, 0, m_WindowWidth, m_WindowHeight);
+        Render::setViewport(0, 0, m_WindowWidth, m_WindowHeight);
     }
 
     bool Editor::isWithinBounds(Vector2 position, Vector2 bottom, Vector2 top)
@@ -114,7 +114,7 @@ namespace Elysium
         }
 
         m_Framebuffer->Bind();
-        RendererUtility::Clear();
+        Render::Clear();
         Renderer::resetStats();
         Renderer::beginScene(m_CameraController.getCamera());
         if (m_CameraController.getBoundsWidth() * m_CameraController.getBoundsHeight() <= 5000.0f)

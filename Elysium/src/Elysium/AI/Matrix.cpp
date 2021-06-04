@@ -4,6 +4,13 @@
 
 namespace Elysium
 {
+    Matrix::Matrix(size_t width, size_t height) : 
+        Width(width),
+        Height(height)
+    {
+        Values.resize(width * height);
+    }
+
     Matrix::Matrix(const std::vector<float>& vector) : Values(vector),
         Width(vector.size()),
         Height(1)
@@ -90,17 +97,12 @@ namespace Elysium
         for (size_t j = startColumn; j < endColumn; ++j)
         {
             for (size_t i = startRow; i < endRow; ++i)
-                result.Values.emplace_back(input(j, i));
+                result.Values.emplace_back(input[{j, i}]);
         }
 
         result.Width = endRow - startRow;
         result.Height = endColumn - startColumn;
         return result;
-    }
-
-    float Matrix::operator()(size_t column, size_t row) const
-    {
-        return Values[column * Width + row];
     }
 
     void Matrix::print()
@@ -112,7 +114,7 @@ namespace Elysium
             printf(openBracket);
 
             for (size_t i = 0; i < Width; ++i)
-                printf(" %f", operator()(j, i));
+                printf(" %f", operator[]({j, i}));
 
             const char* closeBracket = j == Height - 1 ? "]" : "]\n";
             printf(closeBracket);

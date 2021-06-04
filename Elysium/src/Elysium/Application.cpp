@@ -101,7 +101,7 @@ namespace Elysium
         }
         m_Minimized = false;
 
-        RendererUtility::setViewport(0, 0, event.getWidth(), event.getHeight());
+        Render::setViewport(0, 0, event.getWidth(), event.getHeight());
 
         return false;
     }
@@ -110,7 +110,7 @@ namespace Elysium
     {
         while (m_Running)
         {
-            RendererUtility::Clear({ ClearColor[0], ClearColor[1], ClearColor[2], ClearColor[3] });
+            Render::Clear({ ClearColor[0], ClearColor[1], ClearColor[2], ClearColor[3] });
 
             float time = (float)glfwGetTime();
             Timestep timestep = time - m_LastFrameTime;
@@ -144,7 +144,7 @@ namespace Elysium
     {
         while (m_Running)
         {
-            RendererUtility::Clear({ ClearColor[0], ClearColor[1], ClearColor[2], ClearColor[3] });
+            Render::Clear({ ClearColor[0], ClearColor[1], ClearColor[2], ClearColor[3] });
 
             float time = (float)glfwGetTime();
             Timestep timestep = time - m_LastFrameTime;

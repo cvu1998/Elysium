@@ -1,10 +1,21 @@
 #include "Perceptron.h"
 
 #include "Elysium/Log.h"
-#include "Elysium/Utility.h"
 
 namespace Elysium
 {
+    Perceptron::Perceptron(AI::Activation activation)
+    {
+        switch (activation)
+        {
+        case AI::Activation::STEP:
+            break;
+        case AI::Activation::SIGMOID:
+            m_Activation = std::bind(&AI::sigmoid, std::placeholders::_1);
+            break;
+        }
+    }
+
     void Perceptron::fit(const Matrix& x, const Matrix& y, size_t epochs)
     {
         if (x.Height != y.Height)
@@ -22,15 +33,15 @@ namespace Elysium
             {
                 float result = 0.0f;
                 for (size_t i = 0; i < x.Width; ++i)
-                    result += Weights[i] * x(j, i);
+                    result += Weights[i] * x[{j, i}];
                 result += Weights[x.Width];
 
-                result = step(result);
+                result = m_Activation(result);
                 float error = y.Values[j] - result;
                 if (fabs(error) > 0.0f)
                 {
                     for (size_t i = 0; i < x.Width; ++i)
-                        Weights[i] = Weights[i] + LearningRate * error * x(j, i);
+                        Weights[i] = Weights[i] + LearningRate * error * x[{j, i}];
                     Weights[x.Width] = Weights[x.Width] + LearningRate * error;
                 }
             }
@@ -44,10 +55,10 @@ namespace Elysium
         {
             float result = 0.0f;
             for (size_t i = 0; i < x.Width; ++i)
-                result += Weights[i] * x(j, i);
+                result += Weights[i] * x[{j, i}];
             result += Weights[x.Width];
 
-            results.emplace_back(step(result));
+            results.emplace_back(m_Activation(result));
         }
     }
 
@@ -58,18 +69,13 @@ namespace Elysium
         {
             float result = 0.0f;
             for (size_t i = 0; i < x.Width; ++i)
-                result += Weights[i] * x(j, i);
+                result += Weights[i] * x[{j, i}];
             result += Weights[x.Width];
 
-            result = step(result);
+            result = m_Activation(result);
             meanAccuracy += fabs(y.Values[j] - result);
         }
 
         return 1.0f - (meanAccuracy / (float)x.Height);
-    }
-
-    float Perceptron::step(float x)
-    {
-        return x >= 1.0f ? 1.0f : 0.0f;
     }
 }

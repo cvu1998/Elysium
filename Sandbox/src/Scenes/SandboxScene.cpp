@@ -105,7 +105,8 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Scene("San
     C.print();
 
     //--- PERCEPTRON ---//
-    Elysium::Perceptron perceptron;
+    Elysium::Perceptron perceptron(Elysium::AI::Activation::STEP);
+    Elysium::Matrix weights;
 
     constexpr size_t epochs = 5;
 
@@ -117,6 +118,8 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Scene("San
     perceptron.fit(Elysium::Matrix::Slice(ANDGateData, 0, 0, 0, 2),
         Elysium::Matrix::Slice(ANDGateData, 0, 0, 2, 3), 
         epochs);
+    weights = Elysium::Matrix(perceptron.Weights);
+    weights.print();
 
     std::vector<float> results;
     perceptron.predict(Elysium::Matrix::Slice(ANDGateData, 0, 0, 0, 2), results);
@@ -135,6 +138,8 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Scene("San
     perceptron.fit(Elysium::Matrix::Slice(ORGateData, 0, 0, 0, 2),
         Elysium::Matrix::Slice(ORGateData, 0, 0, 2, 3), 
         epochs);
+    weights = Elysium::Matrix(perceptron.Weights);
+    weights.print();
 
     results.clear();
     perceptron.predict(Elysium::Matrix::Slice(ORGateData, 0, 0, 0, 2), results);
@@ -146,13 +151,15 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Scene("San
     ELY_INFO("Mean Accuracy for OR: {0}", meanAccuracy);
 
     Elysium::Matrix XORGateData({ { 0.0f, 0.0f, 0.0f },
-                                { 1.0f, 0.0f, 1.0f },
                                 { 0.0f, 1.0f, 1.0f },
+                                { 1.0f, 0.0f, 1.0f },
                                 { 1.0f, 1.0f, 0.0f } });
 
     perceptron.fit(Elysium::Matrix::Slice(XORGateData, 0, 0, 0, 2),
         Elysium::Matrix::Slice(XORGateData, 0, 0, 2, 3), 
         epochs);
+    weights = Elysium::Matrix(perceptron.Weights);
+    weights.print();
 
     results.clear();
     perceptron.predict(Elysium::Matrix::Slice(XORGateData, 0, 0, 0, 2), results);
@@ -162,6 +169,17 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Scene("San
     for (float y : results)
         ELY_INFO("XOR Gate: {0}", y);
     ELY_INFO("Mean Accuracy for XOR: {0}", meanAccuracy);
+    //--- PERCEPTRON ---//
+
+    //--- DENSE LAYER ---//
+    Elysium::Dense DenseLayer(3);
+
+    Elysium::Matrix::Slice(XORGateData, 0, 0, 0, 2).print();
+    Elysium::Matrix::Slice(XORGateData, 0, 0, 2, 3).print();
+
+    DenseLayer.fit(Elysium::Matrix::Slice(XORGateData, 0, 0, 0, 2),
+        Elysium::Matrix::Slice(XORGateData, 0, 0, 2, 3));
+    //--- DENSE LAYER ---//
 }
 
 SandboxScene::~SandboxScene()

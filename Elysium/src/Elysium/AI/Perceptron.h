@@ -1,5 +1,8 @@
 #pragma once
 
+#include <functional>
+
+#include "Elysium/AI/AIUtility.h"
 #include "Elysium/AI/Matrix.h"
 
 namespace Elysium
@@ -13,6 +16,7 @@ namespace Elysium
 
     public:
         Perceptron() = default;
+        Perceptron(AI::Activation activation);
 
         void fit(const Matrix& x, const Matrix& y, size_t epochs = 1);
 
@@ -20,6 +24,8 @@ namespace Elysium
         float score(const Matrix& x, const Matrix& y);
 
     private:
-        float step(float x);
+        using ActivationFn = std::function<float(float)>;
+
+        ActivationFn m_Activation = std::bind(&AI::step, std::placeholders::_1);
     };
 }
