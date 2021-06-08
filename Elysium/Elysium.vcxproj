@@ -105,12 +105,11 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>rmdir "$(SolutionDir)bin\Elysium\include\Elysium\" /s /q
-xcopy "$(ProjectDir)src\*.h" "$(SolutionDir)bin\Elysium\include\" /S /Y /I
-xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\Elysium\include\" /S /Y /I
-xcopy "$(ProjectDir)src\*.inl" "$(SolutionDir)bin\Elysium\include\" /S /Y /I
-mkdir "$(SolutionDir)bin\Elysium\lib\$(Configuration)-$(Platform)\"
-xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\*.lib" "$(SolutionDir)bin\Elysium\lib\$(Configuration)-$(Platform)\" /S /Y /I</Command>
+      <Command>rmdir "$(SolutionDir)Export\Elysium\include\Elysium\" /s /q
+mkdir "$(SolutionDir)Export\Elysium\include\Elysium\"
+xcopy "$(ProjectDir)src\*.h" "$(SolutionDir)Export\Elysium\include\" /S /Y /I
+xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)Export\Elysium\include\" /S /Y /I
+xcopy "$(ProjectDir)src\*.inl" "$(SolutionDir)Export\Elysium\include\" /S /Y /I</Command>
     </PostBuildEvent>
     <Lib>
       <AdditionalDependencies>glfw3.lib;Glad.lib;Comdlg32.lib</AdditionalDependencies>
@@ -140,12 +139,11 @@ xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\*.lib" "$(Solution
       <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\lib\$(Platform)\;$(SolutionDir)bin\$(Configuration)-$(Platform)\Glad\;$(INTELOCLSDKROOT)lib\$(Platform)\</AdditionalLibraryDirectories>
     </Lib>
     <PostBuildEvent>
-      <Command>rmdir "$(SolutionDir)bin\Elysium\include\Elysium\" /s /q
-xcopy "$(ProjectDir)src\*.h" "$(SolutionDir)bin\Elysium\include\" /S /Y /I
-xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\Elysium\include\" /S /Y /I
-xcopy "$(ProjectDir)src\*.inl" "$(SolutionDir)bin\Elysium\include\" /S /Y /I
-mkdir "$(SolutionDir)bin\Elysium\lib\$(Configuration)-$(Platform)\"
-xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\*.lib" "$(SolutionDir)bin\Elysium\lib\$(Configuration)-$(Platform)\" /S /Y /I</Command>
+      <Command>rmdir "$(SolutionDir)Export\Elysium\include\Elysium\" /s /q
+mkdir "$(SolutionDir)Export\Elysium\include\Elysium\"
+xcopy "$(ProjectDir)src\*.h" "$(SolutionDir)Export\Elysium\include\" /S /Y /I
+xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)Export\Elysium\include\" /S /Y /I
+xcopy "$(ProjectDir)src\*.inl" "$(SolutionDir)Export\Elysium\include\" /S /Y /I</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -167,12 +165,11 @@ xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\*.lib" "$(Solution
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>rmdir "$(SolutionDir)bin\Elysium\include\Elysium\" /s /q
-xcopy "$(ProjectDir)src\*.h" "$(SolutionDir)bin\Elysium\include\" /S /Y /I
-xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\Elysium\include\" /S /Y /I
-xcopy "$(ProjectDir)src\*.inl" "$(SolutionDir)bin\Elysium\include\" /S /Y /I
-mkdir "$(SolutionDir)bin\Elysium\lib\$(Configuration)-$(Platform)\"
-xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\*.lib" "$(SolutionDir)bin\Elysium\lib\$(Configuration)-$(Platform)\" /S /Y /I</Command>
+      <Command>rmdir "$(SolutionDir)Export\Elysium\include\Elysium\" /s /q
+mkdir "$(SolutionDir)Export\Elysium\include\Elysium\"
+xcopy "$(ProjectDir)src\*.h" "$(SolutionDir)Export\Elysium\include\" /S /Y /I
+xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)Export\Elysium\include\" /S /Y /I
+xcopy "$(ProjectDir)src\*.inl" "$(SolutionDir)Export\Elysium\include\" /S /Y /I</Command>
     </PostBuildEvent>
     <Lib>
       <AdditionalDependencies>glfw3.lib;Glad.lib;Comdlg32.lib</AdditionalDependencies>
@@ -206,12 +203,11 @@ xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\*.lib" "$(Solution
       <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\lib\$(Platform)\;$(SolutionDir)bin\$(Configuration)-$(Platform)\Glad\;$(INTELOCLSDKROOT)lib\$(Platform)\</AdditionalLibraryDirectories>
     </Lib>
     <PostBuildEvent>
-      <Command>rmdir "$(SolutionDir)bin\Elysium\include\Elysium\" /s /q
-xcopy "$(ProjectDir)src\*.h" "$(SolutionDir)bin\Elysium\include\" /S /Y /I
-xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)bin\Elysium\include\" /S /Y /I
-xcopy "$(ProjectDir)src\*.inl" "$(SolutionDir)bin\Elysium\include\" /S /Y /I
-mkdir "$(SolutionDir)bin\Elysium\lib\$(Configuration)-$(Platform)\"
-xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\*.lib" "$(SolutionDir)bin\Elysium\lib\$(Configuration)-$(Platform)\" /S /Y /I</Command>
+      <Command>rmdir "$(SolutionDir)Export\Elysium\include\Elysium\" /s /q
+mkdir "$(SolutionDir)Export\Elysium\include\Elysium\"
+xcopy "$(ProjectDir)src\*.h" "$(SolutionDir)Export\Elysium\include\" /S /Y /I
+xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)Export\Elysium\include\" /S /Y /I
+xcopy "$(ProjectDir)src\*.inl" "$(SolutionDir)Export\Elysium\include\" /S /Y /I</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

@@ -19,7 +19,6 @@
 *.tlog
 *.user
 
-bin/Debug-Win32/
-bin/Debug-x64/
+bin/
 Diagnostics/
 .vs/

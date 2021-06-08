@@ -119,9 +119,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>rmdir "$(SolutionDir)bin\Elysium\" /s /q
-mkdir "$(SolutionDir)bin\Elysium\include\Glad\"
-xcopy "$(ProjectDir)include\*.h" "$(SolutionDir)bin\Elysium\include\Glad\" /S /Y /I</Command>
+      <Command>rmdir "$(SolutionDir)Export\Elysium\" /s /q
+mkdir "$(SolutionDir)Export\Elysium\include\Glad\"
+xcopy "$(ProjectDir)include\*.h" "$(SolutionDir)Export\Elysium\include\Glad\" /S /Y /I</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -142,9 +142,9 @@ xcopy "$(ProjectDir)include\*.h" "$(SolutionDir)bin\Elysium\include\Glad\" /S /Y
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>rmdir "$(SolutionDir)bin\Elysium\" /s /q
-mkdir "$(SolutionDir)bin\Elysium\include\Glad\"
-xcopy "$(ProjectDir)include\*.h" "$(SolutionDir)bin\Elysium\include\Glad\" /S /Y /I</Command>
+      <Command>rmdir "$(SolutionDir)Export\Elysium\" /s /q
+mkdir "$(SolutionDir)Export\Elysium\include\Glad\"
+xcopy "$(ProjectDir)include\*.h" "$(SolutionDir)Export\Elysium\include\Glad\" /S /Y /I</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -165,9 +165,9 @@ xcopy "$(ProjectDir)include\*.h" "$(SolutionDir)bin\Elysium\include\Glad\" /S /Y
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>rmdir "$(SolutionDir)bin\Elysium\" /s /q
-mkdir "$(SolutionDir)bin\Elysium\include\Glad\"
-xcopy "$(ProjectDir)include\*.h" "$(SolutionDir)bin\Elysium\include\Glad\" /S /Y /I</Command>
+      <Command>rmdir "$(SolutionDir)Export\Elysium\" /s /q
+mkdir "$(SolutionDir)Export\Elysium\include\Glad\"
+xcopy "$(ProjectDir)include\*.h" "$(SolutionDir)Export\Elysium\include\Glad\" /S /Y /I</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -192,9 +192,9 @@ xcopy "$(ProjectDir)include\*.h" "$(SolutionDir)bin\Elysium\include\Glad\" /S /Y
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>rmdir "$(SolutionDir)bin\Elysium\" /s /q
-mkdir "$(SolutionDir)bin\Elysium\include\Glad\"
-xcopy "$(ProjectDir)include\*.h" "$(SolutionDir)bin\Elysium\include\Glad\" /S /Y /I</Command>
+      <Command>rmdir "$(SolutionDir)Export\Elysium\" /s /q
+mkdir "$(SolutionDir)Export\Elysium\include\Glad\"
+xcopy "$(ProjectDir)include\*.h" "$(SolutionDir)Export\Elysium\include\Glad\" /S /Y /I</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
