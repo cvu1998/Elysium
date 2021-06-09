@@ -5,9 +5,8 @@
 
 namespace Elysium
 {
-    Dense::Dense(size_t units, AI::Activation activation)
+    Dense::Dense(size_t units, AI::Activation activation) : m_Units(units)
     {
-        Weights.Height = units;
         switch (activation)
         {
         case AI::Activation::STEP:
@@ -20,7 +19,7 @@ namespace Elysium
 
     void Dense::fit(const Matrix& x, const Matrix& y)
     {
-        if (x.Height != y.Height)
+        if (x.getHeight() != y.getHeight())
         {
             ELY_CORE_ERROR("Incomplete training samples!");
             return;
@@ -28,46 +27,55 @@ namespace Elysium
 
         if (Weights.Values.empty())
         {
-            //Weights.Width = x.Width + 1;
-            Weights.Width = x.Width;
-            Utility::CreateRandomVector(Weights.Values, Weights.Width * Weights.Height, -1.0f, 1.0f);
+            Weights = Matrix(m_Units, x.getWidth(), true);
+            //Weights = Matrix(m_Units, x.getWidth() + 1, true);
+            Utility::CreateRandomVector(Weights.Values, Weights.getWidth() * Weights.getHeight(), -1.0f, 1.0f);
         }
 
         Weights.print();
         size_t epochs = 1;
-        Matrix result(Weights.Height, x.Height);
+        Matrix results(x.getHeight(), m_Units);
         for (size_t t = epochs; epochs > 0; --epochs)
         {
-            for (size_t j = 0; j < x.Height; ++j)
+            for (size_t i = 0; i < x.getHeight(); ++i)
             {
-                for (size_t k = 0; k < Weights.Height; ++k)
+                for (size_t a = 0; a < m_Units; ++a)
                 {
-                    for (size_t i = 0; i < x.Width; ++i)
-                        result[{j, k}] += Weights[{k, i}] * x[{j, i}];
-                    //result[{j, k}] += Weights[{k, Weights.Width - 1}];
+                    for (size_t b = 0; b < x.getWidth(); ++b)
+                        results[{i, a}] += Weights[{a, b}] * x[{i, b}];
+                    //results[{i, a}] += Weights[{a, x.getWidth()}];
 
-                    result[{j, k}] = m_Activation(result[{j, k}]);
+                    results[{i, a}] = m_Activation(results[{i, a}]);
+                }
+            }
+        }
+        results.print();
+
+        //----- SECOND DENSE LAYER INSIDE MODEL -----//
+        ELY_CORE_INFO("---Second Dense Layer---");
+
+        size_t units = 1;
+        Matrix secondWeights(units, results.getWidth(), true);
+        Utility::CreateRandomVector(secondWeights.Values, secondWeights.getWidth() * secondWeights.getHeight(), -1.0f, 1.0f);
+        secondWeights.print();
+
+        epochs = 1;
+        Matrix result(results.getHeight(), units);
+        for (size_t t = epochs; epochs > 0; --epochs)
+        {
+            for (size_t i = 0; i < results.getHeight(); ++i)
+            {
+                for (size_t a = 0; a < units; ++a)
+                {
+                    for (size_t b = 0; b < results.getWidth(); ++b)
+                        result[{i, a}] += secondWeights[{a, b}] * results[{i, b}];
+                    //results[{i, a}] += Weights[{a, x.getWidth()}];
+
+                    result[{i, a}] = m_Activation(result[{i, a}]);
                 }
             }
         }
         result.print();
-        /*
-        for (size_t t = epochs; epochs > 0; --epochs)
-        {
-            for (size_t j = 0; j < x.Height; ++j)
-            {
-                for (size_t k = 0; k < Weights.Height; ++k)
-                {
-                    float result = 0.0f;
-                    for (size_t i = 0; i < x.Width; ++i)
-                        result += Weights(k, i) * x(j, i);
-                    //result += Weights(k, Weights.Width - 1);
 
-                    result = m_Activation(result);
-                    ELY_CORE_INFO("Result of unit {0} at step {1}: {2}", k, j, result);
-                }
-            }
-        }
-        */
     }
 }

@@ -1,6 +1,6 @@
 #include "SandboxScene.h"
 
-SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Scene("Sandbox"),
+SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Elysium::Scene("Sandbox"),
     m_Camera(-m_Height * (float)(width / height), m_Height * (float)(width / height), -m_Height * 0.5f, m_Height * 0.5f),
     m_ParticleSystem(25000, Elysium::UpdateDevice::CPU),
     m_Player({ { -12.5f, 20.0f } })

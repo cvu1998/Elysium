@@ -2,7 +2,7 @@
 
 #include "Game/Systems.h"
 
-Connect4Scene::Connect4Scene(unsigned int width, unsigned int height) : Scene("Connect4"),
+Connect4Scene::Connect4Scene(unsigned int width, unsigned int height) : Elysium::Scene("Connect4"),
 m_Camera(-m_Height * (float)(width / height), m_Height * (float)(width / height), -m_Height * 0.5f, m_Height * 0.5f),
 m_SpriteSheet("res/texture/platformPack_tilesheet.png")
 {

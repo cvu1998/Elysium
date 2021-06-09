@@ -4,11 +4,12 @@
 
 namespace Elysium
 {
-    Matrix::Matrix(size_t width, size_t height) : 
+    Matrix::Matrix(size_t height, size_t width, bool empty) :
         Width(width),
         Height(height)
     {
-        Values.resize(width * height);
+        if (!empty)
+            Values.resize(width * height);
     }
 
     Matrix::Matrix(const std::vector<float>& vector) : Values(vector),
@@ -27,7 +28,7 @@ namespace Elysium
         {
             if (v.size() > Width)
             {
-                Width = -1;
+                Width = 0;
                 ELY_CORE_ERROR("Invalid matrix dimensions!");
                 return;
             }

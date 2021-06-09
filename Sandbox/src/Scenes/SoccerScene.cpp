@@ -1,6 +1,6 @@
 #include "SoccerScene.h"
 
-SoccerScene::SoccerScene(unsigned int width, unsigned int height) : Scene("Soccer"),
+SoccerScene::SoccerScene(unsigned int width, unsigned int height) : Elysium::Scene("Soccer"),
 m_Camera(-m_Height * (float)(width / height), m_Height* (float)(width / height), 0.0f, m_Height),
 m_Player({ -27.5f, 20.0f }),
 m_Adversary({ 27.5f, 20.0f }, ELY_KEY_UP, ELY_KEY_LEFT, ELY_KEY_RIGHT,
