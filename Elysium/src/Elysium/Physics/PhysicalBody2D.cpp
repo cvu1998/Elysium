@@ -2,6 +2,8 @@
 
 #include <unordered_set>
 
+#include "Elysium/MathUtility.h"
+
 namespace Elysium
 {
     PhysicalBody2D::PhysicalBody2D(BodyType type, Collider collider, const char* tag, float mass,
@@ -118,6 +120,21 @@ namespace Elysium
         Complex transform(glm::cos(Rotation), glm::sin(Rotation));
         for (size_t i = 0; i < Normals.size(); ++i)
             Normals[i] = glm::normalize((Vector2)(Complex(m_Normals[i].x, m_Normals[i].y) * transform));
+    }
+
+    void PhysicalBody2D::onUpdate(Timestep ts)
+    {
+        ContactNormal = Math::normalize(ContactNormal);
+        Impulse += ContactImpulse * ContactNormal;
+
+        Normal += ContactNormal;
+        Normal = Math::normalize(Normal);
+
+        Acceleration = Force / Mass;
+        Velocity = Velocity + (Impulse / Mass) + (Acceleration * (float)ts);
+        Position = Position + (Velocity * (float)ts);
+
+        Force = { 0.0f, 0.0f };
     }
 
     void PhysicalBody2D::resetValues()

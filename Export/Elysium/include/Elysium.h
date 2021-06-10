@@ -16,7 +16,6 @@
 #include "Elysium/ParticleSystem.h"
 
 #include "Elysium/Animation.h"
-#include "Elysium/ArrayList.h"
 #include "Elysium/Math.h"
 #include "Elysium/MathUtility.h"
 #include "Elysium/Random.h"

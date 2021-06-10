@@ -9,11 +9,6 @@
 
 namespace Elysium
 {
-    PhysicsSystem2D::PhysicsSystem2D(float acceleration) :
-        m_GravitationalAccel(acceleration)
-    {
-    }
-
     PhysicalBody2D* PhysicsSystem2D::createPhysicalBody(BodyType type, Collider collider, const char* name, float mass,
         const Vector2& initialPosition, const Vector2& size, 
         PhysicalBody2D::Collision_Callback callback)
@@ -243,23 +238,6 @@ namespace Elysium
         ELY_CORE_TRACE("-----Body Tag: {0}-----", m_Bodies[i].Tag);
     }
 
-    void PhysicsSystem2D::updateBody(PhysicalBody2D& body, Timestep ts)
-    {
-        body.ContactNormal = Math::normalize(body.ContactNormal);
-        body.Impulse += body.ContactImpulse * body.ContactNormal;
-
-        body.Normal += body.ContactNormal;
-        body.Normal = Math::normalize(body.Normal);
-
-        body.Acceleration = body.Force / body.Mass;
-        body.Velocity = body.Velocity + (body.Impulse / body.Mass) + (body.Acceleration * (float)ts);
-        body.Position = body.Position + (body.Velocity * (float)ts);
-
-        body.Force = { 0.0f, 0.0f };
-        if (Gravity)
-            body.Force.y = -m_GravitationalAccel * body.Mass;
-    }
-
     void PhysicsSystem2D::applyCollisionResponse(PhysicalBody2D& body, const PhysicalBody2D& otherBody, const Vector2& normal, float overlap,
         Timestep ts)
     {
@@ -291,54 +269,60 @@ namespace Elysium
     {
         m_Time += ts;
         ts = std::min(1.0f / 30.0f, (float)ts);
-        for (uint32_t i = 0; i < m_Bodies.size(); i++)
-        {
-            if (m_Bodies[i].Status != BodyStatus::INACTIVE)
+        std::for_each(m_Bodies.begin(), m_Bodies.end(), [&](PhysicalBody2D& body)
             {
-                switch (m_Bodies[i].Type)
+                if (body.Status != BodyStatus::INACTIVE)
                 {
-                case BodyType::DYNAMIC:
-                    updateBody(m_Bodies[i], ts);
-                    if (m_Bodies[i].AllowRotation)
+                    switch (body.Type)
                     {
-                        switch (m_Bodies[i].Model)
-                        {
-                        case Collider::CIRCLE:
-                            m_Bodies[i].AngularVelocity = Math::cross(m_Bodies[i].Normal, m_Bodies[i].Velocity) / m_Bodies[i].Inertia;
-                            m_Bodies[i].Rotation += m_Bodies[i].AngularVelocity * (float)ts;
-                            break;
-                        case Collider::QUAD:
-                        {
-                        }
-                            break;
-                        }
-                    }
-                    break;
-                case BodyType::KINEMATIC:
-                    updateBody(m_Bodies[i], ts);
-                    break;
-                case BodyType::STATIC:
-                    m_Bodies[i].Acceleration = { 0.0f, 0.0f };
-                    m_Bodies[i].Velocity = { 0.0f, 0.0f };
+                    case BodyType::DYNAMIC:
+                        body.onUpdate(ts);
+                        if (Gravity)
+                            body.Force.y = GravitationalAccel * body.Mass;
 
-                    m_Bodies[i].Force = { 0.0f, 0.0f };
-                }
+                        if (body.AllowRotation)
+                        {
+                            switch (body.Model)
+                            {
+                            case Collider::CIRCLE:
+                                body.AngularVelocity = Math::cross(body.Normal, body.Velocity) / body.Inertia;
+                                body.Rotation += body.AngularVelocity * (float)ts;
+                                break;
+                            case Collider::QUAD:
+                            {
+                            }
+                            break;
+                            }
+                        }
+                        break;
+                    case BodyType::KINEMATIC:
+                        body.onUpdate(ts);
+                        if (Gravity)
+                            body.Force.y = GravitationalAccel * body.Mass;
+
+                        break;
+                    case BodyType::STATIC:
+                        body.Acceleration = { 0.0f, 0.0f };
+                        body.Velocity = { 0.0f, 0.0f };
+
+                        body.Force = { 0.0f, 0.0f };
+                    }
 
 #ifdef __DEBUG
-                if (m_LoggedBodies.find(i) != m_LoggedBodies.end())
-                    printInfo(i);
+                    if (m_LoggedBodies.find(i) != m_LoggedBodies.end())
+                        printInfo(i);
 #endif
 
-                m_Bodies[i].Impulse = { 0.0f, 0.0f };
-                m_Bodies[i].ContactImpulse = { 0.0f, 0.0f };
-                m_Bodies[i].ContactNormal = { 0.0f, 0.0f };
-                m_Bodies[i].CallbackExecutions = 0;
+                    body.Impulse = { 0.0f, 0.0f };
+                    body.ContactImpulse = { 0.0f, 0.0f };
+                    body.ContactNormal = { 0.0f, 0.0f };
+                    body.CallbackExecutions = 0;
 
-                m_Bodies[i].MaximumVertex = m_Bodies[i].getMaxVertex();
-                m_Bodies[i].MinimumVertex = m_Bodies[i].getMinVertex();
-                m_Bodies[i].updateNormals();
-            }
-        }
+                    body.MaximumVertex = body.getMaxVertex();
+                    body.MinimumVertex = body.getMinVertex();
+                    body.updateNormals();
+                }
+            });
 
         size_t index = 0;
         std::vector<BodyHandle> ssBodies(m_Bodies.size() - m_InactiveBodies.size());

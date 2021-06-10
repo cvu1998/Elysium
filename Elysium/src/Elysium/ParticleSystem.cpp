@@ -68,19 +68,19 @@ namespace Elysium
 
 	void ParticleSystem::onCPUUpdate(Timestep ts)
 	{
-		for (size_t i = 0; i < m_PoolIndex; ++i)
-		{
-			m_ParticlePool[i].LifeRemaining -= ts;
-			m_ParticlePool[i].Position += m_ParticlePool[i].Velocity * (float)ts;
-			m_ParticlePool[i].Rotation += m_ParticlePool[i].RotationSpeed * ts;
+		std::for_each(m_ParticlePool.begin(), m_ParticlePool.begin() + m_PoolIndex, [ts](Particle& particle)
+			{
+				particle.LifeRemaining -= ts;
+				particle.Position += particle.Velocity * (float)ts;
+				particle.Rotation += particle.RotationSpeed * ts;
 
-			// Fade away particles
-			float lifeRatio = m_ParticlePool[i].LifeRemaining / m_ParticlePool[i].LifeTime;
-			m_ParticlePool[i].Color = glm::lerp(m_ParticlePool[i].ColorEnd, m_ParticlePool[i].ColorBegin, lifeRatio);
-			m_ParticlePool[i].Color.a = lifeRatio;
+				// Fade away particles
+				float lifeRatio = particle.LifeRemaining / particle.LifeTime;
+				particle.Color = glm::lerp(particle.ColorEnd, particle.ColorBegin, lifeRatio);
+				particle.Color.a = lifeRatio;
 
-			m_ParticlePool[i].Size = glm::lerp(m_ParticlePool[i].SizeEnd, m_ParticlePool[i].SizeBegin, lifeRatio);
-		}
+				particle.Size = glm::lerp(particle.SizeEnd, particle.SizeBegin, lifeRatio);
+			});
 	}
 
 	void ParticleSystem::onGPUUpdate(Timestep ts)

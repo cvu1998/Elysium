@@ -221,6 +221,7 @@ xcopy "$(ProjectDir)src\*.inl" "$(SolutionDir)Export\Elysium\include\" /S /Y /I<
     <ClCompile Include="src\Elysium\MathUtility.cpp" />
     <ClCompile Include="src\Elysium\Network\UDPClient.cpp" />
     <ClCompile Include="src\Elysium\Network\UDPServer.cpp" />
+    <ClCompile Include="src\Elysium\Physics\PhysicalBody2D.cpp" />
     <ClCompile Include="src\Elysium\Renderer\Framebuffer.cpp" />
     <ClCompile Include="src\Elysium\Renderer\Assert.cpp" />
     <ClCompile Include="src\Elysium\SceneManager.cpp" />
@@ -233,7 +234,6 @@ xcopy "$(ProjectDir)src\*.inl" "$(SolutionDir)Export\Elysium\include\" /S /Y /I<
     <ClCompile Include="src\Elysium\Application.cpp" />
     <ClCompile Include="src\Elysium\OrthographicCameraController.cpp" />
     <ClCompile Include="src\Elysium\ParticleSystem.cpp" />
-    <ClCompile Include="src\Elysium\Physics\PhysicalBody2D.cpp" />
     <ClCompile Include="src\Elysium\Physics\PhysicsSystem2D.cpp" />
     <ClCompile Include="src\Elysium\Random.cpp" />
     <ClCompile Include="src\Elysium\Renderer\Camera.cpp" />
@@ -417,7 +417,6 @@ xcopy "$(ProjectDir)src\*.inl" "$(SolutionDir)Export\Elysium\include\" /S /Y /I<
     <ClInclude Include="src\Elysium\AI\RLAgent.h" />
     <ClInclude Include="src\Elysium\Animation.h" />
     <ClInclude Include="src\Elysium\Log.h" />
-    <ClInclude Include="src\Elysium\ArrayList.h" />
     <ClInclude Include="src\Elysium\Input.h" />
     <ClInclude Include="src\Elysium\KeyCodes.h" />
     <ClInclude Include="src\Elysium\LayerStack.h" />

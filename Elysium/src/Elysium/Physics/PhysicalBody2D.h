@@ -3,7 +3,6 @@
 #include <functional>
 #include <limits>
 
-#include "Elysium/ArrayList.h"
 #include "Elysium/Math.h"
 #include "Elysium/Timestep.h"
 
@@ -47,7 +46,6 @@ namespace Elysium
 
     class PhysicalBody2D
     {
-        friend class ArrayList<PhysicalBody2D>;
         friend class PhysicsSystem2D;
 
         using Collision_Callback = std::function<void(PhysicalBody2D& body,
@@ -111,6 +109,8 @@ namespace Elysium
         Vector2 getMinVertex() const;
 
         void updateNormals();
+
+        void onUpdate(Timestep ts);
 
     public:
         inline const char* getTag() const { return Tag; }

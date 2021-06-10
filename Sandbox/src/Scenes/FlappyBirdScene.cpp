@@ -5,7 +5,7 @@ FlappyBirdScene::FlappyBirdScene(unsigned int width, unsigned int height) :
     m_Camera(-m_Height * (float)(width / height), m_Height* (float)(width / height), -m_Height * 0.5f, m_Height * 0.5f),
     m_SpriteSheet("res/texture/Flappy-Bird-Sprite.png")
 {
-    e_PhysicsSystem2D.setGravitaionnalAccel(20.0f);
+    e_PhysicsSystem2D.GravitationalAccel = -20.0f;
 
     std::vector<Elysium::Quad> quads;
     if (!Elysium::Editor::Deserialize("res/scenes/Flappy.elysium", quads))
@@ -73,7 +73,7 @@ FlappyBirdScene::~FlappyBirdScene()
     m_Agent.saveWeightVectorToFile("res/AI/FlappyBirdWeightVector.rl");
     e_PhysicsSystem2D.clear();
 
-    e_PhysicsSystem2D.setGravitaionnalAccel(10.0f);
+    e_PhysicsSystem2D.GravitationalAccel = -9.80f;
 }
 
 void FlappyBirdScene::generateRandomPipe(float xposition)

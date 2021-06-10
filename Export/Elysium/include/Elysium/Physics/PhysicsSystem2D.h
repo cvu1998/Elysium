@@ -1,5 +1,6 @@
 #pragma once
 
+#include <deque>
 #include <unordered_set>
 
 #include "Elysium/Math.h"
@@ -13,28 +14,27 @@ namespace Elysium
     {
     private:
         float m_Time = 0.0f;
-        float m_GravitationalAccel;
 
-        ArrayList<PhysicalBody2D> m_Bodies;
+        std::deque<PhysicalBody2D> m_Bodies;
         std::vector<BodyHandle> m_InactiveBodies;
 
         std::unordered_set<size_t> m_LoggedBodies;
 
     public:
         bool Gravity = true;
+        float GravitationalAccel = -9.80f;
 
     private:
         bool checkBroadPhase(const PhysicalBody2D& body1, const PhysicalBody2D& body2);
         void checkNarrowPhase(const PhysicalBody2D& body1, const PhysicalBody2D& body2, CollisionInfo& info);
 
-        void updateBody(PhysicalBody2D& body, Timestep ts);
         void applyCollisionResponse(PhysicalBody2D& body, const PhysicalBody2D& otherBody, const Vector2& normal, float overlap,
             Timestep ts);
 
         void printInfo(BodyHandle i);
 
     public:
-        PhysicsSystem2D(float acceleration);
+        PhysicsSystem2D() = default;
 
         PhysicalBody2D* createPhysicalBody(BodyType type, Collider collider, const char* name, float mass,
             const Vector2& initialPosition, const Vector2& size,
@@ -50,10 +50,8 @@ namespace Elysium
         inline const PhysicalBody2D& readPhysicalBody(BodyHandle identifier) const { return m_Bodies[identifier]; };
 
         inline float getTime() { return m_Time; }
-        inline void setGravitaionnalAccel(float acceleration) { m_GravitationalAccel = acceleration; }
-        inline float getGravitaionnalAccel() const { return m_GravitationalAccel; }
 
-        inline ArrayList<PhysicalBody2D>& getBodies() { return m_Bodies; }
+        inline std::deque<PhysicalBody2D>& getBodies() { return m_Bodies; }
         inline void clear()
         {
             m_Bodies.clear();
