@@ -211,6 +211,7 @@ xcopy "$(ProjectDir)src\*.inl" "$(SolutionDir)Export\Elysium\include\" /S /Y /I<
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Elysium\AI\Model.cpp" />
     <ClCompile Include="src\Elysium\AI\AIUtility.cpp" />
     <ClCompile Include="src\Elysium\AI\Dense.cpp" />
     <ClCompile Include="src\Elysium\AI\HiddenLayer.cpp" />
@@ -396,6 +397,7 @@ xcopy "$(ProjectDir)src\*.inl" "$(SolutionDir)Export\Elysium\include\" /S /Y /I<
     <None Include="src\vendor\glm\gtx\wrap.inl" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Elysium\AI\Model.h" />
     <ClInclude Include="src\Elysium\AI\AIUtility.h" />
     <ClInclude Include="src\Elysium\AI\Dense.h" />
     <ClInclude Include="src\Elysium\AI\HiddenLayer.h" />

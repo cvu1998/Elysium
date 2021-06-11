@@ -46,7 +46,6 @@ namespace Elysium
 
     class PhysicalBody2D
     {
-        //friend class std::deque<PhysicalBody2D>;
         friend class PhysicsSystem2D;
 
         using Collision_Callback = std::function<void(PhysicalBody2D& body,

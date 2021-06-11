@@ -1,6 +1,7 @@
 #include "PhysicsSystem2D.h"
 
 #include <algorithm>
+#include <execution>
 #include <string.h>
 
 #define NOMINMAX
@@ -267,9 +268,12 @@ namespace Elysium
 
     void PhysicsSystem2D::onUpdate(Timestep ts)
     {
-        m_Time += ts;
         ts = std::min(1.0f / 30.0f, (float)ts);
-        std::for_each(m_Bodies.begin(), m_Bodies.end(), [&](PhysicalBody2D& body)
+
+        std::for_each(std::execution::par_unseq, 
+            m_Bodies.begin(), 
+            m_Bodies.end(), 
+            [&](PhysicalBody2D& body)
             {
                 if (body.Status != BodyStatus::INACTIVE)
                 {

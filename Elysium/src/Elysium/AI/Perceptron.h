@@ -18,10 +18,10 @@ namespace Elysium
         Perceptron() = default;
         Perceptron(AI::Activation activation);
 
-        void fit(const Matrix& x, const Matrix& y, size_t epochs = 1);
+        void fit(const Matrix& inputs, const Matrix& outputs, size_t epochs = 1);
 
-        void predict(const Matrix& x, std::vector<float>& results);
-        float score(const Matrix& x, const Matrix& y);
+        void predict(const Matrix& inputs, std::vector<float>& results);
+        float score(const Matrix& inputs, const Matrix& outputs, std::vector<float>& results);
 
     private:
         using ActivationFn = std::function<float(float)>;

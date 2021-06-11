@@ -9,7 +9,9 @@ namespace Elysium
     public:
         Dense(size_t units, AI::Activation activation = AI::Activation::SIGMOID);
 
-        void fit(const Matrix& x, const Matrix& y) override;
+        void forwardPass(const Matrix& inputs, Matrix& results) override;
+        float calculateError(const Matrix& inputs, const Matrix& outputs,
+            Matrix& results, Matrix& error)  override;
 
     private:
         size_t m_Units = 1;

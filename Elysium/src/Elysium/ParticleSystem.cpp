@@ -1,5 +1,7 @@
 #include "ParticleSystem.h"
 
+#include <execution>
+
 #include <glm/gtc/constants.hpp>
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/compatibility.hpp>
@@ -68,7 +70,10 @@ namespace Elysium
 
 	void ParticleSystem::onCPUUpdate(Timestep ts)
 	{
-		std::for_each(m_ParticlePool.begin(), m_ParticlePool.begin() + m_PoolIndex, [ts](Particle& particle)
+		std::for_each(std::execution::par_unseq,
+			m_ParticlePool.begin(), 
+			m_ParticlePool.begin() + m_PoolIndex,
+			[ts](Particle& particle)
 			{
 				particle.LifeRemaining -= ts;
 				particle.Position += particle.Velocity * (float)ts;

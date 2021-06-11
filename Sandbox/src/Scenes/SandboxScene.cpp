@@ -115,16 +115,18 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Elysium::S
                                 { 0.0f, 1.0f, 0.0f }, 
                                 { 1.0f, 1.0f, 1.0f } });
 
-    perceptron.fit(Elysium::Matrix::Slice(ANDGateData, 0, 0, 0, 2),
+    perceptron.fit(
+        Elysium::Matrix::Slice(ANDGateData, 0, 0, 0, 2),
         Elysium::Matrix::Slice(ANDGateData, 0, 0, 2, 3), 
         epochs);
     weights = Elysium::Matrix(perceptron.Weights);
     weights.print();
 
     std::vector<float> results;
-    perceptron.predict(Elysium::Matrix::Slice(ANDGateData, 0, 0, 0, 2), results);
-    float meanAccuracy = perceptron.score(Elysium::Matrix::Slice(ANDGateData, 0, 0, 0, 2),
-        Elysium::Matrix::Slice(ANDGateData, 0, 0, 2, 3));
+    float meanAccuracy = perceptron.score(
+        Elysium::Matrix::Slice(ANDGateData, 0, 0, 0, 2),
+        Elysium::Matrix::Slice(ANDGateData, 0, 0, 2, 3), 
+        results);
 
     for (float y : results)
         ELY_INFO("AND Gate: {0}", y);
@@ -135,16 +137,18 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Elysium::S
                                 { 0.0f, 1.0f, 1.0f },
                                 { 1.0f, 1.0f, 1.0f } });
 
-    perceptron.fit(Elysium::Matrix::Slice(ORGateData, 0, 0, 0, 2),
+    perceptron.fit(
+        Elysium::Matrix::Slice(ORGateData, 0, 0, 0, 2),
         Elysium::Matrix::Slice(ORGateData, 0, 0, 2, 3), 
         epochs);
     weights = Elysium::Matrix(perceptron.Weights);
     weights.print();
 
     results.clear();
-    perceptron.predict(Elysium::Matrix::Slice(ORGateData, 0, 0, 0, 2), results);
-    meanAccuracy = perceptron.score(Elysium::Matrix::Slice(ORGateData, 0, 0, 0, 2),
-        Elysium::Matrix::Slice(ORGateData, 0, 0, 2, 3));
+    meanAccuracy = perceptron.score(
+        Elysium::Matrix::Slice(ORGateData, 0, 0, 0, 2),
+        Elysium::Matrix::Slice(ORGateData, 0, 0, 2, 3),
+        results);
 
     for (float y : results)
         ELY_INFO("OR Gate: {0}", y);
@@ -155,29 +159,34 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Elysium::S
                                 { 1.0f, 0.0f, 1.0f },
                                 { 1.0f, 1.0f, 0.0f } });
 
-    perceptron.fit(Elysium::Matrix::Slice(XORGateData, 0, 0, 0, 2),
+    perceptron.fit(
+        Elysium::Matrix::Slice(XORGateData, 0, 0, 0, 2),
         Elysium::Matrix::Slice(XORGateData, 0, 0, 2, 3), 
         epochs);
     weights = Elysium::Matrix(perceptron.Weights);
     weights.print();
 
     results.clear();
-    perceptron.predict(Elysium::Matrix::Slice(XORGateData, 0, 0, 0, 2), results);
-    meanAccuracy = perceptron.score(Elysium::Matrix::Slice(XORGateData, 0, 0, 0, 2),
-        Elysium::Matrix::Slice(XORGateData, 0, 0, 2, 3));
+    meanAccuracy = perceptron.score(
+        Elysium::Matrix::Slice(XORGateData, 0, 0, 0, 2),
+        Elysium::Matrix::Slice(XORGateData, 0, 0, 2, 3),
+        results);
 
     for (float y : results)
         ELY_INFO("XOR Gate: {0}", y);
     ELY_INFO("Mean Accuracy for XOR: {0}", meanAccuracy);
     //--- PERCEPTRON ---//
 
-    //--- DENSE LAYER ---//
-    Elysium::Dense DenseLayer(3);
+    //--- NEURAL NETWORK MODEL ---//
+    Elysium::Model model(2);
+    model.add(new Elysium::Dense(3));
+    model.add(new Elysium::Dense(1));
 
     Elysium::Matrix::Slice(XORGateData, 0, 0, 0, 2).print();
     Elysium::Matrix::Slice(XORGateData, 0, 0, 2, 3).print();
 
-    DenseLayer.fit(Elysium::Matrix::Slice(XORGateData, 0, 0, 0, 2),
+    model.fit(
+        Elysium::Matrix::Slice(XORGateData, 0, 0, 0, 2),
         Elysium::Matrix::Slice(XORGateData, 0, 0, 2, 3));
     //--- DENSE LAYER ---//
 }

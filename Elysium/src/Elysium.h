@@ -47,8 +47,9 @@
 
 #include "Elysium/AI/Perceptron.h"
 
-#include "Elysium/AI/HiddenLayer.h"
 #include "Elysium/AI/Dense.h"
+#include "Elysium/AI/HiddenLayer.h"
+#include "Elysium/AI/Model.h"
 
 #include "Elysium/AI/LinearRLAgent.h"
 #include "Elysium/AI/State.h"

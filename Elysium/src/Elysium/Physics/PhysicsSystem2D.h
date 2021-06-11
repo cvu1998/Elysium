@@ -13,8 +13,6 @@ namespace Elysium
     class PhysicsSystem2D final
     {
     private:
-        float m_Time = 0.0f;
-
         std::deque<PhysicalBody2D> m_Bodies;
         std::vector<BodyHandle> m_InactiveBodies;
 
@@ -48,8 +46,6 @@ namespace Elysium
 
         inline PhysicalBody2D* getPhysicalBody(BodyHandle identifier) { return &m_Bodies[identifier]; };
         inline const PhysicalBody2D& readPhysicalBody(BodyHandle identifier) const { return m_Bodies[identifier]; };
-
-        inline float getTime() { return m_Time; }
 
         inline std::deque<PhysicalBody2D>& getBodies() { return m_Bodies; }
         inline void clear()

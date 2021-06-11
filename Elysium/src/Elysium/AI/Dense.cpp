@@ -13,69 +13,69 @@ namespace Elysium
             m_Activation = std::bind(&AI::step, std::placeholders::_1);
             break;
         case AI::Activation::SIGMOID:
+            m_Activation = std::bind(&AI::sigmoid, std::placeholders::_1);
             break;
         }
     }
 
-    void Dense::fit(const Matrix& x, const Matrix& y)
+    void Dense::forwardPass(const Matrix& inputs, Matrix& results)
     {
-        if (x.getHeight() != y.getHeight())
-        {
-            ELY_CORE_ERROR("Incomplete training samples!");
-            return;
-        }
-
         if (Weights.Values.empty())
         {
-            Weights = Matrix(m_Units, x.getWidth(), true);
-            //Weights = Matrix(m_Units, x.getWidth() + 1, true);
+            Weights = Matrix(m_Units, inputs.getWidth(), true);
+            //Weights = Matrix(m_Units, inputs.getWidth() + 1, true);
             Utility::CreateRandomVector(Weights.Values, Weights.getWidth() * Weights.getHeight(), -1.0f, 1.0f);
+
+            results = Matrix(inputs.getHeight(), m_Units);
         }
 
         Weights.print();
-        size_t epochs = 1;
-        Matrix results(x.getHeight(), m_Units);
-        for (size_t t = epochs; epochs > 0; --epochs)
+        for (size_t i = 0; i < inputs.getHeight(); ++i)
         {
-            for (size_t i = 0; i < x.getHeight(); ++i)
+            for (size_t a = 0; a < m_Units; ++a)
             {
-                for (size_t a = 0; a < m_Units; ++a)
-                {
-                    for (size_t b = 0; b < x.getWidth(); ++b)
-                        results[{i, a}] += Weights[{a, b}] * x[{i, b}];
-                    //results[{i, a}] += Weights[{a, x.getWidth()}];
+                for (size_t b = 0; b < inputs.getWidth(); ++b)
+                    results[{i, a}] += Weights[{a, b}] * inputs[{i, b}];
+                //results[{i, a}] += Weights[{a, inputs.getWidth()}];
 
-                    results[{i, a}] = m_Activation(results[{i, a}]);
-                }
+                results[{i, a}] = m_Activation(results[{i, a}]);
             }
         }
         results.print();
+    }
 
-        //----- SECOND DENSE LAYER INSIDE MODEL -----//
-        ELY_CORE_INFO("---Second Dense Layer---");
 
-        size_t units = 1;
-        Matrix secondWeights(units, results.getWidth(), true);
-        Utility::CreateRandomVector(secondWeights.Values, secondWeights.getWidth() * secondWeights.getHeight(), -1.0f, 1.0f);
-        secondWeights.print();
-
-        epochs = 1;
-        Matrix result(results.getHeight(), units);
-        for (size_t t = epochs; epochs > 0; --epochs)
+    float Dense::calculateError(const Matrix& inputs, const Matrix& outputs,
+        Matrix& results, Matrix& error)
+    {
+        if (Weights.Values.empty())
         {
-            for (size_t i = 0; i < results.getHeight(); ++i)
-            {
-                for (size_t a = 0; a < units; ++a)
-                {
-                    for (size_t b = 0; b < results.getWidth(); ++b)
-                        result[{i, a}] += secondWeights[{a, b}] * results[{i, b}];
-                    //results[{i, a}] += Weights[{a, x.getWidth()}];
+            Weights = Matrix(m_Units, inputs.getWidth(), true);
+            //Weights = Matrix(m_Units, inputs.getWidth() + 1, true);
+            Utility::CreateRandomVector(Weights.Values, Weights.getWidth() * Weights.getHeight(), -1.0f, 1.0f);
 
-                    result[{i, a}] = m_Activation(result[{i, a}]);
-                }
+            results = Matrix(inputs.getHeight(), m_Units);
+            error = Matrix(results.getHeight(), results.getWidth());
+        }
+
+        Weights.print();
+        float meanError = 0.0f;
+        for (size_t i = 0; i < inputs.getHeight(); ++i)
+        {
+            for (size_t a = 0; a < m_Units; ++a)
+            {
+                for (size_t b = 0; b < inputs.getWidth(); ++b)
+                    results[{i, a}] += Weights[{a, b}] * inputs[{i, b}];
+                //results[{i, a}] += Weights[{a, inputs.getWidth()}];
+
+                results[{i, a}] = m_Activation(results[{i, a}]);
+                error[{i, a}] = outputs.Values[i] - results[{i, a}];
+                meanError += fabs(error[{i, a}]);
             }
         }
-        result.print();
+        results.print();
+        error.print();
 
+        return meanError / (float)error.getHeight();
     }
 }

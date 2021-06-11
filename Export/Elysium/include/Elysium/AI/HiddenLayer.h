@@ -12,7 +12,9 @@ namespace Elysium
     public:
         virtual ~HiddenLayer() = default;
 
-        virtual void fit(const Matrix& x, const Matrix& y) = 0;
+        virtual void forwardPass(const Matrix& inputs, Matrix& results) = 0;
+        virtual float calculateError(const Matrix& inputs, const Matrix& outputs, 
+            Matrix& results, Matrix& error) = 0;
 
     public:
         Matrix Weights;
@@ -22,6 +24,6 @@ namespace Elysium
     protected:
         using ActivationFn = std::function<float(float)>;
 
-        ActivationFn m_Activation = std::bind(&AI::sigmoid, std::placeholders::_1);
+        ActivationFn m_Activation;
     };
 }
