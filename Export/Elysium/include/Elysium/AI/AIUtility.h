@@ -10,7 +10,9 @@ namespace Elysium
             SIGMOID
         };
 
-        float step(float x);
-        float sigmoid(float x);
+        float Step(float x);
+
+        float Sigmoid(float x);
+        float SigmoidDerivative(float x);
     }
 }

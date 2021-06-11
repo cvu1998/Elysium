@@ -6,14 +6,18 @@ namespace Elysium
 {
     namespace AI
     {
-        float step(float x)
+        float Step(float x)
         {
             return x >= 1.0f ? 1.0f : 0.0f;
         }
 
-        float sigmoid(float x)
+        float Sigmoid(float x)
         {
             return  1.0f / (1.0f + glm::exp(-x));
+        }
+        float SigmoidDerivative(float x)
+        {
+            return x * (1.0f - x);
         }
     }
 }

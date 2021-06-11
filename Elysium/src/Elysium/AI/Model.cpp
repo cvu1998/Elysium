@@ -1,5 +1,4 @@
 #include "Model.h"
-#include "Model.h"
 
 #include "Elysium/Log.h"
 
@@ -9,6 +8,7 @@ namespace Elysium
     {
         m_Layers.reserve(numberOfLayers);
         m_Neurons.resize(numberOfLayers);
+        m_Deltas.resize(numberOfLayers);
     }
 
     Model::~Model()
@@ -38,6 +38,10 @@ namespace Elysium
             }
             meanError = m_Layers[last]->calculateError(m_Neurons[last - 1], outputs, m_Neurons[last], m_Error);
             ELY_CORE_INFO("Mean Error: {0}", meanError);
+
+            m_Layers[last]->calculateDelta(m_Error, m_Neurons[last], m_Deltas[last]);
+            for (int i = (int)last - 1; i >= 0; --i)
+                m_Layers[i]->backwardPass(m_Deltas[i + 1], m_Layers[i + 1]->Weights, m_Neurons[i], m_Deltas[i]);
         }
     }
 

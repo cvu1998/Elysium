@@ -5,6 +5,8 @@ m_Camera(-m_Height * (float)(width / height), m_Height * (float)(width / height)
 m_ParticleSystem(17500, Elysium::UpdateDevice::CPU),
 m_Player({ { -12.5f, 20.0f } })
 {
+    Elysium::Random::Init();
+
     m_Textures.reserve(11);
     m_Textures.emplace_back("res/texture/Idle (1).png");
     m_Textures.emplace_back("res/texture/platformPack_tilesheet.png");

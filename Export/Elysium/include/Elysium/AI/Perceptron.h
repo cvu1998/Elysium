@@ -26,6 +26,6 @@ namespace Elysium
     private:
         using ActivationFn = std::function<float(float)>;
 
-        ActivationFn m_Activation = std::bind(&AI::step, std::placeholders::_1);
+        ActivationFn m_Activation = std::bind(&AI::Step, std::placeholders::_1);
     };
 }

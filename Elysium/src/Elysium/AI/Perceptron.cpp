@@ -11,7 +11,7 @@ namespace Elysium
         case AI::Activation::STEP:
             break;
         case AI::Activation::SIGMOID:
-            m_Activation = std::bind(&AI::sigmoid, std::placeholders::_1);
+            m_Activation = std::bind(&AI::Sigmoid, std::placeholders::_1);
             break;
         }
     }

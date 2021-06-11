@@ -22,6 +22,7 @@ namespace Elysium
     private:
         std::vector<HiddenLayer*> m_Layers;
         std::vector<Matrix> m_Neurons;
+        std::vector<Matrix> m_Deltas;
         
         Matrix m_Error;
     };
