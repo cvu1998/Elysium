@@ -30,7 +30,7 @@ namespace Elysium
         inline float& operator[](Coordinate c) { return Values[c.column * Width + c.row]; }
         inline float operator[](Coordinate c) const { return Values[c.column * Width + c.row]; }
 
-        void print();
+        void print() const;
 
     private:
         size_t Height = 0;

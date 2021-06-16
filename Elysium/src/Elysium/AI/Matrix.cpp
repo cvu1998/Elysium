@@ -106,7 +106,7 @@ namespace Elysium
         return result;
     }
 
-    void Matrix::print()
+    void Matrix::print() const
     {
         printf("[");
         for (size_t j = 0; j < Height; ++j)

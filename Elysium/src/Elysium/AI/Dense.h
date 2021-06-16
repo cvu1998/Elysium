@@ -9,13 +9,14 @@ namespace Elysium
     public:
         Dense(size_t units, AI::Activation activation = AI::Activation::SIGMOID);
 
+    protected:
         void forwardPass(const Matrix& inputs, 
             Matrix& results) override;
         float calculateError(const Matrix& inputs, const Matrix& outputs,
             Matrix& results, Matrix& error)  override;
-        virtual void calculateDelta(const Matrix& error, const Matrix& outputs,
+        virtual void calculateDelta(const Matrix& error, const Matrix& outputs, const Matrix& inputs,
             Matrix& delta) override;
-        virtual void backwardPass(const Matrix& prevDelta, const Matrix& prevWeights, const Matrix& outputs,
+        virtual void backwardPass(const Matrix& prevDelta, const Matrix& prevWeights, const Matrix& outputs, const Matrix& inputs,
             Matrix& delta) override;
 
     private:

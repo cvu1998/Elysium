@@ -185,6 +185,8 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Elysium::S
     Elysium::Matrix::Slice(XORGateData, 0, 0, 0, 2).print();
     Elysium::Matrix::Slice(XORGateData, 0, 0, 2, 3).print();
 
+    model.LearningRate = 1.0f;
+
     model.fit(
         Elysium::Matrix::Slice(XORGateData, 0, 0, 0, 2),
         Elysium::Matrix::Slice(XORGateData, 0, 0, 2, 3));

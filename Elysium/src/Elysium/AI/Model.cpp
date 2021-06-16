@@ -7,8 +7,6 @@ namespace Elysium
     Model::Model(size_t numberOfLayers)
     {
         m_Layers.reserve(numberOfLayers);
-        m_Neurons.resize(numberOfLayers);
-        m_Deltas.resize(numberOfLayers);
     }
 
     Model::~Model()
@@ -21,31 +19,56 @@ namespace Elysium
     void Model::fit(const Matrix& inputs, const Matrix& outputs, size_t epochs)
     {
         const size_t last = m_Layers.size() - 1;
+        const size_t epochsPoint = (size_t)((float)epochs * 0.05f) + 1;
 
         for (epochs; epochs > 0; --epochs)
         {
-            float meanError = 0.0f;
-            for (size_t i = 0; i < last; ++i)
+            std::vector<Matrix> neurons(m_Layers.size());
+
+            m_Layers[0]->forwardPass(inputs, neurons[0]);
+            for (size_t i = 1; i < last; ++i)
+                    m_Layers[i]->forwardPass(neurons[i - 1], neurons[i]);
+            Matrix error;
+            float meanError = m_Layers[last]->calculateError(neurons[last - 1], outputs, neurons[last], error);
+            if (epochs % epochsPoint == 0)
+                m_Summary.push_back({ epochs, meanError });
+
+            Matrix currDelta;
+            Matrix prevDelta;
+            Matrix prevLayerWeights = m_Layers[last]->Weights;
+            Matrix weights;
+
+            m_Layers[last]->LearningRate = LearningRate;
+            m_Layers[last]->calculateDelta(error, neurons[last], neurons[last - 1], currDelta);
+            prevDelta = currDelta;
+            for (int i = (int)last - 1; i >= 0; --i)
             {
+                weights = m_Layers[i]->Weights;
+
+                m_Layers[i]->LearningRate = LearningRate;
                 switch (i)
                 {
                 case 0:
-                    m_Layers[i]->forwardPass(inputs, m_Neurons[i]);
+                    m_Layers[i]->backwardPass(prevDelta, prevLayerWeights, neurons[i], inputs, currDelta);
                     break;
                 default:
-                    m_Layers[i]->forwardPass(m_Neurons[i - 1], m_Neurons[i]);
+                    m_Layers[i]->backwardPass(prevDelta, prevLayerWeights, neurons[i], neurons[last - 1], currDelta);
                 }
+                prevDelta = currDelta;
+                prevLayerWeights = weights;
             }
-            meanError = m_Layers[last]->calculateError(m_Neurons[last - 1], outputs, m_Neurons[last], m_Error);
-            ELY_CORE_INFO("Mean Error: {0}", meanError);
-
-            m_Layers[last]->calculateDelta(m_Error, m_Neurons[last], m_Deltas[last]);
-            for (int i = (int)last - 1; i >= 0; --i)
-                m_Layers[i]->backwardPass(m_Deltas[i + 1], m_Layers[i + 1]->Weights, m_Neurons[i], m_Deltas[i]);
         }
     }
 
-    void Model::summary()
+    void Model::predict(const Matrix& inputs, Matrix& results)
     {
+        const size_t last = m_Layers.size() - 1;
+
+        std::vector<Matrix> neurons(last);
+
+        m_Layers[0]->forwardPass(inputs, neurons[0]);
+        for (size_t i = 0; i < last; ++i)
+            m_Layers[i]->forwardPass(neurons[i - 1], neurons[i]);
+        m_Layers[last]->forwardPass(neurons[last - 1], results);
     }
 }
