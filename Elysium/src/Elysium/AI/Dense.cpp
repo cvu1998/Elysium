@@ -22,7 +22,7 @@ namespace Elysium
         }
     }
 
-    void Dense::forwardPass(const Matrix& inputs, 
+    bool Dense::forwardPass(const Matrix& inputs, 
         Matrix& results)
     {
         if (Weights.Values.empty())
@@ -31,10 +31,11 @@ namespace Elysium
             Utility::CreateRandomVector(Weights.Values, Weights.getWidth() * Weights.getHeight(), -1.0f, 1.0f);
         }
 
+        if (Weights.getWidth() != inputs.getWidth())
+            return false;
+
         results = Matrix(inputs.getHeight(), m_Units);
 
-        ELY_CORE_INFO("WEIGHTS");
-        Weights.print();
         for (size_t i = 0; i < inputs.getHeight(); ++i)
         {
             for (size_t a = 0; a < m_Units; ++a)
@@ -45,7 +46,7 @@ namespace Elysium
                 results[{i, a}] = m_Activation(results[{i, a}]);
             }
         }
-        results.print();
+        return true;
     }
 
 
@@ -61,8 +62,6 @@ namespace Elysium
         results = Matrix(inputs.getHeight(), m_Units);
         error = Matrix(results.getHeight(), results.getWidth());
 
-        ELY_CORE_INFO("WEIGHTS");
-        Weights.print();
         float meanError = 0.0f;
         for (size_t i = 0; i < inputs.getHeight(); ++i)
         {
@@ -76,8 +75,6 @@ namespace Elysium
                 meanError += fabs(error[{i, a}]);
             }
         }
-        results.print();
-        error.print();
 
         return meanError / (float)error.getHeight();
     }
@@ -94,7 +91,6 @@ namespace Elysium
         {
             delta.Values[idx++] = error.Values[idx] * m_ActivationDerivative(value);
         });
-        delta.print();
 
         for (size_t a = 0; a < inputs.getWidth(); ++a)
         {
@@ -106,8 +102,8 @@ namespace Elysium
                 Weights[{i, a}] += step;
             }
         }
-        ELY_CORE_INFO("WEIGHTS AFTER UPDATE");
-        Weights.print();
+        //ELY_CORE_INFO("WEIGHTS AFTER UPDATE");
+        //Weights.print();
     }
 
     void Dense::backwardPass(const Matrix& prevDelta, const Matrix& prevWeights, const Matrix& outputs, const Matrix& inputs,
@@ -122,7 +118,6 @@ namespace Elysium
                     delta[{i, a}] = prevDelta[{i, b}] * prevWeights[{b, a}] * m_ActivationDerivative(outputs[{i, a}]);
             }
         }
-        delta.print();
 
         for (size_t a = 0; a < inputs.getWidth(); ++a)
         {
@@ -134,7 +129,7 @@ namespace Elysium
                 Weights[{i, a}] += step;
             }
         }
-        ELY_CORE_INFO("WEIGHTS AFTER UPDATE");
-        Weights.print();
+        //ELY_CORE_INFO("WEIGHTS AFTER UPDATE");
+        //Weights.print();
     }
 }

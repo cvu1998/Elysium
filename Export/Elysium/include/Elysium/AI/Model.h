@@ -26,6 +26,7 @@ namespace Elysium
         void fit(const Matrix& inputs, const Matrix& outputs, size_t epochs = 1);
 
         void predict(const Matrix& inputs, Matrix& results);
+        float score(const Matrix& inputs, const Matrix& outputs, Matrix& results);
 
 
     public:

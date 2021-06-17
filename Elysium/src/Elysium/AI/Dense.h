@@ -10,7 +10,7 @@ namespace Elysium
         Dense(size_t units, AI::Activation activation = AI::Activation::SIGMOID);
 
     protected:
-        void forwardPass(const Matrix& inputs, 
+        bool forwardPass(const Matrix& inputs, 
             Matrix& results) override;
         float calculateError(const Matrix& inputs, const Matrix& outputs,
             Matrix& results, Matrix& error)  override;

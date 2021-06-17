@@ -185,11 +185,24 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Elysium::S
     Elysium::Matrix::Slice(XORGateData, 0, 0, 0, 2).print();
     Elysium::Matrix::Slice(XORGateData, 0, 0, 2, 3).print();
 
-    model.LearningRate = 1.0f;
+    //model.LearningRate = 1.0f;
+    model.LearningRate = 0.5f;
 
     model.fit(
         Elysium::Matrix::Slice(XORGateData, 0, 0, 0, 2),
-        Elysium::Matrix::Slice(XORGateData, 0, 0, 2, 3));
+        Elysium::Matrix::Slice(XORGateData, 0, 0, 2, 3),
+        25000);
+        //1);
+
+    for (const auto& p : model.getSummary())
+        ELY_INFO("Epoch: {0}, Error: {1}", p.Epoch, p.MeanError);
+
+    Elysium::Matrix result;
+    ELY_INFO("Mean Error: {0}", model.score(
+        Elysium::Matrix::Slice(XORGateData, 0, 0, 0, 2),
+        Elysium::Matrix::Slice(XORGateData, 0, 0, 2, 3),
+        result));
+    result.print();
     //--- DENSE LAYER ---//
 }
 

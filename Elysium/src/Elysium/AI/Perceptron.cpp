@@ -18,7 +18,7 @@ namespace Elysium
 
     void Perceptron::fit(const Matrix& inputs, const Matrix& outputs, size_t epochs)
     {
-        if (inputs.getHeight() != inputs.getHeight())
+        if (inputs.getHeight() != outputs.getHeight())
         {
             ELY_CORE_ERROR("Incomplete training samples!");
             return;
@@ -26,6 +26,12 @@ namespace Elysium
 
         if (Weights.empty())
             Weights.resize(inputs.getWidth() + 1);
+
+        if (Weights.size() - 1 != inputs.getWidth())
+        {
+            ELY_CORE_ERROR("Invalid input size!");
+            return;
+        }
         
         for (epochs; epochs > 0; --epochs)
         {
@@ -50,6 +56,12 @@ namespace Elysium
 
     void Perceptron::predict(const Matrix& inputs, std::vector<float>& results)
     {
+        if (Weights.size() - 1 != inputs.getWidth())
+        {
+            ELY_CORE_ERROR("Invalid input size!");
+            return;
+        }
+
         results.reserve(inputs.getHeight());
         for (size_t j = 0; j < inputs.getHeight(); ++j)
         {
@@ -64,6 +76,12 @@ namespace Elysium
 
     float Perceptron::score(const Matrix& inputs, const Matrix& outputs, std::vector<float>& results)
     {
+        if (Weights.size() - 1 != inputs.getWidth())
+        {
+            ELY_CORE_ERROR("Invalid input size!");
+            return 1.0f;
+        }
+
         float meanAccuracy = 0.0f;
         results.reserve(inputs.getHeight());
         for (size_t j = 0; j < inputs.getHeight(); ++j)

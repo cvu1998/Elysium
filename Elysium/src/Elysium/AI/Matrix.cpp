@@ -94,6 +94,15 @@ namespace Elysium
         endRow = endRow == 0 ? input.Width : endRow;
 
         Matrix result;
+        if (startColumn > input.getHeight() || 
+            endColumn > input.getHeight() ||
+            startRow > input.getWidth() || 
+            endRow > input.getWidth())
+        {
+            ELY_CORE_ERROR("Invalid slice indices!");
+            return result;
+        }
+
         result.Values.reserve(endColumn * endRow);
         for (size_t j = startColumn; j < endColumn; ++j)
         {

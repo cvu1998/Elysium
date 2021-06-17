@@ -20,7 +20,7 @@ namespace Elysium
         Matrix Weights;
 
     protected:
-        virtual void forwardPass(const Matrix& inputs,
+        virtual bool forwardPass(const Matrix& inputs,
             Matrix& results) = 0;
         virtual float calculateError(const Matrix& inputs, const Matrix& outputs,
             Matrix& results, Matrix& error) = 0;
