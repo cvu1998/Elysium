@@ -179,8 +179,8 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Elysium::S
 
     //--- NEURAL NETWORK MODEL ---//
     Elysium::Model model(2);
-    model.add(new Elysium::Dense(3));
-    model.add(new Elysium::Dense(1));
+    model.add(new Elysium::Dense(3, Elysium::AI::Activation::SIGMOID));
+    model.add(new Elysium::Dense(1, Elysium::AI::Activation::SIGMOID));
 
     Elysium::Matrix::Slice(XORGateData, 0, 0, 0, 2).print();
     Elysium::Matrix::Slice(XORGateData, 0, 0, 2, 3).print();
@@ -188,10 +188,12 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Elysium::S
     //model.LearningRate = 1.0f;
     model.LearningRate = 0.5f;
 
+    //model.LossFunction = Elysium::AI::Loss::MEAN_SQUARE;
+
     model.fit(
         Elysium::Matrix::Slice(XORGateData, 0, 0, 0, 2),
         Elysium::Matrix::Slice(XORGateData, 0, 0, 2, 3),
-        25000);
+        2500000);
         //1);
 
     for (const auto& p : model.getSummary())

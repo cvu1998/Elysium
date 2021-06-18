@@ -7,12 +7,12 @@ namespace Elysium
     class Dense : public HiddenLayer
     {
     public:
-        Dense(size_t units, AI::Activation activation = AI::Activation::SIGMOID);
+        Dense(size_t units, AI::Activation activation = AI::Activation::LINEAR);
 
     protected:
         bool forwardPass(const Matrix& inputs, 
             Matrix& results) override;
-        float calculateError(const Matrix& inputs, const Matrix& outputs,
+        float calculateError(const Matrix& inputs, const Matrix& outputs, AI::Loss lossFunction,
             Matrix& results, Matrix& error)  override;
         virtual void calculateDelta(const Matrix& error, const Matrix& outputs, const Matrix& inputs,
             Matrix& delta) override;

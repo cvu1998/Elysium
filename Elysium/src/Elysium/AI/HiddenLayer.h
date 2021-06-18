@@ -20,9 +20,12 @@ namespace Elysium
         Matrix Weights;
 
     protected:
+        using LossFn = std::function<float(float, float)>;
+        using ScoreFn = std::function<float(float, size_t)>;
+
         virtual bool forwardPass(const Matrix& inputs,
             Matrix& results) = 0;
-        virtual float calculateError(const Matrix& inputs, const Matrix& outputs,
+        virtual float calculateError(const Matrix& inputs, const Matrix& outputs, AI::Loss lossFunction,
             Matrix& results, Matrix& error) = 0;
         virtual void calculateDelta(const Matrix& error, const Matrix& outputs, const Matrix& inputs,
             Matrix& delta) = 0;

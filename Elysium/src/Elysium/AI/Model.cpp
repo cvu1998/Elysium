@@ -34,7 +34,7 @@ namespace Elysium
 
             for (size_t i = 1; i < last; ++i)
                     m_Layers[i]->forwardPass(neurons[i - 1], neurons[i]);
-            float meanError = m_Layers[last]->calculateError(neurons[last - 1], outputs, neurons[last], error);
+            float meanError = m_Layers[last]->calculateError(neurons[last - 1], outputs, LossFunction, neurons[last], error);
             if (epochs % epochsPoint == 0)
                 m_Summary.push_back({ epochs, meanError });
 
@@ -93,6 +93,6 @@ namespace Elysium
 
         for (size_t i = 1; i < last; ++i)
             m_Layers[i]->forwardPass(neurons[i - 1], neurons[i]);
-        return m_Layers[last]->calculateError(neurons[last - 1], outputs, results, error);
+        return m_Layers[last]->calculateError(neurons[last - 1], outputs, LossFunction, results, error);
     }
 }

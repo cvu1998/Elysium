@@ -17,8 +17,8 @@ namespace Elysium
             m_ActivationDerivative = std::bind(&AI::SigmoidDerivative, std::placeholders::_1);
             break;
         default:
-            m_Activation = std::bind(&AI::Sigmoid, std::placeholders::_1);
-            m_ActivationDerivative = std::bind(&AI::SigmoidDerivative, std::placeholders::_1);
+            m_Activation = std::bind(&AI::Linear, std::placeholders::_1);
+            m_ActivationDerivative = std::bind(&AI::LinearDerivative, std::placeholders::_1);
         }
     }
 
@@ -50,7 +50,7 @@ namespace Elysium
     }
 
 
-    float Dense::calculateError(const Matrix& inputs, const Matrix& outputs,
+    float Dense::calculateError(const Matrix& inputs, const Matrix& outputs, AI::Loss lossFunction,
         Matrix& results, Matrix& error)
     {
         if (Weights.Values.empty())
@@ -62,6 +62,20 @@ namespace Elysium
         results = Matrix(inputs.getHeight(), m_Units);
         error = Matrix(results.getHeight(), results.getWidth());
 
+        LossFn lossFn;
+        ScoreFn scoreFn;
+        switch (lossFunction)
+        {
+        case AI::Loss::FORECAST:
+            lossFn = std::bind(AI::Forecast, std::placeholders::_1, std::placeholders::_2);
+            scoreFn = std::bind(AI::Mean, std::placeholders::_1, std::placeholders::_2);
+            break;
+        case AI::Loss::MEAN_SQUARE:
+            lossFn = std::bind(AI::MeanSquare, std::placeholders::_1, std::placeholders::_2);
+            scoreFn = std::bind(AI::RootMeanSquare, std::placeholders::_1, std::placeholders::_2);
+            break;
+        }
+
         float meanError = 0.0f;
         for (size_t i = 0; i < inputs.getHeight(); ++i)
         {
@@ -71,12 +85,12 @@ namespace Elysium
                     results[{i, a}] += Weights[{a, b}] * inputs[{i, b}];
 
                 results[{i, a}] = m_Activation(results[{i, a}]);
-                error[{i, a}] = outputs.Values[i] - results[{i, a}];
+                error[{i, a}] = lossFn(outputs.Values[i], results[{i, a}]);
                 meanError += fabs(error[{i, a}]);
             }
         }
 
-        return meanError / (float)error.getHeight();
+        return scoreFn(meanError, error.getHeight());
     }
 
     void Dense::calculateDelta(const Matrix& error, const Matrix& outputs, const Matrix& inputs,

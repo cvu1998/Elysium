@@ -32,6 +32,8 @@ namespace Elysium
     public:
         float LearningRate = 0.1f;
 
+        AI::Loss LossFunction = AI::Loss::FORECAST;
+
     private:
         std::vector<HiddenLayer*> m_Layers;
         std::vector<Model::Summary> m_Summary;
