@@ -188,12 +188,10 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Elysium::S
     //model.LearningRate = 1.0f;
     model.LearningRate = 0.5f;
 
-    //model.LossFunction = Elysium::AI::Loss::MEAN_SQUARE;
-
     model.fit(
         Elysium::Matrix::Slice(XORGateData, 0, 0, 0, 2),
         Elysium::Matrix::Slice(XORGateData, 0, 0, 2, 3),
-        2500000);
+        25000);
         //1);
 
     for (const auto& p : model.getSummary())

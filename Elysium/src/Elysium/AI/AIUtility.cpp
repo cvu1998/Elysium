@@ -16,9 +16,9 @@ namespace Elysium
             return  1.0f / (1.0f + glm::exp(-x));
         }
 
-        float SigmoidDerivative(float x)
+        float SigmoidDerivative(float sigmoid)
         {
-            return x * (1.0f - x);
+            return sigmoid * (1.0f - sigmoid);
         }
 
         float Linear(float x)
@@ -49,7 +49,7 @@ namespace Elysium
 
         float RootMeanSquare(float value, size_t n)
         {
-            return glm::sqrt(value / (float)n);
+            return glm::sqrt(value / (2.0f * (float)n));
         }
     }
 }

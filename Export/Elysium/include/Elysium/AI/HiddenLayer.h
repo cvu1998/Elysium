@@ -14,12 +14,15 @@ namespace Elysium
         friend class Model;
 
     public:
+        HiddenLayer() = default;
+        HiddenLayer(AI::Activation activation);
         virtual ~HiddenLayer() = default;
 
     public:
         Matrix Weights;
 
     protected:
+        using MathFn = std::function<float(float)>;
         using LossFn = std::function<float(float, float)>;
         using ScoreFn = std::function<float(float, size_t)>;
 
@@ -35,9 +38,6 @@ namespace Elysium
     protected:
         float LearningRate = 0.1f;
 
-        using MathFn = std::function<float(float)>;
-
-        MathFn m_Activation;
-        MathFn m_ActivationDerivative;
+        AI::Activation m_Activation = AI::Activation::LINEAR;
     };
 }
