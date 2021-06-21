@@ -16,9 +16,9 @@ namespace Elysium
             return  1.0f / (1.0f + glm::exp(-x));
         }
 
-        float SigmoidDerivative(float sigmoid)
+        float SigmoidDerivative(float x)
         {
-            return sigmoid * (1.0f - sigmoid);
+            return Sigmoid(x) * (1.0f - Sigmoid(x));
         }
 
         float Linear(float x)

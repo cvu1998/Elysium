@@ -37,5 +37,8 @@ namespace Elysium
     private:
         std::vector<HiddenLayer*> m_Layers;
         std::vector<Model::Summary> m_Summary;
+
+        bool m_Valid = false;
+        bool m_Trained = false;
     };
 }

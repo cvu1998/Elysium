@@ -26,10 +26,14 @@ namespace Elysium
         using LossFn = std::function<float(float, float)>;
         using ScoreFn = std::function<float(float, size_t)>;
 
+        void getActivation(MathFn& function);
+        void getActivationDerivative(MathFn& function);
+        void getLossAndScore(AI::Loss loss, LossFn& lossFn, ScoreFn& scoreFn);
+
         virtual bool forwardPass(const Matrix& inputs,
-            Matrix& results) = 0;
+            Matrix& results, Matrix& activations) = 0;
         virtual float calculateError(const Matrix& inputs, const Matrix& outputs, AI::Loss lossFunction,
-            Matrix& results, Matrix& error) = 0;
+            Matrix& results, Matrix& activations, Matrix& error) = 0;
         virtual void calculateDelta(const Matrix& error, const Matrix& outputs, const Matrix& inputs,
             Matrix& delta) = 0;
         virtual void backwardPass(const Matrix& prevDelta, const Matrix& prevWeights, const Matrix& outputs, const Matrix& inputs,

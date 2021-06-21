@@ -13,6 +13,9 @@ namespace Elysium
         case AI::Activation::SIGMOID:
             m_Activation = std::bind(&AI::Sigmoid, std::placeholders::_1);
             break;
+        case AI::Activation::LINEAR:
+            m_Activation = std::bind(&AI::Linear, std::placeholders::_1);
+            break;
         }
     }
 

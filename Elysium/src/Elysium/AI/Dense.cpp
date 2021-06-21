@@ -15,7 +15,7 @@ namespace Elysium
     }
 
     bool Dense::forwardPass(const Matrix& inputs, 
-        Matrix& results)
+        Matrix& results, Matrix& activations)
     {
         if (Weights.Values.empty())
         {
@@ -27,26 +27,19 @@ namespace Elysium
             return false;
 
         results = Matrix(inputs.getHeight(), m_Units);
+        activations = Matrix(inputs.getHeight(), m_Units);
 
         MathFn activationFn;
-        switch (m_Activation)
-        {
-        case AI::Activation::LINEAR:
-            activationFn = std::bind(&AI::Linear, std::placeholders::_1);
-            break;
-        case AI::Activation::SIGMOID:
-            activationFn = std::bind(&AI::Sigmoid, std::placeholders::_1);
-            break;
-        }
+        getActivation(activationFn);
 
         for (size_t i = 0; i < inputs.getHeight(); ++i)
         {
             for (size_t a = 0; a < m_Units; ++a)
             {
-                for (size_t b = 0; b < Weights.getWidth(); ++b)
+                for (size_t b = 0; b < inputs.getWidth(); ++b)
                     results[{i, a}] += Weights[{a, b}] * inputs[{i, b}];
 
-                results[{i, a}] = activationFn(results[{i, a}]);
+                activations[{i, a}] = activationFn(results[{i, a}]);
             }
         }
         return true;
@@ -54,7 +47,7 @@ namespace Elysium
 
 
     float Dense::calculateError(const Matrix& inputs, const Matrix& outputs, AI::Loss lossFunction,
-        Matrix& results, Matrix& error)
+        Matrix& results, Matrix& activations, Matrix& error)
     {
         if (Weights.Values.empty())
         {
@@ -63,47 +56,29 @@ namespace Elysium
         }
 
         results = Matrix(inputs.getHeight(), m_Units);
+        activations = Matrix(inputs.getHeight(), m_Units);
         error = Matrix(results.getHeight(), results.getWidth());
 
         MathFn activationFn;
-        switch (m_Activation)
-        {
-        case AI::Activation::LINEAR:
-            activationFn = std::bind(&AI::Linear, std::placeholders::_1);
-            break;
-        case AI::Activation::SIGMOID:
-            activationFn = std::bind(&AI::Sigmoid, std::placeholders::_1);
-            break;
-        }
+        getActivation(activationFn);
 
         LossFn lossFn;
         ScoreFn scoreFn;
-        switch (lossFunction)
-        {
-        case AI::Loss::FORECAST:
-            lossFn = std::bind(AI::Forecast, std::placeholders::_1, std::placeholders::_2);
-            scoreFn = std::bind(AI::Mean, std::placeholders::_1, std::placeholders::_2);
-            break;
-        case AI::Loss::MEAN_SQUARE:
-            lossFn = std::bind(AI::MeanSquare, std::placeholders::_1, std::placeholders::_2);
-            scoreFn = std::bind(AI::RootMeanSquare, std::placeholders::_1, std::placeholders::_2);
-            break;
-        }
+        getLossAndScore(lossFunction, lossFn, scoreFn);
 
         float meanError = 0.0f;
         for (size_t i = 0; i < inputs.getHeight(); ++i)
         {
             for (size_t a = 0; a < m_Units; ++a)
             {
-                for (size_t b = 0; b < Weights.getWidth(); ++b)
+                for (size_t b = 0; b < inputs.getWidth(); ++b)
                     results[{i, a}] += Weights[{a, b}] * inputs[{i, b}];
 
-                results[{i, a}] = activationFn(results[{i, a}]);
-                error[{i, a}] = lossFn(outputs[{i, a}], results[{i, a}]);
+                activations[{i, a}] = activationFn(results[{i, a}]);
+                error[{i, a}] = lossFn(outputs[{i, a}], activations[{i, a}]);
                 meanError += fabs(error[{i, a}]);
             }
         }
-
         return scoreFn(meanError, error.getHeight());
     }
 
@@ -113,15 +88,7 @@ namespace Elysium
         delta = Matrix(outputs.getHeight(), outputs.getWidth());
 
         MathFn activationDerivativeFn;
-        switch (m_Activation)
-        {
-        case AI::Activation::LINEAR:
-            activationDerivativeFn = std::bind(&AI::LinearDerivative, std::placeholders::_1);
-            break;
-        case AI::Activation::SIGMOID:
-            activationDerivativeFn = std::bind(&AI::SigmoidDerivative, std::placeholders::_1);
-            break;
-        }
+        getActivationDerivative(activationDerivativeFn);
 
         for (size_t i = 0; i < delta.Values.size(); ++i)
             delta.Values[i] = error.Values[i] * activationDerivativeFn(outputs.Values[i]);
@@ -146,15 +113,7 @@ namespace Elysium
         delta = Matrix(outputs.getHeight(), outputs.getWidth());
 
         MathFn activationDerivativeFn;
-        switch (m_Activation)
-        {
-        case AI::Activation::LINEAR:
-            activationDerivativeFn = std::bind(&AI::LinearDerivative, std::placeholders::_1);
-            break;
-        case AI::Activation::SIGMOID:
-            activationDerivativeFn = std::bind(&AI::SigmoidDerivative, std::placeholders::_1);
-            break;
-        }
+        getActivationDerivative(activationDerivativeFn);
 
         for (size_t i = 0; i < prevDelta.getHeight(); ++i)
         {
