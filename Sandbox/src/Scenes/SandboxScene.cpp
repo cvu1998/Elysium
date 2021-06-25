@@ -178,7 +178,7 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Elysium::S
     //--- PERCEPTRON ---//
 
     //--- NEURAL NETWORK MODEL ---//
-    Elysium::Model model(2);
+    Elysium::Model model;
     model.add(new Elysium::Dense(3, Elysium::AI::Activation::SIGMOID));
     model.add(new Elysium::Dense(1, Elysium::AI::Activation::SIGMOID));
 
@@ -203,6 +203,218 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Elysium::S
         Elysium::Matrix::Slice(XORGateData, 0, 0, 2, 3),
         result));
     result.print();
+
+    Elysium::Matrix IrisInputs({ 
+        {5.1f, 3.5f, 1.4f, 0.2f}, 
+        {4.9f, 3.0f, 1.4f, 0.2f},
+        {4.7f, 3.2f, 1.3f, 0.2f},
+        {4.6f, 3.1f, 1.5f, 0.2f},
+        {5.0f, 3.6f, 1.4f, 0.2f},
+        {5.4f, 3.9f, 1.7f, 0.4f},
+        {4.6f, 3.4f, 1.4f, 0.3f},
+        {5.0f, 3.4f, 1.5f, 0.2f},
+        {4.4f, 2.9f, 1.4f, 0.2f},
+        {4.9f, 3.1f, 1.5f, 0.1f},
+        {5.4f, 3.7f, 1.5f, 0.2f},
+        {4.8f, 3.4f, 1.6f, 0.2f},
+        {4.8f, 3.0f, 1.4f, 0.1f},
+        {4.3f, 3.0f, 1.1f, 0.1f},
+        {5.8f, 4.0f, 1.2f, 0.2f},
+        {5.7f, 4.4f, 1.5f, 0.4f},
+        {5.4f, 3.9f, 1.3f, 0.4f},
+        {5.1f, 3.5f, 1.4f, 0.3f},
+        {5.7f, 3.8f, 1.7f, 0.3f},
+        {5.1f, 3.8f, 1.5f, 0.3f},
+        {5.4f, 3.4f, 1.7f, 0.2f},
+        {5.1f, 3.7f, 1.5f, 0.4f},
+        {4.6f, 3.6f, 1.0f, 0.2f},
+        {5.1f, 3.3f, 1.7f, 0.5f},
+        {4.8f, 3.4f, 1.9f, 0.2f},
+        {5.0f, 3.0f, 1.6f, 0.2f},
+        {5.0f, 3.4f, 1.6f, 0.4f},
+        {5.2f, 3.5f, 1.5f, 0.2f},
+        {5.2f, 3.4f, 1.4f, 0.2f},
+        {4.7f, 3.2f, 1.6f, 0.2f},
+        {4.8f, 3.1f, 1.6f, 0.2f},
+        {5.4f, 3.4f, 1.5f, 0.4f},
+        {5.2f, 4.1f, 1.5f, 0.1f},
+        {5.5f, 4.2f, 1.4f, 0.2f},
+        {4.9f, 3.1f, 1.5f, 0.2f},
+        {5.0f, 3.2f, 1.2f, 0.2f},
+        {5.5f, 3.5f, 1.3f, 0.2f},
+        {4.9f, 3.6f, 1.4f, 0.1f},
+        {4.4f, 3.0f, 1.3f, 0.2f},
+        {5.1f, 3.4f, 1.5f, 0.2f},
+        {5.0f, 3.5f, 1.3f, 0.3f},
+        {4.5f, 2.3f, 1.3f, 0.3f},
+        {4.4f, 3.2f, 1.3f, 0.2f},
+        {5.0f, 3.5f, 1.6f, 0.6f},
+        {5.1f, 3.8f, 1.9f, 0.4f},
+        {4.8f, 3.0f, 1.0f, 0.3f},
+        {5.1f, 3.8f, 1.6f, 0.2f},
+        {4.6f, 3.2f, 1.4f, 0.2f},
+        {5.3f, 3.7f, 1.5f, 0.2f},
+        {5.0f, 3.3f, 1.4f, 0.2f},
+        {7.0f, 3.2f, 4.7f, 1.4f},
+        {6.4f, 3.2f, 4.5f, 1.5f},
+        {6.9f, 3.1f, 4.9f, 1.5f},
+        {5.5f, 2.3f, 4.0f, 1.3f},
+        {6.5f, 2.8f, 4.6f, 1.5f},
+        {5.7f, 2.8f, 4.5f, 1.3f},
+        {6.3f, 3.3f, 4.7f, 1.6f},
+        {4.9f, 2.4f, 3.3f, 1.0f},
+        {6.6f, 2.9f, 4.6f, 1.3f},
+        {5.2f, 2.7f, 3.9f, 1.4f},
+        {5.0f, 2.0f, 3.5f, 1.0f},
+        {5.9f, 3.0f, 4.2f, 1.5f},
+        {6.0f, 2.2f, 4.0f, 1.0f},
+        {6.1f, 2.9f, 4.7f, 1.4f},
+        {5.6f, 2.9f, 3.6f, 1.3f},
+        {6.7f, 3.1f, 4.4f, 1.4f},
+        {5.6f, 3.0f, 4.5f, 1.5f},
+        {5.8f, 2.7f, 4.1f, 1.0f},
+        {6.2f, 2.2f, 4.5f, 1.5f},
+        {5.6f, 2.5f, 3.9f, 1.1f},
+        {5.9f, 3.2f, 4.8f, 1.8f},
+        {6.1f, 2.8f, 4.0f, 1.3f},
+        {6.3f, 2.5f, 4.9f, 1.5f},
+        {6.1f, 2.8f, 4.7f, 1.2f},
+        {6.4f, 2.9f, 4.3f, 1.3f},
+        {6.6f, 3.0f, 4.4f, 1.4f},
+        {6.8f, 2.8f, 4.8f, 1.4f},
+        {6.7f, 3.0f, 5.0f, 1.7f},
+        {6.0f, 2.9f, 4.5f, 1.5f},
+        {5.7f, 2.6f, 3.5f, 1.0f},
+        {5.5f, 2.4f, 3.8f, 1.1f},
+        {5.5f, 2.4f, 3.7f, 1.0f},
+        {5.8f, 2.7f, 3.9f, 1.2f},
+        {6.0f, 2.7f, 5.1f, 1.6f},
+        {5.4f, 3.0f, 4.5f, 1.5f},
+        {6.0f, 3.4f, 4.5f, 1.6f},
+        {6.7f, 3.1f, 4.7f, 1.5f},
+        {6.3f, 2.3f, 4.4f, 1.3f},
+        {5.6f, 3.0f, 4.1f, 1.3f},
+        {5.5f, 2.5f, 4.0f, 1.3f},
+        {5.5f, 2.6f, 4.4f, 1.2f},
+        {6.1f, 3.0f, 4.6f, 1.4f},
+        {5.8f, 2.6f, 4.0f, 1.2f},
+        {5.0f, 2.3f, 3.3f, 1.0f},
+        {5.6f, 2.7f, 4.2f, 1.3f},
+        {5.7f, 3.0f, 4.2f, 1.2f},
+        {5.7f, 2.9f, 4.2f, 1.3f},
+        {6.2f, 2.9f, 4.3f, 1.3f},
+        {5.1f, 2.5f, 3.0f, 1.1f},
+        {5.7f, 2.8f, 4.1f, 1.3f},
+        {6.3f, 3.3f, 6.0f, 2.5f},
+        {5.8f, 2.7f, 5.1f, 1.9f},
+        {7.1f, 3.0f, 5.9f, 2.1f},
+        {6.3f, 2.9f, 5.6f, 1.8f},
+        {6.5f, 3.0f, 5.8f, 2.2f},
+        {7.6f, 3.0f, 6.6f, 2.1f},
+        {4.9f, 2.5f, 4.5f, 1.7f},
+        {7.3f, 2.9f, 6.3f, 1.8f},
+        {6.7f, 2.5f, 5.8f, 1.8f},
+        {7.2f, 3.6f, 6.1f, 2.5f},
+        {6.5f, 3.2f, 5.1f, 2.0f},
+        {6.4f, 2.7f, 5.3f, 1.9f},
+        {6.8f, 3.0f, 5.5f, 2.1f},
+        {5.7f, 2.5f, 5.0f, 2.0f},
+        {5.8f, 2.8f, 5.1f, 2.4f},
+        {6.4f, 3.2f, 5.3f, 2.3f},
+        {6.5f, 3.0f, 5.5f, 1.8f},
+        {7.7f, 3.8f, 6.7f, 2.2f},
+        {7.7f, 2.6f, 6.9f, 2.3f},
+        {6.0f, 2.2f, 5.0f, 1.5f},
+        {6.9f, 3.2f, 5.7f, 2.3f},
+        {5.6f, 2.8f, 4.9f, 2.0f},
+        {7.7f, 2.8f, 6.7f, 2.0f},
+        {6.3f, 2.7f, 4.9f, 1.8f},
+        {6.7f, 3.3f, 5.7f, 2.1f},
+        {7.2f, 3.2f, 6.0f, 1.8f},
+        {6.2f, 2.8f, 4.8f, 1.8f},
+        {6.1f, 3.0f, 4.9f, 1.8f},
+        {6.4f, 2.8f, 5.6f, 2.1f},
+        {7.2f, 3.0f, 5.8f, 1.6f},
+        {7.4f, 2.8f, 6.1f, 1.9f},
+        {7.9f, 3.8f, 6.4f, 2.0f},
+        {6.4f, 2.8f, 5.6f, 2.2f},
+        {6.3f, 2.8f, 5.1f, 1.5f},
+        {6.1f, 2.6f, 5.6f, 1.4f},
+        {7.7f, 3.0f, 6.1f, 2.3f},
+        {6.3f, 3.4f, 5.6f, 2.4f},
+        {6.4f, 3.1f, 5.5f, 1.8f},
+        {6.0f, 3.0f, 4.8f, 1.8f},
+        {6.9f, 3.1f, 5.4f, 2.1f},
+        {6.7f, 3.1f, 5.6f, 2.4f},
+        {6.9f, 3.1f, 5.1f, 2.3f},
+        {5.8f, 2.7f, 5.1f, 1.9f},
+        {6.8f, 3.2f, 5.9f, 2.3f},
+        {6.7f, 3.3f, 5.7f, 2.5f},
+        {6.7f, 3.0f, 5.2f, 2.3f},
+        {6.3f, 2.5f, 5.0f, 1.9f},
+        {6.5f, 3.0f ,5.2f, 2.0f},
+        {6.2f, 3.4f, 5.4f, 2.3f},
+        {5.9f, 3.0f, 5.1f, 1.8f } });
+
+    std::vector<int> IrisOutputs = { 
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+        2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+        2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 
+    };
+
+    Elysium::Matrix OneHotIrisOutputs(IrisOutputs.size(), 3);
+    for (size_t i = 0; i < IrisOutputs.size(); ++i)
+    {
+        switch (IrisOutputs[i])
+        {
+        case 0:
+            OneHotIrisOutputs[{i, 0}] = 1.0f;
+            OneHotIrisOutputs[{i, 1}] = 0.0f;
+            OneHotIrisOutputs[{i, 2}] = 0.0f;
+            break;
+        case 1:
+            OneHotIrisOutputs[{i, 0}] = 0.0f;
+            OneHotIrisOutputs[{i, 1}] = 1.0f;
+            OneHotIrisOutputs[{i, 2}] = 0.0f;
+            break;
+        case 2:
+            OneHotIrisOutputs[{i, 0}] = 0.0f;
+            OneHotIrisOutputs[{i, 1}] = 0.0f;
+            OneHotIrisOutputs[{i, 2}] = 1.0f;
+            break;
+        }
+    }
+
+    Elysium::Model IrisModel;
+    IrisModel.add(new Elysium::Dense(8, Elysium::AI::Activation::SIGMOID));
+    IrisModel.add(new Elysium::Dense(8, Elysium::AI::Activation::SIGMOID));
+    IrisModel.add(new Elysium::Dense(3, Elysium::AI::Activation::SIGMOID));
+
+    IrisModel.LearningRate = 0.01f;
+
+    Elysium::Matrix IrisData = Elysium::Matrix::Concatenate(IrisInputs, OneHotIrisOutputs, false);
+    IrisModel.fit(
+        Elysium::Matrix::Slice(IrisData, 0, 0, 0, 4),
+        Elysium::Matrix::Slice(IrisData, 0, 0, 4, 0),
+        25000);
+
+    for (const auto& p : IrisModel.getSummary())
+        ELY_INFO("Epoch: {0}, Error: {1}", p.Epoch, p.MeanError);
+
+    IrisData = Elysium::Matrix::Scramble(IrisData);
+
+    Elysium::Matrix IrisResults;
+    ELY_INFO("Mean Error: {0}", IrisModel.score(
+        Elysium::Matrix::Slice(IrisData, 0, 5, 0, 4),
+        Elysium::Matrix::Slice(IrisData, 0, 5, 4, 0),
+        IrisResults));
+
+    Elysium::Matrix::Slice(IrisData, 0, 5, 4, 0).print();
+    IrisResults.print();
     //--- DENSE LAYER ---//
 }
 

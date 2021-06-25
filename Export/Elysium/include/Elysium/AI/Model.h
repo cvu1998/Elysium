@@ -15,10 +15,15 @@ namespace Elysium
             float MeanError = 0.0f;
         };
 
-        Model(size_t numberOfLayers);
+        Model() = default;
         ~Model();
 
-        inline void add(HiddenLayer* layer) { m_Layers.emplace_back(layer); }
+        inline void add(HiddenLayer* layer) 
+        {
+            m_Layers.push_back(layer);
+            if (m_Layers.size() >= 2)
+                m_Valid = true;
+        }
 
         inline const std::vector<HiddenLayer*>& getLayers() const { return m_Layers; }
         inline const std::vector<Model::Summary>& getSummary() const { return m_Summary; };

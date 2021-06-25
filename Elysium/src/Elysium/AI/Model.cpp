@@ -4,17 +4,6 @@
 
 namespace Elysium
 {
-    Model::Model(size_t numberOfLayers)
-    {
-        if (numberOfLayers < 2)
-        {
-            ELY_ERROR("Model must have 2 or more layers!");
-            return;
-        }
-        m_Valid = true;
-        m_Layers.reserve(numberOfLayers);
-    }
-
     Model::~Model()
     {
         for (HiddenLayer* layer : m_Layers)
@@ -30,7 +19,7 @@ namespace Elysium
         const size_t last = m_Layers.size() - 1;
         const size_t epochsPoint = epochs > 2 ? (size_t)((float)epochs * 0.05f) : 1;
 
-        for (epochs; epochs > 0; --epochs)
+        for (int epoch = (int)epochs; epoch >= 0; --epoch)
         {
             Matrix error;
             std::vector<Matrix> neurons(m_Layers.size());
@@ -52,8 +41,8 @@ namespace Elysium
                 neurons[last], 
                 activations[last], 
                 error);
-            if (epochs % epochsPoint == 0)
-                m_Summary.push_back({ epochs, meanError });
+            if (epoch % epochsPoint == 0)
+                m_Summary.push_back({ epochsPoint * 20 - epoch, meanError });
 
             Matrix currDelta;
             Matrix prevDelta;
@@ -119,7 +108,7 @@ namespace Elysium
         }
 
         for (size_t i = 1; i < last; ++i)
-            m_Layers[i]->forwardPass(activations[i - 1], neurons[i], activations[0]);
+            m_Layers[i]->forwardPass(activations[i - 1], neurons[i], activations[i]);
         return m_Layers[last]->calculateError(activations[last - 1], outputs, LossFunction, lastNeuron, results, error);
     }
 }

@@ -1,6 +1,10 @@
 #include "Matrix.h"
 
+#include <algorithm>
+#include <iterator>
+
 #include "Elysium/Log.h"
+#include "Elysium/Random.h"
 
 namespace Elysium
 {
@@ -70,18 +74,13 @@ namespace Elysium
         result.Height = a.Height;
 
         bool matrixA = true;
-        size_t iA = 0;
-        size_t iB = 0;
-        size_t height = 0;
-        for (size_t i = 0; i < size; ++i)
+        for (size_t i = 0; i < result.Height; ++i)
         {
-            matrixA = iA < a.Width && iB == 0 ? true : false;
-            iA = iA < a.Width ? iA : 0;
-            iB = iB < b.Width ? iB : 0;
-            result.Values.emplace_back(matrixA ? a.Values[iA++ + height * a.Width] : b.Values[iB++ + height * b.Width]);
+            for (size_t ia = 0; ia < a.Width; ++ia)
+                result.Values.emplace_back(a[{i, ia}]);
 
-            if (result.Values.size() % result.Width == 0)
-                height++;
+            for (size_t ib = 0; ib < b.Width; ++ib)
+                result.Values.emplace_back(b[{i, ib}]);
         }
 
         return result;
@@ -113,6 +112,26 @@ namespace Elysium
         result.Width = endRow - startRow;
         result.Height = endColumn - startColumn;
         return result;
+    }
+
+    Matrix Matrix::Scramble(const Matrix& input)
+    {
+        std::vector<size_t> indices;
+        indices.reserve(input.Height);
+        while (indices.size() < input.Height)
+        {
+            int n = Random::Integer(0, (int)input.Height - 1);
+            if (std::find(indices.begin(), indices.end(), n) == std::end(indices))
+                indices.emplace_back((size_t)n);
+        }
+
+        Matrix output(input.Height, input.Width);
+        for (size_t a = 0; a < input.Height; ++a)
+        {
+            for (size_t b = 0; b < input.Width; ++b)
+                output[{a, b}] = input[{indices[a], b}];
+        }
+        return output;
     }
 
     void Matrix::print() const
