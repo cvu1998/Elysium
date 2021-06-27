@@ -2,7 +2,9 @@
 
 namespace Elysium
 {
-    HiddenLayer::HiddenLayer(AI::Activation activation) : m_Activation(activation)
+    HiddenLayer::HiddenLayer(AI::Activation activation, bool useBias) :
+        m_Activation(activation),
+        m_Bias(useBias)
     {
     }
 

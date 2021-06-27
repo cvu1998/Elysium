@@ -8,8 +8,8 @@
 
 namespace Elysium
 {
-    Dense::Dense(size_t units, AI::Activation activation) : 
-        HiddenLayer(activation),
+    Dense::Dense(size_t units, AI::Activation activation, bool useBias) : 
+        HiddenLayer(activation, useBias),
         m_Units(units)
     {
     }
@@ -19,8 +19,12 @@ namespace Elysium
     {
         if (Weights.Values.empty())
         {
+            Random::Init();
+
             Weights = Matrix(m_Units, inputs.getWidth(), true);
             Utility::CreateRandomVector(Weights.Values, Weights.getWidth() * Weights.getHeight(), -1.0f, 1.0f);
+
+            Biases.resize(m_Units);
         }
 
         if (Weights.getWidth() != inputs.getWidth())
@@ -38,6 +42,7 @@ namespace Elysium
             {
                 for (size_t b = 0; b < inputs.getWidth(); ++b)
                     results[{i, a}] += Weights[{a, b}] * inputs[{i, b}];
+                results[{i, a}] += Biases[a];
 
                 activations[{i, a}] = activationFn(results[{i, a}]);
             }
@@ -51,8 +56,12 @@ namespace Elysium
     {
         if (Weights.Values.empty())
         {
+            Random::Init();
+
             Weights = Matrix(m_Units, inputs.getWidth(), true);
             Utility::CreateRandomVector(Weights.Values, Weights.getWidth() * Weights.getHeight(), -1.0f, 1.0f);
+
+            Biases.resize(m_Units);
         }
 
         results = Matrix(inputs.getHeight(), m_Units);
@@ -73,6 +82,7 @@ namespace Elysium
             {
                 for (size_t b = 0; b < inputs.getWidth(); ++b)
                     results[{i, a}] += Weights[{a, b}] * inputs[{i, b}];
+                results[{i, a}] += Biases[a];
 
                 activations[{i, a}] = activationFn(results[{i, a}]);
                 error[{i, a}] = lossFn(outputs[{i, a}], activations[{i, a}]);
@@ -98,13 +108,18 @@ namespace Elysium
             for (size_t i = 0; i < m_Units; ++i)
             {
                 float step = 0.0f;
+                float biasStep = 0.0f;
                 for (size_t b = 0; b < inputs.getHeight(); ++b)
+                {
                     step += delta[{b, i}] * inputs[{b, a}] * LearningRate;
+                    biasStep += delta[{b, i}] * LearningRate;
+                }
                 Weights[{i, a}] += step;
+
+                if (m_Bias)
+                    Biases[i] += biasStep;
             }
         }
-        //ELY_CORE_INFO("WEIGHTS AFTER UPDATE");
-        //Weights.print();
     }
 
     void Dense::backwardPass(const Matrix& prevDelta, const Matrix& prevWeights, const Matrix& outputs, const Matrix& inputs,
@@ -129,12 +144,17 @@ namespace Elysium
             for (size_t i = 0; i < m_Units; ++i)
             {
                 float step = 0.0f;
+                float biasStep = 0.0f;
                 for (size_t b = 0; b < inputs.getHeight(); ++b)
+                {
                     step += delta[{b, i}] * inputs[{b, a}] * LearningRate;
+                    biasStep += delta[{b, i}] * LearningRate;
+                }
                 Weights[{i, a}] += step;
+
+                if (m_Bias)
+                    Biases[i] += biasStep;
             }
         }
-        //ELY_CORE_INFO("WEIGHTS AFTER UPDATE");
-        //Weights.print();
     }
 }

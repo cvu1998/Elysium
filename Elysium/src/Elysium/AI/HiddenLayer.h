@@ -15,11 +15,12 @@ namespace Elysium
 
     public:
         HiddenLayer() = default;
-        HiddenLayer(AI::Activation activation);
+        HiddenLayer(AI::Activation activation, bool useBias);
         virtual ~HiddenLayer() = default;
 
     public:
         Matrix Weights;
+        std::vector<float> Biases;
 
     protected:
         using MathFn = std::function<float(float)>;
@@ -43,5 +44,6 @@ namespace Elysium
         float LearningRate = 0.1f;
 
         AI::Activation m_Activation = AI::Activation::LINEAR;
+        bool m_Bias = true;
     };
 }

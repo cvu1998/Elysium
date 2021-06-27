@@ -84,26 +84,6 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Elysium::S
 
     m_Player.Ball = e_PhysicsSystem2D.getPhysicalBody(m_Ball);
 
-    //----- MATRICES -----//
-    Elysium::Matrix A({ {1, 2, 3, 4, 5} });
-    Elysium::Matrix B( {6, 7, 8, 9, 10} );
-    Elysium::Matrix C;
-
-    C = Elysium::Matrix::Concatenate(A, B, false);
-    C.print();
-
-    C = Elysium::Matrix::Concatenate(Elysium::Matrix({ {1, 2}, {3, 4} }), Elysium::Matrix({ {1, 2}, {3, 4} }), false);
-    C.print();
-
-    A = Elysium::Matrix::Concatenate(A, B);
-    A.print();
-
-    C = Elysium::Matrix::Slice(A, 0, 0, 0, 4);
-    C.print();
-
-    C = Elysium::Matrix::Slice(A, 0, 0, 4, 5);
-    C.print();
-
     //--- PERCEPTRON ---//
     Elysium::Perceptron perceptron(Elysium::AI::Activation::STEP);
     Elysium::Matrix weights;
@@ -119,8 +99,6 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Elysium::S
         Elysium::Matrix::Slice(ANDGateData, 0, 0, 0, 2),
         Elysium::Matrix::Slice(ANDGateData, 0, 0, 2, 3), 
         epochs);
-    weights = Elysium::Matrix(perceptron.Weights);
-    weights.print();
 
     std::vector<float> results;
     float meanAccuracy = perceptron.score(
@@ -141,8 +119,6 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Elysium::S
         Elysium::Matrix::Slice(ORGateData, 0, 0, 0, 2),
         Elysium::Matrix::Slice(ORGateData, 0, 0, 2, 3), 
         epochs);
-    weights = Elysium::Matrix(perceptron.Weights);
-    weights.print();
 
     results.clear();
     meanAccuracy = perceptron.score(
@@ -163,8 +139,6 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Elysium::S
         Elysium::Matrix::Slice(XORGateData, 0, 0, 0, 2),
         Elysium::Matrix::Slice(XORGateData, 0, 0, 2, 3), 
         epochs);
-    weights = Elysium::Matrix(perceptron.Weights);
-    weights.print();
 
     results.clear();
     meanAccuracy = perceptron.score(
@@ -390,8 +364,8 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Elysium::S
     }
 
     Elysium::Model IrisModel;
-    IrisModel.add(new Elysium::Dense(8, Elysium::AI::Activation::SIGMOID));
-    IrisModel.add(new Elysium::Dense(8, Elysium::AI::Activation::SIGMOID));
+    IrisModel.add(new Elysium::Dense(8, Elysium::AI::Activation::SIGMOID, false));
+    IrisModel.add(new Elysium::Dense(8, Elysium::AI::Activation::SIGMOID, false));
     IrisModel.add(new Elysium::Dense(3, Elysium::AI::Activation::SIGMOID));
 
     IrisModel.LearningRate = 0.01f;

@@ -149,5 +149,6 @@ namespace Elysium
             printf(closeBracket);
         }
         printf("]\n");
+        fflush(stdout);
     }
 }

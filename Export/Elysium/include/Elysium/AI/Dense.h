@@ -7,7 +7,7 @@ namespace Elysium
     class Dense : public HiddenLayer
     {
     public:
-        Dense(size_t units, AI::Activation activation = AI::Activation::LINEAR);
+        Dense(size_t units, AI::Activation activation = AI::Activation::LINEAR, bool useBias = true);
 
     protected:
         bool forwardPass(const Matrix& inputs, 
