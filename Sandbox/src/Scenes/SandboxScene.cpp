@@ -371,15 +371,15 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Elysium::S
     IrisModel.LearningRate = 0.01f;
 
     Elysium::Matrix IrisData = Elysium::Matrix::Concatenate(IrisInputs, OneHotIrisOutputs, false);
+    IrisData = Elysium::Matrix::Scramble(IrisData);
     IrisModel.fit(
         Elysium::Matrix::Slice(IrisData, 0, 0, 0, 4),
         Elysium::Matrix::Slice(IrisData, 0, 0, 4, 0),
-        25000);
+        50000,
+        10);
 
     for (const auto& p : IrisModel.getSummary())
         ELY_INFO("Epoch: {0}, Error: {1}", p.Epoch, p.MeanError);
-
-    IrisData = Elysium::Matrix::Scramble(IrisData);
 
     Elysium::Matrix IrisResults;
     ELY_INFO("Mean Error: {0}", IrisModel.score(
