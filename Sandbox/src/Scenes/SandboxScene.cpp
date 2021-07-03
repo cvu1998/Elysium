@@ -168,8 +168,7 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Elysium::S
         25000);
         //1);
 
-    for (const auto& p : model.getSummary())
-        ELY_INFO("Epoch: {0}, Error: {1}", p.Epoch, p.MeanError);
+    model.summary();
 
     Elysium::Matrix result;
     ELY_INFO("Mean Error: {0}", model.score(
@@ -378,8 +377,7 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Elysium::S
         50000,
         10);
 
-    for (const auto& p : IrisModel.getSummary())
-        ELY_INFO("Epoch: {0}, Error: {1}", p.Epoch, p.MeanError);
+    IrisModel.summary();
 
     Elysium::Matrix IrisResults;
     ELY_INFO("Mean Error: {0}", IrisModel.score(

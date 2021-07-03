@@ -20,31 +20,33 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Game\FlappyBird.cpp" />
-    <ClCompile Include="src\Game\Tic-Tac-Toe.cpp" />
+    <ClCompile Include="src\Game\TicTacToeGrid.cpp" />
     <ClCompile Include="src\Scenes\FlappyBirdScene.cpp" />
     <ClCompile Include="src\Scenes\RLTTTScene.cpp" />
     <ClCompile Include="src\Scenes\SoccerScene.cpp" />
     <ClCompile Include="src\Game\Connect4Grid.cpp" />
     <ClCompile Include="src\Scenes\Connect4LScene.cpp" />
     <ClCompile Include="src\Application.cpp" />
-    <ClCompile Include="src\Game\Player.cpp" />
+    <ClCompile Include="src\Game\DummyPlayer.cpp" />
     <ClCompile Include="src\Game\Systems.cpp" />
     <ClCompile Include="src\Scenes\PerformanceScene.cpp" />
     <ClCompile Include="src\Scenes\SandboxScene.cpp" />
+    <ClCompile Include="src\Game\TicTacToeMinimax.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Game\FlappyBird.h" />
-    <ClInclude Include="src\Game\Tic-Tac-Toe.h" />
+    <ClInclude Include="src\Game\TicTacToeGrid.h" />
     <ClInclude Include="src\Game\Values.h" />
     <ClInclude Include="src\Scenes\FlappyBirdScene.h" />
     <ClInclude Include="src\Scenes\RLTTTScene.h" />
     <ClInclude Include="src\Scenes\SoccerScene.h" />
     <ClInclude Include="src\Game\Connect4Grid.h" />
     <ClInclude Include="src\Scenes\Connect4Scene.h" />
-    <ClInclude Include="src\Game\Player.h" />
+    <ClInclude Include="src\Game\DummyPlayer.h" />
     <ClInclude Include="src\Game\Systems.h" />
     <ClInclude Include="src\Scenes\PerformanceScene.h" />
     <ClInclude Include="src\Scenes\SandboxScene.h" />
+    <ClInclude Include="src\Game\TicTacToeMinimax.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\basic.glsl" />

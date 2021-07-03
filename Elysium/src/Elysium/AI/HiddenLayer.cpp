@@ -1,8 +1,11 @@
 #include "HiddenLayer.h"
 
+#include "Elysium/Log.h"
+
 namespace Elysium
 {
-    HiddenLayer::HiddenLayer(AI::Activation activation, bool useBias) :
+    HiddenLayer::HiddenLayer(const char* layerName, AI::Activation activation, bool useBias) :
+        m_LayerName(layerName),
         m_Activation(activation),
         m_Bias(useBias)
     {
@@ -47,5 +50,13 @@ namespace Elysium
             scoreFn = std::bind(AI::RootMeanSquare, std::placeholders::_1, std::placeholders::_2);
             break;
         }
+    }
+
+    void HiddenLayer::summary() const
+    {
+        ELY_CORE_INFO("{0}:{2}{1}", 
+            m_LayerName, 
+            Weights.Values.size(), 
+            std::string(strlen(m_LayerName) < s_BasePadding ? s_BasePadding - strlen(m_LayerName) : 0, ' '));
     }
 }

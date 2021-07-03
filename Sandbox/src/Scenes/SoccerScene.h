@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Game/Player.h"
+#include "Game/DummyPlayer.h"
 
 class SoccerScene : public Elysium::Scene
 {
@@ -11,8 +11,8 @@ private:
     std::vector<Elysium::Texture> m_Textures;
     Elysium::TextureData m_Background;
 
-    Player m_Player;
-    Player m_Adversary;
+    DummyPlayer m_Player;
+    DummyPlayer m_Adversary;
 
     bool m_GameOver = false;
     uint32_t m_BlueScore = 0;

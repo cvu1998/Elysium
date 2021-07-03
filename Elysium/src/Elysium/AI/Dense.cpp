@@ -9,7 +9,7 @@
 namespace Elysium
 {
     Dense::Dense(size_t units, AI::Activation activation, bool useBias) : 
-        HiddenLayer(activation, useBias),
+        HiddenLayer("Dense", activation, useBias),
         m_Units(units)
     {
     }

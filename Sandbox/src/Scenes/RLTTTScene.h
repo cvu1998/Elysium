@@ -2,7 +2,7 @@
 
 #include <Elysium.h>
 
-#include "Game/Tic-Tac-Toe.h"
+#include "Game/TicTacToeMinimax.h"
 
 class RLTTTScene : public Elysium::Scene
 {
@@ -17,7 +17,7 @@ private:
     Elysium::BodyHandle m_CoinIndex = 0;
     std::array<Elysium::TextureData, 2> m_CoinTextures; // 1 Blue, 2 Red
 
-    TTTGrid m_Grid;
+    TicTacToeGrid m_Grid;
     uint32_t m_Turn = 1;
     float m_MoveCooldown = 1.0f;
     bool m_GameOver = false;
@@ -26,7 +26,7 @@ private:
     uint32_t m_RedScore = 0;
     uint32_t m_DrawCount = 0;
 
-    MinimaxPlayer m_Minimax;
+    TicTacToeMinimax m_Minimax;
     bool m_PlayAgainstMinimax = true;
 
 private:

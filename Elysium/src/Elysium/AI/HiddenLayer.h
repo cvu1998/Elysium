@@ -14,8 +14,7 @@ namespace Elysium
         friend class Model;
 
     public:
-        HiddenLayer() = default;
-        HiddenLayer(AI::Activation activation, bool useBias);
+        HiddenLayer(const char* layerName, AI::Activation activation, bool useBias);
         virtual ~HiddenLayer() = default;
 
     public:
@@ -40,10 +39,15 @@ namespace Elysium
         virtual void backwardPass(const Matrix& prevDelta, const Matrix& prevWeights, const Matrix& outputs, const Matrix& inputs,
             Matrix& delta) = 0;
 
+        void summary() const;
+
     protected:
         float LearningRate = 0.1f;
 
         AI::Activation m_Activation = AI::Activation::LINEAR;
         bool m_Bias = true;
+
+        const char* m_LayerName = nullptr;
+        static constexpr size_t s_BasePadding = 16;
     };
 }

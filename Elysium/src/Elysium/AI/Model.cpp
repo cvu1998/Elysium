@@ -11,18 +11,29 @@ namespace Elysium
         m_Layers.clear();
     }
 
+    void Model::summary() const
+    {
+        ELY_CORE_INFO("{0}:    {1}", "Layer (Type)", "Param #");
+        for (const auto& layer : m_Layers)
+            layer->summary();
+
+        ELY_CORE_INFO("Training Summary Report");
+        for (const auto& p : m_TrainingSummary)
+            ELY_CORE_INFO("Epoch: {0}, Error: {1}", p.Epoch, p.MeanError);
+    }
+
     void Model::fit(const Matrix& inputs, const Matrix& outputs, size_t epochs, size_t batchSize)
     {
         if (!m_Valid)
             return;
 
         const size_t last = m_Layers.size() - 1;
-        const size_t epochsPoint = epochs > 2 ? (size_t)((float)epochs * 0.05f) : 1;
+        const size_t epochsPoint = epochs > 20 ? (size_t)((float)epochs * 0.05f) : 1;
 
-        for (int epoch = (int)epochs; epoch >= 0; --epoch)
+        for (size_t epoch = 0; epoch < epochs; ++epoch)
         {
             size_t batchBegin = 0;
-            size_t batchEnd = batchSize;
+            size_t batchEnd = batchSize < inputs.getHeight() ? batchSize : 0;
             bool end = false;
             while (!end)
             {
@@ -51,7 +62,7 @@ namespace Elysium
                     activations[last],
                     error);
                 if (epoch % epochsPoint == 0 && end)
-                    m_Summary.push_back({ epochsPoint * 20 - epoch, meanError });
+                    m_TrainingSummary.push_back({ epoch, meanError });
 
                 Matrix currDelta;
                 Matrix prevDelta;

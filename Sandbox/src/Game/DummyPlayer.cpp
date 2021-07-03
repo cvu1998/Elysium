@@ -1,8 +1,10 @@
-#include "Player.h"
+#include "DummyPlayer.h"
 
 #include "Values.h"
 
-Player::Player(const Elysium::Vector2& position, int up, int left, int right,
+DummyPlayer::DummyPlayer(
+    const Elysium::Vector2& position, 
+    int up, int left, int right,
     int kick, int lob, int swap) : 
     UpKey(up), LeftKey(left), RightKey(right),
     KickKey(kick), LobKey(lob), SwapKey(swap),
@@ -31,7 +33,7 @@ Player::Player(const Elysium::Vector2& position, int up, int left, int right,
     m_Player->setNumberOfCallbackExecution(1);
 }
 
-void Player::onUpdate(Elysium::Timestep ts)
+void DummyPlayer::onUpdate(Elysium::Timestep ts)
 {
     if (Elysium::Input::isKeyPressed(LeftKey))
     {
@@ -64,13 +66,13 @@ void Player::onUpdate(Elysium::Timestep ts)
     }
 }
 
-void Player::onEvent(Elysium::Event& event)
+void DummyPlayer::onEvent(Elysium::Event& event)
 {
     Elysium::EventDispatcher dispatcher(event);
-    dispatcher.Dispatch<Elysium::KeyPressedEvent>(BIND_EVENT_FUNCTION(Player::onKeyPressedEvent));
+    dispatcher.Dispatch<Elysium::KeyPressedEvent>(BIND_EVENT_FUNCTION(DummyPlayer::onKeyPressedEvent));
 }
 
-bool Player::onKeyPressedEvent(Elysium::KeyPressedEvent& event)
+bool DummyPlayer::onKeyPressedEvent(Elysium::KeyPressedEvent& event)
 {
     if (Ball)
     {

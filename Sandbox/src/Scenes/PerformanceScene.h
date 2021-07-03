@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Game/Player.h"
+#include "Game/DummyPlayer.h"
 
 class PerformanceScene : public Elysium::Scene
 {
@@ -15,7 +15,7 @@ private:
     Elysium::ParticleProperties m_Particle2;
     Elysium::ParticleSystem m_ParticleSystem;
 
-    Player m_Player;
+    DummyPlayer m_Player;
 
     Elysium::TextureData m_GroundTexture;
     Elysium::BodyHandle m_Ground;
