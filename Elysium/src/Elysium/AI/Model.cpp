@@ -4,11 +4,26 @@
 
 namespace Elysium
 {
+    Model::Model(size_t inputSize) : m_InputSize(inputSize)
+    {
+    }
+
     Model::~Model()
     {
         for (HiddenLayer* layer : m_Layers)
             delete layer;
         m_Layers.clear();
+    }
+
+    void Model::add(HiddenLayer* layer)
+    {
+        layer->initWeightAndBiases
+        (
+            m_Layers.empty() ? m_InputSize : m_Layers.back()->Weights.getHeight()
+        );
+        m_Layers.push_back(layer);
+        if (m_Layers.size() >= 2)
+            m_Valid = true;
     }
 
     void Model::summary() const
@@ -134,5 +149,30 @@ namespace Elysium
         for (size_t i = 1; i < last; ++i)
             m_Layers[i]->forwardPass(activations[i - 1], neurons[i], activations[i]);
         return m_Layers[last]->calculateError(activations[last - 1], outputs, LossFunction, lastNeuron, results, error);
+    }
+
+    void Model::saveModel(const char* path) const
+    {
+        if (_mkdir(path) == -1)
+            ELY_CORE_ERROR("Could not make directory {0}!", path);
+
+        std::string file;
+        for (size_t i = 0; i < m_Layers.size(); ++i)
+        {
+            file = std::string(path) + "/" + std::string(m_Layers[i]->m_LayerName) + std::to_string(i) + ".wb";
+            m_Layers[i]->saveWeightsAndBiases(file.c_str());
+        }
+    }
+
+    void Model::loadModel(const char* path)
+    {
+        std::string file;
+        for (size_t i = 0; i < m_Layers.size(); ++i)
+        {
+            file = std::string(path) + "/" + std::string(m_Layers[i]->m_LayerName) + std::to_string(i) + ".wb";
+            if (!m_Layers[i]->loadWeightsAndBiases(file.c_str()))
+                return;
+        }
+        m_Trained = true;
     }
 }

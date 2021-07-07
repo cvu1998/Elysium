@@ -15,15 +15,10 @@ namespace Elysium
             float MeanError = 0.0f;
         };
 
-        Model() = default;
+        Model(size_t inputSize);
         ~Model();
 
-        inline void add(HiddenLayer* layer) 
-        {
-            m_Layers.push_back(layer);
-            if (m_Layers.size() >= 2)
-                m_Valid = true;
-        }
+        void add(HiddenLayer* layer);
 
         inline const std::vector<HiddenLayer*>& getLayers() const { return m_Layers; }
 
@@ -34,6 +29,8 @@ namespace Elysium
         void predict(const Matrix& inputs, Matrix& results);
         float score(const Matrix& inputs, const Matrix& outputs, Matrix& results);
 
+        void saveModel(const char* path) const;
+        void loadModel(const char* path);
 
     public:
         float LearningRate = 0.1f;
@@ -41,6 +38,7 @@ namespace Elysium
         AI::Loss LossFunction = AI::Loss::FORECAST;
 
     private:
+        size_t m_InputSize;
         std::vector<HiddenLayer*> m_Layers;
         std::vector<Model::Summary> m_TrainingSummary;
 

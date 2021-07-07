@@ -1,5 +1,7 @@
 #include "HiddenLayer.h"
 
+#include <fstream>
+
 #include "Elysium/Log.h"
 
 namespace Elysium
@@ -58,5 +60,57 @@ namespace Elysium
             m_LayerName, 
             Weights.Values.size(), 
             std::string(strlen(m_LayerName) < s_BasePadding ? s_BasePadding - strlen(m_LayerName) : 0, ' '));
+    }
+
+    void HiddenLayer::saveWeightsAndBiases(const char* filename) const
+    {
+        std::ofstream file(filename);
+        if (!file.is_open())
+        {
+            ELY_CORE_ERROR("Could not save weight and biases at {0}!", filename);
+            return;
+        }
+
+        for (size_t i = 0; i < Weights.getHeight(); ++i)
+        {
+            for (size_t j = 0; j < Weights.getWidth(); ++j)
+                file << "W(" << i << ", " << j << "): " << Weights[{i, j}] << '\n';
+        }
+
+        for (size_t i = 0; i < Biases.size(); ++i)
+            file << "B(" << i << "): " << Biases[i] << "\n";
+        file.close();
+    }
+
+    bool HiddenLayer::loadWeightsAndBiases(const char* filename)
+    {
+        std::ifstream file(filename);
+        if (!file.is_open())
+        {
+            ELY_CORE_ERROR("Could not load weight and biases at {0}!", filename);
+            return false;
+        }
+
+        std::string line;
+
+        while (getline(file, line))
+        {
+            size_t i, j = 0;
+            float value = 0.0f;
+            switch (line[0])
+            {
+            case 'W':
+                sscanf_s(line.c_str(), "W(%zu, %zu): %f", &i, &j, &value);
+                Weights[{i, j}] = value;
+                break;
+            case 'B':
+                sscanf_s(line.c_str(), "B(%zu): %f", &i, &value);
+                Biases[i] = value;
+                break;
+            }
+        }
+        file.close();
+
+        return true;
     }
 }

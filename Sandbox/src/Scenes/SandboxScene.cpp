@@ -152,7 +152,7 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Elysium::S
     //--- PERCEPTRON ---//
 
     //--- NEURAL NETWORK MODEL ---//
-    Elysium::Model model;
+    Elysium::Model model(2);
     model.add(new Elysium::Dense(3, Elysium::AI::Activation::SIGMOID));
     model.add(new Elysium::Dense(1, Elysium::AI::Activation::SIGMOID));
 
@@ -362,7 +362,7 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Elysium::S
         }
     }
 
-    Elysium::Model IrisModel;
+    Elysium::Model IrisModel(4);
     IrisModel.add(new Elysium::Dense(8, Elysium::AI::Activation::SIGMOID, false));
     IrisModel.add(new Elysium::Dense(8, Elysium::AI::Activation::SIGMOID, false));
     IrisModel.add(new Elysium::Dense(3, Elysium::AI::Activation::SIGMOID));
@@ -371,12 +371,17 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Elysium::S
 
     Elysium::Matrix IrisData = Elysium::Matrix::Concatenate(IrisInputs, OneHotIrisOutputs, false);
     IrisData = Elysium::Matrix::Scramble(IrisData);
+
+    /*
     IrisModel.fit(
         Elysium::Matrix::Slice(IrisData, 0, 0, 0, 4),
         Elysium::Matrix::Slice(IrisData, 0, 0, 4, 0),
         50000,
         10);
+    IrisModel.saveModel("res/iris-model");
+    */
 
+    IrisModel.loadModel("res/iris-model");
     IrisModel.summary();
 
     Elysium::Matrix IrisResults;

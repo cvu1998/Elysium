@@ -14,19 +14,19 @@ namespace Elysium
     {
     }
 
-    bool Dense::forwardPass(const Matrix& inputs, 
+    void Dense::initWeightAndBiases(size_t inputSize)
+    {
+        Random::Init();
+
+        Weights = Matrix(m_Units, inputSize, true);
+        Utility::CreateRandomVector(Weights.Values, Weights.getWidth() * Weights.getHeight(), -1.0f, 1.0f);
+
+        Biases.resize(m_Units);
+    }
+
+    bool Dense::forwardPass(const Matrix& inputs,
         Matrix& results, Matrix& activations)
     {
-        if (Weights.Values.empty())
-        {
-            Random::Init();
-
-            Weights = Matrix(m_Units, inputs.getWidth(), true);
-            Utility::CreateRandomVector(Weights.Values, Weights.getWidth() * Weights.getHeight(), -1.0f, 1.0f);
-
-            Biases.resize(m_Units);
-        }
-
         if (Weights.getWidth() != inputs.getWidth())
             return false;
 
@@ -54,16 +54,6 @@ namespace Elysium
     float Dense::calculateError(const Matrix& inputs, const Matrix& outputs, AI::Loss lossFunction,
         Matrix& results, Matrix& activations, Matrix& error)
     {
-        if (Weights.Values.empty())
-        {
-            Random::Init();
-
-            Weights = Matrix(m_Units, inputs.getWidth(), true);
-            Utility::CreateRandomVector(Weights.Values, Weights.getWidth() * Weights.getHeight(), -1.0f, 1.0f);
-
-            Biases.resize(m_Units);
-        }
-
         results = Matrix(inputs.getHeight(), m_Units);
         activations = Matrix(inputs.getHeight(), m_Units);
         error = Matrix(results.getHeight(), results.getWidth());

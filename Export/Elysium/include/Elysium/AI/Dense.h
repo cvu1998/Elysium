@@ -10,6 +10,8 @@ namespace Elysium
         Dense(size_t units, AI::Activation activation = AI::Activation::LINEAR, bool useBias = true);
 
     protected:
+        virtual void initWeightAndBiases(size_t inputSize) override;
+
         bool forwardPass(const Matrix& inputs, 
             Matrix& results, Matrix& activations) override;
         float calculateError(const Matrix& inputs, const Matrix& outputs, AI::Loss lossFunction,

@@ -26,6 +26,8 @@ namespace Elysium
         using LossFn = std::function<float(float, float)>;
         using ScoreFn = std::function<float(float, size_t)>;
 
+        virtual void initWeightAndBiases(size_t inputSize) = 0;
+
         void getActivation(MathFn& function);
         void getActivationDerivative(MathFn& function);
         void getLossAndScore(AI::Loss loss, LossFn& lossFn, ScoreFn& scoreFn);
@@ -40,6 +42,9 @@ namespace Elysium
             Matrix& delta) = 0;
 
         void summary() const;
+
+        void saveWeightsAndBiases(const char* filename) const;
+        bool loadWeightsAndBiases(const char* filename);
 
     protected:
         float LearningRate = 0.1f;
