@@ -20,6 +20,12 @@ namespace Elysium
         case AI::Activation::LINEAR:
             function = std::bind(&AI::Linear, std::placeholders::_1);
             break;
+        case AI::Activation::RELU:
+            function = std::bind(&AI::Relu, std::placeholders::_1);
+            break;
+        case AI::Activation::LEAKY_RELU:
+            function = std::bind(&AI::LeakyRelu, std::placeholders::_1);
+            break;
         case AI::Activation::SIGMOID:
             function = std::bind(&AI::Sigmoid, std::placeholders::_1);
             break;
@@ -32,6 +38,12 @@ namespace Elysium
         {
         case AI::Activation::LINEAR:
             function = std::bind(&AI::LinearDerivative, std::placeholders::_1);
+            break;
+        case AI::Activation::RELU:
+            function = std::bind(&AI::ReluDerivative, std::placeholders::_1);
+            break;
+        case AI::Activation::LEAKY_RELU:
+            function = std::bind(&AI::LeakyReluDerivative, std::placeholders::_1);
             break;
         case AI::Activation::SIGMOID:
             function = std::bind(&AI::SigmoidDerivative, std::placeholders::_1);

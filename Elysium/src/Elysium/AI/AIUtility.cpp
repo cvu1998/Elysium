@@ -6,6 +6,8 @@ namespace Elysium
 {
     namespace AI
     {
+        float LeakySlope = 0.01f;
+
         float Step(float x)
         {
             return x >= 1.0f ? 1.0f : 0.0f;
@@ -29,6 +31,26 @@ namespace Elysium
         float LinearDerivative(float x)
         {
             return 1.0f;
+        }
+
+        float Relu(float x)
+        {
+            return glm::max(0.0f * x, x);
+        }
+
+        float ReluDerivative(float x)
+        {
+            return x > 0.0f ? 1.0f : 0.0f;
+        }
+
+        float LeakyRelu(float x)
+        {
+            return glm::max(LeakySlope * x, x);
+        }
+
+        float LeakyReluDerivative(float x)
+        {
+            return x > 0.0f ? 1.0f : LeakySlope;
         }
 
         float Forecast(float correct, float prediction)

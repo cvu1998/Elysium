@@ -152,21 +152,21 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Elysium::S
     //--- PERCEPTRON ---//
 
     //--- NEURAL NETWORK MODEL ---//
+    Elysium::AI::LeakySlope = 0.1f;
+
     Elysium::Model model(2);
-    model.add(new Elysium::Dense(3, Elysium::AI::Activation::SIGMOID));
-    model.add(new Elysium::Dense(1, Elysium::AI::Activation::SIGMOID));
+    model.add(new Elysium::Dense(3, Elysium::AI::Activation::LEAKY_RELU));
+    model.add(new Elysium::Dense(1, Elysium::AI::Activation::LEAKY_RELU));
 
     Elysium::Matrix::Slice(XORGateData, 0, 0, 0, 2).print();
     Elysium::Matrix::Slice(XORGateData, 0, 0, 2, 3).print();
 
-    //model.LearningRate = 1.0f;
-    model.LearningRate = 0.5f;
+    model.LearningRate = 0.01f;
 
     model.fit(
         Elysium::Matrix::Slice(XORGateData, 0, 0, 0, 2),
         Elysium::Matrix::Slice(XORGateData, 0, 0, 2, 3),
-        25000);
-        //1);
+        50000);
 
     model.summary();
 

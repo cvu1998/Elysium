@@ -13,6 +13,8 @@ namespace Elysium
         {
             size_t Epoch = 0;
             float MeanError = 0.0f;
+
+            bool operator==(const Summary& s) const { return this->Epoch == s.Epoch && this->MeanError == s.MeanError; }
         };
 
         Model(size_t inputSize);

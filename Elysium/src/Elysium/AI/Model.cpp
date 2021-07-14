@@ -33,8 +33,24 @@ namespace Elysium
             layer->summary();
 
         ELY_CORE_INFO("Training Summary Report");
+
+        size_t n = 0;
+        size_t epoch = 0;
+        float meanError = 0.0f;
         for (const auto& p : m_TrainingSummary)
-            ELY_CORE_INFO("Epoch: {0}, Error: {1}", p.Epoch, p.MeanError);
+        {
+            if (epoch != p.Epoch || p == m_TrainingSummary.back())
+            {
+                ELY_CORE_INFO("Epoch: {0}, Error: {1}", epoch, meanError / (float)n);
+
+                n = 1;
+                epoch = p.Epoch;
+                meanError = p.MeanError;
+                continue;
+            }
+            meanError += p.MeanError;
+            n++;
+        }
     }
 
     void Model::fit(const Matrix& inputs, const Matrix& outputs, size_t epochs, size_t batchSize)
@@ -45,7 +61,7 @@ namespace Elysium
         const size_t last = m_Layers.size() - 1;
         const size_t epochsPoint = epochs > 20 ? (size_t)((float)epochs * 0.05f) : 1;
 
-        for (size_t epoch = 0; epoch < epochs; ++epoch)
+        for (size_t epoch = 0; epoch <= epochs; ++epoch)
         {
             size_t batchBegin = 0;
             size_t batchEnd = batchSize < inputs.getHeight() ? batchSize : 0;
@@ -76,7 +92,7 @@ namespace Elysium
                     neurons[last],
                     activations[last],
                     error);
-                if (epoch % epochsPoint == 0 && end)
+                if (epoch % epochsPoint == 0)
                     m_TrainingSummary.push_back({ epoch, meanError });
 
                 Matrix currDelta;

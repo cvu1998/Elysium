@@ -8,6 +8,8 @@ namespace Elysium
         {
             STEP = 0,
             LINEAR,
+            RELU,
+            LEAKY_RELU,
             SIGMOID
         };
 
@@ -17,6 +19,8 @@ namespace Elysium
             MEAN_SQUARE,
         };
 
+        extern float LeakySlope;
+
         float Step(float x);
 
         float Sigmoid(float x);
@@ -24,6 +28,12 @@ namespace Elysium
 
         float Linear(float x);
         float LinearDerivative(float x);
+
+        float Relu(float x);
+        float ReluDerivative(float x);
+
+        float LeakyRelu(float x);
+        float LeakyReluDerivative(float x);
 
         float Forecast(float correct, float prediction);
         float Mean(float value, size_t n);
