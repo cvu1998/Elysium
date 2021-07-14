@@ -53,7 +53,7 @@ namespace Elysium
             return x > 0.0f ? 1.0f : LeakySlope;
         }
 
-        float Forecast(float correct, float prediction)
+        float Absolute(float correct, float prediction)
         {
             return correct - prediction;
         }
@@ -65,8 +65,7 @@ namespace Elysium
 
         float MeanSquare(float correct, float prediction)
         {
-            float forecast = correct - prediction;
-            return forecast * forecast;
+            return correct * correct - prediction * prediction;
         }
 
         float RootMeanSquare(float value, size_t n)

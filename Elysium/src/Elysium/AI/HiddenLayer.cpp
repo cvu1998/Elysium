@@ -55,11 +55,11 @@ namespace Elysium
     {
         switch (loss)
         {
-        case AI::Loss::FORECAST:
-            lossFn = std::bind(AI::Forecast, std::placeholders::_1, std::placeholders::_2);
+        case AI::Loss::MEAN_ABSOLUTE:
+            lossFn = std::bind(AI::Absolute, std::placeholders::_1, std::placeholders::_2);
             scoreFn = std::bind(AI::Mean, std::placeholders::_1, std::placeholders::_2);
             break;
-        case AI::Loss::MEAN_SQUARE:
+        case AI::Loss::MEAN_SQUARED:
             lossFn = std::bind(AI::MeanSquare, std::placeholders::_1, std::placeholders::_2);
             scoreFn = std::bind(AI::RootMeanSquare, std::placeholders::_1, std::placeholders::_2);
             break;

@@ -138,7 +138,7 @@ void TicTacToeMinimax::generateChildren(std::vector<TicTacToeState>& states, con
             newGrid.Grid[i] = turn;
             if (lastLayer)
             {
-                states.emplace_back(evaluateState(newGrid), newGrid);
+                states.emplace_back(ValueFunction(newGrid), newGrid);
                 continue;
             }
             states.emplace_back(0, newGrid);

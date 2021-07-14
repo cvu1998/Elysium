@@ -37,7 +37,7 @@ namespace Elysium
     public:
         float LearningRate = 0.1f;
 
-        AI::Loss LossFunction = AI::Loss::FORECAST;
+        AI::Loss LossFunction = AI::Loss::MEAN_ABSOLUTE;
 
     private:
         size_t m_InputSize;

@@ -39,7 +39,7 @@ namespace Elysium
         float meanError = 0.0f;
         for (const auto& p : m_TrainingSummary)
         {
-            if (epoch != p.Epoch || p == m_TrainingSummary.back())
+            if (epoch != p.Epoch)
             {
                 ELY_CORE_INFO("Epoch: {0}, Error: {1}", epoch, meanError / (float)n);
 
@@ -50,6 +50,12 @@ namespace Elysium
             }
             meanError += p.MeanError;
             n++;
+
+            if (p == m_TrainingSummary.back())
+            {
+                ELY_CORE_INFO("Epoch: {0}, Error: {1}", epoch, meanError / (float)n);
+                return;
+            }
         }
     }
 

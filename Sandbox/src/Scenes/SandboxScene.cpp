@@ -157,6 +157,7 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Elysium::S
     Elysium::Model model(2);
     model.add(new Elysium::Dense(3, Elysium::AI::Activation::LEAKY_RELU));
     model.add(new Elysium::Dense(1, Elysium::AI::Activation::LEAKY_RELU));
+    model.LossFunction = Elysium::AI::Loss::MEAN_SQUARED;
 
     Elysium::Matrix::Slice(XORGateData, 0, 0, 0, 2).print();
     Elysium::Matrix::Slice(XORGateData, 0, 0, 2, 3).print();
@@ -166,7 +167,7 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Elysium::S
     model.fit(
         Elysium::Matrix::Slice(XORGateData, 0, 0, 0, 2),
         Elysium::Matrix::Slice(XORGateData, 0, 0, 2, 3),
-        50000);
+        25000);
 
     model.summary();
 
@@ -366,6 +367,7 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Elysium::S
     IrisModel.add(new Elysium::Dense(8, Elysium::AI::Activation::SIGMOID, false));
     IrisModel.add(new Elysium::Dense(8, Elysium::AI::Activation::SIGMOID, false));
     IrisModel.add(new Elysium::Dense(3, Elysium::AI::Activation::SIGMOID));
+    IrisModel.LossFunction = Elysium::AI::Loss::MEAN_SQUARED;
 
     IrisModel.LearningRate = 0.01f;
 
@@ -374,23 +376,23 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Elysium::S
 
     /*
     IrisModel.fit(
-        Elysium::Matrix::Slice(IrisData, 0, 0, 0, 4),
-        Elysium::Matrix::Slice(IrisData, 0, 0, 4, 0),
+        Elysium::Matrix::Slice(IrisData, 0, 145, 0, 4),
+        Elysium::Matrix::Slice(IrisData, 0, 145, 4, 0),
         50000,
         10);
-    IrisModel.saveModel("res/iris-model");
+    IrisModel.saveModel("res/AI/iris-model");
     */
 
-    IrisModel.loadModel("res/iris-model");
+    IrisModel.loadModel("res/AI/iris-model");
     IrisModel.summary();
 
     Elysium::Matrix IrisResults;
     ELY_INFO("Mean Error: {0}", IrisModel.score(
-        Elysium::Matrix::Slice(IrisData, 0, 5, 0, 4),
-        Elysium::Matrix::Slice(IrisData, 0, 5, 4, 0),
+        Elysium::Matrix::Slice(IrisData, 145, 150, 0, 4),
+        Elysium::Matrix::Slice(IrisData, 145, 150, 4, 0),
         IrisResults));
 
-    Elysium::Matrix::Slice(IrisData, 0, 5, 4, 0).print();
+    Elysium::Matrix::Slice(IrisData, 145, 150, 4, 0).print();
     IrisResults.print();
     //--- DENSE LAYER ---//
 }

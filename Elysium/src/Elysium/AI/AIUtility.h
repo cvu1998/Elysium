@@ -15,8 +15,8 @@ namespace Elysium
 
         enum class Loss
         {
-            FORECAST = 0,
-            MEAN_SQUARE,
+            MEAN_ABSOLUTE = 0,
+            MEAN_SQUARED,
         };
 
         extern float LeakySlope;
@@ -35,7 +35,7 @@ namespace Elysium
         float LeakyRelu(float x);
         float LeakyReluDerivative(float x);
 
-        float Forecast(float correct, float prediction);
+        float Absolute(float correct, float prediction);
         float Mean(float value, size_t n);
 
         float MeanSquare(float correct, float prediction);
