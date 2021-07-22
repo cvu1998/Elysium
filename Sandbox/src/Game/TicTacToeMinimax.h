@@ -31,13 +31,13 @@ private:
     int getValueFromExponent(int exponent);
     int evaluateState(const TicTacToeGrid& grid);
     int evaluateDiagonals(const TicTacToeGrid& grid);
-    void generateChildren(std::vector<TicTacToeState>& states, const TicTacToeState& state, uint32_t turn, bool lastLayer);
+    void generateChildren(std::vector<TicTacToeState>& states, const TicTacToeState& state, int32_t turn, bool lastLayer);
 
 public:
     using StateValueFunction = std::function<int(const TicTacToeGrid&)>;
 
-    uint32_t Minimax = 0;     // Max
-    uint32_t Opponent = 0;    // Min
+    int32_t Minimax = 0;     // Max
+    int32_t Opponent = 0;    // Min
 
     StateValueFunction ValueFunction = std::bind(&TicTacToeMinimax::evaluateState, this, std::placeholders::_1);
 

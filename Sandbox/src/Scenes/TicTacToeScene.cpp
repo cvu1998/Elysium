@@ -1,12 +1,13 @@
-#include "RLTTTScene.h"
+#include "TicTacToeScene.h"
 
 #include "Game/Systems.h"
 
-RLTTTScene::RLTTTScene(unsigned int width, unsigned int height) : 
+TicTacToeScene::TicTacToeScene(unsigned int width, unsigned int height) : 
     Elysium::Scene("Tic-Tac-Toe"),
     m_Camera(-m_Height * (float)(width / height), m_Height * (float)(width / height), -m_Height * 0.5f, m_Height * 0.5f),
     m_SpriteSheet("res/texture/platformPack_tilesheet.png"),
-    m_Minimax(&m_Grid)
+    m_Minimax(&m_Grid),
+    m_TicTacToeModel(9)
 {
     e_PhysicsSystem2D.clear();
     m_CoinTextures[0] = m_SpriteSheet.getTextureData();
@@ -16,54 +17,59 @@ RLTTTScene::RLTTTScene(unsigned int width, unsigned int height) :
     m_CoinTextures[1].subtextureCoordinates({ 11, 5 }, { 128, 128 });
 
     m_Camera.setPosition({ 0.0f, 0.0f, 0.0f });
+
+    if (m_TicTacToeModel.load("res/AI/tictactoe-model"))
+        loadDataset("res/AI/tictactoe-dataset.csv");
 }
 
-RLTTTScene::~RLTTTScene()
+TicTacToeScene::~TicTacToeScene()
 {
+    m_TicTacToeModel.save("res/AI/tictactoe-model");
+    saveDataset("res/AI/tictactoe-dataset.csv");
 }
 
-void RLTTTScene::getPosition(Elysium::Action action, Elysium::Vector2& position)
+Elysium::Vector2 TicTacToeScene::getPosition(Elysium::Action action)
 {
     switch (action)
     {
     case 0:
-        position = { -6.0f, -6.0f };
+        return { -6.0f, -6.0f };
         break;
     case 1:
-        position = { 0.0f, -6.0f };
+        return { 0.0f, -6.0f };
         break;
     case 2:
-        position = { 6.0f, -6.0f };
+        return { 6.0f, -6.0f };
         break;
     case 3:
-        position = { -6.0f, 0.0f };
+        return { -6.0f, 0.0f };
         break;
     case 4:
-        position = { 0.0f, 0.0f };
+        return { 0.0f, 0.0f };
         break;
     case 5:
-        position = { 6.0f, 0.0f };
+        return { 6.0f, 0.0f };
         break;
     case 6:
-        position = { -6.0f, 6.0f };
+        return { -6.0f, 6.0f };
         break;
     case 7:
-        position = { 0.0f, 6.0f };
+        return { 0.0f, 6.0f };
         break;
     case 8:
-        position = { 6.0f, 6.0f };
+        return { 6.0f, 6.0f };
         break;
     }
 }
 
-void RLTTTScene::addAction(Elysium::Vector2 position, size_t index)
+void TicTacToeScene::addAction(Elysium::Vector2 position, size_t index)
 {
     if (m_Grid.isValid(index))
     {
         m_MoveCooldown = -0.5f;
 
         m_Coins[m_CoinIndex] = position;
-        m_CoinsTextureIndexes[m_CoinIndex++] = m_Turn;
+        m_CoinsTextureIndexes[m_CoinIndex++] = m_Turn == -1 ? 1 : 2;
         m_Grid.Grid[index] = m_Turn;
 
         if (m_CoinIndex >= 9)
@@ -78,10 +84,10 @@ void RLTTTScene::addAction(Elysium::Vector2 position, size_t index)
             m_Tie = false;
             switch (m_Turn)
             {
-            case 1:
+            case -1:
                 m_BlueScore++;
                 break;
-            case 2:
+            case 1:
                 m_RedScore++;
                 break;
             }
@@ -89,31 +95,69 @@ void RLTTTScene::addAction(Elysium::Vector2 position, size_t index)
 
         switch (m_Turn)
         {
-        case 1:
-            m_Turn = 2;
-            break;
-        case 2:
+        case -1:
             m_Turn = 1;
+            break;
+        case 1:
+            m_Turn = -1;
             break;
         }
     }
 }
 
-bool RLTTTScene::isWithinBounds(Elysium::Vector2 position, float x1, float y1, float x2, float y2)
+bool TicTacToeScene::isWithinBounds(Elysium::Vector2 position, float x1, float y1, float x2, float y2)
 {
     bool CollisionX = position.x >= x1 && position.x <= x2;
     bool CollisionY = position.y >= y1 && position.y <= y2;
     return CollisionX && CollisionY;
 }
 
-void RLTTTScene::onUpdate(Elysium::Timestep ts)
+void TicTacToeScene::loadDataset(const char* filepath)
+{
+    std::ifstream file(filepath);
+    if (file.is_open())
+    {
+        std::vector<std::vector<float>> dataset;
+        std::string line;
+        while (getline(file, line))
+        {
+            std::vector<float> row(10);
+            sscanf_s(line.c_str(), 
+                "%f, %f, %f, %f, %f, %f, %f, %f, %f, %f", 
+                &row[0], &row[1], &row[2], &row[3], &row[4], &row[5], &row[6], &row[7], &row[8], &row[9]);
+            dataset.push_back(row);
+        }
+        file.close();
+
+        if (!dataset.empty())
+            m_Dataset = Elysium::Matrix(dataset);
+    }
+}
+
+void TicTacToeScene::saveDataset(const char* filepath)
+{
+    std::ofstream file(filepath);
+    if (file.is_open())
+    {
+        const size_t lastColumn = m_Dataset.getWidth() - 1;
+        for (size_t i = 0; i < m_Dataset.getHeight(); ++i)
+        {
+            for (size_t j = 0; j < lastColumn; ++j)
+                file << m_Dataset[{i, j}] << ", ";
+            file << m_Dataset[{i, lastColumn}] << "\n";
+        }
+    }
+    file.close();
+}
+
+void TicTacToeScene::onUpdate(Elysium::Timestep ts)
 {
     if (m_GameOver && m_MoveCooldown >= 0.0f)
     {
         if (m_Tie)
         {
             m_DrawCount++;
-            m_Turn = Elysium::Random::Integer(1, 2);
+            m_Turn = Elysium::Random::Integer(1, 2) == 1 ? -1 : 1;
         }
         m_MoveCooldown = -1.0f;
         m_Coins.fill({ 0.0f, 0.0f });
@@ -127,15 +171,13 @@ void RLTTTScene::onUpdate(Elysium::Timestep ts)
 
     if (m_PlayAgainstMinimax && m_MoveCooldown >= 0.0f)
     {
-        if (m_Turn == 2)
+        if (m_Turn == 1)
         {
-            m_Minimax.Minimax = 2;
-            m_Minimax.Opponent = 1;
+            m_Minimax.Minimax = 1;
+            m_Minimax.Opponent = -1;
             size_t action = m_Minimax.playAction();
 
-            Elysium::Vector2 position;
-            getPosition((Elysium::Action)action, position);
-            addAction(position, action);
+            addAction(getPosition((Elysium::Action)action) , action);
         }
     }
 
@@ -169,16 +211,16 @@ void RLTTTScene::onUpdate(Elysium::Timestep ts)
     Elysium::Renderer::resetStats();
 }
 
-void RLTTTScene::onEvent(Elysium::Event& event)
+void TicTacToeScene::onEvent(Elysium::Event& event)
 {
     Elysium::EventDispatcher dispatcher(event);
-    dispatcher.Dispatch<Elysium::MouseButtonPressedEvent>(BIND_EVENT_FUNCTION(RLTTTScene::onMousePressedEvent));
-    dispatcher.Dispatch<Elysium::WindowResizeEvent>(BIND_EVENT_FUNCTION(RLTTTScene::onWindowResizeEvent));
+    dispatcher.Dispatch<Elysium::MouseButtonPressedEvent>(BIND_EVENT_FUNCTION(TicTacToeScene::onMousePressedEvent));
+    dispatcher.Dispatch<Elysium::WindowResizeEvent>(BIND_EVENT_FUNCTION(TicTacToeScene::onWindowResizeEvent));
 }
 
-bool RLTTTScene::onMousePressedEvent(Elysium::MouseButtonPressedEvent& event)
+bool TicTacToeScene::onMousePressedEvent(Elysium::MouseButtonPressedEvent& event)
 {
-    if (!m_GameOver && m_Turn == 1 && m_MoveCooldown >= 0.0f)
+    if (!m_GameOver && m_Turn == -1 && m_MoveCooldown >= 0.0f)
     {
         auto mousePosition = Elysium::Input::getMousePosition();
         auto width = Elysium::Application::Get().getWindow().getWidth();
@@ -249,7 +291,7 @@ bool RLTTTScene::onMousePressedEvent(Elysium::MouseButtonPressedEvent& event)
     return false;
 }
 
-bool RLTTTScene::onWindowResizeEvent(Elysium::WindowResizeEvent& event)
+bool TicTacToeScene::onWindowResizeEvent(Elysium::WindowResizeEvent& event)
 {
     unsigned int width = event.getWidth();
     unsigned int height = event.getHeight();

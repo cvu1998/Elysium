@@ -4,7 +4,7 @@
 
 #include "Game/TicTacToeMinimax.h"
 
-class RLTTTScene : public Elysium::Scene
+class TicTacToeScene : public Elysium::Scene
 {
 private:
     float m_Height = 30.0f;
@@ -29,16 +29,23 @@ private:
     TicTacToeMinimax m_Minimax;
     bool m_PlayAgainstMinimax = true;
 
+    Elysium::Model m_TicTacToeModel;
+    Elysium::Matrix m_Dataset;
+    bool m_DoneTraining = true;
+
 private:
-    void getPosition(Elysium::Action action, Elysium::Vector2& position);
+    Elysium::Vector2 getPosition(Elysium::Action action);
 
     void addAction(Elysium::Vector2 position, size_t index);
 
     bool isWithinBounds(Elysium::Vector2 position, float x1, float y1, float x2, float y2);
 
+    void loadDataset(const char* filepath);
+    void saveDataset(const char* filepath);
+
 public:
-    RLTTTScene(unsigned int width, unsigned int height);
-    ~RLTTTScene();
+    TicTacToeScene(unsigned int width, unsigned int height);
+    ~TicTacToeScene();
 
     void onUpdate(Elysium::Timestep ts) override;
     void onEvent(Elysium::Event& event) override;

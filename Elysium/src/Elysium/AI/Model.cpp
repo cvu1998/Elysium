@@ -173,7 +173,7 @@ namespace Elysium
         return m_Layers[last]->calculateError(activations[last - 1], outputs, LossFunction, lastNeuron, results, error);
     }
 
-    void Model::saveModel(const char* path) const
+    void Model::save(const char* path) const
     {
         if (_mkdir(path) == -1)
             ELY_CORE_ERROR("Could not make directory {0}!", path);
@@ -186,15 +186,15 @@ namespace Elysium
         }
     }
 
-    void Model::loadModel(const char* path)
+    bool Model::load(const char* path)
     {
         std::string file;
         for (size_t i = 0; i < m_Layers.size(); ++i)
         {
             file = std::string(path) + "/" + std::string(m_Layers[i]->m_LayerName) + std::to_string(i) + ".wb";
             if (!m_Layers[i]->loadWeightsAndBiases(file.c_str()))
-                return;
+                return false;
         }
-        m_Trained = true;
+        return m_Trained = true;
     }
 }

@@ -98,10 +98,7 @@ namespace Elysium
     {
         std::ifstream file(filename);
         if (!file.is_open())
-        {
-            ELY_CORE_ERROR("Could not load weight and biases at {0}!", filename);
             return false;
-        }
 
         std::string line;
 

@@ -22,7 +22,7 @@
     <ClCompile Include="src\Game\FlappyBird.cpp" />
     <ClCompile Include="src\Game\TicTacToeGrid.cpp" />
     <ClCompile Include="src\Scenes\FlappyBirdScene.cpp" />
-    <ClCompile Include="src\Scenes\RLTTTScene.cpp" />
+    <ClCompile Include="src\Scenes\TicTacToeScene.cpp" />
     <ClCompile Include="src\Scenes\SoccerScene.cpp" />
     <ClCompile Include="src\Game\Connect4Grid.cpp" />
     <ClCompile Include="src\Scenes\Connect4LScene.cpp" />
@@ -38,7 +38,7 @@
     <ClInclude Include="src\Game\TicTacToeGrid.h" />
     <ClInclude Include="src\Game\Values.h" />
     <ClInclude Include="src\Scenes\FlappyBirdScene.h" />
-    <ClInclude Include="src\Scenes\RLTTTScene.h" />
+    <ClInclude Include="src\Scenes\TicTacToeScene.h" />
     <ClInclude Include="src\Scenes\SoccerScene.h" />
     <ClInclude Include="src\Game\Connect4Grid.h" />
     <ClInclude Include="src\Scenes\Connect4Scene.h" />

@@ -116,6 +116,7 @@ namespace Elysium
 
     Matrix Matrix::Scramble(const Matrix& input)
     {
+        Random::Init();
         std::vector<size_t> indices;
         indices.reserve(input.Height);
         while (indices.size() < input.Height)

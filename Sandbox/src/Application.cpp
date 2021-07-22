@@ -3,7 +3,7 @@
 #include "Scenes/PerformanceScene.h"
 #include "Scenes/SandboxScene.h"
 #include "Scenes/SoccerScene.h"
-#include "Scenes/RLTTTScene.h"
+#include "Scenes/TicTacToeScene.h"
 
 int main(void)
 {
@@ -39,7 +39,7 @@ int main(void)
             if (ImGui::Button("Tic-Tac-Toe"))
             {
                 application->SceneManager.unloadScene();
-                application->SceneManager.loadScene(new RLTTTScene(width, height));
+                application->SceneManager.loadScene(new TicTacToeScene(width, height));
             }
             if (ImGui::Button("Flappy Bird"))
             {

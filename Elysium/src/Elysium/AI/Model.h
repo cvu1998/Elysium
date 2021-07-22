@@ -31,8 +31,8 @@ namespace Elysium
         void predict(const Matrix& inputs, Matrix& results);
         float score(const Matrix& inputs, const Matrix& outputs, Matrix& results);
 
-        void saveModel(const char* path) const;
-        void loadModel(const char* path);
+        void save(const char* path) const;
+        bool load(const char* path);
 
     public:
         float LearningRate = 0.1f;

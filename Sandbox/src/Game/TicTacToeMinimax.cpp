@@ -128,7 +128,7 @@ int TicTacToeMinimax::evaluateDiagonals(const TicTacToeGrid& grid)
     return value;
 }
 
-void TicTacToeMinimax::generateChildren(std::vector<TicTacToeState>& states, const TicTacToeState& state, uint32_t turn, bool lastLayer)
+void TicTacToeMinimax::generateChildren(std::vector<TicTacToeState>& states, const TicTacToeState& state, int32_t turn, bool lastLayer)
 {
     for (size_t i = 0; i < 9; i++)
     {

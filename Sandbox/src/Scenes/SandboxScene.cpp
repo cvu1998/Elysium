@@ -380,10 +380,10 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Elysium::S
         Elysium::Matrix::Slice(IrisData, 0, 145, 4, 0),
         50000,
         10);
-    IrisModel.saveModel("res/AI/iris-model");
+    IrisModel.save("res/AI/iris-model");
     */
 
-    IrisModel.loadModel("res/AI/iris-model");
+    IrisModel.load("res/AI/iris-model");
     IrisModel.summary();
 
     Elysium::Matrix IrisResults;
