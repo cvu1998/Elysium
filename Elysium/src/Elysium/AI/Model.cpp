@@ -31,32 +31,39 @@ namespace Elysium
         ELY_CORE_INFO("{0}:    {1}", "Layer (Type)", "Param #");
         for (const auto& layer : m_Layers)
             layer->summary();
+    }
 
-        ELY_CORE_INFO("Training Summary Report");
-
-        size_t n = 0;
-        size_t epoch = 0;
-        float meanError = 0.0f;
-        for (const auto& p : m_TrainingSummary)
+    void Model::report()
+    {
+        if (!m_TrainingSummary.empty())
         {
-            if (epoch != p.Epoch)
-            {
-                ELY_CORE_INFO("Epoch: {0}, Error: {1}", epoch, meanError / (float)n);
+            ELY_CORE_INFO("Training Summary Report");
 
-                n = 1;
-                epoch = p.Epoch;
-                meanError = p.MeanError;
-                continue;
-            }
-            meanError += p.MeanError;
-            n++;
-
-            if (p == m_TrainingSummary.back())
+            size_t n = 0;
+            size_t epoch = 0;
+            float meanError = 0.0f;
+            for (const auto& p : m_TrainingSummary)
             {
-                ELY_CORE_INFO("Epoch: {0}, Error: {1}", epoch, meanError / (float)n);
-                return;
+                if (epoch != p.Epoch)
+                {
+                    ELY_CORE_INFO("Epoch: {0}, Error: {1}", epoch, meanError / (float)n);
+
+                    n = 1;
+                    epoch = p.Epoch;
+                    meanError = p.MeanError;
+                    continue;
+                }
+                meanError += p.MeanError;
+                n++;
+
+                if (p == m_TrainingSummary.back())
+                {
+                    ELY_CORE_INFO("Epoch: {0}, Error: {1}", epoch, meanError / (float)n);
+                    return;
+                }
             }
         }
+        m_TrainingSummary.clear();
     }
 
     void Model::fit(const Matrix& inputs, const Matrix& outputs, size_t epochs, size_t batchSize)
@@ -87,7 +94,6 @@ namespace Elysium
                     ELY_CORE_ERROR("Invalid input size!");
                     return;
                 }
-                m_Trained = true;
 
                 for (size_t i = 1; i < last; ++i)
                     m_Layers[i]->forwardPass(activations[i - 1], neurons[i], activations[i]);
@@ -130,7 +136,7 @@ namespace Elysium
 
     void Model::predict(const Matrix& inputs, Matrix& results)
     {
-        if (!m_Trained || !m_Valid)
+        if (!m_Valid)
             return;
 
         const size_t last = m_Layers.size() - 1;
@@ -152,7 +158,7 @@ namespace Elysium
 
     float Model::score(const Matrix& inputs, const Matrix& outputs, Matrix& results)
     {
-        if (!m_Trained || !m_Valid)
+        if (!m_Valid)
             return 1.0f;
 
         const size_t last = m_Layers.size() - 1;
@@ -175,8 +181,7 @@ namespace Elysium
 
     void Model::save(const char* path) const
     {
-        if (_mkdir(path) == -1)
-            ELY_CORE_ERROR("Could not make directory {0}!", path);
+        _mkdir(path);
 
         std::string file;
         for (size_t i = 0; i < m_Layers.size(); ++i)
@@ -195,6 +200,6 @@ namespace Elysium
             if (!m_Layers[i]->loadWeightsAndBiases(file.c_str()))
                 return false;
         }
-        return m_Trained = true;
+        return true;
     }
 }

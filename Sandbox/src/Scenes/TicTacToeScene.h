@@ -18,20 +18,28 @@ private:
     std::array<Elysium::TextureData, 2> m_CoinTextures; // 1 Blue, 2 Red
 
     TicTacToeGrid m_Grid;
-    uint32_t m_Turn = 1;
-    float m_MoveCooldown = 1.0f;
+    int m_Turn = 1;
     bool m_GameOver = false;
     bool m_Tie = false;
     uint32_t m_BlueScore = 0;
     uint32_t m_RedScore = 0;
     uint32_t m_DrawCount = 0;
+    bool m_RedWon = false;
+
+    bool m_Pause = false;
+    float m_MoveCooldown = 0.0f;
+    static constexpr float s_Cooldown = -0.01f;
 
     TicTacToeMinimax m_Minimax;
-    bool m_PlayAgainstMinimax = true;
+    bool m_PlayAgainstMinimax = false;
 
     Elysium::Model m_TicTacToeModel;
     Elysium::Matrix m_Dataset;
+    Elysium::Matrix m_EpisodeData;
+    bool m_TrainModel = false;
     bool m_DoneTraining = true;
+    bool m_PlayAgainstModel = true;
+    TicTacToeMinimax m_ModelMinimax;
 
 private:
     Elysium::Vector2 getPosition(Elysium::Action action);
@@ -42,6 +50,11 @@ private:
 
     void loadDataset(const char* filepath);
     void saveDataset(const char* filepath);
+
+    float evaluateState(const TicTacToeGrid& grid);
+    void trainModel(const TicTacToeGrid& previous);
+
+    void getInvertedState(std::vector<float>& state);
 
 public:
     TicTacToeScene(unsigned int width, unsigned int height);

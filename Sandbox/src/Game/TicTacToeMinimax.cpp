@@ -6,7 +6,7 @@ TicTacToeMinimax::TicTacToeMinimax(TicTacToeGrid* grid) : m_Grid(grid)
 
 size_t TicTacToeMinimax::playAction()
 {
-    TicTacToeState origin = { 0, *m_Grid };
+    TicTacToeState origin = { 0.0f, *m_Grid };
     generateChildren(origin.Children, origin, Minimax, false);
 
     for (TicTacToeState& s : origin.Children)
@@ -69,7 +69,7 @@ int TicTacToeMinimax::getValueFromExponent(int exponent)
     return value;
 }
 
-int TicTacToeMinimax::evaluateState(const TicTacToeGrid& grid)
+float TicTacToeMinimax::evaluateState(const TicTacToeGrid& grid)
 {
     int value = 0;
     for (int32_t i = 0; i < 3; i++)
@@ -85,10 +85,10 @@ int TicTacToeMinimax::evaluateState(const TicTacToeGrid& grid)
         value += getValueFromExponent(exponent);
     }
 
-    for (int32_t i = 0; i < 3; i++)
+    for (int i = 0; i < 3; i++)
     {
         int exponent = 0;
-        for (int32_t j = 0; j < 3; j++)
+        for (int j = 0; j < 3; j++)
         {
             if (grid.getValue(j, i) == Minimax)
                 exponent++;
@@ -99,14 +99,14 @@ int TicTacToeMinimax::evaluateState(const TicTacToeGrid& grid)
     }
     value += evaluateDiagonals(grid);
 
-    return value;
+    return (float)value;
 }
 
 int TicTacToeMinimax::evaluateDiagonals(const TicTacToeGrid& grid)
 {
     int value = 0;
     int exponent = 0;
-    for (int32_t i = 0; i < 3; i++)
+    for (int i = 0; i < 3; i++)
     {
         if (grid.getValue(i, i) == Minimax)
             exponent++;
@@ -116,7 +116,7 @@ int TicTacToeMinimax::evaluateDiagonals(const TicTacToeGrid& grid)
     value += getValueFromExponent(exponent);
 
     exponent = 0;
-    for (int32_t i = 0; i < 3; i++)
+    for (int i = 0; i < 3; i++)
     {
         if (grid.getValue(2 - i, i) == Minimax)
             exponent++;
@@ -128,7 +128,7 @@ int TicTacToeMinimax::evaluateDiagonals(const TicTacToeGrid& grid)
     return value;
 }
 
-void TicTacToeMinimax::generateChildren(std::vector<TicTacToeState>& states, const TicTacToeState& state, int32_t turn, bool lastLayer)
+void TicTacToeMinimax::generateChildren(std::vector<TicTacToeState>& states, const TicTacToeState& state, int turn, bool lastLayer)
 {
     for (size_t i = 0; i < 9; i++)
     {
@@ -141,7 +141,7 @@ void TicTacToeMinimax::generateChildren(std::vector<TicTacToeState>& states, con
                 states.emplace_back(ValueFunction(newGrid), newGrid);
                 continue;
             }
-            states.emplace_back(0, newGrid);
+            states.emplace_back(0.0f, newGrid);
         }
     }
 }

@@ -7,12 +7,12 @@ class TicTacToeMinimax
 private:
     struct TicTacToeState
     {
-        int Value = 0;
+        float Value = 0;
 
         TicTacToeGrid StateRep;
         std::vector<TicTacToeState> Children;
 
-        TicTacToeState(int value, TicTacToeGrid grid) :
+        TicTacToeState(float value, TicTacToeGrid grid) :
             Value(value),
             StateRep(grid)
         {
@@ -29,15 +29,15 @@ private:
 
 private:
     int getValueFromExponent(int exponent);
-    int evaluateState(const TicTacToeGrid& grid);
+    float evaluateState(const TicTacToeGrid& grid);
     int evaluateDiagonals(const TicTacToeGrid& grid);
-    void generateChildren(std::vector<TicTacToeState>& states, const TicTacToeState& state, int32_t turn, bool lastLayer);
+    void generateChildren(std::vector<TicTacToeState>& states, const TicTacToeState& state, int turn, bool lastLayer);
 
 public:
-    using StateValueFunction = std::function<int(const TicTacToeGrid&)>;
+    using StateValueFunction = std::function<float(const TicTacToeGrid&)>;
 
-    int32_t Minimax = 0;     // Max
-    int32_t Opponent = 0;    // Min
+    int Minimax = 0;     // Max
+    int Opponent = 0;    // Min
 
     StateValueFunction ValueFunction = std::bind(&TicTacToeMinimax::evaluateState, this, std::placeholders::_1);
 

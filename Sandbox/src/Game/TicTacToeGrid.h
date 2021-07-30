@@ -5,13 +5,13 @@
 class TicTacToeGrid
 {
 public:
-    std::array<uint32_t, 9> Grid = { 0 };
+    std::array<int, 9> Grid = { 0 };
 
 private:
-    bool isWinningRow(size_t index, uint32_t value) const;
-    bool isWinningColumn(size_t index, uint32_t value) const;
-    bool isWinningRightDiagonal(size_t index, uint32_t value) const;
-    bool isWinningLeftDiagonal(size_t index, uint32_t value) const;
+    bool isWinningRow(size_t index, int value) const;
+    bool isWinningColumn(size_t index, int value) const;
+    bool isWinningRightDiagonal(size_t index, int value) const;
+    bool isWinningLeftDiagonal(size_t index, int value) const;
 
 public:
     TicTacToeGrid();
@@ -30,7 +30,7 @@ public:
         Grid.fill(0);
     }
 
-    bool isWinningMove(size_t index, uint32_t value) const;
-    void printGrid();
-    void getStateOfGrid(std::vector<float>& state);
+    bool isWinningMove(size_t index, int value) const;
+    void printGrid() const;
+    void getStateOfGrid(std::vector<float>& state) const;
 };

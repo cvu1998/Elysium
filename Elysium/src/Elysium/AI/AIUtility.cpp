@@ -72,5 +72,30 @@ namespace Elysium
         {
             return glm::sqrt(value / (2.0f * (float)n));
         }
+
+        void softmax(const std::vector<float>& x, std::vector<float>& y)
+        {
+            float sum = 0.0f;
+            for (float i : x)
+                sum += glm::exp(i);
+
+            y.reserve(x.size());
+            for (float i : x)
+                y.emplace_back(glm::exp(i) / sum);
+        }
+
+        void softmax(const Matrix& x, Matrix& y)
+        {
+            y = Matrix(x.getHeight(), x.getWidth());
+            for (size_t i = 0; i < x.getHeight(); ++i)
+            {
+                float sum = 0.0f;
+                for (size_t j = 0; j < x.getHeight(); ++j)
+                    sum += glm::exp(x[{i, j}]);
+
+                for (size_t j = 0; j < x.getHeight(); ++j)
+                    y[{i, j}] = glm::exp(x[{i, j}]) / sum;
+            }
+        }
     }
 }

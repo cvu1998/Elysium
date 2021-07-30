@@ -23,6 +23,9 @@ namespace Elysium
         inline size_t getHeight() const { return Height; }
         inline size_t getWidth() const { return Width; }
 
+        void appendRow(const std::vector<float>& row);
+        void fill(float value);
+
         static Matrix Concatenate(const Matrix& a, const Matrix& b, bool rowAxis = true);
         static Matrix Slice(const Matrix& input,
             size_t startColumn = 0, size_t endColumn = 0, size_t startRow = 0, size_t endRow = 0);

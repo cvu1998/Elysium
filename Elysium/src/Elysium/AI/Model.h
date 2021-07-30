@@ -25,6 +25,7 @@ namespace Elysium
         inline const std::vector<HiddenLayer*>& getLayers() const { return m_Layers; }
 
         void summary() const;
+        void report();
 
         void fit(const Matrix& inputs, const Matrix& outputs, size_t epochs = 1, size_t batchSize = 1);
 
@@ -45,6 +46,5 @@ namespace Elysium
         std::vector<Model::Summary> m_TrainingSummary;
 
         bool m_Valid = false;
-        bool m_Trained = false;
     };
 }

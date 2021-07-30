@@ -170,6 +170,7 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Elysium::S
         25000);
 
     model.summary();
+    model.report();
 
     Elysium::Matrix result;
     ELY_INFO("Mean Error: {0}", model.score(
@@ -385,6 +386,7 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Elysium::S
 
     IrisModel.load("res/AI/iris-model");
     IrisModel.summary();
+    IrisModel.report();
 
     Elysium::Matrix IrisResults;
     ELY_INFO("Mean Error: {0}", IrisModel.score(

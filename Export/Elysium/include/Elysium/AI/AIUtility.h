@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Elysium/AI/Matrix.h"
+
 namespace Elysium
 {
     namespace AI
@@ -40,5 +42,8 @@ namespace Elysium
 
         float MeanSquare(float correct, float prediction);
         float RootMeanSquare(float value, size_t n);
+
+        void softmax(const std::vector<float>& x, std::vector<float>& y);
+        void softmax(const Matrix& x, Matrix& y);
     }
 }

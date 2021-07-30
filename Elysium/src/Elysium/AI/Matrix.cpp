@@ -42,6 +42,19 @@ namespace Elysium
         }
     }
 
+    void Matrix::appendRow(const std::vector<float>& row)
+    {
+        Values.reserve(Values.size() + Width);
+        for (size_t i = 0; i < Width; ++i)
+            Values.emplace_back(row[i]);
+        Height++;
+    }
+
+    void Matrix::fill(float value)
+    {
+        std::fill(Values.begin(), Values.end(), value);
+    }
+
     Matrix Matrix::Concatenate(const Matrix& a, const Matrix& b, bool rowAxis)
     {
         Matrix result;

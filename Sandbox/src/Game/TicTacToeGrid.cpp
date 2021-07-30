@@ -8,13 +8,13 @@ TicTacToeGrid::~TicTacToeGrid()
 {
 }
 
-bool TicTacToeGrid::isWinningMove(size_t index, uint32_t value) const
+bool TicTacToeGrid::isWinningMove(size_t index, int value) const
 {
     return isWinningRow(index, value) || isWinningColumn(index, value) ||
         isWinningRightDiagonal(index, value) || isWinningLeftDiagonal(index, value);
 }
 
-void TicTacToeGrid::printGrid()
+void TicTacToeGrid::printGrid() const
 {
     ELY_INFO("----------");
     for (int i = 2; i >= 0; i--)
@@ -22,14 +22,15 @@ void TicTacToeGrid::printGrid()
     ELY_INFO("----------");
 }
 
-void TicTacToeGrid::getStateOfGrid(std::vector<float>& state)
+void TicTacToeGrid::getStateOfGrid(std::vector<float>& state) const
 {
+    state.reserve(state.size() + 9);
     for (size_t i = 0; i < Grid.size(); ++i)
-        state[i] = (float)Grid[i];
+        state.emplace_back((float)Grid[i]);
 
 }
 
-bool TicTacToeGrid::isWinningRow(size_t index, uint32_t value) const
+bool TicTacToeGrid::isWinningRow(size_t index, int value) const
 {
     uint16_t counter = 1;
     int32_t row = (int32_t)index / 3;
@@ -49,7 +50,7 @@ bool TicTacToeGrid::isWinningRow(size_t index, uint32_t value) const
     return counter >= 3;
 }
 
-bool TicTacToeGrid::isWinningColumn(size_t index, uint32_t value) const
+bool TicTacToeGrid::isWinningColumn(size_t index, int value) const
 {
     uint16_t counter = 1;
     int32_t row = (int32_t)index / 3;
@@ -69,7 +70,7 @@ bool TicTacToeGrid::isWinningColumn(size_t index, uint32_t value) const
     return counter >= 3;
 }
 
-bool TicTacToeGrid::isWinningRightDiagonal(size_t index, uint32_t value) const
+bool TicTacToeGrid::isWinningRightDiagonal(size_t index, int value) const
 {
     uint16_t counter = 1;
     int32_t row = (int32_t)index / 3;
@@ -89,7 +90,7 @@ bool TicTacToeGrid::isWinningRightDiagonal(size_t index, uint32_t value) const
     return counter >= 3;
 }
 
-bool TicTacToeGrid::isWinningLeftDiagonal(size_t index, uint32_t value) const
+bool TicTacToeGrid::isWinningLeftDiagonal(size_t index, int value) const
 {
     uint16_t counter = 1;
     int32_t row = (int32_t)index / 3;
