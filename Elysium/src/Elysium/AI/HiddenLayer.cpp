@@ -31,11 +31,13 @@ namespace Elysium
             break;
         case AI::Initializer::HE:
             std::mt19937 random;
-            std::normal_distribution<float> distribution(0.0, 1.0);
+            std::normal_distribution<float> distribution(0.0f, 1.0f);
 
+            random.seed(std::random_device()());
+            float scaleFactor = glm::sqrt(2.0f / (float)inputSize);
             Weights.Values.reserve(Weights.getWidth() * Weights.getHeight());
             for (size_t i = 0; i < Weights.getWidth() * Weights.getHeight(); ++i)
-                Weights.Values.emplace_back(distribution(random) / glm::sqrt( 2.0f / (float)inputSize));
+                Weights.Values.emplace_back(distribution(random) * scaleFactor);
             break;
         }
 
