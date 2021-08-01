@@ -4,11 +4,6 @@
 
 namespace Elysium
 {
-    struct Coordinate
-    {
-        size_t column, row;
-    };
-
     class Matrix
     {
     public:
@@ -31,8 +26,8 @@ namespace Elysium
             size_t startColumn = 0, size_t endColumn = 0, size_t startRow = 0, size_t endRow = 0);
         static Matrix Scramble(const Matrix& input);
 
-        inline float& operator[](Coordinate c) { return Values[c.column * Width + c.row]; }
-        inline float operator[](Coordinate c) const { return Values[c.column * Width + c.row]; }
+        inline float& operator()(size_t column, size_t row) { return Values[column * Width + row]; }
+        inline float operator()(size_t column, size_t row) const { return Values[column * Width + row]; }
 
         void print() const;
 

@@ -91,10 +91,10 @@ namespace Elysium
             {
                 float sum = 0.0f;
                 for (size_t j = 0; j < x.getHeight(); ++j)
-                    sum += glm::exp(x[{i, j}]);
+                    sum += glm::exp(x(i, j));
 
                 for (size_t j = 0; j < x.getHeight(); ++j)
-                    y[{i, j}] = glm::exp(x[{i, j}]) / sum;
+                    y(i, j) = glm::exp(x(i, j)) / sum;
             }
         }
     }

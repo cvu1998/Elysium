@@ -40,7 +40,7 @@ namespace Elysium
             ELY_CORE_INFO("Training Summary Report");
 
             size_t n = 0;
-            size_t epoch = 0;
+            size_t epoch = 1;
             float meanError = 0.0f;
             for (const auto& p : m_TrainingSummary)
             {
@@ -74,7 +74,7 @@ namespace Elysium
         const size_t last = m_Layers.size() - 1;
         const size_t epochsPoint = epochs > 20 ? (size_t)((float)epochs * 0.05f) : 1;
 
-        for (size_t epoch = 0; epoch <= epochs; ++epoch)
+        for (size_t epoch = 1; epoch <= epochs; ++epoch)
         {
             size_t batchBegin = 0;
             size_t batchEnd = batchSize < inputs.getHeight() ? batchSize : 0;
@@ -104,7 +104,7 @@ namespace Elysium
                     neurons[last],
                     activations[last],
                     error);
-                if (epoch % epochsPoint == 0)
+                if (epoch == 1 || epoch % epochsPoint == 0)
                     m_TrainingSummary.push_back({ epoch, meanError });
 
                 Matrix currDelta;

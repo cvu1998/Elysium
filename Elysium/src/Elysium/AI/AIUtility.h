@@ -21,6 +21,12 @@ namespace Elysium
             MEAN_SQUARED,
         };
 
+        enum class Initializer
+        {
+            RANDOM = 0,
+            HE = 1
+        };
+
         extern float LeakySlope;
 
         float Step(float x);

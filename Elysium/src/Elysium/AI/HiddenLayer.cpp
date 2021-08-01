@@ -2,15 +2,44 @@
 
 #include <fstream>
 
+#include <glm/glm.hpp>
+
 #include "Elysium/Log.h"
+#include "Elysium/Random.h"
+#include "Elysium/Utility.h"
 
 namespace Elysium
 {
-    HiddenLayer::HiddenLayer(const char* layerName, AI::Activation activation, bool useBias) :
+    HiddenLayer::HiddenLayer(const char* layerName, size_t size, AI::Activation activation, AI::Initializer initializer, bool useBias) :
+        m_Size(size),
         m_LayerName(layerName),
         m_Activation(activation),
+        m_Initializer(initializer),
         m_Bias(useBias)
     {
+    }
+
+    void HiddenLayer::initWeightAndBiases(size_t inputSize)
+    {
+        Random::Init();
+
+        Weights = Matrix(m_Size, inputSize, true);
+        switch (m_Initializer)
+        {
+        case AI::Initializer::RANDOM:
+            Utility::CreateRandomVector(Weights.Values, Weights.getWidth() * Weights.getHeight(), -1.0f, 1.0f);
+            break;
+        case AI::Initializer::HE:
+            std::mt19937 random;
+            std::normal_distribution<float> distribution(0.0, 1.0);
+
+            Weights.Values.reserve(Weights.getWidth() * Weights.getHeight());
+            for (size_t i = 0; i < Weights.getWidth() * Weights.getHeight(); ++i)
+                Weights.Values.emplace_back(distribution(random) / glm::sqrt( 2.0f / (float)inputSize));
+            break;
+        }
+
+        Biases.resize(m_Size);
     }
 
     void HiddenLayer::getActivation(MathFn& function)
@@ -86,7 +115,7 @@ namespace Elysium
         for (size_t i = 0; i < Weights.getHeight(); ++i)
         {
             for (size_t j = 0; j < Weights.getWidth(); ++j)
-                file << "W(" << i << ", " << j << "): " << Weights[{i, j}] << '\n';
+                file << "W(" << i << ", " << j << "): " << Weights(i, j) << '\n';
         }
 
         for (size_t i = 0; i < Biases.size(); ++i)
@@ -110,7 +139,7 @@ namespace Elysium
             {
             case 'W':
                 sscanf_s(line.c_str(), "W(%zu, %zu): %f", &i, &j, &value);
-                Weights[{i, j}] = value;
+                Weights(i, j) = value;
                 break;
             case 'B':
                 sscanf_s(line.c_str(), "B(%zu): %f", &i, &value);

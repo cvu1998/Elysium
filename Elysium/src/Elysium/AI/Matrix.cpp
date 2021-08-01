@@ -44,9 +44,7 @@ namespace Elysium
 
     void Matrix::appendRow(const std::vector<float>& row)
     {
-        Values.reserve(Values.size() + Width);
-        for (size_t i = 0; i < Width; ++i)
-            Values.emplace_back(row[i]);
+        Values.insert(Values.end(), row.begin(), row.end());
         Height++;
     }
 
@@ -90,10 +88,10 @@ namespace Elysium
         for (size_t i = 0; i < result.Height; ++i)
         {
             for (size_t ia = 0; ia < a.Width; ++ia)
-                result.Values.emplace_back(a[{i, ia}]);
+                result.Values.emplace_back(a(i, ia));
 
             for (size_t ib = 0; ib < b.Width; ++ib)
-                result.Values.emplace_back(b[{i, ib}]);
+                result.Values.emplace_back(b(i, ib));
         }
 
         return result;
@@ -119,7 +117,7 @@ namespace Elysium
         for (size_t j = startColumn; j < endColumn; ++j)
         {
             for (size_t i = startRow; i < endRow; ++i)
-                result.Values.emplace_back(input[{j, i}]);
+                result.Values.emplace_back(input(j, i));
         }
 
         result.Width = endRow - startRow;
@@ -134,7 +132,8 @@ namespace Elysium
         indices.reserve(input.Height);
         while (indices.size() < input.Height)
         {
-            int n = Random::Integer(0, (int)input.Height - 1);
+            Elysium::Random::InitInteger(0, (int)input.Height - 1);
+            int n = Random::Integer();
             if (std::find(indices.begin(), indices.end(), n) == std::end(indices))
                 indices.emplace_back((size_t)n);
         }
@@ -143,7 +142,7 @@ namespace Elysium
         for (size_t a = 0; a < input.Height; ++a)
         {
             for (size_t b = 0; b < input.Width; ++b)
-                output[{a, b}] = input[{indices[a], b}];
+                output(a, b) = input(indices[a], b);
         }
         return output;
     }
@@ -157,7 +156,7 @@ namespace Elysium
             printf(openBracket);
 
             for (size_t i = 0; i < Width; ++i)
-                printf(" %f", operator[]({j, i}));
+                printf(" %f", operator()(j, i));
 
             const char* closeBracket = j == Height - 1 ? "]" : "]\n";
             printf(closeBracket);

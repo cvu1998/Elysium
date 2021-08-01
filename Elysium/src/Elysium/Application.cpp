@@ -120,7 +120,7 @@ namespace Elysium
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
 
-            if (!m_Minimized)
+            //if (!m_Minimized)
             {
                 m_Function();
 

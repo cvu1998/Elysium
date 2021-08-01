@@ -9,6 +9,7 @@ namespace Elysium
 	private:
 		static std::mt19937 s_RandomEngine;
 		static std::uniform_int_distribution<std::mt19937::result_type> s_Distribution;
+		static std::uniform_int_distribution<int> s_IntegerDistribution;
 
 	public:
 		static void Init()
@@ -21,10 +22,14 @@ namespace Elysium
 			return (float)s_Distribution(s_RandomEngine) / (float)std::numeric_limits<uint32_t>::max();
 		}
 
-		static int Integer(int min, int max)
+		static void InitInteger(int min, int max)
 		{
-			std::uniform_int_distribution<int> uni(min, max);
-			return uni(s_RandomEngine);
+			s_IntegerDistribution = std::uniform_int_distribution<int>(min, max);
+		}
+
+		static int Integer()
+		{
+			return s_IntegerDistribution(s_RandomEngine);
 		}
 	};
 }

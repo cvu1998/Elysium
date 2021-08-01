@@ -42,7 +42,7 @@ namespace Elysium
             {
                 float result = 0.0f;
                 for (size_t i = 0; i < inputs.getWidth(); ++i)
-                    result += Weights[i] * inputs[{j, i}];
+                    result += Weights[i] * inputs(j, i);
                 result += Weights[inputs.getWidth()];
 
                 result = m_Activation(result);
@@ -50,7 +50,7 @@ namespace Elysium
                 if (fabs(error) > 0.0f)
                 {
                     for (size_t i = 0; i < inputs.getWidth(); ++i)
-                        Weights[i] = Weights[i] + LearningRate * error * inputs[{j, i}];
+                        Weights[i] = Weights[i] + LearningRate * error * inputs(j, i);
                     Weights[inputs.getWidth()] = Weights[inputs.getWidth()] + LearningRate * error;
                 }
             }
@@ -70,7 +70,7 @@ namespace Elysium
         {
             float result = 0.0f;
             for (size_t i = 0; i < inputs.getWidth(); ++i)
-                result += Weights[i] * inputs[{j, i}];
+                result += Weights[i] * inputs(j, i);
             result += Weights[inputs.getWidth()];
 
             results.emplace_back(m_Activation(result));
@@ -91,7 +91,7 @@ namespace Elysium
         {
             float result = 0.0f;
             for (size_t i = 0; i < inputs.getWidth(); ++i)
-                result += Weights[i] * inputs[{j, i}];
+                result += Weights[i] * inputs(j, i);
             result += Weights[inputs.getWidth()];
 
             result = m_Activation(result);

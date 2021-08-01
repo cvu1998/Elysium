@@ -14,7 +14,14 @@ namespace Elysium
         friend class Model;
 
     public:
-        HiddenLayer(const char* layerName, AI::Activation activation, bool useBias);
+        HiddenLayer
+        (
+            const char* layerName, 
+            size_t size,
+            AI::Activation activation,
+            AI::Initializer initializer,
+            bool useBias
+        );
         virtual ~HiddenLayer() = default;
 
     public:
@@ -26,7 +33,7 @@ namespace Elysium
         using LossFn = std::function<float(float, float)>;
         using ScoreFn = std::function<float(float, size_t)>;
 
-        virtual void initWeightAndBiases(size_t inputSize) = 0;
+        virtual void initWeightAndBiases(size_t inputSize) final;
 
         void getActivation(MathFn& function);
         void getActivationDerivative(MathFn& function);
@@ -48,8 +55,10 @@ namespace Elysium
 
     protected:
         float LearningRate = 0.1f;
+        size_t m_Size = 1;
 
         AI::Activation m_Activation = AI::Activation::LINEAR;
+        AI::Initializer m_Initializer = AI::Initializer::RANDOM;
         bool m_Bias = true;
 
         const char* m_LayerName = nullptr;
