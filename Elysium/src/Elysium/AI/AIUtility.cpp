@@ -65,7 +65,8 @@ namespace Elysium
 
         float MeanSquare(float correct, float prediction)
         {
-            return correct * correct - prediction * prediction;
+            float value = (correct - prediction);
+            return value * value * (value >= 0.0f ? 1.0f : -1.0f);
         }
 
         float RootMeanSquare(float value, size_t n)

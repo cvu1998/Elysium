@@ -155,8 +155,8 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Elysium::S
     Elysium::AI::LeakySlope = 0.1f;
 
     Elysium::Model model(2);
-    model.add(new Elysium::Dense(3, Elysium::AI::Activation::LEAKY_RELU));
-    model.add(new Elysium::Dense(1, Elysium::AI::Activation::LEAKY_RELU));
+    model.add(new Elysium::Dense(3, Elysium::AI::Activation::LEAKY_RELU, Elysium::AI::Initializer::HE));
+    model.add(new Elysium::Dense(1, Elysium::AI::Activation::LEAKY_RELU, Elysium::AI::Initializer::HE));
     model.LossFunction = Elysium::AI::Loss::MEAN_SQUARED;
 
     Elysium::Matrix::Slice(XORGateData, 0, 0, 0, 2).print();
@@ -347,26 +347,26 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Elysium::S
         switch (IrisOutputs[i])
         {
         case 0:
-            OneHotIrisOutputs[{i, 0}] = 1.0f;
-            OneHotIrisOutputs[{i, 1}] = 0.0f;
-            OneHotIrisOutputs[{i, 2}] = 0.0f;
+            OneHotIrisOutputs(i, 0) = 1.0f;
+            OneHotIrisOutputs(i, 1) = 0.0f;
+            OneHotIrisOutputs(i, 2) = 0.0f;
             break;
         case 1:
-            OneHotIrisOutputs[{i, 0}] = 0.0f;
-            OneHotIrisOutputs[{i, 1}] = 1.0f;
-            OneHotIrisOutputs[{i, 2}] = 0.0f;
+            OneHotIrisOutputs(i, 0) = 0.0f;
+            OneHotIrisOutputs(i, 1) = 1.0f;
+            OneHotIrisOutputs(i, 2) = 0.0f;
             break;
         case 2:
-            OneHotIrisOutputs[{i, 0}] = 0.0f;
-            OneHotIrisOutputs[{i, 1}] = 0.0f;
-            OneHotIrisOutputs[{i, 2}] = 1.0f;
+            OneHotIrisOutputs(i, 0) = 0.0f;
+            OneHotIrisOutputs(i, 1) = 0.0f;
+            OneHotIrisOutputs(i, 2) = 1.0f;
             break;
         }
     }
 
     Elysium::Model IrisModel(4);
-    IrisModel.add(new Elysium::Dense(8, Elysium::AI::Activation::SIGMOID, false));
-    IrisModel.add(new Elysium::Dense(8, Elysium::AI::Activation::SIGMOID, false));
+    IrisModel.add(new Elysium::Dense(4, Elysium::AI::Activation::LEAKY_RELU, Elysium::AI::Initializer::HE));
+    IrisModel.add(new Elysium::Dense(4, Elysium::AI::Activation::LEAKY_RELU, Elysium::AI::Initializer::HE));
     IrisModel.add(new Elysium::Dense(3, Elysium::AI::Activation::SIGMOID));
     IrisModel.LossFunction = Elysium::AI::Loss::MEAN_SQUARED;
 
@@ -396,6 +396,46 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Elysium::S
 
     Elysium::Matrix::Slice(IrisData, 145, 150, 4, 0).print();
     IrisResults.print();
+
+    Elysium::Model FunctionModel(2);
+    FunctionModel.add(new Elysium::Dense(20, Elysium::AI::Activation::LEAKY_RELU, Elysium::AI::Initializer::HE));
+    FunctionModel.add(new Elysium::Dense(1, Elysium::AI::Activation::LINEAR));
+    FunctionModel.LossFunction = Elysium::AI::Loss::MEAN_SQUARED;
+
+    FunctionModel.LearningRate = 0.0001f;
+
+    FunctionModel.summary();
+
+    std::vector<std::vector<float>> InputVector;
+    std::vector<std::vector<float>> OutputVector;
+    for (float x = -5.0f; x <= 5.0f; x += 1.0f)
+    {
+        InputVector.push_back({ x, x });
+        OutputVector.push_back({ x * x });
+    }
+
+    Elysium::Matrix InputData(InputVector);
+    Elysium::Matrix OutputData(OutputVector);
+    FunctionModel.fit(InputData, OutputData, 50000);
+    FunctionModel.report();
+
+    Elysium::Matrix ScoreResults;
+    ELY_INFO("Mean Error: {0}", FunctionModel.score(
+        InputData,
+        OutputData,
+        ScoreResults));
+    ScoreResults.print();
+
+    std::vector<std::vector<float>> TestVector;
+    TestVector.push_back({ -6.0f, -6.0f });
+    TestVector.push_back({ -7.0f, -7.0f });
+    TestVector.push_back({  7.0f,  7.0f });
+    TestVector.push_back({  6.0f,  6.0f });
+
+    Elysium::Matrix TestData(TestVector);
+    Elysium::Matrix Predictions;
+    FunctionModel.predict(TestData, Predictions);
+    Predictions.print();
     //--- DENSE LAYER ---//
 }
 

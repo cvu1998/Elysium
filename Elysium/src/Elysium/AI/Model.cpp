@@ -120,7 +120,7 @@ namespace Elysium
                     weights = m_Layers[i]->Weights;
 
                     m_Layers[i]->LearningRate = LearningRate;
-                    m_Layers[i]->backwardPass(prevDelta, prevLayerWeights, neurons[i], activations[last - 1], currDelta);
+                    m_Layers[i]->backwardPass(prevDelta, prevLayerWeights, neurons[i], activations[i - 1], currDelta);
 
                     prevDelta = currDelta;
                     prevLayerWeights = weights;

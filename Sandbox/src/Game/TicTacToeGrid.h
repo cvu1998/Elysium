@@ -32,5 +32,4 @@ public:
 
     bool isWinningMove(size_t index, int value) const;
     void printGrid() const;
-    void getStateOfGrid(std::vector<float>& state) const;
 };

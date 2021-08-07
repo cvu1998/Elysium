@@ -22,14 +22,6 @@ void TicTacToeGrid::printGrid() const
     ELY_INFO("----------");
 }
 
-void TicTacToeGrid::getStateOfGrid(std::vector<float>& state) const
-{
-    state.reserve(state.size() + 9);
-    for (size_t i = 0; i < Grid.size(); ++i)
-        state.emplace_back((float)Grid[i]);
-
-}
-
 bool TicTacToeGrid::isWinningRow(size_t index, int value) const
 {
     uint16_t counter = 1;

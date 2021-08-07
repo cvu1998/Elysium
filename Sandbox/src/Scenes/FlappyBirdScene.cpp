@@ -63,6 +63,7 @@ FlappyBirdScene::FlappyBirdScene(unsigned int width, unsigned int height) :
     m_UpperSprite = m_SpriteSheet.getTextureData();
     m_UpperSprite.subtextureCoordinates({ 2, 0 }, { 28, 168 }, { 0, 28 });
 
+    Elysium::Random::InitInteger(0, 2);
     generateRandomPipe(15.0f);
     m_LowerPipe = e_PhysicsSystem2D.getPhysicalBody(m_LowerPipes[m_PipeIndex]);
     m_UpperPipe = e_PhysicsSystem2D.getPhysicalBody(m_UpperPipes[m_PipeIndex]);
@@ -78,7 +79,7 @@ FlappyBirdScene::~FlappyBirdScene()
 
 void FlappyBirdScene::generateRandomPipe(float xposition)
 {
-    int type = Elysium::Random::Integer(0, 2);
+    int type = Elysium::Random::Integer();
 
     float lowerPosition = 0.0f;
     float lowerSize = 0.0f;

@@ -35,11 +35,14 @@ private:
 
     Elysium::Model m_TicTacToeModel;
     Elysium::Matrix m_Dataset;
-    Elysium::Matrix m_EpisodeData;
+    std::vector<int> m_TerminalStates;
     bool m_TrainModel = false;
     bool m_DoneTraining = true;
     bool m_PlayAgainstModel = true;
     TicTacToeMinimax m_ModelMinimax;
+
+    static constexpr size_t s_InputLength = 27;
+    static constexpr size_t s_DataLength = 56;
 
 private:
     Elysium::Vector2 getPosition(Elysium::Action action);
@@ -51,9 +54,10 @@ private:
     void loadDataset(const char* filepath);
     void saveDataset(const char* filepath);
 
-    float evaluateState(const TicTacToeGrid& grid);
-    void trainModel(const TicTacToeGrid& previous);
+    Elysium::Action chooseAction();
+    void trainModel(const TicTacToeGrid& previous, Elysium::Action action);
 
+    void getState(const TicTacToeGrid& grid, std::vector<float>& state);
     void getInvertedState(std::vector<float>& state);
 
 public:
