@@ -71,7 +71,7 @@ namespace Elysium
         return scoreFn(meanError, error.getHeight());
     }
 
-    void Dense::calculateDelta(const Matrix& error, const Matrix& outputs, const Matrix& inputs,
+    void Dense::calculateDelta(const Matrix& error, const Matrix& outputs, const Matrix& inputs, const GradientFn& gradFn,
         Matrix& delta)
     {
         delta = Matrix(outputs.getHeight(), outputs.getWidth());
@@ -80,9 +80,9 @@ namespace Elysium
         getActivationDerivative(activationDerivativeFn);
 
         for (size_t i = 0; i < delta.Values.size(); ++i)
-        {
             delta.Values[i] = error.Values[i] * activationDerivativeFn(outputs.Values[i]);
-        }
+
+        gradFn(delta);
 
         for (size_t a = 0; a < inputs.getWidth(); ++a)
         {
@@ -103,7 +103,7 @@ namespace Elysium
         }
     }
 
-    void Dense::backwardPass(const Matrix& prevDelta, const Matrix& prevWeights, const Matrix& outputs, const Matrix& inputs,
+    void Dense::backwardPass(const Matrix& prevDelta, const Matrix& prevWeights, const Matrix& outputs, const Matrix& inputs, const GradientFn& gradFn,
         Matrix& delta)
     {
         delta = Matrix(outputs.getHeight(), outputs.getWidth());
@@ -116,11 +116,11 @@ namespace Elysium
             for (size_t a = 0; a < prevWeights.getWidth(); ++a)
             {
                 for (size_t b = 0; b < prevDelta.getWidth(); ++b)
-                {
                     delta(i, a) = prevDelta(i, b) * prevWeights(b, a) * activationDerivativeFn(outputs(i, a));
-                }
             }
         }
+
+        gradFn(delta);
 
         for (size_t a = 0; a < inputs.getWidth(); ++a)
         {

@@ -40,6 +40,11 @@ namespace Elysium
 
         AI::Loss LossFunction = AI::Loss::MEAN_ABSOLUTE;
 
+        GradientFn GradientModifier = std::bind(&Model::Gradient, this, std::placeholders::_1);
+
+    private:
+        inline void Gradient(Matrix& gradient) { }
+
     private:
         size_t m_InputSize;
         std::vector<HiddenLayer*> m_Layers;

@@ -113,20 +113,20 @@ namespace Elysium
                 Matrix weights;
 
                 m_Layers[last]->LearningRate = LearningRate;
-                m_Layers[last]->calculateDelta(error, neurons[last], activations[last - 1], currDelta);
+                m_Layers[last]->calculateDelta(error, neurons[last], activations[last - 1], GradientModifier, currDelta);
                 prevDelta = currDelta;
                 for (int i = (int)last - 1; i > 0; --i)
                 {
                     weights = m_Layers[i]->Weights;
 
                     m_Layers[i]->LearningRate = LearningRate;
-                    m_Layers[i]->backwardPass(prevDelta, prevLayerWeights, neurons[i], activations[i - 1], currDelta);
+                    m_Layers[i]->backwardPass(prevDelta, prevLayerWeights, neurons[i], activations[i - 1], GradientModifier, currDelta);
 
                     prevDelta = currDelta;
                     prevLayerWeights = weights;
                 }
                 m_Layers[0]->LearningRate = LearningRate;
-                m_Layers[0]->backwardPass(prevDelta, prevLayerWeights, neurons[0], input, currDelta);
+                m_Layers[0]->backwardPass(prevDelta, prevLayerWeights, neurons[0], input, GradientModifier, currDelta);
 
                 batchBegin = batchEnd;
                 batchEnd = batchEnd + batchSize < inputs.getHeight() ? batchEnd + batchSize : 0;

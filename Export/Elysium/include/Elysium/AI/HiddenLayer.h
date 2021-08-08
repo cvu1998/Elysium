@@ -9,6 +9,8 @@ namespace Elysium
 {
     class Model;
 
+    using GradientFn = std::function<void(Matrix&)>;
+
     class HiddenLayer
     {
         friend class Model;
@@ -44,9 +46,9 @@ namespace Elysium
         virtual float calculateError(const Matrix& inputs, const Matrix& outputs, AI::Loss lossFunction,
             Matrix& results, Matrix& activations, Matrix& error) = 0;
         virtual void calculateDelta(const Matrix& error, const Matrix& outputs, const Matrix& inputs,
-            Matrix& delta) = 0;
+            const GradientFn& gradFn, Matrix& delta) = 0;
         virtual void backwardPass(const Matrix& prevDelta, const Matrix& prevWeights, const Matrix& outputs, const Matrix& inputs,
-            Matrix& delta) = 0;
+            const GradientFn& gradFn, Matrix& delta) = 0;
 
         void summary() const;
 

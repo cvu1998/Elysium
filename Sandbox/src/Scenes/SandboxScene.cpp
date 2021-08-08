@@ -381,12 +381,12 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Elysium::S
         Elysium::Matrix::Slice(IrisData, 0, 145, 4, 0),
         50000,
         10);
+    IrisModel.report();
     IrisModel.save("res/AI/iris-model");
     */
 
     IrisModel.load("res/AI/iris-model");
     IrisModel.summary();
-    IrisModel.report();
 
     Elysium::Matrix IrisResults;
     ELY_INFO("Mean Error: {0}", IrisModel.score(
@@ -397,18 +397,24 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Elysium::S
     Elysium::Matrix::Slice(IrisData, 145, 150, 4, 0).print();
     IrisResults.print();
 
-    Elysium::Model FunctionModel(2);
-    FunctionModel.add(new Elysium::Dense(20, Elysium::AI::Activation::LEAKY_RELU, Elysium::AI::Initializer::HE));
-    FunctionModel.add(new Elysium::Dense(1, Elysium::AI::Activation::LINEAR));
-    FunctionModel.LossFunction = Elysium::AI::Loss::MEAN_SQUARED;
+    Elysium::Model QuadraticModel(2);
+    QuadraticModel.add(new Elysium::Dense(20, Elysium::AI::Activation::LEAKY_RELU, Elysium::AI::Initializer::HE));
+    QuadraticModel.add(new Elysium::Dense(1, Elysium::AI::Activation::LINEAR));
+    QuadraticModel.LossFunction = Elysium::AI::Loss::MEAN_SQUARED;
 
-    FunctionModel.LearningRate = 0.0001f;
+    QuadraticModel.LearningRate = 0.000001f;
 
-    FunctionModel.summary();
+    QuadraticModel.GradientModifier = [](Elysium::Matrix& gradient)
+    {
+        for (float& x : gradient.Values)
+            x = std::clamp(x, -1.0f, 1.0f);
+    };
+
+    QuadraticModel.summary();
 
     std::vector<std::vector<float>> InputVector;
     std::vector<std::vector<float>> OutputVector;
-    for (float x = -5.0f; x <= 5.0f; x += 1.0f)
+    for (float x = -10.0f; x <= 10.0f; x += 0.01f)
     {
         InputVector.push_back({ x, x });
         OutputVector.push_back({ x * x });
@@ -416,25 +422,39 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Elysium::S
 
     Elysium::Matrix InputData(InputVector);
     Elysium::Matrix OutputData(OutputVector);
-    FunctionModel.fit(InputData, OutputData, 50000);
-    FunctionModel.report();
+    /*
+    QuadraticModel.fit(InputData, OutputData, 50000, 50);
+    QuadraticModel.report();
+    QuadraticModel.save("res/AI/quadratic-model");
+    */
+    QuadraticModel.load("res/AI/quadratic-model");
 
     Elysium::Matrix ScoreResults;
-    ELY_INFO("Mean Error: {0}", FunctionModel.score(
+    ELY_INFO("Mean Error: {0}", QuadraticModel.score(
         InputData,
         OutputData,
         ScoreResults));
-    ScoreResults.print();
 
     std::vector<std::vector<float>> TestVector;
-    TestVector.push_back({ -6.0f, -6.0f });
     TestVector.push_back({ -7.0f, -7.0f });
-    TestVector.push_back({  7.0f,  7.0f });
+    TestVector.push_back({ -6.0f, -6.0f });
+    TestVector.push_back({ -5.0f, -5.0f });
+    TestVector.push_back({ -4.0f, -4.0f });
+    TestVector.push_back({ -3.0f, -3.0f });
+    TestVector.push_back({ -2.0f, -2.0f });
+    TestVector.push_back({ -1.0f, -1.0f });
+    TestVector.push_back({  0.0f,  0.0f });
+    TestVector.push_back({  1.0f,  1.0f });
+    TestVector.push_back({  2.0f,  2.0f });
+    TestVector.push_back({  3.0f,  3.0f });
+    TestVector.push_back({  4.0f,  4.0f });
+    TestVector.push_back({  5.0f,  5.0f });
     TestVector.push_back({  6.0f,  6.0f });
+    TestVector.push_back({  7.0f,  7.0f });
 
     Elysium::Matrix TestData(TestVector);
     Elysium::Matrix Predictions;
-    FunctionModel.predict(TestData, Predictions);
+    QuadraticModel.predict(TestData, Predictions);
     Predictions.print();
     //--- DENSE LAYER ---//
 }
