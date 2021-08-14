@@ -1,5 +1,6 @@
 #include "Scenes/Connect4Scene.h"
 #include "Scenes/FlappyBirdScene.h"
+#include "Scenes/GridWorldScene.h"
 #include "Scenes/PerformanceScene.h"
 #include "Scenes/SandboxScene.h"
 #include "Scenes/SoccerScene.h"
@@ -15,7 +16,6 @@ int main(void)
 
             ImGui::Begin("Main Application");
             ImGui::Checkbox("VSync", &VSync);
-            ImGui::ColorEdit4("Clear Color", application->ClearColor);
             if (ImGui::Button("Editor"))
             {
                 application->SceneManager.unloadScene();
@@ -40,6 +40,11 @@ int main(void)
             {
                 application->SceneManager.unloadScene();
                 application->SceneManager.loadScene(new TicTacToeScene(width, height));
+            }
+            if (ImGui::Button("Grid World"))
+            {
+                application->SceneManager.unloadScene();
+                application->SceneManager.loadScene(new GridWorldScene(width, height));
             }
             if (ImGui::Button("Flappy Bird"))
             {

@@ -4,10 +4,14 @@ namespace Elysium
 {
     namespace Render
     {
-        void Clear(glm::vec4 color)
+        void Clear()
+        {
+            GL_ASSERT(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+        }
+
+        void ClearColor(glm::vec4 color)
         {
             GL_ASSERT(glClearColor(color.r, color.g, color.b, color.a));
-            GL_ASSERT(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
         }
 
         void Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader, unsigned int count)

@@ -23,8 +23,9 @@ namespace Elysium
 
         enum class Initializer
         {
-            RANDOM = 0,
-            HE = 1
+            ZEROS = 0,
+            RANDOM = 1,
+            HE = 2
         };
 
         extern float LeakySlope;

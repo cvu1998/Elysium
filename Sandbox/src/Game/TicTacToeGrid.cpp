@@ -25,8 +25,8 @@ void TicTacToeGrid::printGrid() const
 bool TicTacToeGrid::isWinningRow(size_t index, int value) const
 {
     uint16_t counter = 1;
-    int32_t row = (int32_t)index / 3;
-    int32_t column = (int32_t)index % 3;
+    int row = (int)index / 3;
+    int column = (int)index % 3;
     if (getValue(row, column + 1) == value)
     {
         counter++;
@@ -45,8 +45,8 @@ bool TicTacToeGrid::isWinningRow(size_t index, int value) const
 bool TicTacToeGrid::isWinningColumn(size_t index, int value) const
 {
     uint16_t counter = 1;
-    int32_t row = (int32_t)index / 3;
-    int32_t column = (int32_t)index % 3;
+    int row = (int)index / 3;
+    int column = (int)index % 3;
     if (getValue(row + 1, column) == value)
     {
         counter++;
@@ -65,8 +65,8 @@ bool TicTacToeGrid::isWinningColumn(size_t index, int value) const
 bool TicTacToeGrid::isWinningRightDiagonal(size_t index, int value) const
 {
     uint16_t counter = 1;
-    int32_t row = (int32_t)index / 3;
-    int32_t column = (int32_t)index % 3;
+    int row = (int)index / 3;
+    int column = (int)index % 3;
     if (getValue(row + 1, column + 1) == value)
     {
         counter++;
@@ -85,8 +85,8 @@ bool TicTacToeGrid::isWinningRightDiagonal(size_t index, int value) const
 bool TicTacToeGrid::isWinningLeftDiagonal(size_t index, int value) const
 {
     uint16_t counter = 1;
-    int32_t row = (int32_t)index / 3;
-    int32_t column = (int32_t)index % 3;
+    int row = (int)index / 3;
+    int column = (int)index % 3;
     if (getValue(row + 1, column - 1) == value)
     {
         counter++;

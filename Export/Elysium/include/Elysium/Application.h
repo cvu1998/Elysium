@@ -29,7 +29,6 @@ namespace Elysium
         UpdateFunction m_Function;
 
     public:
-        float ClearColor[4];
         LayerStack LayerStack;
         SceneManager SceneManager;
 

@@ -26,6 +26,9 @@ namespace Elysium
         Weights = Matrix(m_Size, inputSize, true);
         switch (m_Initializer)
         {
+        case AI::Initializer::ZEROS:
+            Weights.Values.resize(m_Size * inputSize, 0.0f);
+            break;
         case AI::Initializer::RANDOM:
             Utility::CreateRandomVector(Weights.Values, Weights.getWidth() * Weights.getHeight(), -1.0f, 1.0f);
             break;

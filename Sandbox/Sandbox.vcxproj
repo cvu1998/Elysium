@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Scenes\GridWorldScene.cpp" />
     <ClCompile Include="src\Game\FlappyBird.cpp" />
     <ClCompile Include="src\Game\TicTacToeGrid.cpp" />
     <ClCompile Include="src\Scenes\FlappyBirdScene.cpp" />
@@ -34,6 +35,7 @@
     <ClCompile Include="src\Game\TicTacToeMinimax.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Scenes\GridWorldScene.h" />
     <ClInclude Include="src\Game\FlappyBird.h" />
     <ClInclude Include="src\Game\TicTacToeGrid.h" />
     <ClInclude Include="src\Game\Values.h" />

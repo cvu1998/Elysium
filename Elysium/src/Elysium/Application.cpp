@@ -16,7 +16,7 @@ namespace Elysium
 
     Application::Application(const UpdateFunction& updateFunction, 
         const std::string& title, unsigned int width, unsigned int height, 
-        bool imgui) : m_Function(updateFunction), m_ImGui(imgui), ClearColor{ 0.0f, 0.0f, 0.0f, 0.0f }
+        bool imgui) : m_Function(updateFunction), m_ImGui(imgui)
     {
         Log::Init();
 
@@ -110,7 +110,7 @@ namespace Elysium
     {
         while (m_Running)
         {
-            Render::Clear({ ClearColor[0], ClearColor[1], ClearColor[2], ClearColor[3] });
+            Render::Clear();
 
             float time = (float)glfwGetTime();
             Timestep timestep = time - m_LastFrameTime;
@@ -144,7 +144,7 @@ namespace Elysium
     {
         while (m_Running)
         {
-            Render::Clear({ ClearColor[0], ClearColor[1], ClearColor[2], ClearColor[3] });
+            Render::Clear();
 
             float time = (float)glfwGetTime();
             Timestep timestep = time - m_LastFrameTime;

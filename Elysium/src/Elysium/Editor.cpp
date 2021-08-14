@@ -29,6 +29,7 @@ namespace Elysium
 
     Editor::~Editor()
     {
+        Renderer::setLineWidth(1.0f);
         Render::setViewport(0, 0, m_WindowWidth, m_WindowHeight);
     }
 

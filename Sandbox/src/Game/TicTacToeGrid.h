@@ -18,7 +18,7 @@ public:
     ~TicTacToeGrid();
 
     inline bool isValid(size_t index) const { return Grid[index] == 0; }
-    inline uint32_t getValue(int32_t row, int32_t column) const
+    inline int getValue(int row, int column) const
     {
         if (row >= 0 && row < 3 && column >= 0 && column < 3)
             return Grid[(size_t)row * 3 + (size_t)column];

@@ -1,0 +1,264 @@
+Games: 100, Wins: 15
+Win Rate: 0.15, Win Rate Per Hundred Games: 0.15
+Games: 200, Wins: 47
+Win Rate: 0.235, Win Rate Per Hundred Games: 0.32
+Games: 300, Wins: 93
+Win Rate: 0.31, Win Rate Per Hundred Games: 0.46
+Games: 400, Wins: 147
+Win Rate: 0.3675, Win Rate Per Hundred Games: 0.54
+Games: 500, Wins: 188
+Win Rate: 0.376, Win Rate Per Hundred Games: 0.41
+Games: 600, Wins: 240
+Win Rate: 0.4, Win Rate Per Hundred Games: 0.52
+Games: 700, Wins: 278
+Win Rate: 0.397143, Win Rate Per Hundred Games: 0.38
+Games: 800, Wins: 323
+Win Rate: 0.40375, Win Rate Per Hundred Games: 0.45
+Games: 900, Wins: 363
+Win Rate: 0.403333, Win Rate Per Hundred Games: 0.4
+Games: 1000, Wins: 403
+Win Rate: 0.403, Win Rate Per Hundred Games: 0.4
+Games: 1100, Wins: 441
+Win Rate: 0.400909, Win Rate Per Hundred Games: 0.38
+Games: 1200, Wins: 483
+Win Rate: 0.4025, Win Rate Per Hundred Games: 0.42
+Games: 1300, Wins: 524
+Win Rate: 0.403077, Win Rate Per Hundred Games: 0.41
+Games: 1400, Wins: 566
+Win Rate: 0.404286, Win Rate Per Hundred Games: 0.42
+Games: 1500, Wins: 609
+Win Rate: 0.406, Win Rate Per Hundred Games: 0.43
+Games: 1600, Wins: 654
+Win Rate: 0.40875, Win Rate Per Hundred Games: 0.45
+Games: 1700, Wins: 710
+Win Rate: 0.417647, Win Rate Per Hundred Games: 0.56
+Games: 1800, Wins: 758
+Win Rate: 0.421111, Win Rate Per Hundred Games: 0.48
+Games: 1900, Wins: 798
+Win Rate: 0.42, Win Rate Per Hundred Games: 0.4
+Games: 2000, Wins: 847
+Win Rate: 0.4235, Win Rate Per Hundred Games: 0.49
+Games: 2100, Wins: 898
+Win Rate: 0.427619, Win Rate Per Hundred Games: 0.51
+Games: 2200, Wins: 931
+Win Rate: 0.423182, Win Rate Per Hundred Games: 0.33
+Games: 2300, Wins: 965
+Win Rate: 0.419565, Win Rate Per Hundred Games: 0.34
+Games: 2400, Wins: 1001
+Win Rate: 0.417083, Win Rate Per Hundred Games: 0.36
+Games: 2500, Wins: 1033
+Win Rate: 0.4132, Win Rate Per Hundred Games: 0.32
+Games: 2600, Wins: 1066
+Win Rate: 0.41, Win Rate Per Hundred Games: 0.33
+Games: 2700, Wins: 1108
+Win Rate: 0.41037, Win Rate Per Hundred Games: 0.42
+Games: 2800, Wins: 1146
+Win Rate: 0.409286, Win Rate Per Hundred Games: 0.38
+Games: 2900, Wins: 1190
+Win Rate: 0.410345, Win Rate Per Hundred Games: 0.44
+Games: 3000, Wins: 1234
+Win Rate: 0.411333, Win Rate Per Hundred Games: 0.44
+Games: 3100, Wins: 1269
+Win Rate: 0.409355, Win Rate Per Hundred Games: 0.35
+Games: 3200, Wins: 1310
+Win Rate: 0.409375, Win Rate Per Hundred Games: 0.41
+Games: 3300, Wins: 1358
+Win Rate: 0.411515, Win Rate Per Hundred Games: 0.48
+Games: 3400, Wins: 1409
+Win Rate: 0.414412, Win Rate Per Hundred Games: 0.51
+Games: 3500, Wins: 1451
+Win Rate: 0.414571, Win Rate Per Hundred Games: 0.42
+Games: 3600, Wins: 1499
+Win Rate: 0.416389, Win Rate Per Hundred Games: 0.48
+Games: 3700, Wins: 1541
+Win Rate: 0.416486, Win Rate Per Hundred Games: 0.42
+Games: 3800, Wins: 1576
+Win Rate: 0.414737, Win Rate Per Hundred Games: 0.35
+Games: 3900, Wins: 1624
+Win Rate: 0.41641, Win Rate Per Hundred Games: 0.48
+Games: 4000, Wins: 1665
+Win Rate: 0.41625, Win Rate Per Hundred Games: 0.41
+Games: 4100, Wins: 1703
+Win Rate: 0.415366, Win Rate Per Hundred Games: 0.38
+Games: 4200, Wins: 1741
+Win Rate: 0.414524, Win Rate Per Hundred Games: 0.38
+Games: 4300, Wins: 1793
+Win Rate: 0.416977, Win Rate Per Hundred Games: 0.52
+Games: 4400, Wins: 1831
+Win Rate: 0.416136, Win Rate Per Hundred Games: 0.38
+Games: 4500, Wins: 1879
+Win Rate: 0.417556, Win Rate Per Hundred Games: 0.48
+Games: 4600, Wins: 1921
+Win Rate: 0.417609, Win Rate Per Hundred Games: 0.42
+Games: 4700, Wins: 1954
+Win Rate: 0.415745, Win Rate Per Hundred Games: 0.33
+Games: 4800, Wins: 1995
+Win Rate: 0.415625, Win Rate Per Hundred Games: 0.41
+Games: 4900, Wins: 2043
+Win Rate: 0.416939, Win Rate Per Hundred Games: 0.48
+Games: 5000, Wins: 2083
+Win Rate: 0.4166, Win Rate Per Hundred Games: 0.4
+Games: 5100, Wins: 2122
+Win Rate: 0.416078, Win Rate Per Hundred Games: 0.39
+Games: 5200, Wins: 2165
+Win Rate: 0.416346, Win Rate Per Hundred Games: 0.43
+Games: 5300, Wins: 2212
+Win Rate: 0.417358, Win Rate Per Hundred Games: 0.47
+Games: 5400, Wins: 2253
+Win Rate: 0.417222, Win Rate Per Hundred Games: 0.41
+Games: 5500, Wins: 2295
+Win Rate: 0.417273, Win Rate Per Hundred Games: 0.42
+Games: 5600, Wins: 2341
+Win Rate: 0.418036, Win Rate Per Hundred Games: 0.46
+Games: 5700, Wins: 2380
+Win Rate: 0.417544, Win Rate Per Hundred Games: 0.39
+Games: 5800, Wins: 2413
+Win Rate: 0.416034, Win Rate Per Hundred Games: 0.33
+Games: 5900, Wins: 2453
+Win Rate: 0.415763, Win Rate Per Hundred Games: 0.4
+Games: 6000, Wins: 2490
+Win Rate: 0.415, Win Rate Per Hundred Games: 0.37
+Games: 6100, Wins: 2536
+Win Rate: 0.415738, Win Rate Per Hundred Games: 0.46
+Games: 6200, Wins: 2572
+Win Rate: 0.414839, Win Rate Per Hundred Games: 0.36
+Games: 6300, Wins: 2612
+Win Rate: 0.414603, Win Rate Per Hundred Games: 0.4
+Games: 6400, Wins: 2649
+Win Rate: 0.413906, Win Rate Per Hundred Games: 0.37
+Games: 6500, Wins: 2687
+Win Rate: 0.413385, Win Rate Per Hundred Games: 0.38
+Games: 6600, Wins: 2743
+Win Rate: 0.415606, Win Rate Per Hundred Games: 0.56
+Games: 6700, Wins: 2789
+Win Rate: 0.416269, Win Rate Per Hundred Games: 0.46
+Games: 6800, Wins: 2837
+Win Rate: 0.417206, Win Rate Per Hundred Games: 0.48
+Games: 6900, Wins: 2876
+Win Rate: 0.416812, Win Rate Per Hundred Games: 0.39
+Games: 7000, Wins: 2914
+Win Rate: 0.416286, Win Rate Per Hundred Games: 0.38
+Games: 7100, Wins: 2955
+Win Rate: 0.416197, Win Rate Per Hundred Games: 0.41
+Games: 7200, Wins: 2992
+Win Rate: 0.415556, Win Rate Per Hundred Games: 0.37
+Games: 7300, Wins: 3039
+Win Rate: 0.416301, Win Rate Per Hundred Games: 0.47
+Games: 7400, Wins: 3091
+Win Rate: 0.417703, Win Rate Per Hundred Games: 0.52
+Games: 7500, Wins: 3131
+Win Rate: 0.417467, Win Rate Per Hundred Games: 0.4
+Games: 7600, Wins: 3166
+Win Rate: 0.416579, Win Rate Per Hundred Games: 0.35
+Games: 7700, Wins: 3200
+Win Rate: 0.415584, Win Rate Per Hundred Games: 0.34
+Games: 7800, Wins: 3237
+Win Rate: 0.415, Win Rate Per Hundred Games: 0.37
+Games: 7900, Wins: 3273
+Win Rate: 0.414304, Win Rate Per Hundred Games: 0.36
+Games: 8000, Wins: 3317
+Win Rate: 0.414625, Win Rate Per Hundred Games: 0.44
+Games: 8100, Wins: 3358
+Win Rate: 0.414568, Win Rate Per Hundred Games: 0.41
+Games: 8200, Wins: 3395
+Win Rate: 0.414024, Win Rate Per Hundred Games: 0.37
+Games: 8300, Wins: 3447
+Win Rate: 0.415301, Win Rate Per Hundred Games: 0.52
+Games: 8400, Wins: 3490
+Win Rate: 0.415476, Win Rate Per Hundred Games: 0.43
+Games: 8500, Wins: 3529
+Win Rate: 0.415176, Win Rate Per Hundred Games: 0.39
+Games: 8600, Wins: 3564
+Win Rate: 0.414419, Win Rate Per Hundred Games: 0.35
+Games: 8700, Wins: 3595
+Win Rate: 0.413218, Win Rate Per Hundred Games: 0.31
+Games: 8800, Wins: 3631
+Win Rate: 0.412614, Win Rate Per Hundred Games: 0.36
+Games: 8900, Wins: 3663
+Win Rate: 0.411573, Win Rate Per Hundred Games: 0.32
+Games: 9000, Wins: 3708
+Win Rate: 0.412, Win Rate Per Hundred Games: 0.45
+Games: 9100, Wins: 3750
+Win Rate: 0.412088, Win Rate Per Hundred Games: 0.42
+Games: 9200, Wins: 3798
+Win Rate: 0.412826, Win Rate Per Hundred Games: 0.48
+Games: 9300, Wins: 3838
+Win Rate: 0.412688, Win Rate Per Hundred Games: 0.4
+Games: 9400, Wins: 3884
+Win Rate: 0.413191, Win Rate Per Hundred Games: 0.46
+Games: 9500, Wins: 3923
+Win Rate: 0.412947, Win Rate Per Hundred Games: 0.39
+Games: 9600, Wins: 3974
+Win Rate: 0.413958, Win Rate Per Hundred Games: 0.51
+Games: 9700, Wins: 4014
+Win Rate: 0.413814, Win Rate Per Hundred Games: 0.4
+Games: 9800, Wins: 4056
+Win Rate: 0.413878, Win Rate Per Hundred Games: 0.42
+Games: 9900, Wins: 4103
+Win Rate: 0.414444, Win Rate Per Hundred Games: 0.47
+Games: 10000, Wins: 4149
+Win Rate: 0.4149, Win Rate Per Hundred Games: 0.46
+Games: 10100, Wins: 4189
+Win Rate: 0.414752, Win Rate Per Hundred Games: 0.4
+Games: 10200, Wins: 4234
+Win Rate: 0.415098, Win Rate Per Hundred Games: 0.45
+Games: 10300, Wins: 4278
+Win Rate: 0.41534, Win Rate Per Hundred Games: 0.44
+Games: 10400, Wins: 4318
+Win Rate: 0.415192, Win Rate Per Hundred Games: 0.4
+Games: 10500, Wins: 4359
+Win Rate: 0.415143, Win Rate Per Hundred Games: 0.41
+Games: 10600, Wins: 4402
+Win Rate: 0.415283, Win Rate Per Hundred Games: 0.43
+Games: 10700, Wins: 4446
+Win Rate: 0.415514, Win Rate Per Hundred Games: 0.44
+Games: 10800, Wins: 4493
+Win Rate: 0.416019, Win Rate Per Hundred Games: 0.47
+Games: 10900, Wins: 4541
+Win Rate: 0.416606, Win Rate Per Hundred Games: 0.48
+Games: 11000, Wins: 4580
+Win Rate: 0.416364, Win Rate Per Hundred Games: 0.39
+Games: 11100, Wins: 4623
+Win Rate: 0.416486, Win Rate Per Hundred Games: 0.43
+Games: 11200, Wins: 4667
+Win Rate: 0.416696, Win Rate Per Hundred Games: 0.44
+Games: 11300, Wins: 4714
+Win Rate: 0.417168, Win Rate Per Hundred Games: 0.47
+Games: 11400, Wins: 4754
+Win Rate: 0.417018, Win Rate Per Hundred Games: 0.4
+Games: 11500, Wins: 4800
+Win Rate: 0.417391, Win Rate Per Hundred Games: 0.46
+Games: 11600, Wins: 4838
+Win Rate: 0.417069, Win Rate Per Hundred Games: 0.38
+Games: 11700, Wins: 4891
+Win Rate: 0.418034, Win Rate Per Hundred Games: 0.53
+Games: 11800, Wins: 4930
+Win Rate: 0.417797, Win Rate Per Hundred Games: 0.39
+Games: 11900, Wins: 4971
+Win Rate: 0.417731, Win Rate Per Hundred Games: 0.41
+Games: 12000, Wins: 5022
+Win Rate: 0.4185, Win Rate Per Hundred Games: 0.51
+Games: 12100, Wins: 5065
+Win Rate: 0.418595, Win Rate Per Hundred Games: 0.43
+Games: 12200, Wins: 5106
+Win Rate: 0.418525, Win Rate Per Hundred Games: 0.41
+Games: 12300, Wins: 5148
+Win Rate: 0.418537, Win Rate Per Hundred Games: 0.42
+Games: 12400, Wins: 5190
+Win Rate: 0.418548, Win Rate Per Hundred Games: 0.42
+Games: 12500, Wins: 5228
+Win Rate: 0.41824, Win Rate Per Hundred Games: 0.38
+Games: 12600, Wins: 5270
+Win Rate: 0.418254, Win Rate Per Hundred Games: 0.42
+Games: 12700, Wins: 5315
+Win Rate: 0.418504, Win Rate Per Hundred Games: 0.45
+Games: 12800, Wins: 5353
+Win Rate: 0.418203, Win Rate Per Hundred Games: 0.38
+Games: 12900, Wins: 5391
+Win Rate: 0.417907, Win Rate Per Hundred Games: 0.38
+Games: 13000, Wins: 5432
+Win Rate: 0.417846, Win Rate Per Hundred Games: 0.41
+Games: 13100, Wins: 5475
+Win Rate: 0.417939, Win Rate Per Hundred Games: 0.43
+Games: 13200, Wins: 5515
+Win Rate: 0.417803, Win Rate Per Hundred Games: 0.4
