@@ -53,9 +53,14 @@ namespace Elysium
             return x > 0.0f ? 1.0f : LeakySlope;
         }
 
-        float Absolute(float correct, float prediction)
+        float AbsoluteDerivative(float correct, float prediction)
         {
             return correct - prediction;
+        }
+        
+        float AbsoluteError(float value)
+        {
+            return fabs(value);
         }
 
         float Mean(float value, size_t n)
@@ -63,39 +68,63 @@ namespace Elysium
             return value / (float)n;
         }
 
-        float MeanSquare(float correct, float prediction)
+        float MeanSquareDerivative(float correct, float prediction)
         {
-            float value = (correct - prediction);
-            return value * value * (value >= 0.0f ? 1.0f : -1.0f);
+            return correct - prediction;
         }
 
-        float RootMeanSquare(float value, size_t n)
+        float MeanSquareError(float value)
         {
-            return glm::sqrt(value / (2.0f * (float)n));
+            return value * value;
         }
 
-        void softmax(const std::vector<float>& x, std::vector<float>& y)
+        void softmax(const std::vector<float>& x, std::vector<float>& y, float beta)
         {
             float sum = 0.0f;
             for (float i : x)
-                sum += glm::exp(i);
+                sum += glm::exp(beta * i);
 
             y.reserve(x.size());
             for (float i : x)
-                y.emplace_back(glm::exp(i) / sum);
+                y.emplace_back(glm::exp(beta * i) / sum);
         }
 
-        void softmax(const Matrix& x, Matrix& y)
+        void softmax(const Matrix& x, Matrix& y, float beta)
         {
             y = Matrix(x.getHeight(), x.getWidth());
             for (size_t i = 0; i < x.getHeight(); ++i)
             {
                 float sum = 0.0f;
                 for (size_t j = 0; j < x.getHeight(); ++j)
-                    sum += glm::exp(x(i, j));
+                    sum += glm::exp(beta * x(i, j));
 
                 for (size_t j = 0; j < x.getHeight(); ++j)
-                    y(i, j) = glm::exp(x(i, j)) / sum;
+                    y(i, j) = glm::exp(beta * x(i, j)) / sum;
+            }
+        }
+
+        void softmin(const std::vector<float>& x, std::vector<float>& y, float beta)
+        {
+            float sum = 0.0f;
+            for (float i : x)
+                sum += glm::exp(-(beta * i));
+
+            y.reserve(x.size());
+            for (float i : x)
+                y.emplace_back(glm::exp(-(beta * i)) / sum);
+        }
+
+        void softmin(const Matrix& x, Matrix& y, float beta)
+        {
+            y = Matrix(x.getHeight(), x.getWidth());
+            for (size_t i = 0; i < x.getHeight(); ++i)
+            {
+                float sum = 0.0f;
+                for (size_t j = 0; j < x.getHeight(); ++j)
+                    sum += glm::exp(-(beta * x(i, j)));
+
+                for (size_t j = 0; j < x.getHeight(); ++j)
+                    y(i, j) = glm::exp(-(beta * x(i, j))) / sum;
             }
         }
     }

@@ -59,7 +59,7 @@ namespace Elysium
                 if (p == m_TrainingSummary.back())
                 {
                     ELY_CORE_INFO("Epoch: {0}, Error: {1}", epoch, meanError / (float)n);
-                    return;
+                    break;
                 }
             }
         }

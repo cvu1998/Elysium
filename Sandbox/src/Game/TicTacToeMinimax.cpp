@@ -4,47 +4,36 @@ TicTacToeMinimax::TicTacToeMinimax(TicTacToeGrid* grid) : m_Grid(grid)
 {
 }
 
-size_t TicTacToeMinimax::playAction()
+void TicTacToeMinimax::generateTree(State& origin, int turn)
 {
-    TicTacToeState origin = { 0.0f, *m_Grid };
-    generateChildren(origin.Children, origin, Minimax, false);
+    int first = Max == turn ? Max : Min;
+    int second = first == Max ? Min : Max;
+    Generator(origin.Children, origin.Grid, first, 1);
 
-    for (TicTacToeState& s : origin.Children)
+    for (State& s : origin.Children)
     {
-        generateChildren(s.Children, s, Opponent, true);
+        if (!s.Terminal)
+        {
+            ELY_INFO("Minimax Action: {0}", s.Action);
+            Generator(s.Children, s.Grid, second, 2);
+        }
     }
 
-    for (TicTacToeState& s : origin.Children)
+    for (State& s : origin.Children)
     {
         if (!s.Children.empty())
         {
-            TicTacToeState minState = *std::min_element(s.Children.begin(), s.Children.end());
-            s.Value = minState.Value;
+            State state;
+            if (first == Max) state = *std::min_element(s.Children.begin(), s.Children.end());
+            else state = *std::max_element(s.Children.begin(), s.Children.end());
+
+            s.Value = state.Value;
+            s.Depth = state.Depth;
+            s.Terminal = state.Terminal;
+            s.Result = state.Result;
+            s.Grid = state.Grid;
         }
     }
-
-    size_t actionIndex = 0;
-    size_t index = 0;
-    origin.Value = origin.Children[0].Value;
-    for (size_t i = 1; i < origin.Children.size(); i++)
-    {
-        if (origin.Children[i].Value > origin.Value)
-        {
-            origin.Value = origin.Children[i].Value;
-            index = i;
-        }
-    }
-
-    for (size_t i = 0; i < 9; i++)
-    {
-        if (origin.StateRep.Grid[i] != origin.Children[index].StateRep.Grid[i])
-        {
-            actionIndex = i;
-            break;
-        }
-    }
-
-    return actionIndex;
 }
 
 int TicTacToeMinimax::getValueFromExponent(int exponent)
@@ -77,9 +66,9 @@ float TicTacToeMinimax::evaluateState(const TicTacToeGrid& grid)
         int exponent = 0;
         for (int32_t j = 0; j < 3; j++)
         {
-            if (grid.getValue(i, j) == Minimax)
+            if (grid.getValue(i, j) == Max)
                 exponent++;
-            else if (grid.getValue(i, j) == Opponent)
+            else if (grid.getValue(i, j) == Min)
                 exponent--;
         }
         value += getValueFromExponent(exponent);
@@ -90,9 +79,9 @@ float TicTacToeMinimax::evaluateState(const TicTacToeGrid& grid)
         int exponent = 0;
         for (int j = 0; j < 3; j++)
         {
-            if (grid.getValue(j, i) == Minimax)
+            if (grid.getValue(j, i) == Max)
                 exponent++;
-            else if (grid.getValue(j, i) == Opponent)
+            else if (grid.getValue(j, i) == Min)
                 exponent--;
         }
         value += getValueFromExponent(exponent);
@@ -108,9 +97,9 @@ int TicTacToeMinimax::evaluateDiagonals(const TicTacToeGrid& grid)
     int exponent = 0;
     for (int i = 0; i < 3; i++)
     {
-        if (grid.getValue(i, i) == Minimax)
+        if (grid.getValue(i, i) == Max)
             exponent++;
-        else if (grid.getValue(i, i) == Opponent)
+        else if (grid.getValue(i, i) == Min)
             exponent--;
     }
     value += getValueFromExponent(exponent);
@@ -118,9 +107,9 @@ int TicTacToeMinimax::evaluateDiagonals(const TicTacToeGrid& grid)
     exponent = 0;
     for (int i = 0; i < 3; i++)
     {
-        if (grid.getValue(2 - i, i) == Minimax)
+        if (grid.getValue(2 - i, i) == Max)
             exponent++;
-        else if (grid.getValue(2 - i, i) == Opponent)
+        else if (grid.getValue(2 - i, i) == Min)
             exponent--;
     }
     value += getValueFromExponent(exponent);
@@ -128,20 +117,123 @@ int TicTacToeMinimax::evaluateDiagonals(const TicTacToeGrid& grid)
     return value;
 }
 
-void TicTacToeMinimax::generateChildren(std::vector<TicTacToeState>& states, const TicTacToeState& state, int turn, bool lastLayer)
+void TicTacToeMinimax::generateChildren(std::vector<State>& states, const TicTacToeGrid& grid, int turn, size_t depth)
 {
-    for (size_t i = 0; i < 9; i++)
+    for (size_t i = 0; i < s_GridSize; i++)
     {
-        TicTacToeGrid newGrid = state.StateRep;
-        if (newGrid.isValid(i))
+        TicTacToeGrid next = grid;
+        if (next.isValid(i))
         {
-            newGrid.Grid[i] = turn;
-            if (lastLayer)
+            next.Grid[i] = turn;
+            if (grid.isWinningMove(i, turn) || next.isFilled())
             {
-                states.emplace_back(ValueFunction(newGrid), newGrid);
+                int result = grid.isWinningMove(i, turn) ? turn : 0;
+                states.emplace_back(evaluateState(next), i, depth, true, result, next);
                 continue;
             }
-            states.emplace_back(0.0f, newGrid);
+            else if (depth == TicTacToeMinimax::s_Depth)
+            {
+                states.emplace_back(evaluateState(next), i, depth, false, 0, next);
+                continue;
+            }
+            states.emplace_back(0.0f, i, depth, false, 0, next);
         }
     }
+}
+
+size_t TicTacToeMinimax::getAction(int turn)
+{
+    State origin(*m_Grid);
+    generateTree(origin, turn);
+
+    size_t action = origin.Children[0].Action;
+    origin.Value = origin.Children[0].Value;
+    printf("V(%zd) : %f ", origin.Children[0].Action, origin.Children[0].Value);
+    for (size_t i = 1; i < origin.Children.size(); i++)
+    {
+        if (Max == turn && origin.Children[i].Value > origin.Value)
+        {
+            origin.Value = origin.Children[i].Value;
+            action = origin.Children[i].Action;
+        }
+        else if (Min == turn && origin.Children[i].Value < origin.Value)
+        {
+            origin.Value = origin.Children[i].Value;
+            action = origin.Children[i].Action;
+        }
+
+        printf("V(%zd) : %f ", origin.Children[i].Action, origin.Children[i].Value);
+    }
+    printf("\n");
+
+    return action;
+}
+
+TicTacToeMinimax::State TicTacToeMinimax::getNStepState(int turn, float beta)
+{
+    State origin(*m_Grid);
+    generateTree(origin, turn);
+
+    std::vector<float> stateValues(origin.Children.size());
+    for (size_t i = 0; i < origin.Children.size(); i++)
+    {
+        stateValues[i] = origin.Children[i].Value;
+        printf("V(%zd) : %f ", origin.Children[i].Action, stateValues[i]);
+    }
+    printf("\n");
+
+    std::vector<float> distribution;
+    if (Max == turn) Elysium::AI::softmax(stateValues, distribution, beta);
+    else Elysium::AI::softmin(stateValues, distribution, beta);
+
+    float random = Elysium::Random::Float();
+
+    bool found = false;
+
+    float probability = 0.0f;
+    State s;
+    for (size_t i = 0; i < distribution.size(); ++i)
+    {
+        probability += distribution[i];
+        if (random < probability && !found)
+        {
+            s = origin.Children[i];
+            found = true;
+        }
+
+        printf("P(%zd) : %f ", origin.Children[i].Action, distribution[i]);
+    }
+    printf("\n");
+
+    ELY_INFO("Random: {0}", random);
+
+    return s;
+}
+
+TicTacToeMinimax::State TicTacToeMinimax::getGreedyNStepState(int turn)
+{
+    State origin(*m_Grid);
+    generateTree(origin, turn);
+
+    State s = origin.Children[0];
+    size_t action = origin.Children[0].Action;
+    origin.Value = origin.Children[0].Value;
+    printf("V(%zd) : %f ", origin.Children[0].Action, origin.Children[0].Value);
+    for (size_t i = 1; i < origin.Children.size(); i++)
+    {
+        if (Max == turn && origin.Children[i].Value > origin.Value)
+        {
+            origin.Value = origin.Children[i].Value;
+            s = origin.Children[i];
+        }
+        else if (Min == turn && origin.Children[i].Value < origin.Value)
+        {
+            origin.Value = origin.Children[i].Value;
+            s = origin.Children[i];
+        }
+        printf("V(%zd) : %f ", origin.Children[i].Action, origin.Children[i].Value);
+    }
+    printf("\n");
+
+    return s;
 }

@@ -33,13 +33,14 @@ namespace Elysium
     protected:
         using MathFn = std::function<float(float)>;
         using LossFn = std::function<float(float, float)>;
+        using ErrorFn = std::function<float(float)>;
         using ScoreFn = std::function<float(float, size_t)>;
 
         virtual void initWeightAndBiases(size_t inputSize) final;
 
         void getActivation(MathFn& function);
         void getActivationDerivative(MathFn& function);
-        void getLossAndScore(AI::Loss loss, LossFn& lossFn, ScoreFn& scoreFn);
+        void getLossAndScore(AI::Loss loss, LossFn& lossFn, ErrorFn& errorFn, ScoreFn& scoreFn);
 
         virtual bool forwardPass(const Matrix& inputs,
             Matrix& results, Matrix& activations) = 0;

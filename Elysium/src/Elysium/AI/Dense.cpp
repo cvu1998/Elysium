@@ -51,10 +51,11 @@ namespace Elysium
         getActivation(activationFn);
 
         LossFn lossFn;
+        ErrorFn errorFn;
         ScoreFn scoreFn;
-        getLossAndScore(lossFunction, lossFn, scoreFn);
+        getLossAndScore(lossFunction, lossFn, errorFn, scoreFn);
 
-        float meanError = 0.0f;
+        float sumError = 0.0f;
         for (size_t i = 0; i < inputs.getHeight(); ++i)
         {
             for (size_t a = 0; a < m_Size; ++a)
@@ -65,10 +66,10 @@ namespace Elysium
 
                 activations(i, a) = activationFn(results(i, a));
                 error(i, a) = lossFn(outputs(i, a), activations(i, a));
-                meanError += fabs(error(i, a));
+                sumError += errorFn(error(i, a));
             }
         }
-        return scoreFn(meanError, error.getHeight());
+        return scoreFn(sumError, error.getHeight());
     }
 
     void Dense::calculateDelta(const Matrix& error, const Matrix& outputs, const Matrix& inputs, const GradientFn& gradFn,

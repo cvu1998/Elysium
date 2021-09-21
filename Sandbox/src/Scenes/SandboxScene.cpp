@@ -398,7 +398,8 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Elysium::S
     IrisResults.print();
 
     Elysium::Model QuadraticModel(2);
-    QuadraticModel.add(new Elysium::Dense(20, Elysium::AI::Activation::LEAKY_RELU, Elysium::AI::Initializer::HE));
+    QuadraticModel.add(new Elysium::Dense(10, Elysium::AI::Activation::LEAKY_RELU, Elysium::AI::Initializer::HE));
+    QuadraticModel.add(new Elysium::Dense(10, Elysium::AI::Activation::LEAKY_RELU, Elysium::AI::Initializer::HE));
     QuadraticModel.add(new Elysium::Dense(1, Elysium::AI::Activation::LINEAR));
     QuadraticModel.LossFunction = Elysium::AI::Loss::MEAN_SQUARED;
 
@@ -422,11 +423,13 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Elysium::S
 
     Elysium::Matrix InputData(InputVector);
     Elysium::Matrix OutputData(OutputVector);
+
     /*
-    QuadraticModel.fit(InputData, OutputData, 50000, 50);
+    QuadraticModel.fit(InputData, OutputData, 15000, 50);
     QuadraticModel.report();
     QuadraticModel.save("res/AI/quadratic-model");
     */
+
     QuadraticModel.load("res/AI/quadratic-model");
 
     Elysium::Matrix ScoreResults;
@@ -436,21 +439,25 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Elysium::S
         ScoreResults));
 
     std::vector<std::vector<float>> TestVector;
-    TestVector.push_back({ -7.0f, -7.0f });
-    TestVector.push_back({ -6.0f, -6.0f });
-    TestVector.push_back({ -5.0f, -5.0f });
-    TestVector.push_back({ -4.0f, -4.0f });
-    TestVector.push_back({ -3.0f, -3.0f });
-    TestVector.push_back({ -2.0f, -2.0f });
-    TestVector.push_back({ -1.0f, -1.0f });
-    TestVector.push_back({  0.0f,  0.0f });
-    TestVector.push_back({  1.0f,  1.0f });
-    TestVector.push_back({  2.0f,  2.0f });
-    TestVector.push_back({  3.0f,  3.0f });
-    TestVector.push_back({  4.0f,  4.0f });
-    TestVector.push_back({  5.0f,  5.0f });
-    TestVector.push_back({  6.0f,  6.0f });
-    TestVector.push_back({  7.0f,  7.0f });
+    TestVector.push_back({-12.0f, -12.0f });
+    TestVector.push_back({-11.0f, -11.0f });
+    TestVector.push_back({ -7.0f,  -7.0f });
+    TestVector.push_back({ -6.0f,  -6.0f });
+    TestVector.push_back({ -5.0f,  -5.0f });
+    TestVector.push_back({ -4.0f,  -4.0f });
+    TestVector.push_back({ -3.0f,  -3.0f });
+    TestVector.push_back({ -2.0f,  -2.0f });
+    TestVector.push_back({ -1.0f,  -1.0f });
+    TestVector.push_back({  0.0f,   0.0f });
+    TestVector.push_back({  1.0f,   1.0f });
+    TestVector.push_back({  2.0f,   2.0f });
+    TestVector.push_back({  3.0f,   3.0f });
+    TestVector.push_back({  4.0f,   4.0f });
+    TestVector.push_back({  5.0f,   5.0f });
+    TestVector.push_back({  6.0f,   6.0f });
+    TestVector.push_back({  7.0f,   7.0f });
+    TestVector.push_back({ 11.0f,  11.0f });
+    TestVector.push_back({ 12.0f,  12.0f });
 
     Elysium::Matrix TestData(TestVector);
     Elysium::Matrix Predictions;

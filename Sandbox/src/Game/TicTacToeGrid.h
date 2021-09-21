@@ -31,5 +31,6 @@ public:
     }
 
     bool isWinningMove(size_t index, int value) const;
+    bool isFilled() const;
     void printGrid() const;
 };

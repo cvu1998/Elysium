@@ -85,17 +85,19 @@ namespace Elysium
         }
     }
 
-    void HiddenLayer::getLossAndScore(AI::Loss loss, LossFn& lossFn, ScoreFn& scoreFn)
+    void HiddenLayer::getLossAndScore(AI::Loss loss, LossFn& lossFn, ErrorFn& errorFn, ScoreFn& scoreFn)
     {
         switch (loss)
         {
         case AI::Loss::MEAN_ABSOLUTE:
-            lossFn = std::bind(AI::Absolute, std::placeholders::_1, std::placeholders::_2);
+            lossFn = std::bind(AI::AbsoluteDerivative, std::placeholders::_1, std::placeholders::_2);
+            errorFn = std::bind(AI::AbsoluteError, std::placeholders::_1);
             scoreFn = std::bind(AI::Mean, std::placeholders::_1, std::placeholders::_2);
             break;
         case AI::Loss::MEAN_SQUARED:
-            lossFn = std::bind(AI::MeanSquare, std::placeholders::_1, std::placeholders::_2);
-            scoreFn = std::bind(AI::RootMeanSquare, std::placeholders::_1, std::placeholders::_2);
+            lossFn = std::bind(AI::MeanSquareDerivative, std::placeholders::_1, std::placeholders::_2);
+            errorFn = std::bind(AI::MeanSquareError, std::placeholders::_1);
+            scoreFn = std::bind(AI::Mean, std::placeholders::_1, std::placeholders::_2);
             break;
         }
     }

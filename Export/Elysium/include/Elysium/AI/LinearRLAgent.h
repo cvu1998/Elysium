@@ -13,19 +13,12 @@ namespace Elysium
     protected:
         std::array<float, N> WeightVector;
 
-        unsigned int Step = 1;
-        size_t Pivot = 0;
-        std::vector<float> Visits;
-
     public:
-        LinearRLAgent(float learningRate, float discountFactor, float defaultValue, unsigned int step = 1) :
-            RLAgent(learningRate, discountFactor, defaultValue),
-            Step(step)
+        LinearRLAgent(float learningRate, float discountFactor, float defaultValue) :
+            RLAgent(learningRate, discountFactor, defaultValue)
 
         {
             WeightVector.fill(defaultValue);
-
-            Visits.reserve(step);
         }
 
         float getValue(const BinaryFeatureVector<N>& currentFeatureVector)

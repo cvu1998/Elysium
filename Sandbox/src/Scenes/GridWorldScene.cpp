@@ -20,20 +20,12 @@ GridWorldScene::GridWorldScene(unsigned int width, unsigned int height) :
     m_CatTexture = m_CatSprites.getTextureData();
     m_CatTexture.subtextureCoordinates({ 0, 5 }, { 118, 150 });
 
-    m_GridModel.add(new Elysium::Dense(s_HiddenSize, Elysium::AI::Activation::LEAKY_RELU, Elysium::AI::Initializer::HE));
-    m_GridModel.add(new Elysium::Dense(s_HiddenSize, Elysium::AI::Activation::LEAKY_RELU, Elysium::AI::Initializer::HE));
+    m_GridModel.add(new Elysium::Dense(s_HiddenSize, Elysium::AI::Activation::RELU, Elysium::AI::Initializer::HE));
     m_GridModel.add(new Elysium::Dense(s_OutputSize, Elysium::AI::Activation::LINEAR));
     m_GridModel.LossFunction = Elysium::AI::Loss::MEAN_SQUARED;
-    m_GridModel.LearningRate = 0.001f;
+    m_GridModel.LearningRate = s_LearningRate;
 
-    m_GridModel.GradientModifier = [](Elysium::Matrix& gradient)
-    {
-        for (float& x : gradient.Values)
-            x = std::clamp(x, -1.0f, 1.0f);
-    };
-
-    m_TargetModel.add(new Elysium::Dense(s_HiddenSize, Elysium::AI::Activation::LEAKY_RELU, Elysium::AI::Initializer::HE));
-    m_TargetModel.add(new Elysium::Dense(s_HiddenSize, Elysium::AI::Activation::LEAKY_RELU, Elysium::AI::Initializer::HE));
+    m_TargetModel.add(new Elysium::Dense(s_HiddenSize, Elysium::AI::Activation::RELU, Elysium::AI::Initializer::HE));
     m_TargetModel.add(new Elysium::Dense(s_OutputSize, Elysium::AI::Activation::LINEAR));
 
     if (m_GridModel.load("res/AI/grid-model"))
@@ -304,17 +296,19 @@ size_t GridWorldScene::getSoftmaxAction(const Elysium::Matrix& QValues)
         {
             values.push_back(QValues.Values[i]);
             actions.push_back(i);
+
+            printf("%zd : %f, ", i, QValues.Values[i]);
         }
     }
+    printf("\n");
 
-    Elysium::AI::softmax(values, distribution);
+    Elysium::AI::softmax(values, distribution, s_Beta);
     float random = Elysium::Random::Float();
 
     bool found = false;
     float probability = 0.0f;
     size_t action = 0;
 
-    size_t last = distribution.size() - 1;
     for (size_t i = 0; i < distribution.size(); ++i)
     {
         probability += distribution[i];
@@ -325,13 +319,12 @@ size_t GridWorldScene::getSoftmaxAction(const Elysium::Matrix& QValues)
         }
 
 
-        if (i < last)
+        if (m_CatPosition == 7)
             printf("%zd : %f, ", actions[i], distribution[i]);
     }
-    printf("%zu : %f\n", actions[last], distribution[last]);
-    fflush(stdout);
+    if (m_CatPosition == 7)
+        printf("\n");
 
-    Elysium::Matrix(values).print();
     ELY_INFO("Random: {0}, Action: {1}", random, action);
 
     return action;
@@ -405,11 +398,19 @@ void GridWorldScene::updateMonteCarloDataset(std::vector<float>& data, const std
     data.push_back(float(action));
     data.push_back(reward);
 
-    m_TerminalStates.push_back(m_GameOver ? 1 : 0);
+    m_TerminalStates.push_back(0);
     m_EpisodeData.appendRow(data);
 
     if (m_GameOver)
     {
+        data.insert(data.end(), m_Grid.begin(), m_Grid.end());
+        data.insert(data.end(), m_Grid.begin(), m_Grid.end());
+        data.push_back(float(action));
+        data.push_back(reward);
+
+        m_TerminalStates.push_back(1);
+        m_EpisodeData.appendRow(data);
+
         float discountedRewards = reward;
         for (size_t i = 0; i < m_EpisodeData.getHeight(); ++i)
         {
@@ -467,51 +468,67 @@ void GridWorldScene::DQN()
 
 void GridWorldScene::modifiedDQN(const std::vector<float>& data)
 {
-    size_t targetSize = m_GameOver ? s_BatchSize + 1 : s_BatchSize;
+    size_t targetSize = m_GameOver ? 1 : s_BatchSize;
 
-    size_t i = 0;
-    Elysium::Random::InitInteger(0, (int)(m_Dataset.getHeight() - 1));
-    Elysium::Matrix dataset(0, s_DataLength);
-    std::vector<int> terminals(s_BatchSize);
-    while (i < s_BatchSize)
-    {
-        size_t row = (size_t)Elysium::Random::Integer();
-        dataset.appendRow(Elysium::Matrix::Slice(m_Dataset, row, row + 1, 0, 0).Values);
-        terminals[i] = m_TerminalStates[row];
-        i++;
-    }
     if (m_GameOver)
-        dataset.appendRow(data);
-
-    Elysium::Matrix states = Elysium::Matrix::Slice(dataset, 0, 0, 0, 9);
-    Elysium::Matrix nextStates = Elysium::Matrix::Slice(dataset, 0, 0, 9, 18);
-    Elysium::Matrix actions = Elysium::Matrix::Slice(dataset, 0, 0, 18, 19);
-    Elysium::Matrix rewards = Elysium::Matrix::Slice(dataset, 0, 0, 19, 20);
-
-    Elysium::Matrix targets;
-    m_GridModel.predict(states, targets);
-
-    Elysium::Matrix nextQValues;
-    m_TargetModel.predict(nextStates, nextQValues);
-
-    std::vector<float> bestValues;
-    bestValues.reserve(s_BatchSize);
-    for (size_t i = 0; i < s_BatchSize; ++i)
     {
-        float it = nextQValues(i, 0);
-        for (size_t j = 1; j < nextQValues.getWidth(); ++j)
-            it = glm::max(it, nextQValues(i, j));
-        bestValues.emplace_back(it);
-    }
+        Elysium::Matrix dataset(data);
 
-    for (size_t i = 0; i < s_BatchSize; ++i)
+        Elysium::Matrix state = Elysium::Matrix::Slice(dataset, 0, 0, 0, 9);
+        Elysium::Matrix action = Elysium::Matrix::Slice(dataset, 0, 0, 18, 19);
+        Elysium::Matrix reward = Elysium::Matrix::Slice(dataset, 0, 0, 19, 20);
+
+        Elysium::Matrix target;
+        m_GridModel.predict(state, target);
+        target(0, (size_t)action(0, 0)) = reward(0, 0);
+
+        m_GridModel.LearningRate = s_ModifiedLearningRate;
+        m_GridModel.fit(state, target, 1, targetSize);
+        m_GridModel.LearningRate = s_LearningRate;
+    }
+    else
     {
-        targets(i, (size_t)actions.Values[i]) = terminals[i] ? rewards.Values[i] : rewards.Values[i] + s_DiscountFactor * bestValues[i];
-    }
-    if (m_GameOver)
-        targets(i, (size_t)actions.Values[s_BatchSize]) = rewards.Values[s_BatchSize];
 
-    m_GridModel.fit(states, targets, 1, targetSize);
+        size_t i = 0;
+        Elysium::Random::InitInteger(0, (int)(m_Dataset.getHeight() - 1));
+        Elysium::Matrix dataset(0, s_DataLength);
+        std::vector<int> terminals(s_BatchSize);
+        while (i < s_BatchSize)
+        {
+            size_t row = (size_t)Elysium::Random::Integer();
+            dataset.appendRow(Elysium::Matrix::Slice(m_Dataset, row, row + 1, 0, 0).Values);
+            terminals[i] = m_TerminalStates[row];
+            i++;
+        }
+
+        Elysium::Matrix states = Elysium::Matrix::Slice(dataset, 0, 0, 0, 9);
+        Elysium::Matrix nextStates = Elysium::Matrix::Slice(dataset, 0, 0, 9, 18);
+        Elysium::Matrix actions = Elysium::Matrix::Slice(dataset, 0, 0, 18, 19);
+        Elysium::Matrix rewards = Elysium::Matrix::Slice(dataset, 0, 0, 19, 20);
+
+        Elysium::Matrix targets;
+        m_GridModel.predict(states, targets);
+
+        Elysium::Matrix nextQValues;
+        m_TargetModel.predict(nextStates, nextQValues);
+
+        std::vector<float> bestValues;
+        bestValues.reserve(s_BatchSize);
+        for (size_t i = 0; i < s_BatchSize; ++i)
+        {
+            float it = nextQValues(i, 0);
+            for (size_t j = 1; j < nextQValues.getWidth(); ++j)
+                it = glm::max(it, nextQValues(i, j));
+            bestValues.emplace_back(it);
+        }
+
+        for (size_t i = 0; i < s_BatchSize; ++i)
+        {
+            targets(i, (size_t)actions.Values[i]) = terminals[i] ? rewards.Values[i] : rewards.Values[i] + s_DiscountFactor * bestValues[i];
+        }
+
+        m_GridModel.fit(states, targets, 1, targetSize);
+    }
 }
 
 void GridWorldScene::MonteCarlo()
@@ -529,7 +546,6 @@ void GridWorldScene::MonteCarlo()
     }
 
     Elysium::Matrix states = Elysium::Matrix::Slice(dataset, 0, 0, 0, 9);
-    Elysium::Matrix nextStates = Elysium::Matrix::Slice(dataset, 0, 0, 9, 18);
     Elysium::Matrix actions = Elysium::Matrix::Slice(dataset, 0, 0, 18, 19);
     Elysium::Matrix rewards = Elysium::Matrix::Slice(dataset, 0, 0, 19, 20);
 

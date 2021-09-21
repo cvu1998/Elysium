@@ -44,13 +44,17 @@ namespace Elysium
         float LeakyRelu(float x);
         float LeakyReluDerivative(float x);
 
-        float Absolute(float correct, float prediction);
+        float AbsoluteDerivative(float correct, float prediction);
+        float AbsoluteError(float value);
         float Mean(float value, size_t n);
 
-        float MeanSquare(float correct, float prediction);
-        float RootMeanSquare(float value, size_t n);
+        float MeanSquareDerivative(float correct, float prediction);
+        float MeanSquareError(float value);
 
-        void softmax(const std::vector<float>& x, std::vector<float>& y);
-        void softmax(const Matrix& x, Matrix& y);
+        void softmax(const std::vector<float>& x, std::vector<float>& y, float beta = 1);
+        void softmax(const Matrix& x, Matrix& y, float beta = 1);
+
+        void softmin(const std::vector<float>& x, std::vector<float>& y, float beta = 1);
+        void softmin(const Matrix& x, Matrix& y, float beta = 1);
     }
 }

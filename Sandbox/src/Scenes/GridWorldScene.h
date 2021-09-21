@@ -58,7 +58,7 @@ private:
 
     float m_MoveCooldown = 0.0f;
 
-    static constexpr float s_Cooldown = -0.05f;
+    static constexpr float s_Cooldown = -0.01f;
 
     static constexpr size_t s_Goal = 8;
     static constexpr size_t s_Fire1 = 6;
@@ -73,7 +73,7 @@ private:
     size_t m_HundoWins = 0;
     float m_WinRate = 0.0f;
 
-    int m_Algorithm = 0; // 0 DQN, 1 Modified DQN, 2 Monte Carlo
+    int m_Algorithm = 1; // 0 DQN, 1 Modified DQN, 2 Monte Carlo
 
     int m_Policy = 0; // 0 Greedy, 1 Softmax
 
@@ -87,14 +87,18 @@ private:
     bool m_DoneTraining = true;
 
     size_t m_TargetUpdate = 0;
-    static constexpr size_t s_Update = 8;
+    static constexpr size_t s_Update = 16;
 
     static constexpr size_t s_InputSize = 9;
-    static constexpr size_t s_HiddenSize = 9;
+    static constexpr size_t s_HiddenSize = 7;
     static constexpr size_t s_OutputSize = 4;
 
     static constexpr size_t s_DataLength = 20;
 
     static constexpr float s_DiscountFactor = 0.9f;
     static constexpr size_t s_BatchSize = 32;
+
+    static constexpr float s_Beta = 2.0f;
+    static constexpr float s_LearningRate = 0.000001f;
+    static constexpr float s_ModifiedLearningRate = 0.01f;
 };
