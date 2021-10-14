@@ -14,13 +14,17 @@ bool TicTacToeGrid::isWinningMove(size_t index, int value) const
         isWinningRightDiagonal(index, value) || isWinningLeftDiagonal(index, value);
 }
 
+bool TicTacToeGrid::isEmpty() const
+{
+    for (int i : Grid)
+        if (i != 0) return false;
+    return true;
+}
+
 bool TicTacToeGrid::isFilled() const
 {
     for (int i : Grid)
-    {
-        if (i == 0)
-            return false;
-    }
+        if (i == 0) return false;
     return true;
 }
 

@@ -22,8 +22,8 @@ private:
     int m_Turn = 1;
     bool m_GameOver = false;
     bool m_Tie = false;
-    uint32_t m_BlueScore = 0;
-    uint32_t m_RedScore = 0;
+    uint32_t m_XScore = 0;
+    uint32_t m_OScore = 0;
     uint32_t m_DrawCount = 0;
 
     int m_GamesPlayed = 0;
@@ -34,7 +34,7 @@ private:
 
     bool m_Pause = false;
     float m_MoveCooldown = 0.0f;
-    static constexpr float s_Cooldown = -0.001f;
+    static constexpr float s_Cooldown = -0.0001f;
 
     TicTacToeMinimax m_Minimax;
     bool m_PlayAgainstMinimax = false;
@@ -50,20 +50,18 @@ private:
     
     size_t m_OpponentIndex = 0;
     size_t m_OpponentUpdateIndex = 0;
+    size_t m_PositiveThreshold = 25; //18;
+    size_t m_WinThreshold = 21; //14;
+    std::array<bool, 4> m_OpponentUpdated = { false };
 
-    Elysium::Matrix m_Dataset;
-    Elysium::Matrix m_EpisodeData;
-    std::vector<int> m_TerminalStates;
+    static constexpr size_t s_PositiveStreak = 40;
 
     bool m_TrainModel = false;
     bool m_PlayModel = false;
     bool m_DoneTraining = true;
+    bool m_DoneSaving = false;
 
-    int m_Algorithm = 3; // 0 TD, 1 ReplayTD, 2 Monte Carlo, 3 TD root
-
-    int m_Policy = 1; // 0 Greedy, 1 Softmax
-
-    int m_Opponent = 1; // 0 Random, 1 Self-Play, 2 Greedy Self-Play
+    Elysium::Matrix m_EpisodeData;
 
     bool m_Training = true;
 
@@ -72,6 +70,7 @@ private:
     TicTacToeMinimax m_ModelMinimax;
     TicTacToeMinimax m_OpponentMinimax;
     TicTacToeMinimax::State m_RootState;
+    TicTacToeMinimax::TreestrapData m_TreeData;
 
     size_t m_MoveCount = 0;
 
@@ -83,7 +82,7 @@ private:
     static constexpr size_t s_DataLength = 55;
 
     static constexpr size_t s_InputSize = 27;
-    static constexpr size_t s_HiddenSize = 18;
+    static constexpr size_t s_HiddenSize = 42;
     static constexpr size_t s_OutputSize = 1;
 
     static constexpr float s_LearningRate = 0.00001f; // 0.001f
@@ -96,6 +95,12 @@ private:
     static constexpr float s_TieReward = 0.0f;
     static constexpr float s_WinReward = 1.0f;
     static constexpr float s_LossReward = -1.0f;
+    
+    static constexpr int s_RateThreshold = 100;
+
+    int m_Algorithm = 3; // 0 TD, 1 Monte Carlo, 2 TD Root, 3 Treestrap
+    int m_Policy = 1; // 0 Greedy, 1 Softmax
+    int m_Opponent = 1; // 0 Random, 1 Softmax, 2 Greedy
 
 private:
     Elysium::Vector2 getPosition(Elysium::Action action);
@@ -104,9 +109,9 @@ private:
 
     bool isWithinBounds(Elysium::Vector2 position, float x1, float y1, float x2, float y2);
 
-    void loadDataset(const char* filepath);
-    void saveDataset(const char* filepath);
-
+    size_t TDRootAction(int turn);
+    size_t TreestrapAction(int turn);
+    size_t ModelAction(int turn);
     Elysium::Action chooseAction(int turn);
     size_t getRandomAction();
     size_t getMaxAction(const std::vector<float>& values);
@@ -115,15 +120,12 @@ private:
     size_t getSoftminAction(const std::vector<float>& values, float beta);
 
     void trainModel(const TicTacToeGrid& previous, Elysium::Action action, int turn);
-    void updateTDDataset(
-        std::vector<float>& data,
-        const std::vector<float>& previous, const std::vector<float>& state, float reward);
     void updateMonteCarloDataset(
         std::vector<float>& data,
         const std::vector<float>& previous, const std::vector<float>& state, float reward);
     void TD(const Elysium::Matrix& data);
     void TDRoot(const Elysium::Matrix& data);
-    void ReplayTD(const Elysium::Matrix& data);
+    void Treestrap(const Elysium::Matrix& data);
     void MonteCarlo();
 
     void getState(const TicTacToeGrid& grid, std::vector<float>& state);
@@ -136,6 +138,7 @@ private:
     void opponentGenerator(std::vector<TicTacToeMinimax::State>& states, const TicTacToeGrid& grid, int turn, size_t depth);
 
     void updateModels();
+    void saveModels();
 
 public:
     TicTacToeScene(unsigned int width, unsigned int height);

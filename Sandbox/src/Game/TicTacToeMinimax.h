@@ -14,6 +14,7 @@ public:
         int Result = 0;
 
         TicTacToeGrid Grid;
+        TicTacToeGrid TargetGrid;
         std::vector<TicTacToeMinimax::State> Children;
 
         State() = default;
@@ -36,6 +37,7 @@ private:
 
 private:
     void generateTree(State& origin, int turn);
+    void generateTreestrap(State& origin, int turn, std::vector<State>& states);
 
     int getValueFromExponent(int exponent);
     float evaluateState(const TicTacToeGrid& grid);
@@ -66,5 +68,13 @@ public:
     size_t getAction(int turn);
     State getNStepState(int turn, float beta);
     State getGreedyNStepState(int turn);
+
+    struct TreestrapData
+    {
+        std::vector<State> States;
+        size_t Action = 0;
+    };
+
+    TreestrapData treestrap(int turn);
 };
 

@@ -31,7 +31,41 @@ void TicTacToeMinimax::generateTree(State& origin, int turn)
             s.Depth = state.Depth;
             s.Terminal = state.Terminal;
             s.Result = state.Result;
-            s.Grid = state.Grid;
+            s.TargetGrid = state.Grid;
+        }
+    }
+}
+
+void TicTacToeMinimax::generateTreestrap(State& origin, int turn, std::vector<State>& states)
+{
+    int first = Max == turn ? Max : Min;
+    int second = first == Max ? Min : Max;
+    Generator(origin.Children, origin.Grid, first, 1);
+
+    for (State& s : origin.Children)
+    {
+        if (!s.Terminal)
+        {
+            ELY_INFO("Minimax Action: {0}", s.Action);
+            Generator(s.Children, s.Grid, second, 2);
+        }
+    }
+
+    for (State& s : origin.Children)
+    {
+        if (!s.Children.empty())
+        {
+            for (State& c : s.Children)
+                if (c.Terminal) states.push_back(s);
+
+            State state;
+            if (first == Max) state = *std::min_element(s.Children.begin(), s.Children.end());
+            else state = *std::max_element(s.Children.begin(), s.Children.end());
+
+            s.Value = state.Value;
+            s.Terminal = state.Terminal;
+            s.Result = state.Result;
+            s.TargetGrid = state.Grid;
         }
     }
 }
@@ -146,27 +180,17 @@ size_t TicTacToeMinimax::getAction(int turn)
     State origin(*m_Grid);
     generateTree(origin, turn);
 
-    size_t action = origin.Children[0].Action;
-    origin.Value = origin.Children[0].Value;
+    State s = origin.Children[0];
     printf("V(%zd) : %f ", origin.Children[0].Action, origin.Children[0].Value);
     for (size_t i = 1; i < origin.Children.size(); i++)
     {
-        if (Max == turn && origin.Children[i].Value > origin.Value)
-        {
-            origin.Value = origin.Children[i].Value;
-            action = origin.Children[i].Action;
-        }
-        else if (Min == turn && origin.Children[i].Value < origin.Value)
-        {
-            origin.Value = origin.Children[i].Value;
-            action = origin.Children[i].Action;
-        }
-
+        if (Max == turn && origin.Children[i].Value > s.Value) s = origin.Children[i];
+        else if (Min == turn && origin.Children[i].Value < s.Value) s = origin.Children[i];
         printf("V(%zd) : %f ", origin.Children[i].Action, origin.Children[i].Value);
     }
     printf("\n");
 
-    return action;
+    return s.Action;
 }
 
 TicTacToeMinimax::State TicTacToeMinimax::getNStepState(int turn, float beta)
@@ -216,24 +240,65 @@ TicTacToeMinimax::State TicTacToeMinimax::getGreedyNStepState(int turn)
     generateTree(origin, turn);
 
     State s = origin.Children[0];
-    size_t action = origin.Children[0].Action;
-    origin.Value = origin.Children[0].Value;
     printf("V(%zd) : %f ", origin.Children[0].Action, origin.Children[0].Value);
     for (size_t i = 1; i < origin.Children.size(); i++)
     {
-        if (Max == turn && origin.Children[i].Value > origin.Value)
-        {
-            origin.Value = origin.Children[i].Value;
-            s = origin.Children[i];
-        }
-        else if (Min == turn && origin.Children[i].Value < origin.Value)
-        {
-            origin.Value = origin.Children[i].Value;
-            s = origin.Children[i];
-        }
+        if (Max == turn && origin.Children[i].Value > s.Value) s = origin.Children[i];
+        else if (Min == turn && origin.Children[i].Value < s.Value) s = origin.Children[i];
         printf("V(%zd) : %f ", origin.Children[i].Action, origin.Children[i].Value);
     }
     printf("\n");
 
     return s;
+}
+
+TicTacToeMinimax::TreestrapData TicTacToeMinimax::treestrap(int turn)
+{
+    std::vector<TicTacToeMinimax::State> states;
+
+    State origin(*m_Grid);
+    generateTreestrap(origin, turn, states);
+
+    State s = origin.Children[0];
+    std::vector<float> stateValues(origin.Children.size());
+    printf("V(%zd) : %f ", origin.Children[0].Action, origin.Children[0].Value);
+    for (size_t i = 1; i < origin.Children.size(); i++)
+    {
+        stateValues[i] = origin.Children[i].Value;
+        printf("V(%zd) : %f ", origin.Children[i].Action, origin.Children[i].Value);
+        if (Max == turn && origin.Children[i].Value > s.Value) s = origin.Children[i];
+        else if (Min == turn && origin.Children[i].Value < s.Value) s = origin.Children[i];
+    }
+    printf("\n");
+
+    states.insert(states.end(), origin.Children.begin(), origin.Children.end());
+    states.push_back(s);
+
+    for (size_t i = 0; i < origin.Children.size(); i++)
+        stateValues[i] = origin.Children[i].Value;
+
+    std::vector<float> distribution;
+    if (Max == turn) Elysium::AI::softmax(stateValues, distribution, 5.0f);
+    else Elysium::AI::softmin(stateValues, distribution, 5.0f);
+
+    float random = Elysium::Random::Float();
+
+    bool found = false;
+
+    float probability = 0.0f;
+    size_t action = origin.Children[0].Action;
+    for (size_t i = 0; i < distribution.size(); ++i)
+    {
+        probability += distribution[i];
+        if (random < probability && !found)
+        {
+            action = origin.Children[i].Action;
+            found = true;
+        }
+
+        printf("P(%zd) : %f ", origin.Children[i].Action, distribution[i]);
+    }
+    printf("\n");
+
+    return { states, action };
 }

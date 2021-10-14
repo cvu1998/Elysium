@@ -44,6 +44,7 @@ namespace Elysium
 
     void Matrix::appendRow(const std::vector<float>& row)
     {
+        Width = Width == 0 ? row.size() : Width;
         Values.insert(Values.end(), row.begin(), row.end());
         Height++;
     }

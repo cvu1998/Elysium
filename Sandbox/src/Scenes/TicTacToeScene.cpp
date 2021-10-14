@@ -10,10 +10,9 @@ TicTacToeScene::TicTacToeScene(unsigned int width, unsigned int height) :
     m_Minimax(&m_Grid),
     m_TicTacToeModel(s_InputSize),
     m_TargetModel(s_InputSize),
-    m_Dataset(0, s_DataLength, true),
-    m_EpisodeData(0, s_DataLength, true),
     m_ModelMinimax(&m_Grid),
-    m_OpponentMinimax(&m_Grid)
+    m_OpponentMinimax(&m_Grid),
+    m_EpisodeData(0, s_DataLength, true)
 {
     m_CoinTextures[0] = m_X.getTextureData();
     m_CoinTextures[1] = m_O.getTextureData();
@@ -46,8 +45,7 @@ TicTacToeScene::TicTacToeScene(unsigned int width, unsigned int height) :
         m_OpponentModels[i].load(name.c_str());
     }
 
-    if (m_TicTacToeModel.load("res/AI/Tic-Tac-Toe/tictactoe-model"))
-        loadDataset("res/AI/Tic-Tac-Toe/tictactoe-dataset.csv");
+    m_TicTacToeModel.load("res/AI/Tic-Tac-Toe/tictactoe-model");
 
     updateTarget();
 
@@ -68,19 +66,13 @@ TicTacToeScene::TicTacToeScene(unsigned int width, unsigned int height) :
 
     m_OpponentMinimax.Max = -1;
     m_OpponentMinimax.Min = 1;
+
+    saveModels();
 }
 
 TicTacToeScene::~TicTacToeScene()
 {
-    m_TicTacToeModel.save("res/AI/Tic-Tac-Toe/tictactoe-model");
-    saveDataset("res/AI/Tic-Tac-Toe/tictactoe-dataset.csv");
-
-    for (size_t i = 0; i < 4; ++i)
-    {
-        std::string path = "res/AI/Tic-Tac-Toe/opponent-model";
-        std::string name = path + '-' + std::to_string(i);
-        m_OpponentModels[i].save(name.c_str());
-    }
+    saveModels();
 }
 
 Elysium::Vector2 TicTacToeScene::getPosition(Elysium::Action action)
@@ -140,10 +132,10 @@ void TicTacToeScene::addAction(Elysium::Vector2 position, size_t index)
             switch (m_Turn)
             {
             case -1:
-                m_BlueScore++;
+                m_XScore++;
                 break;
             case 1:
-                m_RedScore++;
+                m_OScore++;
                 break;
             }
         }
@@ -167,105 +159,30 @@ bool TicTacToeScene::isWithinBounds(Elysium::Vector2 position, float x1, float y
     return CollisionX && CollisionY;
 }
 
-void TicTacToeScene::loadDataset(const char* filepath)
+size_t TicTacToeScene::TDRootAction(int turn)
 {
-    std::ifstream file(filepath);
-    if (file.is_open())
-    {
-        std::string line;
-        while (getline(file, line))
-        {
-            if (!line.empty())
-            {
-                std::vector<float> row(s_DataLength);
-                float reward = 0.0f;
-                float action = 0.0f;
-                int terminal, player = 0;
-                sscanf_s(line.c_str(), " \
-                    %f, %f, %f, %f, %f, %f, %f, %f, %f, \
-                    %f, %f, %f, %f, %f, %f, %f, %f, %f, \
-                    %f, %f, %f, %f, %f, %f, %f, %f, %f, \
-                    %f, %f, %f, %f, %f, %f, %f, %f, %f, \
-                    %f, %f, %f, %f, %f, %f, %f, %f, %f, \
-                    %f, %f, %f, %f, %f, %f, %f, %f, %f, \
-                    R: %f, T: %d",
-                    &row[0], &row[1], &row[2], &row[3], &row[4], &row[5], &row[6], &row[7], &row[8],
-                    &row[9], &row[10], &row[11], &row[12], &row[13], &row[14], &row[15], &row[16], &row[17],
-                    &row[18], &row[19], &row[20], &row[21], &row[22], &row[23], &row[24], &row[25], &row[26],
-                    &row[27], &row[28], &row[29], &row[30], &row[31], &row[32], &row[33], &row[34], &row[35],
-                    &row[36], &row[37], &row[38], &row[39], &row[40], &row[41], &row[42], &row[43], &row[44],
-                    &row[45], &row[46], &row[47], &row[48], &row[49], &row[50], &row[51], &row[52], &row[53],
-                    &reward, &terminal);
-                row[s_DataLength - 1] = reward;
-                m_TerminalStates.push_back(terminal);
-                m_Dataset.appendRow(row);
-            }
-        }
-        file.close();
-    }
+    size_t action = 0;
+    if (m_Training) m_RootState = turn == 1 ? m_ModelMinimax.getNStepState(turn, s_Beta) : m_OpponentMinimax.getNStepState(turn, s_Beta);
+    else action = turn == 1 && !m_Training ? action = m_ModelMinimax.getAction(turn) : action = m_OpponentMinimax.getNStepState(turn, s_Beta).Action;
+
+    action = m_Training ? m_RootState.Action : action;
+
+    return action;
 }
 
-void TicTacToeScene::saveDataset(const char* filepath)
+size_t TicTacToeScene::TreestrapAction(int turn)
 {
-    std::ofstream file(filepath);
-    if (file.is_open())
-    {
-        for (size_t i = 0; i < m_Dataset.getHeight(); ++i)
-        {
-            for (size_t j = 0; j < m_Dataset.getWidth(); ++j)
-            {
-                switch (j)
-                {
-                case s_DataLength - 1:
-                    file << "R: " << m_Dataset(i, j) << ", T: " << m_TerminalStates[i] << '\n';
-                    break;
-                default:
-                    file << m_Dataset(i, j) << ", ";
-                }
-            }
-        }
-    }
-    file.close();
+    size_t action = 0;
+    if (m_Training) m_TreeData = turn == 1 ? m_ModelMinimax.treestrap(turn) : m_OpponentMinimax.treestrap(turn);
+    else action = turn == 1 && !m_Training ? action = m_ModelMinimax.getAction(turn) : action = m_OpponentMinimax.getNStepState(turn, s_Beta).Action;
+
+    action = m_Training ? m_TreeData.Action : action;
+
+    return action;
 }
 
-Elysium::Action TicTacToeScene::chooseAction(int turn)
+size_t TicTacToeScene::ModelAction(int turn)
 {
-    if (m_Algorithm == 3)
-    {
-        size_t action = 0;
-        switch (m_Training)
-        {
-        case true:
-            switch (m_Turn)
-            {
-            case 1:
-                m_RootState = m_ModelMinimax.getNStepState(turn, s_Beta);
-                action = m_RootState.Action;
-                break;
-            case -1:
-                m_RootState = m_OpponentMinimax.getNStepState(turn, s_Beta);
-                action = m_RootState.Action;
-                break;
-            }
-            break;
-        case false:
-            switch (m_Turn)
-            {
-            case 1:
-                action = m_ModelMinimax.getAction(turn);
-                break;
-            case -1:
-                //action = m_OpponentMinimax.getAction(turn);
-                m_RootState = m_OpponentMinimax.getNStepState(turn, s_Beta);
-                action = m_RootState.Action;
-                break;
-            }
-            break;
-        }
-        ELY_INFO("Action: {0}", action);
-        return action;
-    }
-
     Elysium::Matrix v;
     std::vector<float> values;
     for (size_t i = 0; i < m_Grid.Grid.size(); ++i)
@@ -276,7 +193,6 @@ Elysium::Action TicTacToeScene::chooseAction(int turn)
             next.Grid[i] = m_Turn;
 
             std::vector<float> state;
-            //getState(next, state);
 
             switch (turn)
             {
@@ -313,16 +229,23 @@ Elysium::Action TicTacToeScene::chooseAction(int turn)
             action = getRandomAction();
             break;
         case 1:
-            //action = getSoftminAction(values, s_GreedyBeta);
             action = getSoftmaxAction(values, s_Beta);
             break;
         case 2:
-            //action = getMinAction(values);
             action = getMaxAction(values);
             break;
         }
         break;
     }
+    return action;
+}
+
+Elysium::Action TicTacToeScene::chooseAction(int turn)
+{
+    size_t action = 0;
+    if (m_Algorithm == 2) action = TDRootAction(turn);
+    else if (m_Algorithm == 3) action = TreestrapAction(turn);
+    else action = ModelAction(turn);
 
     ELY_INFO("Action: {0}", action);
 
@@ -503,74 +426,32 @@ void TicTacToeScene::trainModel(const TicTacToeGrid& previous, Elysium::Action a
         reward = m_Tie ? s_TieReward : reward;
     }
     std::vector<float> data;
+    if (m_Algorithm == 1) updateMonteCarloDataset(data, prevState, state, reward);
+    else
+    {
+        data.insert(data.end(), prevState.begin(), prevState.end());
+        data.insert(data.end(), state.begin(), state.end());
+        data.push_back(reward);
+    }
+
     switch (m_Algorithm)
     {
     case 0:
-        data.insert(data.end(), prevState.begin(), prevState.end());
-        data.insert(data.end(), state.begin(), state.end());
-        data.push_back(reward);
+        TD(Elysium::Matrix(data));
         break;
     case 1:
-        updateTDDataset(data, prevState, state, reward);
+        if (m_GameOver) MonteCarlo();
         break;
     case 2:
-        updateMonteCarloDataset(data, prevState, state, reward);
+        TDRoot(Elysium::Matrix(data));
         break;
     case 3:
-        data.insert(data.end(), prevState.begin(), prevState.end());
-        data.insert(data.end(), state.begin(), state.end());
-        data.push_back(reward);
-        break;
+        Treestrap(Elysium::Matrix(data));
     }
 
-    if (m_Algorithm != 1 || m_Dataset.getHeight() > s_BatchSize * 2)
-    {
-        if (m_Dataset.getHeight() > s_MemorySize)
-        {
-            size_t index = m_Dataset.getHeight() - s_MemorySize;
-            m_Dataset = Elysium::Matrix::Slice(m_Dataset, index, 0, 0, 0);
-            m_TerminalStates.erase(m_TerminalStates.begin(), m_TerminalStates.begin() + index);
-        }
+    m_TicTacToeModel.report();
 
-        switch (m_Algorithm)
-        {
-        case 0:
-            TD(Elysium::Matrix(data));
-            break;
-        case 1:
-            ReplayTD(Elysium::Matrix(data));
-            break;
-        case 2:
-            if (m_GameOver) MonteCarlo();
-            break;
-        case 3:
-            TDRoot(Elysium::Matrix(data));
-            break;
-        }
-
-        m_TicTacToeModel.report();
-    }
     m_DoneTraining = true;
-}
-
-void TicTacToeScene::updateTDDataset(std::vector<float>& data, const std::vector<float>& previous, const std::vector<float>& state, float reward)
-{
-    data.insert(data.end(), previous.begin(), previous.end());
-    data.insert(data.end(), state.begin(), state.end());
-    data.push_back(0.0f);
-
-    m_TerminalStates.push_back(0);
-    m_Dataset.appendRow(data);
-
-    if (m_GameOver)
-    {
-        data.insert(data.end(), state.begin(), state.end());
-        data.insert(data.end(), state.begin(), state.end());
-        data.push_back(reward);
-
-        m_TerminalStates.push_back(1);
-        m_Dataset.appendRow(data);
-    }
 }
 
 void TicTacToeScene::updateMonteCarloDataset(std::vector<float>& data, const std::vector<float>& previous, const std::vector<float>& state, float reward)
@@ -579,16 +460,12 @@ void TicTacToeScene::updateMonteCarloDataset(std::vector<float>& data, const std
     data.insert(data.end(), state.begin(), state.end());
     data.push_back(0.0f);
 
-    m_TerminalStates.push_back(0);
-    m_EpisodeData.appendRow(data);
-
     if (m_GameOver)
     {
         data.insert(data.end(), state.begin(), state.end());
         data.insert(data.end(), state.begin(), state.end());
         data.push_back(reward);
 
-        m_TerminalStates.push_back(1);
         m_EpisodeData.appendRow(data);
 
         float discountedRewards = 0.0f;
@@ -636,7 +513,7 @@ void TicTacToeScene::TDRoot(const Elysium::Matrix& data)
 
     std::vector<float> targetState;
     Elysium::Matrix targetValue;
-    getState(m_RootState.Grid, targetState);
+    getState(m_RootState.TargetGrid, targetState);
     m_TicTacToeModel.predict(Elysium::Matrix(targetState), targetValue);
 
     float valueDiscount = (float)glm::pow(s_DiscountFactor, m_RootState.Depth);
@@ -678,36 +555,51 @@ void TicTacToeScene::TDRoot(const Elysium::Matrix& data)
     }
 }
 
-void TicTacToeScene::ReplayTD(const Elysium::Matrix& data)
+void TicTacToeScene::Treestrap(const Elysium::Matrix& data)
 {
-    size_t i = 0;
-    Elysium::Random::InitInteger(0, (int)(m_Dataset.getHeight() - 1));
-    Elysium::Matrix dataset(0, s_DataLength);
-    std::vector<int> terminals(s_BatchSize);
-    while (i < s_BatchSize)
+    Elysium::Matrix currentState = Elysium::Matrix::Slice(data, 0, 0, 0, 27);
+    Elysium::Matrix nextState = Elysium::Matrix::Slice(data, 0, 0, 27, s_DataLength - 1);
+    Elysium::Matrix reward = Elysium::Matrix::Slice(data, 0, 0, s_DataLength - 1, s_DataLength);
+
+    Elysium::Matrix states, targetStates, targets;
+    for (TicTacToeMinimax::State s : m_TreeData.States)
     {
-        size_t row = (size_t)Elysium::Random::Integer();
-        dataset.appendRow(Elysium::Matrix::Slice(m_Dataset, row, row + 1, 0, 0).Values);
-        terminals[i] = m_TerminalStates[row];
-        i++;
+        std::vector<float> state, targetState;
+        getState(s.Grid, state);
+        states.appendRow(state);
+        getState(s.TargetGrid, targetState);
+        targetStates.appendRow(targetState);
     }
 
-    Elysium::Matrix states = Elysium::Matrix::Slice(dataset, 0, 0, 0, 27);
-    Elysium::Matrix nextStates = Elysium::Matrix::Slice(dataset, 0, 0, 27, s_DataLength - 1);
-    Elysium::Matrix rewards = Elysium::Matrix::Slice(dataset, 0, 0, s_DataLength - 1, s_DataLength);
+    m_TicTacToeModel.predict(targetStates, targets);
 
-    Elysium::Matrix targets;
-    m_TicTacToeModel.predict(states, targets);
-
-    Elysium::Matrix nextValues;
-    m_TargetModel.predict(nextStates, nextValues);
-
-    for (size_t i = 0; i < s_BatchSize; ++i)
+    for (size_t i = 0; i < m_TreeData.States.size(); ++i)
     {
-        targets(i, 0) = terminals[i] ? rewards.Values[i] : rewards.Values[i] + s_DiscountFactor * nextValues.Values[i];
+        float valueDiscount = (float)glm::pow(s_DiscountFactor, 2 - m_TreeData.States[i].Depth);
+        float r = 0.0f;
+        switch (m_TreeData.States[i].Result)
+        {
+        case -1:
+            r = s_LossReward;
+            break;
+            break;
+        case 1:
+            r = s_WinReward;
+            break;
+        case 0:
+            r = m_TreeData.States[i].Terminal ? s_TieReward : 0.0f;
+            break;
+        }
+        targets(i, 0) = m_TreeData.States[i].Terminal ? valueDiscount * r : valueDiscount * targets(i, 0);
     }
 
-    m_TicTacToeModel.fit(states, targets, 1, s_BatchSize);
+    Elysium::Matrix value, stateValue;
+    m_TicTacToeModel.predict(currentState, value);
+    m_TicTacToeModel.predict(nextState, stateValue);
+    ELY_INFO("Value of Previous State: {0}", value(0, 0));
+    ELY_INFO("Root Depth: {0} Value: {1} Result: {2}", m_TreeData.States.back().Depth, targets(m_TreeData.States.size() - 1, 0), m_TreeData.States.back().Result);
+
+    m_TicTacToeModel.fit(states, targets);
 }
 
 void TicTacToeScene::MonteCarlo()
@@ -731,8 +623,8 @@ void TicTacToeScene::MonteCarlo()
 
 void TicTacToeScene::getState(const TicTacToeGrid& grid, std::vector<float>& state)
 {
-    state.resize(s_InputSize);
-    for (size_t i = 0; i < m_Grid.Grid.size(); ++i)
+    state.resize(27);
+    for (size_t i = 0; i < grid.Grid.size(); ++i)
     {
         switch (grid.Grid[i])
         {
@@ -751,7 +643,7 @@ void TicTacToeScene::getState(const TicTacToeGrid& grid, std::vector<float>& sta
 
 void TicTacToeScene::getInvertedState(const TicTacToeGrid& grid, std::vector<float>& state)
 {
-    state.resize(s_InputSize);
+    state.resize(27);
     for (size_t i = 0; i < m_Grid.Grid.size(); ++i)
     {
         switch (grid.Grid[i])
@@ -886,16 +778,8 @@ void TicTacToeScene::updateModels()
         m_ModelGames[m_OpponentIndex]++;
     }
 
-    switch (m_Training)
-    {
-    case true:
-        m_OpponentIndex = ++m_OpponentIndex < 4 ? m_OpponentIndex : 0;
-        break;
-    case false:
-        if (m_GamesPlayed % 25 == 0)
-            m_OpponentIndex = ++m_OpponentIndex < 4 ? m_OpponentIndex : 0;
-        break;
-    }
+    if (m_Training) m_OpponentIndex = ++m_OpponentIndex < 4 ? m_OpponentIndex : 0;
+    else if (!m_Training && m_GamesPlayed % 25 == 0) m_OpponentIndex = ++m_OpponentIndex < 4 ? m_OpponentIndex : 0;
 
     if (m_GamesPlayed % s_UpdateOpponent == 0)
     {
@@ -919,19 +803,26 @@ void TicTacToeScene::updateModels()
                     highestWins = (size_t)m_ModelWins[i];
                 }
 
-                if (m_ModelWins[i] + m_ModelDraws[i] < 18 && m_ModelWins[i] < 14)
-                    update = false;
+                if (m_ModelWins[i] + m_ModelDraws[i] < m_PositiveThreshold && m_ModelWins[i] < m_WinThreshold) update = false;
             }
             m_OpponentUpdateIndex = index;
 
-            //if (m_Wins + m_Draws > 70 || m_Wins > 55)
             if (update)
             {
                 updateOpponent();
                 m_OpponentUpdates++;
+                m_OpponentUpdated[m_OpponentUpdateIndex] = true;
+
+                if (m_OpponentUpdates % s_PositiveStreak == 0 &&
+                    m_OpponentUpdated[0] && m_OpponentUpdated[1] && m_OpponentUpdated[2] && m_OpponentUpdated[3])
+                {
+                    m_PositiveThreshold++;
+                    m_WinThreshold++;
+                    m_OpponentUpdated.fill(false);
+                }
             }
 
-            m_Pause = m_Wins + m_Draws == 100;
+            m_Pause = m_Wins + m_Draws >= s_RateThreshold;
         }
 
         m_Policy = m_Policy == 0 ? 1 : 0;
@@ -944,18 +835,10 @@ void TicTacToeScene::updateModels()
         m_OpponentIndex = 0;
     }
 
-    m_TicTacToeModel.save("res/AI/Tic-Tac-Toe/tictactoe-model");
-
-    for (size_t i = 0; i < 4; ++i)
+    if (m_DoneSaving)
     {
-        std::string path = "res/AI/Tic-Tac-Toe/opponent-model";
-        std::string name = path + '-' + std::to_string(i);
-        m_OpponentModels[i].save(name.c_str());
-    }
-
-    if (m_TrainModel && m_Algorithm == 1)
-    {
-        saveDataset("res/AI/Tic-Tac-Toe/tictactoe-dataset.csv");
+        std::thread save(&TicTacToeScene::saveModels, this);
+        save.detach();
     }
 
     m_MoveCount = 0;
@@ -979,8 +862,7 @@ void TicTacToeScene::onUpdate(Elysium::Timestep ts)
 
             m_CoinIndex = 0;
 
-            if (m_TrainModel)
-                updateModels();
+            if (m_TrainModel) updateModels();
 
             m_GameOver = false;
             m_Grid.clear();
@@ -1011,8 +893,7 @@ void TicTacToeScene::onUpdate(Elysium::Timestep ts)
 
             if (m_Policy > 0 && m_Training)
             {
-                if (++m_TargetUpdate % s_UpdateTarget == 0)
-                    updateTarget();
+                if (++m_TargetUpdate % s_UpdateTarget == 0) updateTarget();
 
                 m_DoneTraining = false;
                 std::thread trainingThread(&TicTacToeScene::trainModel, this, state, action , turn);
@@ -1024,11 +905,6 @@ void TicTacToeScene::onUpdate(Elysium::Timestep ts)
         {
             if (m_Turn == 1)
             {
-                //int tmp = m_Policy;
-                //m_Policy = 0;
-                //size_t action = chooseAction(m_Turn);
-                //m_Policy = tmp;       
-
                 size_t action = m_ModelMinimax.getAction(m_Turn);
 
                 ELY_INFO("Action: {0}", action);
@@ -1038,8 +914,7 @@ void TicTacToeScene::onUpdate(Elysium::Timestep ts)
         }
     }
 
-    if (m_MoveCooldown < 0.0f)
-        m_MoveCooldown += ts;
+    if (m_MoveCooldown < 0.0f) m_MoveCooldown += ts;
 
     Elysium::Renderer::beginScene(m_Camera);
     float position = 3.0f;
@@ -1058,15 +933,15 @@ void TicTacToeScene::onUpdate(Elysium::Timestep ts)
 
     ImGui::Begin("Tic-Tac-Toe");
     ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-    ImGui::Text("Red: %d : Blue %d, Draws: %d", m_RedScore, m_BlueScore, m_DrawCount);
+    ImGui::Text("O: %d : X %d, Draws: %d", m_OScore, m_XScore, m_DrawCount);
     if (m_TrainModel)
     {
-        ImGui::Text("Total Games: %d", m_RedScore + m_BlueScore + m_DrawCount);
+        ImGui::Text("Total Games: %d", m_OScore + m_XScore + m_DrawCount);
         if (m_GamesPlayed > 0) ImGui::Text("Epoch Rate : %f", (float)(m_Wins + m_Draws) / (float)m_GamesPlayed);
         ImGui::Text("Games Played: %d, Win rate: %f, Draw rate: %f", m_GamesPlayed, m_WinRate, m_DrawRate);
         const char* label = m_Training ? "Training" : "Testing";
         ImGui::Text("Phase: %s", label);
-        ImGui::Text("Update Index: %d, Opponent Updates: %d", m_OpponentUpdateIndex, m_OpponentUpdates);
+        ImGui::Text("Update Index: %d, Opponent Updates: %d, Thresholds: %d %d", m_OpponentUpdateIndex, m_OpponentUpdates, m_PositiveThreshold, m_WinThreshold);
 
         ImGui::Text("Model vs Opponents Games");
         ImGui::Text("0: %u, 1: %u, 2: %u, 3: %u", m_ModelGames[0], m_ModelGames[1], m_ModelGames[2], m_ModelGames[3]);
@@ -1075,7 +950,7 @@ void TicTacToeScene::onUpdate(Elysium::Timestep ts)
         ImGui::Text("Model vs Opponents Draws");
         ImGui::Text("0: %u, 1: %u, 2: %u, 3: %u", m_ModelDraws[0], m_ModelDraws[1], m_ModelDraws[2], m_ModelDraws[3]);
     }
-    ImGui::Checkbox("Train Model", &m_TrainModel);
+    //ImGui::Checkbox("Train Model", &m_TrainModel);
     ImGui::Checkbox("Play Model", &m_PlayModel);
     ImGui::Checkbox("Play Minimax", &m_PlayAgainstMinimax);
     ImGui::Checkbox("Pause Game", &m_Pause);
@@ -1089,6 +964,20 @@ void TicTacToeScene::onEvent(Elysium::Event& event)
     Elysium::EventDispatcher dispatcher(event);
     dispatcher.Dispatch<Elysium::MouseButtonPressedEvent>(BIND_EVENT_FUNCTION(TicTacToeScene::onMousePressedEvent));
     dispatcher.Dispatch<Elysium::WindowResizeEvent>(BIND_EVENT_FUNCTION(TicTacToeScene::onWindowResizeEvent));
+}
+
+void TicTacToeScene::saveModels()
+{
+    m_DoneSaving = false;
+    m_TicTacToeModel.save("res/AI/Tic-Tac-Toe/tictactoe-model");
+
+    for (size_t i = 0; i < 4; ++i)
+    {
+        std::string path = "res/AI/Tic-Tac-Toe/opponent-model";
+        std::string name = path + '-' + std::to_string(i);
+        m_OpponentModels[i].save(name.c_str());
+    }
+    m_DoneSaving = true;
 }
 
 bool TicTacToeScene::onMousePressedEvent(Elysium::MouseButtonPressedEvent& event)
