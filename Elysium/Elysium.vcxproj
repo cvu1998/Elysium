@@ -96,7 +96,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>GLFW_INCLUDE_NONE;_WINSOCK_DEPRECATED_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)\Glad\include\;$(ProjectDir)src\;$(ProjectDir)src\vendor\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\Glad\include\;$(ProjectDir)src\;$(ProjectDir)src\vendor\</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
@@ -109,7 +109,10 @@
 mkdir "$(SolutionDir)Export\Elysium\include\Elysium\"
 xcopy "$(ProjectDir)src\*.h" "$(SolutionDir)Export\Elysium\include\" /S /Y /I
 xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)Export\Elysium\include\" /S /Y /I
-xcopy "$(ProjectDir)src\*.inl" "$(SolutionDir)Export\Elysium\include\" /S /Y /I</Command>
+xcopy "$(ProjectDir)src\*.inl" "$(SolutionDir)Export\Elysium\include\" /S /Y /I
+rmdir "$(SolutionDir)Export\lib\$(Configuration)-$(Platform)\" /s /q
+mkdir "$(SolutionDir)Export\lib\$(Configuration)-$(Platform)\"
+xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\Elysium.lib" "$(SolutionDir)Export\lib\$(Configuration)-$(Platform)\" /Y /I</Command>
     </PostBuildEvent>
     <Lib>
       <AdditionalDependencies>glfw3.lib;Glad.lib;Comdlg32.lib</AdditionalDependencies>
@@ -124,7 +127,7 @@ xcopy "$(ProjectDir)src\*.inl" "$(SolutionDir)Export\Elysium\include\" /S /Y /I<
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>GLFW_INCLUDE_NONE;_WINSOCK_DEPRECATED_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)\Glad\include\;$(ProjectDir)src\;$(ProjectDir)src\vendor\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\Glad\include\;$(ProjectDir)src\;$(ProjectDir)src\vendor\</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
@@ -143,7 +146,10 @@ xcopy "$(ProjectDir)src\*.inl" "$(SolutionDir)Export\Elysium\include\" /S /Y /I<
 mkdir "$(SolutionDir)Export\Elysium\include\Elysium\"
 xcopy "$(ProjectDir)src\*.h" "$(SolutionDir)Export\Elysium\include\" /S /Y /I
 xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)Export\Elysium\include\" /S /Y /I
-xcopy "$(ProjectDir)src\*.inl" "$(SolutionDir)Export\Elysium\include\" /S /Y /I</Command>
+xcopy "$(ProjectDir)src\*.inl" "$(SolutionDir)Export\Elysium\include\" /S /Y /I
+rmdir "$(SolutionDir)Export\lib\$(Configuration)-$(Platform)\" /s /q
+mkdir "$(SolutionDir)Export\lib\$(Configuration)-$(Platform)\"
+xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\Elysium.lib" "$(SolutionDir)Export\lib\$(Configuration)-$(Platform)\" /Y /I</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -154,7 +160,7 @@ xcopy "$(ProjectDir)src\*.inl" "$(SolutionDir)Export\Elysium\include\" /S /Y /I<
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>GLFW_INCLUDE_NONE;_WINSOCK_DEPRECATED_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)\Glad\include\;$(ProjectDir)src\;$(ProjectDir)src\vendor\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\Glad\include\;$(ProjectDir)src\;$(ProjectDir)src\vendor\</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
@@ -169,7 +175,10 @@ xcopy "$(ProjectDir)src\*.inl" "$(SolutionDir)Export\Elysium\include\" /S /Y /I<
 mkdir "$(SolutionDir)Export\Elysium\include\Elysium\"
 xcopy "$(ProjectDir)src\*.h" "$(SolutionDir)Export\Elysium\include\" /S /Y /I
 xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)Export\Elysium\include\" /S /Y /I
-xcopy "$(ProjectDir)src\*.inl" "$(SolutionDir)Export\Elysium\include\" /S /Y /I</Command>
+xcopy "$(ProjectDir)src\*.inl" "$(SolutionDir)Export\Elysium\include\" /S /Y /I
+rmdir "$(SolutionDir)Export\lib\$(Configuration)-$(Platform)\" /s /q
+mkdir "$(SolutionDir)Export\lib\$(Configuration)-$(Platform)\"
+xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\Elysium.lib" "$(SolutionDir)Export\lib\$(Configuration)-$(Platform)\" /Y /I</Command>
     </PostBuildEvent>
     <Lib>
       <AdditionalDependencies>glfw3.lib;Glad.lib;Comdlg32.lib</AdditionalDependencies>
@@ -186,7 +195,7 @@ xcopy "$(ProjectDir)src\*.inl" "$(SolutionDir)Export\Elysium\include\" /S /Y /I<
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>GLFW_INCLUDE_NONE;_WINSOCK_DEPRECATED_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\include\;$(SolutionDir)\Glad\include\;$(ProjectDir)src\;$(ProjectDir)src\vendor\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\Glad\include\;$(ProjectDir)src\;$(ProjectDir)src\vendor\</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
@@ -207,7 +216,10 @@ xcopy "$(ProjectDir)src\*.inl" "$(SolutionDir)Export\Elysium\include\" /S /Y /I<
 mkdir "$(SolutionDir)Export\Elysium\include\Elysium\"
 xcopy "$(ProjectDir)src\*.h" "$(SolutionDir)Export\Elysium\include\" /S /Y /I
 xcopy "$(ProjectDir)src\*.hpp" "$(SolutionDir)Export\Elysium\include\" /S /Y /I
-xcopy "$(ProjectDir)src\*.inl" "$(SolutionDir)Export\Elysium\include\" /S /Y /I</Command>
+xcopy "$(ProjectDir)src\*.inl" "$(SolutionDir)Export\Elysium\include\" /S /Y /I
+rmdir "$(SolutionDir)Export\lib\$(Configuration)-$(Platform)\" /s /q
+mkdir "$(SolutionDir)Export\lib\$(Configuration)-$(Platform)\"
+xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\Elysium.lib" "$(SolutionDir)Export\lib\$(Configuration)-$(Platform)\" /Y /I</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

@@ -20,5 +20,6 @@
 *.user
 
 bin/
+Export/lib/
 Diagnostics/
 .vs/
