@@ -162,15 +162,15 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Elysium::S
     Elysium::Matrix::Slice(XORGateData, 0, 0, 0, 2).print();
     Elysium::Matrix::Slice(XORGateData, 0, 0, 2, 3).print();
 
-    model.LearningRate = 0.01f;
+    model.LearningRate = 0.02f;
 
+    model.Verbose = false;
     model.fit(
         Elysium::Matrix::Slice(XORGateData, 0, 0, 0, 2),
         Elysium::Matrix::Slice(XORGateData, 0, 0, 2, 3),
-        25000);
+        10000);
 
     model.summary();
-    model.report();
 
     Elysium::Matrix result;
     ELY_INFO("Mean Error: {0}", model.score(
@@ -381,7 +381,6 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Elysium::S
         Elysium::Matrix::Slice(IrisData, 0, 145, 4, 0),
         50000,
         10);
-    IrisModel.report();
     IrisModel.save("res/AI/iris-model");
     */
 
@@ -420,7 +419,6 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Elysium::S
 
     /*
     QuadraticModel.fit(InputData, OutputData, 15000, 50);
-    QuadraticModel.report();
     QuadraticModel.save("res/AI/quadratic-model");
     */
 

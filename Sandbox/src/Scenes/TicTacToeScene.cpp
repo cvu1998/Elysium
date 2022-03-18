@@ -449,8 +449,6 @@ void TicTacToeScene::trainModel(const TicTacToeGrid& previous, Elysium::Action a
         Treestrap(Elysium::Matrix(data));
     }
 
-    m_TicTacToeModel.report();
-
     m_DoneTraining = true;
 }
 

@@ -374,8 +374,6 @@ void GridWorldScene::trainModel(const std::vector<float>& previous, size_t actio
             MonteCarlo();
             break;
         }
-
-        m_GridModel.report();
     }
     m_DoneTraining = true;
 }
