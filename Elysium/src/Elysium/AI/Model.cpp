@@ -66,7 +66,7 @@ namespace Elysium
         m_TrainingSummary.clear();
     }
 
-    void Model::fit(const Matrix& inputs, const Matrix& outputs, size_t epochs, size_t batchSize)
+    void Model::fit(const Matrix& inputs, const Matrix& targets, size_t epochs, size_t batchSize)
     {
         if (!m_Valid)
             return;
@@ -83,50 +83,52 @@ namespace Elysium
             {
                 end = batchEnd == 0;
                 Matrix input = Matrix::Slice(inputs, batchBegin, batchEnd, 0, 0);
-                Matrix output = Matrix::Slice(outputs, batchBegin, batchEnd, 0, 0);
+                Matrix target = Matrix::Slice(targets, batchBegin, batchEnd, 0, 0);
 
-                Matrix error;
+                Matrix dL_wrt_dO;
                 std::vector<Matrix> neurons(m_Layers.size());
                 std::vector<Matrix> activations(m_Layers.size());
 
-                if (!m_Layers[0]->forwardPass(input, neurons[0], activations[0]))
+                if (!m_Layers[0]->forward(input, neurons[0], activations[0]))
                 {
                     ELY_CORE_ERROR("Invalid input size!");
                     return;
                 }
 
                 for (size_t i = 1; i < last; ++i)
-                    m_Layers[i]->forwardPass(activations[i - 1], neurons[i], activations[i]);
-                float meanError = m_Layers[last]->calculateError(
+                    m_Layers[i]->forward(activations[i - 1], neurons[i], activations[i]);
+
+                float loss = m_Layers[last]->calculateLoss(
                     activations[last - 1],
-                    output,
+                    target,
                     LossFunction,
                     neurons[last],
                     activations[last],
-                    error);
-                if (epoch == 1 || epoch % epochsPoint == 0)
-                    m_TrainingSummary.push_back({ epoch, meanError });
+                    dL_wrt_dO);
 
-                Matrix currDelta;
-                Matrix prevDelta;
-                Matrix prevLayerWeights = m_Layers[last]->Weights;
+                if (epoch == 1 || epoch % epochsPoint == 0)
+                    m_TrainingSummary.push_back({ epoch, loss });
+
+                Matrix dL_wrt_dH;
+                Matrix dL_wrt_dH_1;
+                Matrix weights_1 = m_Layers[last]->Weights;
                 Matrix weights;
 
                 m_Layers[last]->LearningRate = LearningRate;
-                m_Layers[last]->calculateDelta(error, neurons[last], activations[last - 1], GradientModifier, currDelta);
-                prevDelta = currDelta;
+                m_Layers[last]->calculateOutputGradient(dL_wrt_dO, neurons[last], activations[last - 1], dL_wrt_dH);
+                dL_wrt_dH_1 = dL_wrt_dH;
                 for (int i = (int)last - 1; i > 0; --i)
                 {
                     weights = m_Layers[i]->Weights;
 
                     m_Layers[i]->LearningRate = LearningRate;
-                    m_Layers[i]->backwardPass(prevDelta, prevLayerWeights, neurons[i], activations[i - 1], GradientModifier, currDelta);
+                    m_Layers[i]->backward(dL_wrt_dH_1, weights_1, neurons[i], activations[i - 1], dL_wrt_dH);
 
-                    prevDelta = currDelta;
-                    prevLayerWeights = weights;
+                    dL_wrt_dH_1 = dL_wrt_dH;
+                    weights_1 = weights;
                 }
                 m_Layers[0]->LearningRate = LearningRate;
-                m_Layers[0]->backwardPass(prevDelta, prevLayerWeights, neurons[0], input, GradientModifier, currDelta);
+                m_Layers[0]->backward(dL_wrt_dH_1, weights_1, neurons[0], input, dL_wrt_dH);
 
                 batchBegin = batchEnd;
                 batchEnd = batchEnd + batchSize < inputs.getHeight() ? batchEnd + batchSize : 0;
@@ -134,7 +136,7 @@ namespace Elysium
         }
     }
 
-    void Model::predict(const Matrix& inputs, Matrix& results)
+    void Model::predict(const Matrix& inputs, Matrix& predictions)
     {
         if (!m_Valid)
             return;
@@ -145,21 +147,20 @@ namespace Elysium
         std::vector<Matrix> neurons(last);
         std::vector<Matrix> activations(last);
 
-        if (!m_Layers[0]->forwardPass(inputs, neurons[0], activations[0]))
+        if (!m_Layers[0]->forward(inputs, neurons[0], activations[0]))
         {
             ELY_CORE_ERROR("Invalid input size!");
             return;
         }
 
         for (size_t i = 1; i < last; ++i)
-            m_Layers[i]->forwardPass(activations[i - 1], neurons[i], activations[i]);
-        m_Layers[last]->forwardPass(activations[last - 1], lastNeuron, results);
+            m_Layers[i]->forward(activations[i - 1], neurons[i], activations[i]);
+        m_Layers[last]->forward(activations[last - 1], lastNeuron, predictions);
     }
 
-    float Model::score(const Matrix& inputs, const Matrix& outputs, Matrix& results)
+    float Model::score(const Matrix& inputs, const Matrix& targets, Matrix& predictions)
     {
-        if (!m_Valid)
-            return 1.0f;
+        if (!m_Valid) return 1.0f;
 
         const size_t last = m_Layers.size() - 1;
 
@@ -168,15 +169,15 @@ namespace Elysium
         std::vector<Matrix> neurons(last);
         std::vector<Matrix> activations(last);
 
-        if (!m_Layers[0]->forwardPass(inputs, neurons[0], activations[0]))
+        if (!m_Layers[0]->forward(inputs, neurons[0], activations[0]))
         {
             ELY_CORE_ERROR("Invalid input size!");
-            return 1.0f;
+            return std::numeric_limits<float>::max();
         }
 
         for (size_t i = 1; i < last; ++i)
-            m_Layers[i]->forwardPass(activations[i - 1], neurons[i], activations[i]);
-        return m_Layers[last]->calculateError(activations[last - 1], outputs, LossFunction, lastNeuron, results, error);
+            m_Layers[i]->forward(activations[i - 1], neurons[i], activations[i]);
+        return m_Layers[last]->calculateLoss(activations[last - 1], targets, LossFunction, lastNeuron, predictions, error);
     }
 
     void Model::save(const char* path) const
@@ -197,8 +198,7 @@ namespace Elysium
         for (size_t i = 0; i < m_Layers.size(); ++i)
         {
             file = std::string(path) + "/" + std::string(m_Layers[i]->m_LayerName) + std::to_string(i) + ".wb";
-            if (!m_Layers[i]->loadWeightsAndBiases(file.c_str()))
-                return false;
+            if (!m_Layers[i]->loadWeightsAndBiases(file.c_str())) return false;
         }
         return true;
     }

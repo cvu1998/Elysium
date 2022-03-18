@@ -50,11 +50,9 @@ private:
     
     size_t m_OpponentIndex = 0;
     size_t m_OpponentUpdateIndex = 0;
-    size_t m_PositiveThreshold = 25; //18;
-    size_t m_WinThreshold = 21; //14;
+    size_t m_PositiveThreshold = 18; //18;
+    size_t m_WinThreshold = 14; //14;
     std::array<bool, 4> m_OpponentUpdated = { false };
-
-    static constexpr size_t s_PositiveStreak = 40;
 
     bool m_TrainModel = false;
     bool m_PlayModel = false;

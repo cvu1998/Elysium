@@ -9,8 +9,6 @@ namespace Elysium
 {
     class Model;
 
-    using GradientFn = std::function<void(Matrix&)>;
-
     class HiddenLayer
     {
         friend class Model;
@@ -31,25 +29,26 @@ namespace Elysium
         std::vector<float> Biases;
 
     protected:
-        using MathFn = std::function<float(float)>;
+        using ActivationFn = std::function<float(float)>;
         using LossFn = std::function<float(float, float)>;
-        using ErrorFn = std::function<float(float)>;
-        using ScoreFn = std::function<float(float, size_t)>;
+        using LossFnDerivative = std::function<float(float, float)>;
 
         virtual void initWeightAndBiases(size_t inputSize) final;
 
-        void getActivation(MathFn& function);
-        void getActivationDerivative(MathFn& function);
-        void getLossAndScore(AI::Loss loss, LossFn& lossFn, ErrorFn& errorFn, ScoreFn& scoreFn);
+        void getActivation(ActivationFn& function);
+        void getActivationDerivative(ActivationFn& function);
+        void getLoss(AI::Loss loss, LossFn& lossFn, LossFnDerivative& derivativeFn);
 
-        virtual bool forwardPass(const Matrix& inputs,
-            Matrix& results, Matrix& activations) = 0;
-        virtual float calculateError(const Matrix& inputs, const Matrix& outputs, AI::Loss lossFunction,
-            Matrix& results, Matrix& activations, Matrix& error) = 0;
-        virtual void calculateDelta(const Matrix& error, const Matrix& outputs, const Matrix& inputs,
-            const GradientFn& gradFn, Matrix& delta) = 0;
-        virtual void backwardPass(const Matrix& prevDelta, const Matrix& prevWeights, const Matrix& outputs, const Matrix& inputs,
-            const GradientFn& gradFn, Matrix& delta) = 0;
+        virtual bool forward(const Matrix& inputs, Matrix& preActivations, Matrix& activations) = 0;
+
+        virtual float calculateLoss(const Matrix& inputs, const Matrix& targets, AI::Loss lossFunction,
+            Matrix& preActivations, Matrix& activations, Matrix& error) = 0;
+
+        virtual void calculateOutputGradient(const Matrix& dL_wrt_dO, const Matrix& outputs, const Matrix& inputs,
+            Matrix& dL_wrt_dH) = 0;
+
+        virtual void backward(const Matrix& dL_wrt_dH_1, const Matrix& weights_1, const Matrix& preActivations, const Matrix& inputs,
+            Matrix& dL_wrt_dH) = 0;
 
         void summary() const;
 

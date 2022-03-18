@@ -813,8 +813,7 @@ void TicTacToeScene::updateModels()
                 m_OpponentUpdates++;
                 m_OpponentUpdated[m_OpponentUpdateIndex] = true;
 
-                if (m_OpponentUpdates % s_PositiveStreak == 0 &&
-                    m_OpponentUpdated[0] && m_OpponentUpdated[1] && m_OpponentUpdated[2] && m_OpponentUpdated[3])
+                if (m_OpponentUpdated[0] && m_OpponentUpdated[1] && m_OpponentUpdated[2] && m_OpponentUpdated[3])
                 {
                     m_PositiveThreshold++;
                     m_WinThreshold++;

@@ -27,10 +27,10 @@ namespace Elysium
         void summary() const;
         void report();
 
-        void fit(const Matrix& inputs, const Matrix& outputs, size_t epochs = 1, size_t batchSize = 1);
+        void fit(const Matrix& inputs, const Matrix& targets, size_t epochs = 1, size_t batchSize = 1);
 
-        void predict(const Matrix& inputs, Matrix& results);
-        float score(const Matrix& inputs, const Matrix& outputs, Matrix& results);
+        void predict(const Matrix& inputs, Matrix& predictions);
+        float score(const Matrix& inputs, const Matrix& targets, Matrix& predictions);
 
         void save(const char* path) const;
         bool load(const char* path);
@@ -38,12 +38,7 @@ namespace Elysium
     public:
         float LearningRate = 0.1f;
 
-        AI::Loss LossFunction = AI::Loss::MEAN_ABSOLUTE;
-
-        GradientFn GradientModifier = std::bind(&Model::Gradient, this, std::placeholders::_1);
-
-    private:
-        inline void Gradient(Matrix& gradient) { }
+        AI::Loss LossFunction = AI::Loss::MEAN_SQUARED;
 
     private:
         size_t m_InputSize;

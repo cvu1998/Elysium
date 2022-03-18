@@ -405,12 +405,6 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Elysium::S
 
     QuadraticModel.LearningRate = 0.000001f;
 
-    QuadraticModel.GradientModifier = [](Elysium::Matrix& gradient)
-    {
-        for (float& x : gradient.Values)
-            x = std::clamp(x, -1.0f, 1.0f);
-    };
-
     QuadraticModel.summary();
 
     std::vector<std::vector<float>> InputVector;

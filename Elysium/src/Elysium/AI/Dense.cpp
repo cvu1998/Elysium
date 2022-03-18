@@ -13,16 +13,16 @@ namespace Elysium
     {
     }
 
-    bool Dense::forwardPass(const Matrix& inputs,
-        Matrix& results, Matrix& activations)
+    bool Dense::forward(const Matrix& inputs,
+        Matrix& preActivations, Matrix& activations)
     {
         if (Weights.getWidth() != inputs.getWidth())
             return false;
 
-        results = Matrix(inputs.getHeight(), m_Size);
+        preActivations = Matrix(inputs.getHeight(), m_Size);
         activations = Matrix(inputs.getHeight(), m_Size);
 
-        MathFn activationFn;
+        ActivationFn activationFn;
         getActivation(activationFn);
 
         for (size_t i = 0; i < inputs.getHeight(); ++i)
@@ -30,114 +30,108 @@ namespace Elysium
             for (size_t a = 0; a < m_Size; ++a)
             {
                 for (size_t b = 0; b < inputs.getWidth(); ++b)
-                    results(i, a) += Weights(a, b) * inputs(i, b);
-                results(i, a) += Biases[a];
+                    preActivations(i, a) += Weights(a, b) * inputs(i, b);
+                preActivations(i, a) += Biases[a];
 
-                activations(i, a) = activationFn(results(i, a));
+                activations(i, a) = activationFn(preActivations(i, a));
             }
         }
         return true;
     }
 
 
-    float Dense::calculateError(const Matrix& inputs, const Matrix& outputs, AI::Loss lossFunction,
-        Matrix& results, Matrix& activations, Matrix& error)
+    float Dense::calculateLoss(const Matrix& inputs, const Matrix& targets, AI::Loss lossFunction,
+        Matrix& preActivations, Matrix& activations, Matrix& dL_wrt_dO)
     {
-        results = Matrix(inputs.getHeight(), m_Size);
+        preActivations = Matrix(inputs.getHeight(), m_Size);
         activations = Matrix(inputs.getHeight(), m_Size);
-        error = Matrix(results.getHeight(), results.getWidth());
+        dL_wrt_dO = Matrix(preActivations.getHeight(), preActivations.getWidth());
 
-        MathFn activationFn;
+        ActivationFn activationFn;
         getActivation(activationFn);
 
         LossFn lossFn;
-        ErrorFn errorFn;
-        ScoreFn scoreFn;
-        getLossAndScore(lossFunction, lossFn, errorFn, scoreFn);
+        LossFnDerivative derivativeFn;
+        getLoss(lossFunction, lossFn, derivativeFn);
 
-        float sumError = 0.0f;
-        for (size_t i = 0; i < inputs.getHeight(); ++i)
+        float loss = 0.0f;
+        size_t batchSize = inputs.getHeight();
+        for (size_t i = 0; i < batchSize; ++i)
         {
             for (size_t a = 0; a < m_Size; ++a)
             {
                 for (size_t b = 0; b < inputs.getWidth(); ++b)
-                    results(i, a) += Weights(a, b) * inputs(i, b);
-                results(i, a) += Biases[a];
+                    preActivations(i, a) += Weights(a, b) * inputs(i, b);
+                preActivations(i, a) += Biases[a];
 
-                activations(i, a) = activationFn(results(i, a));
-                error(i, a) = lossFn(outputs(i, a), activations(i, a));
-                sumError += errorFn(error(i, a));
+                activations(i, a) = activationFn(preActivations(i, a));
+                loss += lossFn(targets(i, a), activations(i, a));
+                dL_wrt_dO(i, a) = derivativeFn(targets(i, a), activations(i, a));
             }
         }
-        return scoreFn(sumError, error.getHeight());
+        return loss / (float)batchSize;
     }
 
-    void Dense::calculateDelta(const Matrix& error, const Matrix& outputs, const Matrix& inputs, const GradientFn& gradFn,
-        Matrix& delta)
+    void Dense::calculateOutputGradient(const Matrix& dL_wrt_dO, const Matrix& outputs, const Matrix& inputs,
+        Matrix& dL_wrt_dH)
     {
-        delta = Matrix(outputs.getHeight(), outputs.getWidth());
+        dL_wrt_dH = Matrix(outputs.getHeight(), outputs.getWidth());
 
-        MathFn activationDerivativeFn;
+        ActivationFn activationDerivativeFn;
         getActivationDerivative(activationDerivativeFn);
 
-        for (size_t i = 0; i < delta.Values.size(); ++i)
-            delta.Values[i] = error.Values[i] * activationDerivativeFn(outputs.Values[i]);
-
-        gradFn(delta);
+        for (size_t i = 0; i < dL_wrt_dH.Values.size(); ++i)
+            dL_wrt_dH.Values[i] = dL_wrt_dO.Values[i] * activationDerivativeFn(outputs.Values[i]);
 
         for (size_t a = 0; a < inputs.getWidth(); ++a)
         {
             for (size_t i = 0; i < m_Size; ++i)
             {
-                float step = 0.0f;
-                float biasStep = 0.0f;
+                float dL_wrt_dW = 0.0f;
+                float dL_wrt_dB = 0.0f;
                 for (size_t b = 0; b < inputs.getHeight(); ++b)
                 {
-                    step += delta(b, i) * inputs(b, a) * LearningRate;
-                    biasStep += delta(b, i) * LearningRate;
+                    dL_wrt_dW += dL_wrt_dH(b, i) * inputs(b, a) * LearningRate;
+                    dL_wrt_dB += dL_wrt_dH(b, i) * LearningRate;
                 }
-                Weights(i, a) += step;
+                Weights(i, a) += dL_wrt_dW;
 
-                if (m_Bias)
-                    Biases[i] += biasStep;
+                if (m_Bias) Biases[i] += dL_wrt_dB;
             }
         }
     }
 
-    void Dense::backwardPass(const Matrix& prevDelta, const Matrix& prevWeights, const Matrix& outputs, const Matrix& inputs, const GradientFn& gradFn,
-        Matrix& delta)
+    void Dense::backward(const Matrix& dL_wrt_dH_1, const Matrix& weights_1, const Matrix& preActivations, const Matrix& inputs,
+        Matrix& dL_wrt_dH)
     {
-        delta = Matrix(outputs.getHeight(), outputs.getWidth());
+        dL_wrt_dH = Matrix(preActivations.getHeight(), preActivations.getWidth());
 
-        MathFn activationDerivativeFn;
+        ActivationFn activationDerivativeFn;
         getActivationDerivative(activationDerivativeFn);
 
-        for (size_t i = 0; i < prevDelta.getHeight(); ++i)
+        for (size_t i = 0; i < dL_wrt_dH_1.getHeight(); ++i)
         {
-            for (size_t a = 0; a < prevWeights.getWidth(); ++a)
+            for (size_t a = 0; a < weights_1.getWidth(); ++a)
             {
-                for (size_t b = 0; b < prevDelta.getWidth(); ++b)
-                    delta(i, a) = prevDelta(i, b) * prevWeights(b, a) * activationDerivativeFn(outputs(i, a));
+                for (size_t b = 0; b < dL_wrt_dH_1.getWidth(); ++b)
+                    dL_wrt_dH(i, a) = dL_wrt_dH_1(i, b) * weights_1(b, a) * activationDerivativeFn(preActivations(i, a));
             }
         }
-
-        gradFn(delta);
 
         for (size_t a = 0; a < inputs.getWidth(); ++a)
         {
             for (size_t i = 0; i < m_Size; ++i)
             {
-                float step = 0.0f;
-                float biasStep = 0.0f;
+                float dL_wrt_dW = 0.0f;
+                float dL_wrt_dB = 0.0f;
                 for (size_t b = 0; b < inputs.getHeight(); ++b)
                 {
-                    step += delta(b, i) * inputs(b, a) * LearningRate;
-                    biasStep += delta(b, i) * LearningRate;
+                    dL_wrt_dW += dL_wrt_dH(b, i) * inputs(b, a) * LearningRate;
+                    dL_wrt_dB += dL_wrt_dH(b, i) * LearningRate;
                 }
-                Weights(i, a) += step;
+                Weights(i, a) += dL_wrt_dW;
 
-                if (m_Bias)
-                    Biases[i] += biasStep;
+                if (m_Bias) Biases[i] += dL_wrt_dB;
             }
         }
     }

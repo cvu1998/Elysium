@@ -53,29 +53,14 @@ namespace Elysium
             return x > 0.0f ? 1.0f : LeakySlope;
         }
 
-        float AbsoluteDerivative(float correct, float prediction)
+        float MeanSquareDerivative(float target, float prediction)
         {
-            return correct - prediction;
-        }
-        
-        float AbsoluteError(float value)
-        {
-            return fabs(value);
+            return target - prediction;
         }
 
-        float Mean(float value, size_t n)
+        float MeanSquareError(float target, float prediction)
         {
-            return value / (float)n;
-        }
-
-        float MeanSquareDerivative(float correct, float prediction)
-        {
-            return correct - prediction;
-        }
-
-        float MeanSquareError(float value)
-        {
-            return value * value;
+            return 0.5f * (target  - prediction) * (target - prediction);
         }
 
         void softmax(const std::vector<float>& x, std::vector<float>& y, float beta)

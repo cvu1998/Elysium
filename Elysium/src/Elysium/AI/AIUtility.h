@@ -17,8 +17,7 @@ namespace Elysium
 
         enum class Loss
         {
-            MEAN_ABSOLUTE = 0,
-            MEAN_SQUARED,
+            MEAN_SQUARED = 0
         };
 
         enum class Initializer
@@ -44,12 +43,8 @@ namespace Elysium
         float LeakyRelu(float x);
         float LeakyReluDerivative(float x);
 
-        float AbsoluteDerivative(float correct, float prediction);
-        float AbsoluteError(float value);
-        float Mean(float value, size_t n);
-
-        float MeanSquareDerivative(float correct, float prediction);
-        float MeanSquareError(float value);
+        float MeanSquareDerivative(float target, float prediction);
+        float MeanSquareError(float target, float prediction);
 
         void softmax(const std::vector<float>& x, std::vector<float>& y, float beta = 1);
         void softmax(const Matrix& x, Matrix& y, float beta = 1);

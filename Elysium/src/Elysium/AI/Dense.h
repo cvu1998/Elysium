@@ -13,13 +13,15 @@ namespace Elysium
             bool useBias = true);
 
     protected:
-        bool forwardPass(const Matrix& inputs, 
-            Matrix& results, Matrix& activations) override;
-        float calculateError(const Matrix& inputs, const Matrix& outputs, AI::Loss lossFunction,
-            Matrix& results, Matrix& activations, Matrix& error)  override;
-        virtual void calculateDelta(const Matrix& error, const Matrix& outputs, const Matrix& inputs,
-            const GradientFn& gradFn, Matrix& delta) override;
-        virtual void backwardPass(const Matrix& prevDelta, const Matrix& prevWeights, const Matrix& outputs, const Matrix& inputs,
-            const GradientFn& gradFn, Matrix& delta) override;
+        bool forward(const Matrix& inputs, Matrix& preActivations, Matrix& activations) override;
+
+        float calculateLoss(const Matrix& inputs, const Matrix& targets, AI::Loss lossFunction,
+            Matrix& preActivations, Matrix& activations, Matrix& gradient)  override;
+
+        virtual void calculateOutputGradient(const Matrix& dL_wrt_dO, const Matrix& outputs, const Matrix& inputs,
+            Matrix& dL_wrt_dH) override;
+
+        virtual void backward(const Matrix& dL_wrt_dH_1, const Matrix& weights_1, const Matrix& preActivations, const Matrix& inputs,
+            Matrix& dL_wrt_dH) override;
     };
 }
