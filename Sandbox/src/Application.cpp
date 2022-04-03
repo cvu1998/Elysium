@@ -1,5 +1,4 @@
 #include "Scenes/Connect4Scene.h"
-#include "Scenes/FlappyBirdScene.h"
 #include "Scenes/GridWorldScene.h"
 #include "Scenes/PerformanceScene.h"
 #include "Scenes/SandboxScene.h"
@@ -45,11 +44,6 @@ int main(void)
             {
                 application->SceneManager.unloadScene();
                 application->SceneManager.loadScene(new GridWorldScene(width, height));
-            }
-            if (ImGui::Button("Flappy Bird"))
-            {
-                application->SceneManager.unloadScene();
-                application->SceneManager.loadScene(new FlappyBirdScene(width, height));
             }
             if (ImGui::Button("Soccer"))
             {

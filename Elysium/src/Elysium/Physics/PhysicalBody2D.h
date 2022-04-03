@@ -72,7 +72,7 @@ namespace Elysium
         Vector2 ContactNormal = { 0.0f, 0.0f };
         
         float ElasticityCoefficient = 1.0f;
-        float FrictionCoefficient = 0.5f;
+        float FrictionCoefficient = 0.0f;
         float GravitationalAccel = 0.0f;
 
         std::vector<Vector2> m_ModelVertices;

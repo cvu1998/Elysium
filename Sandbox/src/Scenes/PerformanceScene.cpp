@@ -65,6 +65,9 @@ m_Player({ { -12.5f, 20.0f } })
 
     e_PhysicsSystem2D.createPhysicalBody(&m_Ground, Elysium::BodyType::STATIC, Elysium::Collider::QUAD, "Ground", 10.0f, { 0.0f, 0.0f }, { 5000.0f, 2.0f });
 
+    Elysium::PhysicalBody2D* ground = e_PhysicsSystem2D.getPhysicalBody(m_Ground);
+    ground->setFrictionCoefficient(1.0f);
+
     float depth = -((float)m_GroundLayers.size() * 2.0f);
     for (size_t i = 0; i < m_GroundLayers.size(); i++)
     {
@@ -89,6 +92,9 @@ void PerformanceScene::onUpdate(Elysium::Timestep ts)
         const float y = (float)m_Boxes.size() / 10.0f;
         Elysium::Vector2 position = { x, y };
         e_PhysicsSystem2D.createPhysicalBody(&m_Boxes[m_Index], Elysium::BodyType::DYNAMIC, Elysium::Collider::QUAD, "Box", 5.0f, position, { 2.0f, 2.0f });
+        
+        Elysium::PhysicalBody2D* box = e_PhysicsSystem2D.getPhysicalBody(m_Boxes[m_Index]);
+        box->setFrictionCoefficient(1.0f);
 
         m_Index++;
         m_SpawnTime = 0.0f;

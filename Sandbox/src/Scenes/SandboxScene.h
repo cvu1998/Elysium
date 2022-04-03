@@ -20,8 +20,8 @@ private:
     Elysium::BodyHandle m_MoveableBox;
     Elysium::BodyHandle m_Ground;
     Elysium::TextureData m_GroundTexture;
-    Elysium::BodyHandle m_Box;
-    Elysium::BodyHandle m_sBox;
+    Elysium::BodyHandle m_Box1;
+    Elysium::BodyHandle m_Box2;
     Elysium::TextureData m_BoxTexture;
     Elysium::BodyHandle m_Ball;
     Elysium::BodyHandle m_Circle;
@@ -36,4 +36,7 @@ public:
 
     bool onKeyPressedEvent(Elysium::KeyPressedEvent& event);
     bool onWindowResizeEvent(Elysium::WindowResizeEvent& event);
+
+private:
+    void getIrisData(Elysium::Matrix& irisInputs, Elysium::Matrix& irisOutputs);
 };

@@ -260,9 +260,11 @@ namespace Elysium
         Vector2 frictionDirection = { 0.0f, 0.0f };
         if (body.Velocity.x * body.Velocity.x + body.Velocity.y * body.Velocity.y > 0.0f)
         {
+            float frictionCoefficient = glm::max(body.getFrictionCoefficient(), otherBody.getFrictionCoefficient());
+
             frictionDirection = { fabs(normal.y),  fabs(normal.x) };
             frictionDirection = -(frictionDirection * normalize(body.Velocity));
-            body.Impulse += abs(body.Velocity) * body.Mass * glm::dot(frictionDirection, 2.0f * body.Size * body.Size) * body.getFrictionCoefficient() * (float)(ts);
+            body.Impulse += abs(body.Velocity) * body.Mass * glm::dot(frictionDirection, 2.0f * body.Size * body.Size) * frictionCoefficient * (float)(ts);
         }
     }
 
@@ -270,7 +272,7 @@ namespace Elysium
     {
         ts = std::min(1.0f / 30.0f, (float)ts);
 
-        std::for_each(std::execution::par_unseq, 
+        std::for_each(std::execution::par,
             m_Bodies.begin(), 
             m_Bodies.end(), 
             [&](PhysicalBody2D& body)

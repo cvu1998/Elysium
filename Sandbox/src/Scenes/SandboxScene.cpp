@@ -67,15 +67,18 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Elysium::S
 
     e_PhysicsSystem2D.createPhysicalBody(&m_Ground, Elysium::BodyType::STATIC, Elysium::Collider::QUAD, "Ground", 10.0f, { 0.0f, 0.0f }, { 500.0f, 2.0f });
     e_PhysicsSystem2D.createPhysicalBody(&m_MoveableBox, Elysium::BodyType::DYNAMIC, Elysium::Collider::QUAD, "Box", 10.0f, { 4.5f, 25.0f }, { 2.0f, 2.0f });
-    e_PhysicsSystem2D.createPhysicalBody(&m_Box, Elysium::BodyType::STATIC, Elysium::Collider::QUAD, "Static-Box-Left", 10.0f, { 2.5f, 2.0f }, { 2.0f, 2.0f });
-    e_PhysicsSystem2D.createPhysicalBody(&m_sBox, Elysium::BodyType::STATIC, Elysium::Collider::QUAD, "Static-Box-Right", 10.0f, { 4.5f, 2.0f }, { 2.0f, 2.0f });
+    e_PhysicsSystem2D.createPhysicalBody(&m_Box1, Elysium::BodyType::STATIC, Elysium::Collider::QUAD, "Static-Box-Left", 10.0f, { 2.5f, 2.0f }, { 2.0f, 2.0f });
+    e_PhysicsSystem2D.createPhysicalBody(&m_Box2, Elysium::BodyType::STATIC, Elysium::Collider::QUAD, "Static-Box-Right", 10.0f, { 4.5f, 2.0f }, { 2.0f, 2.0f });
 
     e_PhysicsSystem2D.createPhysicalBody(&m_Ball, Elysium::BodyType::DYNAMIC, Elysium::Collider::CIRCLE, "Ball", 1.0f, { -2.0f, 10.0f }, { 2.0f, 2.0f });
     e_PhysicsSystem2D.createPhysicalBody(&m_Circle, Elysium::BodyType::DYNAMIC, Elysium::Collider::CIRCLE, "Circle", 1.0f, { -5.0f, 10.0f }, { 2.0f, 2.0f });
 
     Elysium::PhysicalBody2D* ground = e_PhysicsSystem2D.getPhysicalBody(m_Ground);
+    Elysium::PhysicalBody2D* box1 = e_PhysicsSystem2D.getPhysicalBody(m_Box1);
+    Elysium::PhysicalBody2D* box2 = e_PhysicsSystem2D.getPhysicalBody(m_Box2);
     ground->setFrictionCoefficient(1.0f);
-    //ground->Rotation = glm::radians(10.0f);
+    box1->setFrictionCoefficient(1.0f);
+    box2->setFrictionCoefficient(1.0f);
 
     Elysium::PhysicalBody2D* ball = e_PhysicsSystem2D.getPhysicalBody(m_Ball);
     ball->setElasticityCoefficient(1.0f);
@@ -173,288 +176,46 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Elysium::S
     model.summary();
 
     Elysium::Matrix result;
-    ELY_INFO("Mean Error: {0}", model.score(
+    ELY_INFO("Mean Square Error: {0}", model.score(
         Elysium::Matrix::Slice(XORGateData, 0, 0, 0, 2),
         Elysium::Matrix::Slice(XORGateData, 0, 0, 2, 3),
         result));
     result.print();
 
-    Elysium::Matrix IrisInputs({ 
-        {5.1f, 3.5f, 1.4f, 0.2f}, 
-        {4.9f, 3.0f, 1.4f, 0.2f},
-        {4.7f, 3.2f, 1.3f, 0.2f},
-        {4.6f, 3.1f, 1.5f, 0.2f},
-        {5.0f, 3.6f, 1.4f, 0.2f},
-        {5.4f, 3.9f, 1.7f, 0.4f},
-        {4.6f, 3.4f, 1.4f, 0.3f},
-        {5.0f, 3.4f, 1.5f, 0.2f},
-        {4.4f, 2.9f, 1.4f, 0.2f},
-        {4.9f, 3.1f, 1.5f, 0.1f},
-        {5.4f, 3.7f, 1.5f, 0.2f},
-        {4.8f, 3.4f, 1.6f, 0.2f},
-        {4.8f, 3.0f, 1.4f, 0.1f},
-        {4.3f, 3.0f, 1.1f, 0.1f},
-        {5.8f, 4.0f, 1.2f, 0.2f},
-        {5.7f, 4.4f, 1.5f, 0.4f},
-        {5.4f, 3.9f, 1.3f, 0.4f},
-        {5.1f, 3.5f, 1.4f, 0.3f},
-        {5.7f, 3.8f, 1.7f, 0.3f},
-        {5.1f, 3.8f, 1.5f, 0.3f},
-        {5.4f, 3.4f, 1.7f, 0.2f},
-        {5.1f, 3.7f, 1.5f, 0.4f},
-        {4.6f, 3.6f, 1.0f, 0.2f},
-        {5.1f, 3.3f, 1.7f, 0.5f},
-        {4.8f, 3.4f, 1.9f, 0.2f},
-        {5.0f, 3.0f, 1.6f, 0.2f},
-        {5.0f, 3.4f, 1.6f, 0.4f},
-        {5.2f, 3.5f, 1.5f, 0.2f},
-        {5.2f, 3.4f, 1.4f, 0.2f},
-        {4.7f, 3.2f, 1.6f, 0.2f},
-        {4.8f, 3.1f, 1.6f, 0.2f},
-        {5.4f, 3.4f, 1.5f, 0.4f},
-        {5.2f, 4.1f, 1.5f, 0.1f},
-        {5.5f, 4.2f, 1.4f, 0.2f},
-        {4.9f, 3.1f, 1.5f, 0.2f},
-        {5.0f, 3.2f, 1.2f, 0.2f},
-        {5.5f, 3.5f, 1.3f, 0.2f},
-        {4.9f, 3.6f, 1.4f, 0.1f},
-        {4.4f, 3.0f, 1.3f, 0.2f},
-        {5.1f, 3.4f, 1.5f, 0.2f},
-        {5.0f, 3.5f, 1.3f, 0.3f},
-        {4.5f, 2.3f, 1.3f, 0.3f},
-        {4.4f, 3.2f, 1.3f, 0.2f},
-        {5.0f, 3.5f, 1.6f, 0.6f},
-        {5.1f, 3.8f, 1.9f, 0.4f},
-        {4.8f, 3.0f, 1.0f, 0.3f},
-        {5.1f, 3.8f, 1.6f, 0.2f},
-        {4.6f, 3.2f, 1.4f, 0.2f},
-        {5.3f, 3.7f, 1.5f, 0.2f},
-        {5.0f, 3.3f, 1.4f, 0.2f},
-        {7.0f, 3.2f, 4.7f, 1.4f},
-        {6.4f, 3.2f, 4.5f, 1.5f},
-        {6.9f, 3.1f, 4.9f, 1.5f},
-        {5.5f, 2.3f, 4.0f, 1.3f},
-        {6.5f, 2.8f, 4.6f, 1.5f},
-        {5.7f, 2.8f, 4.5f, 1.3f},
-        {6.3f, 3.3f, 4.7f, 1.6f},
-        {4.9f, 2.4f, 3.3f, 1.0f},
-        {6.6f, 2.9f, 4.6f, 1.3f},
-        {5.2f, 2.7f, 3.9f, 1.4f},
-        {5.0f, 2.0f, 3.5f, 1.0f},
-        {5.9f, 3.0f, 4.2f, 1.5f},
-        {6.0f, 2.2f, 4.0f, 1.0f},
-        {6.1f, 2.9f, 4.7f, 1.4f},
-        {5.6f, 2.9f, 3.6f, 1.3f},
-        {6.7f, 3.1f, 4.4f, 1.4f},
-        {5.6f, 3.0f, 4.5f, 1.5f},
-        {5.8f, 2.7f, 4.1f, 1.0f},
-        {6.2f, 2.2f, 4.5f, 1.5f},
-        {5.6f, 2.5f, 3.9f, 1.1f},
-        {5.9f, 3.2f, 4.8f, 1.8f},
-        {6.1f, 2.8f, 4.0f, 1.3f},
-        {6.3f, 2.5f, 4.9f, 1.5f},
-        {6.1f, 2.8f, 4.7f, 1.2f},
-        {6.4f, 2.9f, 4.3f, 1.3f},
-        {6.6f, 3.0f, 4.4f, 1.4f},
-        {6.8f, 2.8f, 4.8f, 1.4f},
-        {6.7f, 3.0f, 5.0f, 1.7f},
-        {6.0f, 2.9f, 4.5f, 1.5f},
-        {5.7f, 2.6f, 3.5f, 1.0f},
-        {5.5f, 2.4f, 3.8f, 1.1f},
-        {5.5f, 2.4f, 3.7f, 1.0f},
-        {5.8f, 2.7f, 3.9f, 1.2f},
-        {6.0f, 2.7f, 5.1f, 1.6f},
-        {5.4f, 3.0f, 4.5f, 1.5f},
-        {6.0f, 3.4f, 4.5f, 1.6f},
-        {6.7f, 3.1f, 4.7f, 1.5f},
-        {6.3f, 2.3f, 4.4f, 1.3f},
-        {5.6f, 3.0f, 4.1f, 1.3f},
-        {5.5f, 2.5f, 4.0f, 1.3f},
-        {5.5f, 2.6f, 4.4f, 1.2f},
-        {6.1f, 3.0f, 4.6f, 1.4f},
-        {5.8f, 2.6f, 4.0f, 1.2f},
-        {5.0f, 2.3f, 3.3f, 1.0f},
-        {5.6f, 2.7f, 4.2f, 1.3f},
-        {5.7f, 3.0f, 4.2f, 1.2f},
-        {5.7f, 2.9f, 4.2f, 1.3f},
-        {6.2f, 2.9f, 4.3f, 1.3f},
-        {5.1f, 2.5f, 3.0f, 1.1f},
-        {5.7f, 2.8f, 4.1f, 1.3f},
-        {6.3f, 3.3f, 6.0f, 2.5f},
-        {5.8f, 2.7f, 5.1f, 1.9f},
-        {7.1f, 3.0f, 5.9f, 2.1f},
-        {6.3f, 2.9f, 5.6f, 1.8f},
-        {6.5f, 3.0f, 5.8f, 2.2f},
-        {7.6f, 3.0f, 6.6f, 2.1f},
-        {4.9f, 2.5f, 4.5f, 1.7f},
-        {7.3f, 2.9f, 6.3f, 1.8f},
-        {6.7f, 2.5f, 5.8f, 1.8f},
-        {7.2f, 3.6f, 6.1f, 2.5f},
-        {6.5f, 3.2f, 5.1f, 2.0f},
-        {6.4f, 2.7f, 5.3f, 1.9f},
-        {6.8f, 3.0f, 5.5f, 2.1f},
-        {5.7f, 2.5f, 5.0f, 2.0f},
-        {5.8f, 2.8f, 5.1f, 2.4f},
-        {6.4f, 3.2f, 5.3f, 2.3f},
-        {6.5f, 3.0f, 5.5f, 1.8f},
-        {7.7f, 3.8f, 6.7f, 2.2f},
-        {7.7f, 2.6f, 6.9f, 2.3f},
-        {6.0f, 2.2f, 5.0f, 1.5f},
-        {6.9f, 3.2f, 5.7f, 2.3f},
-        {5.6f, 2.8f, 4.9f, 2.0f},
-        {7.7f, 2.8f, 6.7f, 2.0f},
-        {6.3f, 2.7f, 4.9f, 1.8f},
-        {6.7f, 3.3f, 5.7f, 2.1f},
-        {7.2f, 3.2f, 6.0f, 1.8f},
-        {6.2f, 2.8f, 4.8f, 1.8f},
-        {6.1f, 3.0f, 4.9f, 1.8f},
-        {6.4f, 2.8f, 5.6f, 2.1f},
-        {7.2f, 3.0f, 5.8f, 1.6f},
-        {7.4f, 2.8f, 6.1f, 1.9f},
-        {7.9f, 3.8f, 6.4f, 2.0f},
-        {6.4f, 2.8f, 5.6f, 2.2f},
-        {6.3f, 2.8f, 5.1f, 1.5f},
-        {6.1f, 2.6f, 5.6f, 1.4f},
-        {7.7f, 3.0f, 6.1f, 2.3f},
-        {6.3f, 3.4f, 5.6f, 2.4f},
-        {6.4f, 3.1f, 5.5f, 1.8f},
-        {6.0f, 3.0f, 4.8f, 1.8f},
-        {6.9f, 3.1f, 5.4f, 2.1f},
-        {6.7f, 3.1f, 5.6f, 2.4f},
-        {6.9f, 3.1f, 5.1f, 2.3f},
-        {5.8f, 2.7f, 5.1f, 1.9f},
-        {6.8f, 3.2f, 5.9f, 2.3f},
-        {6.7f, 3.3f, 5.7f, 2.5f},
-        {6.7f, 3.0f, 5.2f, 2.3f},
-        {6.3f, 2.5f, 5.0f, 1.9f},
-        {6.5f, 3.0f ,5.2f, 2.0f},
-        {6.2f, 3.4f, 5.4f, 2.3f},
-        {5.9f, 3.0f, 5.1f, 1.8f } });
-
-    std::vector<int> IrisOutputs = { 
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-        2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-        2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 
-    };
-
-    Elysium::Matrix OneHotIrisOutputs(IrisOutputs.size(), 3);
-    for (size_t i = 0; i < IrisOutputs.size(); ++i)
-    {
-        switch (IrisOutputs[i])
-        {
-        case 0:
-            OneHotIrisOutputs(i, 0) = 1.0f;
-            OneHotIrisOutputs(i, 1) = 0.0f;
-            OneHotIrisOutputs(i, 2) = 0.0f;
-            break;
-        case 1:
-            OneHotIrisOutputs(i, 0) = 0.0f;
-            OneHotIrisOutputs(i, 1) = 1.0f;
-            OneHotIrisOutputs(i, 2) = 0.0f;
-            break;
-        case 2:
-            OneHotIrisOutputs(i, 0) = 0.0f;
-            OneHotIrisOutputs(i, 1) = 0.0f;
-            OneHotIrisOutputs(i, 2) = 1.0f;
-            break;
-        }
-    }
-
     Elysium::Model IrisModel(4);
-    IrisModel.add(new Elysium::Dense(4, Elysium::AI::Activation::LEAKY_RELU, Elysium::AI::Initializer::HE));
-    IrisModel.add(new Elysium::Dense(4, Elysium::AI::Activation::LEAKY_RELU, Elysium::AI::Initializer::HE));
+    IrisModel.add(new Elysium::Dense(10, Elysium::AI::Activation::LEAKY_RELU, Elysium::AI::Initializer::HE));
+    IrisModel.add(new Elysium::Dense(10, Elysium::AI::Activation::LEAKY_RELU, Elysium::AI::Initializer::HE));
     IrisModel.add(new Elysium::Dense(3, Elysium::AI::Activation::SIGMOID));
     IrisModel.LossFunction = Elysium::AI::Loss::MEAN_SQUARED;
 
-    IrisModel.LearningRate = 0.01f;
+    IrisModel.LearningRate = 0.02f;
 
-    Elysium::Matrix IrisData = Elysium::Matrix::Concatenate(IrisInputs, OneHotIrisOutputs, false);
+    Elysium::Matrix irisInputs, irisOutputs;
+    getIrisData(irisInputs, irisOutputs);
+    Elysium::Matrix IrisData = Elysium::Matrix::Concatenate(irisInputs, irisOutputs, false);
     IrisData = Elysium::Matrix::Scramble(IrisData);
 
+    IrisModel.Verbose = false;
     /*
     IrisModel.fit(
         Elysium::Matrix::Slice(IrisData, 0, 145, 0, 4),
         Elysium::Matrix::Slice(IrisData, 0, 145, 4, 0),
-        50000,
+        10000,
         10);
-    IrisModel.save("res/AI/iris-model");
-    */
+        */
+    //IrisModel.save("res/AI/iris-model");
 
     IrisModel.load("res/AI/iris-model");
     IrisModel.summary();
 
     Elysium::Matrix IrisResults;
-    ELY_INFO("Mean Error: {0}", IrisModel.score(
+    ELY_INFO("Mean Square Error: {0}", IrisModel.score(
         Elysium::Matrix::Slice(IrisData, 145, 150, 0, 4),
         Elysium::Matrix::Slice(IrisData, 145, 150, 4, 0),
         IrisResults));
 
     Elysium::Matrix::Slice(IrisData, 145, 150, 4, 0).print();
     IrisResults.print();
-
-    Elysium::Model QuadraticModel(2);
-    QuadraticModel.add(new Elysium::Dense(10, Elysium::AI::Activation::LEAKY_RELU, Elysium::AI::Initializer::HE));
-    QuadraticModel.add(new Elysium::Dense(10, Elysium::AI::Activation::LEAKY_RELU, Elysium::AI::Initializer::HE));
-    QuadraticModel.add(new Elysium::Dense(1, Elysium::AI::Activation::LINEAR));
-    QuadraticModel.LossFunction = Elysium::AI::Loss::MEAN_SQUARED;
-
-    QuadraticModel.LearningRate = 0.000001f;
-
-    QuadraticModel.summary();
-
-    std::vector<std::vector<float>> InputVector;
-    std::vector<std::vector<float>> OutputVector;
-    for (float x = -10.0f; x <= 10.0f; x += 0.01f)
-    {
-        InputVector.push_back({ x, x });
-        OutputVector.push_back({ x * x });
-    }
-
-    Elysium::Matrix InputData(InputVector);
-    Elysium::Matrix OutputData(OutputVector);
-
-    /*
-    QuadraticModel.fit(InputData, OutputData, 15000, 50);
-    QuadraticModel.save("res/AI/quadratic-model");
-    */
-
-    QuadraticModel.load("res/AI/quadratic-model");
-
-    Elysium::Matrix ScoreResults;
-    ELY_INFO("Mean Error: {0}", QuadraticModel.score(
-        InputData,
-        OutputData,
-        ScoreResults));
-
-    std::vector<std::vector<float>> TestVector;
-    TestVector.push_back({-12.0f, -12.0f });
-    TestVector.push_back({-11.0f, -11.0f });
-    TestVector.push_back({ -7.0f,  -7.0f });
-    TestVector.push_back({ -6.0f,  -6.0f });
-    TestVector.push_back({ -5.0f,  -5.0f });
-    TestVector.push_back({ -4.0f,  -4.0f });
-    TestVector.push_back({ -3.0f,  -3.0f });
-    TestVector.push_back({ -2.0f,  -2.0f });
-    TestVector.push_back({ -1.0f,  -1.0f });
-    TestVector.push_back({  0.0f,   0.0f });
-    TestVector.push_back({  1.0f,   1.0f });
-    TestVector.push_back({  2.0f,   2.0f });
-    TestVector.push_back({  3.0f,   3.0f });
-    TestVector.push_back({  4.0f,   4.0f });
-    TestVector.push_back({  5.0f,   5.0f });
-    TestVector.push_back({  6.0f,   6.0f });
-    TestVector.push_back({  7.0f,   7.0f });
-    TestVector.push_back({ 11.0f,  11.0f });
-    TestVector.push_back({ 12.0f,  12.0f });
-
-    Elysium::Matrix TestData(TestVector);
-    Elysium::Matrix Predictions;
-    QuadraticModel.predict(TestData, Predictions);
-    Predictions.print();
     //--- DENSE LAYER ---//
 }
 
@@ -468,8 +229,8 @@ void SandboxScene::onUpdate(Elysium::Timestep ts)
     const Elysium::PhysicalBody2D* player = m_Player.getBody();
     const Elysium::PhysicalBody2D& ground = e_PhysicsSystem2D.readPhysicalBody(m_Ground);
     const Elysium::PhysicalBody2D& box = e_PhysicsSystem2D.readPhysicalBody(m_MoveableBox);
-    const Elysium::PhysicalBody2D& sBox1 = e_PhysicsSystem2D.readPhysicalBody(m_Box);
-    const Elysium::PhysicalBody2D& sBox2 = e_PhysicsSystem2D.readPhysicalBody(m_sBox);
+    const Elysium::PhysicalBody2D& sBox1 = e_PhysicsSystem2D.readPhysicalBody(m_Box1);
+    const Elysium::PhysicalBody2D& sBox2 = e_PhysicsSystem2D.readPhysicalBody(m_Box2);
     const Elysium::PhysicalBody2D& ball = e_PhysicsSystem2D.readPhysicalBody(m_Ball);
     const Elysium::PhysicalBody2D& circle = e_PhysicsSystem2D.readPhysicalBody(m_Circle);
 
@@ -539,4 +300,192 @@ bool SandboxScene::onWindowResizeEvent(Elysium::WindowResizeEvent& event)
     m_Camera.setProjection(-m_Height * (float)(width / height), m_Height * (float)(width / height),
         -m_Height * 0.5f, m_Height * 0.5f);
     return false;
+}
+
+void SandboxScene::getIrisData(Elysium::Matrix& irisInputs, Elysium::Matrix& irisOutputs)
+{
+    irisInputs = Elysium::Matrix({
+    {5.1f, 3.5f, 1.4f, 0.2f},
+    {4.9f, 3.0f, 1.4f, 0.2f},
+    {4.7f, 3.2f, 1.3f, 0.2f},
+    {4.6f, 3.1f, 1.5f, 0.2f},
+    {5.0f, 3.6f, 1.4f, 0.2f},
+    {5.4f, 3.9f, 1.7f, 0.4f},
+    {4.6f, 3.4f, 1.4f, 0.3f},
+    {5.0f, 3.4f, 1.5f, 0.2f},
+    {4.4f, 2.9f, 1.4f, 0.2f},
+    {4.9f, 3.1f, 1.5f, 0.1f},
+    {5.4f, 3.7f, 1.5f, 0.2f},
+    {4.8f, 3.4f, 1.6f, 0.2f},
+    {4.8f, 3.0f, 1.4f, 0.1f},
+    {4.3f, 3.0f, 1.1f, 0.1f},
+    {5.8f, 4.0f, 1.2f, 0.2f},
+    {5.7f, 4.4f, 1.5f, 0.4f},
+    {5.4f, 3.9f, 1.3f, 0.4f},
+    {5.1f, 3.5f, 1.4f, 0.3f},
+    {5.7f, 3.8f, 1.7f, 0.3f},
+    {5.1f, 3.8f, 1.5f, 0.3f},
+    {5.4f, 3.4f, 1.7f, 0.2f},
+    {5.1f, 3.7f, 1.5f, 0.4f},
+    {4.6f, 3.6f, 1.0f, 0.2f},
+    {5.1f, 3.3f, 1.7f, 0.5f},
+    {4.8f, 3.4f, 1.9f, 0.2f},
+    {5.0f, 3.0f, 1.6f, 0.2f},
+    {5.0f, 3.4f, 1.6f, 0.4f},
+    {5.2f, 3.5f, 1.5f, 0.2f},
+    {5.2f, 3.4f, 1.4f, 0.2f},
+    {4.7f, 3.2f, 1.6f, 0.2f},
+    {4.8f, 3.1f, 1.6f, 0.2f},
+    {5.4f, 3.4f, 1.5f, 0.4f},
+    {5.2f, 4.1f, 1.5f, 0.1f},
+    {5.5f, 4.2f, 1.4f, 0.2f},
+    {4.9f, 3.1f, 1.5f, 0.2f},
+    {5.0f, 3.2f, 1.2f, 0.2f},
+    {5.5f, 3.5f, 1.3f, 0.2f},
+    {4.9f, 3.6f, 1.4f, 0.1f},
+    {4.4f, 3.0f, 1.3f, 0.2f},
+    {5.1f, 3.4f, 1.5f, 0.2f},
+    {5.0f, 3.5f, 1.3f, 0.3f},
+    {4.5f, 2.3f, 1.3f, 0.3f},
+    {4.4f, 3.2f, 1.3f, 0.2f},
+    {5.0f, 3.5f, 1.6f, 0.6f},
+    {5.1f, 3.8f, 1.9f, 0.4f},
+    {4.8f, 3.0f, 1.0f, 0.3f},
+    {5.1f, 3.8f, 1.6f, 0.2f},
+    {4.6f, 3.2f, 1.4f, 0.2f},
+    {5.3f, 3.7f, 1.5f, 0.2f},
+    {5.0f, 3.3f, 1.4f, 0.2f},
+    {7.0f, 3.2f, 4.7f, 1.4f},
+    {6.4f, 3.2f, 4.5f, 1.5f},
+    {6.9f, 3.1f, 4.9f, 1.5f},
+    {5.5f, 2.3f, 4.0f, 1.3f},
+    {6.5f, 2.8f, 4.6f, 1.5f},
+    {5.7f, 2.8f, 4.5f, 1.3f},
+    {6.3f, 3.3f, 4.7f, 1.6f},
+    {4.9f, 2.4f, 3.3f, 1.0f},
+    {6.6f, 2.9f, 4.6f, 1.3f},
+    {5.2f, 2.7f, 3.9f, 1.4f},
+    {5.0f, 2.0f, 3.5f, 1.0f},
+    {5.9f, 3.0f, 4.2f, 1.5f},
+    {6.0f, 2.2f, 4.0f, 1.0f},
+    {6.1f, 2.9f, 4.7f, 1.4f},
+    {5.6f, 2.9f, 3.6f, 1.3f},
+    {6.7f, 3.1f, 4.4f, 1.4f},
+    {5.6f, 3.0f, 4.5f, 1.5f},
+    {5.8f, 2.7f, 4.1f, 1.0f},
+    {6.2f, 2.2f, 4.5f, 1.5f},
+    {5.6f, 2.5f, 3.9f, 1.1f},
+    {5.9f, 3.2f, 4.8f, 1.8f},
+    {6.1f, 2.8f, 4.0f, 1.3f},
+    {6.3f, 2.5f, 4.9f, 1.5f},
+    {6.1f, 2.8f, 4.7f, 1.2f},
+    {6.4f, 2.9f, 4.3f, 1.3f},
+    {6.6f, 3.0f, 4.4f, 1.4f},
+    {6.8f, 2.8f, 4.8f, 1.4f},
+    {6.7f, 3.0f, 5.0f, 1.7f},
+    {6.0f, 2.9f, 4.5f, 1.5f},
+    {5.7f, 2.6f, 3.5f, 1.0f},
+    {5.5f, 2.4f, 3.8f, 1.1f},
+    {5.5f, 2.4f, 3.7f, 1.0f},
+    {5.8f, 2.7f, 3.9f, 1.2f},
+    {6.0f, 2.7f, 5.1f, 1.6f},
+    {5.4f, 3.0f, 4.5f, 1.5f},
+    {6.0f, 3.4f, 4.5f, 1.6f},
+    {6.7f, 3.1f, 4.7f, 1.5f},
+    {6.3f, 2.3f, 4.4f, 1.3f},
+    {5.6f, 3.0f, 4.1f, 1.3f},
+    {5.5f, 2.5f, 4.0f, 1.3f},
+    {5.5f, 2.6f, 4.4f, 1.2f},
+    {6.1f, 3.0f, 4.6f, 1.4f},
+    {5.8f, 2.6f, 4.0f, 1.2f},
+    {5.0f, 2.3f, 3.3f, 1.0f},
+    {5.6f, 2.7f, 4.2f, 1.3f},
+    {5.7f, 3.0f, 4.2f, 1.2f},
+    {5.7f, 2.9f, 4.2f, 1.3f},
+    {6.2f, 2.9f, 4.3f, 1.3f},
+    {5.1f, 2.5f, 3.0f, 1.1f},
+    {5.7f, 2.8f, 4.1f, 1.3f},
+    {6.3f, 3.3f, 6.0f, 2.5f},
+    {5.8f, 2.7f, 5.1f, 1.9f},
+    {7.1f, 3.0f, 5.9f, 2.1f},
+    {6.3f, 2.9f, 5.6f, 1.8f},
+    {6.5f, 3.0f, 5.8f, 2.2f},
+    {7.6f, 3.0f, 6.6f, 2.1f},
+    {4.9f, 2.5f, 4.5f, 1.7f},
+    {7.3f, 2.9f, 6.3f, 1.8f},
+    {6.7f, 2.5f, 5.8f, 1.8f},
+    {7.2f, 3.6f, 6.1f, 2.5f},
+    {6.5f, 3.2f, 5.1f, 2.0f},
+    {6.4f, 2.7f, 5.3f, 1.9f},
+    {6.8f, 3.0f, 5.5f, 2.1f},
+    {5.7f, 2.5f, 5.0f, 2.0f},
+    {5.8f, 2.8f, 5.1f, 2.4f},
+    {6.4f, 3.2f, 5.3f, 2.3f},
+    {6.5f, 3.0f, 5.5f, 1.8f},
+    {7.7f, 3.8f, 6.7f, 2.2f},
+    {7.7f, 2.6f, 6.9f, 2.3f},
+    {6.0f, 2.2f, 5.0f, 1.5f},
+    {6.9f, 3.2f, 5.7f, 2.3f},
+    {5.6f, 2.8f, 4.9f, 2.0f},
+    {7.7f, 2.8f, 6.7f, 2.0f},
+    {6.3f, 2.7f, 4.9f, 1.8f},
+    {6.7f, 3.3f, 5.7f, 2.1f},
+    {7.2f, 3.2f, 6.0f, 1.8f},
+    {6.2f, 2.8f, 4.8f, 1.8f},
+    {6.1f, 3.0f, 4.9f, 1.8f},
+    {6.4f, 2.8f, 5.6f, 2.1f},
+    {7.2f, 3.0f, 5.8f, 1.6f},
+    {7.4f, 2.8f, 6.1f, 1.9f},
+    {7.9f, 3.8f, 6.4f, 2.0f},
+    {6.4f, 2.8f, 5.6f, 2.2f},
+    {6.3f, 2.8f, 5.1f, 1.5f},
+    {6.1f, 2.6f, 5.6f, 1.4f},
+    {7.7f, 3.0f, 6.1f, 2.3f},
+    {6.3f, 3.4f, 5.6f, 2.4f},
+    {6.4f, 3.1f, 5.5f, 1.8f},
+    {6.0f, 3.0f, 4.8f, 1.8f},
+    {6.9f, 3.1f, 5.4f, 2.1f},
+    {6.7f, 3.1f, 5.6f, 2.4f},
+    {6.9f, 3.1f, 5.1f, 2.3f},
+    {5.8f, 2.7f, 5.1f, 1.9f},
+    {6.8f, 3.2f, 5.9f, 2.3f},
+    {6.7f, 3.3f, 5.7f, 2.5f},
+    {6.7f, 3.0f, 5.2f, 2.3f},
+    {6.3f, 2.5f, 5.0f, 1.9f},
+    {6.5f, 3.0f ,5.2f, 2.0f},
+    {6.2f, 3.4f, 5.4f, 2.3f},
+    {5.9f, 3.0f, 5.1f, 1.8f } });
+
+    std::vector<int> IrisOutputs = {
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+        2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+        2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2
+    };
+
+    irisOutputs = Elysium::Matrix(IrisOutputs.size(), 3);
+    for (size_t i = 0; i < IrisOutputs.size(); ++i)
+    {
+        switch (IrisOutputs[i])
+        {
+        case 0:
+            irisOutputs(i, 0) = 1.0f;
+            irisOutputs(i, 1) = 0.0f;
+            irisOutputs(i, 2) = 0.0f;
+            break;
+        case 1:
+            irisOutputs(i, 0) = 0.0f;
+            irisOutputs(i, 1) = 1.0f;
+            irisOutputs(i, 2) = 0.0f;
+            break;
+        case 2:
+            irisOutputs(i, 0) = 0.0f;
+            irisOutputs(i, 1) = 0.0f;
+            irisOutputs(i, 2) = 1.0f;
+            break;
+        }
+    }
 }

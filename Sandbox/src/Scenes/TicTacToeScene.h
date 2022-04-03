@@ -101,7 +101,7 @@ private:
     int m_Opponent = 1; // 0 Random, 1 Softmax, 2 Greedy
 
 private:
-    Elysium::Vector2 getPosition(Elysium::Action action);
+    Elysium::Vector2 getPosition(size_t action);
 
     void addAction(Elysium::Vector2 position, size_t index);
 
@@ -110,14 +110,14 @@ private:
     size_t TDRootAction(int turn);
     size_t TreestrapAction(int turn);
     size_t ModelAction(int turn);
-    Elysium::Action chooseAction(int turn);
+    size_t chooseAction(int turn);
     size_t getRandomAction();
     size_t getMaxAction(const std::vector<float>& values);
     size_t getMinAction(const std::vector<float>& values);
     size_t getSoftmaxAction(const std::vector<float>& values, float beta);
     size_t getSoftminAction(const std::vector<float>& values, float beta);
 
-    void trainModel(const TicTacToeGrid& previous, Elysium::Action action, int turn);
+    void trainModel(const TicTacToeGrid& previous, size_t action, int turn);
     void updateMonteCarloDataset(
         std::vector<float>& data,
         const std::vector<float>& previous, const std::vector<float>& state, float reward);

@@ -70,7 +70,7 @@ namespace Elysium
 
 	void ParticleSystem::onCPUUpdate(Timestep ts)
 	{
-		std::for_each(std::execution::par_unseq,
+		std::for_each(std::execution::par,
 			m_ParticlePool.begin(), 
 			m_ParticlePool.begin() + m_PoolIndex,
 			[ts](Particle& particle)

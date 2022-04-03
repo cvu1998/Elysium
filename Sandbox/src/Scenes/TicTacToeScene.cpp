@@ -75,7 +75,7 @@ TicTacToeScene::~TicTacToeScene()
     saveModels();
 }
 
-Elysium::Vector2 TicTacToeScene::getPosition(Elysium::Action action)
+Elysium::Vector2 TicTacToeScene::getPosition(size_t action)
 {
     switch (action)
     {
@@ -240,7 +240,7 @@ size_t TicTacToeScene::ModelAction(int turn)
     return action;
 }
 
-Elysium::Action TicTacToeScene::chooseAction(int turn)
+size_t TicTacToeScene::chooseAction(int turn)
 {
     size_t action = 0;
     if (m_Algorithm == 2) action = TDRootAction(turn);
@@ -413,7 +413,7 @@ size_t TicTacToeScene::getSoftminAction(const std::vector<float>& stateValues, f
     return action;
 }
 
-void TicTacToeScene::trainModel(const TicTacToeGrid& previous, Elysium::Action action, int turn)
+void TicTacToeScene::trainModel(const TicTacToeGrid& previous, size_t action, int turn)
 {
     std::vector<float> prevState, state;
     getState(previous, prevState);
@@ -871,7 +871,7 @@ void TicTacToeScene::onUpdate(Elysium::Timestep ts)
             {
                 size_t action = m_Minimax.getAction(m_Turn);
 
-                addAction(getPosition((Elysium::Action)action), action);
+                addAction(getPosition(action), action);
             }
         }
 

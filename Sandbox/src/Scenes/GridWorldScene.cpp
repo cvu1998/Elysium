@@ -28,8 +28,8 @@ GridWorldScene::GridWorldScene(unsigned int width, unsigned int height) :
     m_TargetModel.add(new Elysium::Dense(s_HiddenSize, Elysium::AI::Activation::RELU, Elysium::AI::Initializer::HE));
     m_TargetModel.add(new Elysium::Dense(s_OutputSize, Elysium::AI::Activation::LINEAR));
 
-    if (m_GridModel.load("res/AI/grid-model"))
-        loadDataset("res/AI/grid-dataset.csv");
+    if (m_GridModel.load("res/AI/Grid-World/grid-model"))
+        loadDataset("res/AI/Grid-World/grid-dataset.csv");
     m_GridModel.summary();
 
     updateTarget();
@@ -56,8 +56,8 @@ GridWorldScene::~GridWorldScene()
 
     Elysium::Render::ClearColor({ 0.0f, 0.0f, 0.0f, 1.0f });
 
-    m_GridModel.save("res/AI/grid-model");
-    saveDataset("res/AI/grid-dataset.csv");
+    m_GridModel.save("res/AI/Grid-World/grid-model");
+    saveDataset("res/AI/Grid-World/grid-dataset.csv");
 }
 
 void GridWorldScene::onUpdate(Elysium::Timestep ts)
