@@ -23,6 +23,16 @@ namespace Elysium
             return Sigmoid(x) * (1.0f - Sigmoid(x));
         }
 
+        float Tanh(float x)
+        {
+            return (glm::exp(x) - glm::exp(-x)) / (glm::exp(x) + glm::exp(-x));
+        }
+
+        float TanhDerivative(float x)
+        {
+            return 1 - (Tanh(x) * Tanh(x));
+        }
+
         float Linear(float x)
         {
             return x;
@@ -55,7 +65,7 @@ namespace Elysium
 
         float MeanSquareDerivative(float target, float prediction)
         {
-            return target - prediction;
+            return -(target - prediction);
         }
 
         float MeanSquareError(float target, float prediction)

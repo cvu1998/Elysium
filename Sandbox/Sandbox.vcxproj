@@ -19,7 +19,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Scenes\GridWorldScene.cpp" />
     <ClCompile Include="src\Game\TicTacToeGrid.cpp" />
     <ClCompile Include="src\Scenes\TicTacToeScene.cpp" />
     <ClCompile Include="src\Scenes\SoccerScene.cpp" />
@@ -33,7 +32,6 @@
     <ClCompile Include="src\Game\TicTacToeMinimax.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Scenes\GridWorldScene.h" />
     <ClInclude Include="src\Game\TicTacToeGrid.h" />
     <ClInclude Include="src\Game\Values.h" />
     <ClInclude Include="src\Scenes\TicTacToeScene.h" />

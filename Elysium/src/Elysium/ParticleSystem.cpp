@@ -105,7 +105,7 @@ namespace Elysium
 	{
 		Particle& particle = m_ParticlePool[m_PoolIndex];
 
-		if (!particle.Active)
+		if (!particle.Active && m_PoolIndex < m_ParticlePoolSize)
 		{
 			addParticle(particleProperties, particle);
 			m_ParticleTextureData[m_PoolIndex++] = particleProperties.TextureData;

@@ -94,9 +94,9 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Elysium::S
     constexpr size_t epochs = 5;
 
     Elysium::Matrix ANDGateData({ { 0.0f, 0.0f, 0.0f }, 
-                                { 1.0f, 0.0f, 0.0f }, 
-                                { 0.0f, 1.0f, 0.0f }, 
-                                { 1.0f, 1.0f, 1.0f } });
+                                  { 1.0f, 0.0f, 0.0f }, 
+                                  { 0.0f, 1.0f, 0.0f }, 
+                                  { 1.0f, 1.0f, 1.0f } });
 
     perceptron.fit(
         Elysium::Matrix::Slice(ANDGateData, 0, 0, 0, 2),
@@ -109,14 +109,13 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Elysium::S
         Elysium::Matrix::Slice(ANDGateData, 0, 0, 2, 3), 
         results);
 
-    for (float y : results)
-        ELY_INFO("AND Gate: {0}", y);
+    for (float y : results) ELY_INFO("AND Gate: {0}", y);
     ELY_INFO("Mean Accuracy for AND: {0}", meanAccuracy);
 
     Elysium::Matrix ORGateData({ { 0.0f, 0.0f, 0.0f },
-                                { 1.0f, 0.0f, 1.0f },
-                                { 0.0f, 1.0f, 1.0f },
-                                { 1.0f, 1.0f, 1.0f } });
+                                 { 1.0f, 0.0f, 1.0f },
+                                 { 0.0f, 1.0f, 1.0f },
+                                 { 1.0f, 1.0f, 1.0f } });
 
     perceptron.fit(
         Elysium::Matrix::Slice(ORGateData, 0, 0, 0, 2),
@@ -134,9 +133,9 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Elysium::S
     ELY_INFO("Mean Accuracy for OR: {0}", meanAccuracy);
 
     Elysium::Matrix XORGateData({ { 0.0f, 0.0f, 0.0f },
-                                { 0.0f, 1.0f, 1.0f },
-                                { 1.0f, 0.0f, 1.0f },
-                                { 1.0f, 1.0f, 0.0f } });
+                                  { 0.0f, 1.0f, 1.0f },
+                                  { 1.0f, 0.0f, 1.0f },
+                                  { 1.0f, 1.0f, 0.0f } });
 
     perceptron.fit(
         Elysium::Matrix::Slice(XORGateData, 0, 0, 0, 2),
@@ -165,7 +164,9 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Elysium::S
     Elysium::Matrix::Slice(XORGateData, 0, 0, 0, 2).print();
     Elysium::Matrix::Slice(XORGateData, 0, 0, 2, 3).print();
 
-    model.LearningRate = 0.02f;
+    model.LearningRate = 0.2f;
+
+    model.clipGradients();
 
     model.Verbose = false;
     model.fit(
@@ -192,20 +193,18 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Elysium::S
 
     Elysium::Matrix irisInputs, irisOutputs;
     getIrisData(irisInputs, irisOutputs);
-    Elysium::Matrix IrisData = Elysium::Matrix::Concatenate(irisInputs, irisOutputs, false);
+    Elysium::Matrix IrisData = Elysium::Matrix::Concatenate(irisInputs, irisOutputs, 1);
     IrisData = Elysium::Matrix::Scramble(IrisData);
 
     IrisModel.Verbose = false;
-    /*
     IrisModel.fit(
         Elysium::Matrix::Slice(IrisData, 0, 145, 0, 4),
         Elysium::Matrix::Slice(IrisData, 0, 145, 4, 0),
         10000,
         10);
-        */
     //IrisModel.save("res/AI/iris-model");
 
-    IrisModel.load("res/AI/iris-model");
+    //IrisModel.load("res/AI/iris-model");
     IrisModel.summary();
 
     Elysium::Matrix IrisResults;

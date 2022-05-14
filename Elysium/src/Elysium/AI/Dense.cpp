@@ -29,8 +29,7 @@ namespace Elysium
         {
             for (size_t a = 0; a < m_Size; ++a)
             {
-                for (size_t b = 0; b < inputs.getWidth(); ++b)
-                    preActivations(i, a) += Weights(a, b) * inputs(i, b);
+                for (size_t b = 0; b < inputs.getWidth(); ++b) preActivations(i, a) += Weights(a, b) * inputs(i, b);
                 preActivations(i, a) += Biases[a];
 
                 activations(i, a) = activationFn(preActivations(i, a));
@@ -60,8 +59,7 @@ namespace Elysium
         {
             for (size_t a = 0; a < m_Size; ++a)
             {
-                for (size_t b = 0; b < inputs.getWidth(); ++b)
-                    preActivations(i, a) += Weights(a, b) * inputs(i, b);
+                for (size_t b = 0; b < inputs.getWidth(); ++b) preActivations(i, a) += Weights(a, b) * inputs(i, b);
                 preActivations(i, a) += Biases[a];
 
                 activations(i, a) = activationFn(preActivations(i, a));
@@ -75,13 +73,13 @@ namespace Elysium
     void Dense::calculateOutputGradient(const Matrix& dL_wrt_dO, const Matrix& outputs, const Matrix& inputs,
         Matrix& dL_wrt_dH)
     {
+        size_t batchSize = outputs.getHeight();
         dL_wrt_dH = Matrix(outputs.getHeight(), outputs.getWidth());
 
         ActivationFn activationDerivativeFn;
         getActivationDerivative(activationDerivativeFn);
 
-        for (size_t i = 0; i < dL_wrt_dH.Values.size(); ++i)
-            dL_wrt_dH.Values[i] = dL_wrt_dO.Values[i] * activationDerivativeFn(outputs.Values[i]);
+        for (size_t i = 0; i < dL_wrt_dH.Values.size(); ++i) dL_wrt_dH.Values[i] = dL_wrt_dO.Values[i] * activationDerivativeFn(outputs.Values[i]);
 
         for (size_t a = 0; a < inputs.getWidth(); ++a)
         {
@@ -91,12 +89,12 @@ namespace Elysium
                 float dL_wrt_dB = 0.0f;
                 for (size_t b = 0; b < inputs.getHeight(); ++b)
                 {
-                    dL_wrt_dW += dL_wrt_dH(b, i) * inputs(b, a) * LearningRate;
-                    dL_wrt_dB += dL_wrt_dH(b, i) * LearningRate;
+                    dL_wrt_dW += dL_wrt_dH(b, i) * inputs(b, a);
+                    dL_wrt_dB += dL_wrt_dH(b, i);
                 }
-                Weights(i, a) += dL_wrt_dW;
+                Weights(i, a) -= ((1.0f / batchSize) * dL_wrt_dW + (Regurlarization * Weights(i, a)) ) * LearningRate;
 
-                if (m_Bias) Biases[i] += dL_wrt_dB;
+                if (m_Bias) Biases[i] -= (1.0f / batchSize) * dL_wrt_dB * LearningRate;
             }
         }
     }
@@ -104,6 +102,7 @@ namespace Elysium
     void Dense::backward(const Matrix& dL_wrt_dH_1, const Matrix& weights_1, const Matrix& preActivations, const Matrix& inputs,
         Matrix& dL_wrt_dH)
     {
+        size_t batchSize = preActivations.getHeight();
         dL_wrt_dH = Matrix(preActivations.getHeight(), preActivations.getWidth());
 
         ActivationFn activationDerivativeFn;
@@ -113,8 +112,8 @@ namespace Elysium
         {
             for (size_t a = 0; a < weights_1.getWidth(); ++a)
             {
-                for (size_t b = 0; b < dL_wrt_dH_1.getWidth(); ++b)
-                    dL_wrt_dH(i, a) = dL_wrt_dH_1(i, b) * weights_1(b, a) * activationDerivativeFn(preActivations(i, a));
+                float dO_wrt_dH = activationDerivativeFn(preActivations(i, a));
+                for (size_t b = 0; b < dL_wrt_dH_1.getWidth(); ++b) dL_wrt_dH(i, a) = dL_wrt_dH_1(i, b) * weights_1(b, a) * dO_wrt_dH;
             }
         }
 
@@ -126,12 +125,12 @@ namespace Elysium
                 float dL_wrt_dB = 0.0f;
                 for (size_t b = 0; b < inputs.getHeight(); ++b)
                 {
-                    dL_wrt_dW += dL_wrt_dH(b, i) * inputs(b, a) * LearningRate;
-                    dL_wrt_dB += dL_wrt_dH(b, i) * LearningRate;
+                    dL_wrt_dW +=  dL_wrt_dH(b, i) * inputs(b, a );
+                    dL_wrt_dB +=  dL_wrt_dH(b, i);
                 }
-                Weights(i, a) += dL_wrt_dW;
+                Weights(i, a) -= ((1.0f / batchSize) * dL_wrt_dW) * LearningRate;
 
-                if (m_Bias) Biases[i] += dL_wrt_dB;
+                if (m_Bias) Biases[i] -= (1.0f / batchSize) * dL_wrt_dB * LearningRate;
             }
         }
     }

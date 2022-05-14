@@ -45,8 +45,8 @@ namespace Elysium
         }
 
         const size_t last = m_Layers.size() - 1;
-        for (size_t i = 1; i < last; ++i)
-            m_Layers[i]->forward(activations[i - 1], preActivations[i], activations[i]);
+
+        for (size_t i = 1; i < last; ++i)  m_Layers[i]->forward(activations[i - 1], preActivations[i], activations[i]);
 
         float loss = m_Layers[last]->calculateLoss(
             activations[last - 1],
@@ -60,20 +60,39 @@ namespace Elysium
         Matrix weights_1 = m_Layers[last]->Weights;
         Matrix weights;
 
+        if (m_ClipValue > 0.0f)
+        {
+            for (size_t i = 0; i < dL_wrt_dO.Values.size(); i++) dL_wrt_dO.Values[i] = glm::clamp(dL_wrt_dO.Values[i], -m_ClipValue, m_ClipValue);
+        }
+
         m_Layers[last]->LearningRate = LearningRate;
+        m_Layers[last]->Regurlarization = Regurlarization;
         m_Layers[last]->calculateOutputGradient(dL_wrt_dO, preActivations[last], activations[last - 1], dL_wrt_dH);
         dL_wrt_dH_1 = dL_wrt_dH;
+
+        if (m_ClipValue > 0.0f)
+        {
+            for (size_t i = 0; i < dL_wrt_dH_1.Values.size(); i++) dL_wrt_dH_1.Values[i] = glm::clamp(dL_wrt_dH_1.Values[i], -m_ClipValue, m_ClipValue);
+        }
+
         for (int i = (int)last - 1; i > 0; --i)
         {
             weights = m_Layers[i]->Weights;
 
             m_Layers[i]->LearningRate = LearningRate;
+            m_Layers[i]->Regurlarization = Regurlarization;
             m_Layers[i]->backward(dL_wrt_dH_1, weights_1, preActivations[i], activations[i - 1], dL_wrt_dH);
 
             dL_wrt_dH_1 = dL_wrt_dH;
             weights_1 = weights;
+
+            if (m_ClipValue > 0.0f)
+            {
+                for (size_t i = 0; i < dL_wrt_dH_1.Values.size(); i++) dL_wrt_dH_1.Values[i] = glm::clamp(dL_wrt_dH_1.Values[i], -m_ClipValue, m_ClipValue);
+            }
         }
         m_Layers[0]->LearningRate = LearningRate;
+        m_Layers[0]->Regurlarization = Regurlarization;
         m_Layers[0]->backward(dL_wrt_dH_1, weights_1, preActivations[0], inputs, dL_wrt_dH);
 
         return loss;

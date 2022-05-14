@@ -63,6 +63,9 @@ namespace Elysium
         case AI::Activation::SIGMOID:
             function = std::bind(&AI::Sigmoid, std::placeholders::_1);
             break;
+        case AI::Activation::TANH:
+            function = std::bind(&AI::Tanh, std::placeholders::_1);
+            break;
         }
     }
 
@@ -81,6 +84,9 @@ namespace Elysium
             break;
         case AI::Activation::SIGMOID:
             function = std::bind(&AI::SigmoidDerivative, std::placeholders::_1);
+            break;
+        case AI::Activation::TANH:
+            function = std::bind(&AI::TanhDerivative, std::placeholders::_1);
             break;
         }
     }

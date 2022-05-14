@@ -12,8 +12,7 @@ namespace Elysium
         Width(width),
         Height(height)
     {
-        if (!empty)
-            Values.resize(width * height);
+        if (!empty) Values.resize(width * height);
     }
 
     Matrix::Matrix(const std::vector<float>& vector) : Values(vector),
@@ -42,7 +41,7 @@ namespace Elysium
         }
     }
 
-    void Matrix::appendRow(const std::vector<float>& row)
+    void Matrix::append(const std::vector<float>& row)
     {
         Width = Width == 0 ? row.size() : Width;
         Values.insert(Values.end(), row.begin(), row.end());
@@ -54,10 +53,10 @@ namespace Elysium
         std::fill(Values.begin(), Values.end(), value);
     }
 
-    Matrix Matrix::Concatenate(const Matrix& a, const Matrix& b, bool rowAxis)
+    Matrix Matrix::Concatenate(const Matrix& a, const Matrix& b, int axis)
     {
         Matrix result;
-        if (rowAxis)
+        if (!axis)
         {
             if (a.Width != b.Width)
             {
@@ -88,41 +87,36 @@ namespace Elysium
         bool matrixA = true;
         for (size_t i = 0; i < result.Height; ++i)
         {
-            for (size_t ia = 0; ia < a.Width; ++ia)
-                result.Values.emplace_back(a(i, ia));
+            for (size_t j = 0; j < a.Width; ++j) result.Values.emplace_back(a(i, j));
 
-            for (size_t ib = 0; ib < b.Width; ++ib)
-                result.Values.emplace_back(b(i, ib));
+            for (size_t j = 0; j < b.Width; ++j) result.Values.emplace_back(b(i, j));
         }
 
         return result;
     }
 
-    Matrix Matrix::Slice(const Matrix& input,
-        size_t startColumn, size_t endColumn, size_t startRow, size_t endRow)
+    Matrix Matrix::Slice(const Matrix& input, size_t r0, size_t r1, size_t c0, size_t c1)
     {
-        endColumn = endColumn == 0 ? input.Height : endColumn;
-        endRow = endRow == 0 ? input.Width : endRow;
+        // Inversion for slicing
+        size_t end_row = r1 == 0 ? input.Height : r1;
+        size_t end_column = c1 == 0 ? input.Width : c1;
 
         Matrix result;
-        if (startColumn > input.getHeight() || 
-            endColumn > input.getHeight() ||
-            startRow > input.getWidth() || 
-            endRow > input.getWidth())
+        if (r0 > input.getHeight() || end_row > input.getHeight() ||
+            c0 > input.getWidth()  || end_column > input.getWidth())
         {
             ELY_CORE_ERROR("Invalid slice indices!");
             return result;
         }
 
-        result.Values.reserve(endColumn * endRow);
-        for (size_t j = startColumn; j < endColumn; ++j)
+        result.Values.reserve(end_row * end_column);
+        for (size_t i = r0; i < end_row; ++i)
         {
-            for (size_t i = startRow; i < endRow; ++i)
-                result.Values.emplace_back(input(j, i));
+            for (size_t j = c0; j < end_column; ++j) result.Values.emplace_back(input(i, j));
         }
 
-        result.Width = endRow - startRow;
-        result.Height = endColumn - startColumn;
+        result.Width = end_column - c0;
+        result.Height = end_row - r0;
         return result;
     }
 
@@ -146,6 +140,34 @@ namespace Elysium
                 output(a, b) = input(indices[a], b);
         }
         return output;
+    }
+
+    Matrix Matrix::row(size_t row)
+    {
+        Matrix m = Matrix(1, Width);
+
+        size_t start = row * Width;
+        for (size_t i = 0; i < Width; ++i) m.Values[i] = Values[start + i];
+        return m;
+    }
+
+    Matrix Matrix::column(size_t column)
+    {
+        Matrix m = Matrix(1, Height);
+
+        size_t start = column;
+        for (size_t i = 0; i < Height; ++i) m.Values[i] = Values[start + i * Width];
+        return m;
+    }
+
+    void Matrix::row(size_t row, const std::vector<float>& vector)
+    {
+        for (size_t i = 0; i < Width; ++i) Values[row * Width + i] = vector[i];
+    }
+
+    void Matrix::column(size_t column, const std::vector<float>& vector)
+    {
+        for (size_t i = 0; i < Height; ++i) Values[i * Width + column] = vector[i];
     }
 
     void Matrix::print() const

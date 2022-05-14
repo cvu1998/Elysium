@@ -464,7 +464,7 @@ void TicTacToeScene::updateMonteCarloDataset(std::vector<float>& data, const std
         data.insert(data.end(), state.begin(), state.end());
         data.push_back(reward);
 
-        m_EpisodeData.appendRow(data);
+        m_EpisodeData.append(data);
 
         float discountedRewards = 0.0f;
         for (size_t i = 0; i < m_EpisodeData.getHeight(); ++i)
@@ -564,9 +564,9 @@ void TicTacToeScene::Treestrap(const Elysium::Matrix& data)
     {
         std::vector<float> state, targetState;
         getState(s.Grid, state);
-        states.appendRow(state);
+        states.append(state);
         getState(s.TargetGrid, targetState);
-        targetStates.appendRow(targetState);
+        targetStates.append(targetState);
     }
 
     m_TicTacToeModel.predict(targetStates, targets);

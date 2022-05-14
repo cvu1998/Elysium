@@ -139,6 +139,12 @@ namespace Elysium
 
     void PhysicalBody2D::resetValues()
     {
+        ContactImpulse = { 0.0f, 0.0f };
+        ContactNormal = { 0.0f, 0.0f };
+
+        Force = { 0.0f, 0.0f };
+        Impulse = { 0.0f, 0.0f };
+
         Velocity = { 0.0f, 0.0f };
         Acceleration = { 0.0f, 0.0f };
         Rotation = 0.0f;

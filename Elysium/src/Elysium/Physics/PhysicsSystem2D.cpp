@@ -283,8 +283,7 @@ namespace Elysium
                     {
                     case BodyType::DYNAMIC:
                         body.onUpdate(ts);
-                        if (Gravity)
-                            body.Force.y = GravitationalAccel * body.Mass;
+                        if (Gravity) body.Force.y = GravitationalAccel * body.Mass;
 
                         if (body.AllowRotation)
                         {
@@ -303,8 +302,7 @@ namespace Elysium
                         break;
                     case BodyType::KINEMATIC:
                         body.onUpdate(ts);
-                        if (Gravity)
-                            body.Force.y = GravitationalAccel * body.Mass;
+                        if (Gravity) body.Force.y = GravitationalAccel * body.Mass;
 
                         break;
                     case BodyType::STATIC:
