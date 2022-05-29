@@ -6,6 +6,8 @@
 #include "Elysium/Math.h"
 #include "Elysium/Physics/PhysicalBody2D.h"
 
+#include "box2d/box2d.h"
+
 namespace Elysium
 {
     using BodyHandle = uint32_t;

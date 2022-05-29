@@ -10,7 +10,6 @@ namespace Elysium
 {
     enum class BodyType
     {
-        NONE = -1,
         STATIC = 0,
         KINEMATIC = 1,
         DYNAMIC = 2

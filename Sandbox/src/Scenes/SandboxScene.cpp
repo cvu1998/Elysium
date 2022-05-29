@@ -1,9 +1,11 @@
 #include "SandboxScene.h"
 
-SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Elysium::Scene("Sandbox"),
+SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Elysium::Scene("Sandbox"), 
+    m_ImageWidth(width), m_ImageHeight(height),
     m_Camera(-m_Height * (float)(width / height), m_Height * (float)(width / height), -m_Height * 0.5f, m_Height * 0.5f),
     m_ParticleSystem(25000, Elysium::UpdateDevice::CPU),
-    m_Player({ { -12.5f, 20.0f } })
+    m_Player({ { -12.5f, 20.0f } }),
+    world(b2Vec2(0.0f, -10.0f))
 {
     m_Textures.reserve(12);
     m_Textures.emplace_back("res/texture/soccer_ball.png");
@@ -87,26 +89,123 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Elysium::S
 
     m_Player.Ball = e_PhysicsSystem2D.getPhysicalBody(m_Ball);
 
+    trainMachineLearningModels();
+
+    b2BodyDef groundBodyDef;
+    groundBodyDef.position.Set(0.0f, 0.0f);
+
+    b2Body* groundBody = world.CreateBody(&groundBodyDef);
+}
+
+SandboxScene::~SandboxScene()
+{
+    e_PhysicsSystem2D.clear();
+}
+
+void SandboxScene::onUpdate(Elysium::Timestep ts)
+{
+    const Elysium::PhysicalBody2D* player = m_Player.getBody();
+    const Elysium::PhysicalBody2D& ground = e_PhysicsSystem2D.readPhysicalBody(m_Ground);
+    const Elysium::PhysicalBody2D& box = e_PhysicsSystem2D.readPhysicalBody(m_MoveableBox);
+    const Elysium::PhysicalBody2D& sBox1 = e_PhysicsSystem2D.readPhysicalBody(m_Box1);
+    const Elysium::PhysicalBody2D& sBox2 = e_PhysicsSystem2D.readPhysicalBody(m_Box2);
+    const Elysium::PhysicalBody2D& ball = e_PhysicsSystem2D.readPhysicalBody(m_Ball);
+    const Elysium::PhysicalBody2D& circle = e_PhysicsSystem2D.readPhysicalBody(m_Circle);
+
+    m_Camera.setPosition({ player->Position.x, player->Position.y + (player->getSize().y * 4.0f), 0.0f });
+
+    auto mousePosition = Elysium::Input::getMousePosition();
+    auto width = Elysium::Application::Get().getWindow().getWidth();
+    auto height = Elysium::Application::Get().getWindow().getHeight();
+
+    m_Particle.Position = m_Camera.getScreenToWorldPosition(width, height, mousePosition);
+    m_Particle2.Position = { player->Position.x, player->Position.y };
+
+    for (int i = 0; i < 5; i++)
+    {
+        m_ParticleSystem.Emit(m_Particle);
+        m_ParticleSystem.Emit(m_Particle2);
+    }
+    //e_PhysicsSystem2D.onUpdate(ts);
+
+
+    m_Player.onUpdate(ts);
+
+    Elysium::Renderer::beginScene(m_Camera);
+    Elysium::Renderer::drawQuad({ 0.0f, 15.0f }, { 1000.0f, 30.0f }, m_Background, { 15.0f, 1.0f });
+    Elysium::Renderer::endScene();
+
+    m_ParticleSystem.onUpdate(ts);
+    m_ParticleSystem.onRender(m_Camera);
+
+    Elysium::Renderer::beginScene(m_Camera);
+    Elysium::Renderer::drawQuad(player->Position, player->getSize(), m_Player.m_TextureData);
+    Elysium::Renderer::drawQuadWithRotation(ground.Position, ground.getSize(), ground.Rotation, m_GroundTexture);
+    Elysium::Renderer::drawQuadWithRotation(box.Position, box.getSize(), box.Rotation, m_BoxTexture);
+    Elysium::Renderer::drawQuad(sBox1.Position, sBox1.getSize(), m_BoxTexture);
+    Elysium::Renderer::drawQuad(sBox2.Position, sBox2.getSize(), m_BoxTexture);
+    Elysium::Renderer::drawQuadWithRotation(ball.Position, ball.getSize(), ball.Rotation, m_BallTexture);
+    Elysium::Renderer::drawQuadWithRotation(circle.Position, circle.getSize(), circle.Rotation, m_BallTexture);
+    Elysium::Renderer::endScene();
+
+    std::vector<float> pixels;
+    Elysium::Render::getRGBPixels(pixels, 0, 0, m_ImageWidth, m_ImageHeight);
+
+    ImGui::Begin("Statistics");
+    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+    ImGui::Text("Number of Draw Calls: %d", Elysium::Renderer::getStats().DrawCount);
+    ImGui::Text("Number of Quads: %d", Elysium::Renderer::getStats().QuadCount);
+    ImGui::End();
+
+    Elysium::Renderer::resetStats();
+}
+
+void SandboxScene::onEvent(Elysium::Event& event)
+{
+    Elysium::EventDispatcher dispatcher(event);
+    dispatcher.Dispatch<Elysium::KeyPressedEvent>(BIND_EVENT_FUNCTION(SandboxScene::onKeyPressedEvent));
+    dispatcher.Dispatch<Elysium::WindowResizeEvent>(BIND_EVENT_FUNCTION(SandboxScene::onWindowResizeEvent));
+
+    m_Player.onEvent(event);
+}
+
+bool SandboxScene::onKeyPressedEvent(Elysium::KeyPressedEvent& event)
+{
+    return false;
+}
+
+bool SandboxScene::onWindowResizeEvent(Elysium::WindowResizeEvent& event)
+{
+    m_ImageWidth = event.getWidth();
+    m_ImageHeight = event.getHeight();
+    if (m_ImageWidth > 0 && m_ImageHeight > 0)
+    m_Camera.setProjection(-m_Height * (float)(m_ImageWidth / m_ImageHeight), m_Height * (float)(m_ImageWidth / m_ImageHeight),
+        -m_Height * 0.5f, m_Height * 0.5f);
+    return false;
+}
+
+void SandboxScene::trainMachineLearningModels()
+{
     //--- PERCEPTRON ---//
     Elysium::Perceptron perceptron(Elysium::AI::Activation::STEP);
     Elysium::Matrix weights;
 
     constexpr size_t epochs = 5;
 
-    Elysium::Matrix ANDGateData({ { 0.0f, 0.0f, 0.0f }, 
-                                  { 1.0f, 0.0f, 0.0f }, 
-                                  { 0.0f, 1.0f, 0.0f }, 
+    Elysium::Matrix ANDGateData({ { 0.0f, 0.0f, 0.0f },
+                                  { 1.0f, 0.0f, 0.0f },
+                                  { 0.0f, 1.0f, 0.0f },
                                   { 1.0f, 1.0f, 1.0f } });
 
     perceptron.fit(
         Elysium::Matrix::Slice(ANDGateData, 0, 0, 0, 2),
-        Elysium::Matrix::Slice(ANDGateData, 0, 0, 2, 3), 
+        Elysium::Matrix::Slice(ANDGateData, 0, 0, 2, 3),
         epochs);
 
     std::vector<float> results;
     float meanAccuracy = perceptron.score(
         Elysium::Matrix::Slice(ANDGateData, 0, 0, 0, 2),
-        Elysium::Matrix::Slice(ANDGateData, 0, 0, 2, 3), 
+        Elysium::Matrix::Slice(ANDGateData, 0, 0, 2, 3),
         results);
 
     for (float y : results) ELY_INFO("AND Gate: {0}", y);
@@ -119,7 +218,7 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Elysium::S
 
     perceptron.fit(
         Elysium::Matrix::Slice(ORGateData, 0, 0, 0, 2),
-        Elysium::Matrix::Slice(ORGateData, 0, 0, 2, 3), 
+        Elysium::Matrix::Slice(ORGateData, 0, 0, 2, 3),
         epochs);
 
     results.clear();
@@ -139,7 +238,7 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Elysium::S
 
     perceptron.fit(
         Elysium::Matrix::Slice(XORGateData, 0, 0, 0, 2),
-        Elysium::Matrix::Slice(XORGateData, 0, 0, 2, 3), 
+        Elysium::Matrix::Slice(XORGateData, 0, 0, 2, 3),
         epochs);
 
     results.clear();
@@ -202,9 +301,8 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Elysium::S
         Elysium::Matrix::Slice(IrisData, 0, 145, 4, 0),
         10000,
         10);
-    //IrisModel.save("res/AI/iris-model");
+    IrisModel.save("res/AI/iris-model");
 
-    //IrisModel.load("res/AI/iris-model");
     IrisModel.summary();
 
     Elysium::Matrix IrisResults;
@@ -216,89 +314,6 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) : Elysium::S
     Elysium::Matrix::Slice(IrisData, 145, 150, 4, 0).print();
     IrisResults.print();
     //--- DENSE LAYER ---//
-}
-
-SandboxScene::~SandboxScene()
-{
-    e_PhysicsSystem2D.clear();
-}
-
-void SandboxScene::onUpdate(Elysium::Timestep ts)
-{
-    const Elysium::PhysicalBody2D* player = m_Player.getBody();
-    const Elysium::PhysicalBody2D& ground = e_PhysicsSystem2D.readPhysicalBody(m_Ground);
-    const Elysium::PhysicalBody2D& box = e_PhysicsSystem2D.readPhysicalBody(m_MoveableBox);
-    const Elysium::PhysicalBody2D& sBox1 = e_PhysicsSystem2D.readPhysicalBody(m_Box1);
-    const Elysium::PhysicalBody2D& sBox2 = e_PhysicsSystem2D.readPhysicalBody(m_Box2);
-    const Elysium::PhysicalBody2D& ball = e_PhysicsSystem2D.readPhysicalBody(m_Ball);
-    const Elysium::PhysicalBody2D& circle = e_PhysicsSystem2D.readPhysicalBody(m_Circle);
-
-    m_Camera.setPosition({ player->Position.x, player->Position.y + (player->getSize().y * 4.0f), 0.0f });
-
-    auto mousePosition = Elysium::Input::getMousePosition();
-    auto width = Elysium::Application::Get().getWindow().getWidth();
-    auto height = Elysium::Application::Get().getWindow().getHeight();
-
-    m_Particle.Position = m_Camera.getScreenToWorldPosition(width, height, mousePosition);
-    m_Particle2.Position = { player->Position.x, player->Position.y };
-
-    for (int i = 0; i < 5; i++)
-    {
-        m_ParticleSystem.Emit(m_Particle);
-        m_ParticleSystem.Emit(m_Particle2);
-    }
-    e_PhysicsSystem2D.onUpdate(ts);
-
-    m_Player.onUpdate(ts);
-
-    Elysium::Renderer::beginScene(m_Camera);
-    Elysium::Renderer::drawQuad({ 0.0f, 15.0f }, { 1000.0f, 30.0f }, m_Background, { 15.0f, 1.0f });
-    Elysium::Renderer::endScene();
-
-    m_ParticleSystem.onUpdate(ts);
-    m_ParticleSystem.onRender(m_Camera);
-
-    Elysium::Renderer::beginScene(m_Camera);
-    Elysium::Renderer::drawQuad(player->Position, player->getSize(), m_Player.m_TextureData);
-    Elysium::Renderer::drawQuadWithRotation(ground.Position, ground.getSize(), ground.Rotation, m_GroundTexture);
-    Elysium::Renderer::drawQuadWithRotation(box.Position, box.getSize(), box.Rotation, m_BoxTexture);
-    Elysium::Renderer::drawQuad(sBox1.Position, sBox1.getSize(), m_BoxTexture);
-    Elysium::Renderer::drawQuad(sBox2.Position, sBox2.getSize(), m_BoxTexture);
-    Elysium::Renderer::drawQuadWithRotation(ball.Position, ball.getSize(), ball.Rotation, m_BallTexture);
-    Elysium::Renderer::drawQuadWithRotation(circle.Position, circle.getSize(), circle.Rotation, m_BallTexture);
-    Elysium::Renderer::endScene();
-
-    ImGui::Begin("Statistics");
-    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-    ImGui::Text("Number of Draw Calls: %d", Elysium::Renderer::getStats().DrawCount);
-    ImGui::Text("Number of Quads: %d", Elysium::Renderer::getStats().QuadCount);
-    ImGui::End();
-
-    Elysium::Renderer::resetStats();
-}
-
-void SandboxScene::onEvent(Elysium::Event& event)
-{
-    Elysium::EventDispatcher dispatcher(event);
-    dispatcher.Dispatch<Elysium::KeyPressedEvent>(BIND_EVENT_FUNCTION(SandboxScene::onKeyPressedEvent));
-    dispatcher.Dispatch<Elysium::WindowResizeEvent>(BIND_EVENT_FUNCTION(SandboxScene::onWindowResizeEvent));
-
-    m_Player.onEvent(event);
-}
-
-bool SandboxScene::onKeyPressedEvent(Elysium::KeyPressedEvent& event)
-{
-    return false;
-}
-
-bool SandboxScene::onWindowResizeEvent(Elysium::WindowResizeEvent& event)
-{
-    unsigned int width = event.getWidth();
-    unsigned int height = event.getHeight();
-    if (width > 0 && height > 0)
-    m_Camera.setProjection(-m_Height * (float)(width / height), m_Height * (float)(width / height),
-        -m_Height * 0.5f, m_Height * 0.5f);
-    return false;
 }
 
 void SandboxScene::getIrisData(Elysium::Matrix& irisInputs, Elysium::Matrix& irisOutputs)

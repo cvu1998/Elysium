@@ -5,6 +5,9 @@
 class SandboxScene : public Elysium::Scene
 {
 private:
+    unsigned int m_ImageWidth;
+    unsigned int m_ImageHeight;
+
     float m_Height = 30.0f;
 
     Elysium::OrthographicCamera m_Camera;
@@ -27,6 +30,8 @@ private:
     Elysium::BodyHandle m_Circle;
     Elysium::TextureData m_BallTexture;
 
+    b2World world;
+
 public:
     SandboxScene(unsigned int height, unsigned int width);
     ~SandboxScene();
@@ -38,5 +43,7 @@ public:
     bool onWindowResizeEvent(Elysium::WindowResizeEvent& event);
 
 private:
+    void trainMachineLearningModels();
+
     void getIrisData(Elysium::Matrix& irisInputs, Elysium::Matrix& irisOutputs);
 };

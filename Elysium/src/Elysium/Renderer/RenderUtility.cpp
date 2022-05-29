@@ -30,5 +30,11 @@ namespace Elysium
         {
             GL_ASSERT(glViewport(x, y, width, height));
         }
+
+        void getRGBPixels(std::vector<float>& pixels, int x, int y, unsigned int witdh, unsigned int height)
+        {
+            pixels.resize(witdh * height * 3);
+            glReadPixels(x, y, witdh, height, GL_RGB, GL_FLOAT, (void*)pixels.data());
+        }
     }
 }
