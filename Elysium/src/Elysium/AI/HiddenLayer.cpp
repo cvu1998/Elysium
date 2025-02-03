@@ -104,10 +104,15 @@ namespace Elysium
 
     void HiddenLayer::summary() const
     {
-        ELY_CORE_INFO("{0}:{2}{1}", 
-            m_LayerName, 
-            Weights.Values.size(), 
-            std::string(strlen(m_LayerName) < s_BasePadding ? s_BasePadding - strlen(m_LayerName) : 0, ' '));
+        char info[256] = "";
+        sprintf(info, "%s:%s%d\0",
+            m_LayerName,
+            std::string(strlen(m_LayerName) < s_BasePadding ? s_BasePadding - strlen(m_LayerName) : 0, ' ').c_str(),
+            (int) Weights.Values.size());
+        ELY_CORE_INFO("{0}{2}{1}", 
+            info,
+            m_Size,
+            std::string(strlen(info) < s_BasePadding * 2 ? s_BasePadding * 2 - strlen(info) : 0, ' '));
     }
 
     void HiddenLayer::saveWeightsAndBiases(const char* filename) const

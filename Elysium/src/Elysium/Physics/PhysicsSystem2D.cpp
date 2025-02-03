@@ -236,7 +236,7 @@ namespace Elysium
         ELY_CORE_TRACE("Impulse: {0}, {1}", m_Bodies[i].Impulse.x, m_Bodies[i].Impulse.y);
         ELY_CORE_TRACE("Contact Normal: {0}, {1}", m_Bodies[i].ContactNormal.x, m_Bodies[i].ContactNormal.y);
         ELY_CORE_TRACE("Normal: {0}, {1}", m_Bodies[i].Normal.x, m_Bodies[i].Normal.y);
-        ELY_CORE_TRACE("-----Body Tag: {0}-----", m_Bodies[i].Tag);
+        ELY_CORE_TRACE("-----End-----");
     }
 
     void PhysicsSystem2D::applyCollisionResponse(PhysicalBody2D& body, const PhysicalBody2D& otherBody, const Vector2& normal, float overlap,

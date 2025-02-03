@@ -59,6 +59,7 @@ namespace Elysium
 
         const char* Tag = nullptr;
         float Mass = std::numeric_limits<float>::max();
+        float InverseMass = 1.0f;
         float AngularVelocity = 0.0f;
         float Inertia = 0.0f;
         Vector2 Size = { 1.0f, 1.0f };

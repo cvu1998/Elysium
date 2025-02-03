@@ -84,7 +84,6 @@ namespace Elysium
         result.Width = a.Width + b.Width;
         result.Height = a.Height;
 
-        bool matrixA = true;
         for (size_t i = 0; i < result.Height; ++i)
         {
             for (size_t j = 0; j < a.Width; ++j) result.Values.emplace_back(a(i, j));
@@ -144,20 +143,20 @@ namespace Elysium
 
     Matrix Matrix::row(size_t row)
     {
-        Matrix m = Matrix(1, Width);
+        Matrix matrix = Matrix(1, Width);
 
         size_t start = row * Width;
-        for (size_t i = 0; i < Width; ++i) m.Values[i] = Values[start + i];
-        return m;
+        for (size_t i = 0; i < Width; ++i) matrix.Values[i] = Values[start + i];
+        return matrix;
     }
 
     Matrix Matrix::column(size_t column)
     {
-        Matrix m = Matrix(1, Height);
+        Matrix matrix = Matrix(1, Height);
 
         size_t start = column;
-        for (size_t i = 0; i < Height; ++i) m.Values[i] = Values[start + i * Width];
-        return m;
+        for (size_t i = 0; i < Height; ++i) matrix.Values[i] = Values[start + i * Width];
+        return matrix;
     }
 
     void Matrix::row(size_t row, const std::vector<float>& vector)
@@ -172,19 +171,28 @@ namespace Elysium
 
     void Matrix::print() const
     {
-        printf("[");
-        for (size_t j = 0; j < Height; ++j)
+        const size_t maxLength = 64;
+        const size_t height = Height <= maxLength ? Height : maxLength;
+        const size_t width = Width <= maxLength ? Width : maxLength;
+        char matrixStr[2048];
+        sprintf(matrixStr, "[");
+        for (size_t j = 0; j < height; ++j)
         {
             const char* openBracket = j > 0 ? " [" : "[";
-            printf(openBracket);
+            sprintf(matrixStr, "%s%s", matrixStr, openBracket);
 
-            for (size_t i = 0; i < Width; ++i)
-                printf(" %f", operator()(j, i));
+            for (size_t i = 0; i < width; ++i)
+            {
+                float value = operator()(j, i);
+                sprintf(matrixStr, "%s %s%f", matrixStr, value < 0.0f ? "" : " ", value);
+            }
 
-            const char* closeBracket = j == Height - 1 ? "]" : "]\n";
-            printf(closeBracket);
+            const char* endWidth = Width < maxLength ? "" : " ...";
+            const char* closeBracket = j == height - 1 ? " ]" : " ]\n";
+            sprintf(matrixStr, "%s%s%s", matrixStr, endWidth, closeBracket);
         }
-        printf("]\n");
-        fflush(stdout);
+        const char* endHeight = Height < maxLength ? " ]\n" : "...]\n";
+        sprintf(matrixStr, "%s%s", matrixStr, endHeight);
+        ELY_INFO("\n{0}", matrixStr);
     }
 }

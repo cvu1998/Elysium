@@ -43,6 +43,7 @@ namespace Elysium
         if (type == BodyType::DYNAMIC || type == BodyType::KINEMATIC)
         {
             Mass = fabs(mass);
+            InverseMass = 1.0f / Mass;
             Inertia = (size.x * size.y * size.y * size.y) / 12.0f;
         }
     }
@@ -130,8 +131,8 @@ namespace Elysium
         Normal += ContactNormal;
         Normal = Math::normalize(Normal);
 
-        Acceleration = Force / Mass;
-        Velocity = Velocity + (Impulse / Mass) + (Acceleration * (float)ts);
+        Acceleration = Force * InverseMass;
+        Velocity = Velocity + (Impulse * InverseMass) + (Acceleration * (float)ts);
         Position = Position + (Velocity * (float)ts);
 
         Force = { 0.0f, 0.0f };
