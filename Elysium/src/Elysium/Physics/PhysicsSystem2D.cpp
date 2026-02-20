@@ -5,14 +5,61 @@
 #include <string.h>
 
 #define NOMINMAX
+#include "Elysium/Application.h"
 #include "Elysium/Log.h"
 #include "Elysium/MathUtility.h"
 
 namespace Elysium
 {
-    PhysicalBody2D* PhysicsSystem2D::createPhysicalBody(BodyType type, Collider collider, const char* name, float mass,
-        const Vector2& initialPosition, const Vector2& size, 
-        PhysicalBody2D::Collision_Callback callback)
+    static PhysicsSystem2D* s_Instance = nullptr;
+
+    PhysicsSystem2D::PhysicsSystem2D(bool useThread) :
+        m_RunUpdateThread(useThread)
+    {
+        if (useThread) m_UpdateThread = std::move(std::thread(&PhysicsSystem2D::Update, this));
+    }
+
+    PhysicsSystem2D::~PhysicsSystem2D()
+    {
+        if (m_UpdateThread.joinable())
+        {
+            m_UpdateThread.join();
+        }
+    }
+
+    template<>
+    void PhysicsSystem2D::Init<UpdateDevice::CPU>()
+    {
+        if (!s_Instance) s_Instance = new PhysicsSystem2D(false);
+    }
+
+    template<>
+    void PhysicsSystem2D::Init<UpdateDevice::CPU_THREAD>()
+    {
+        if (!s_Instance) s_Instance = new PhysicsSystem2D(true);
+    }
+
+    void PhysicsSystem2D::Shutdown()
+    {
+        s_Instance->m_Shutdown.store(true);
+        delete s_Instance;
+        s_Instance = nullptr;
+    }
+
+    PhysicsSystem2D& PhysicsSystem2D::Get()
+    {
+        return *s_Instance;
+    }
+
+    PhysicalBody2D* PhysicsSystem2D::createPhysicalBody(
+        BodyType type,
+        Collider collider,
+        const char* name,
+        float mass,
+        const Vector2& initialPosition,
+        const Vector2& size, 
+        PhysicalBody2D::Collision_Callback callback
+    )
     {
         if (m_InactiveBodies.empty())
         {
@@ -25,9 +72,16 @@ namespace Elysium
         return &m_Bodies[body];
     }
 
-    void PhysicsSystem2D::createPhysicalBody(BodyHandle* handle, BodyType type, Collider collider, const char* name, float mass,
-        const Vector2& initialPosition, const Vector2& size,
-        PhysicalBody2D::Collision_Callback callback)
+    void PhysicsSystem2D::createPhysicalBody(
+        BodyHandle* handle,
+        BodyType type,
+        Collider collider,
+        const char* name,
+        float mass,
+        const Vector2& initialPosition,
+        const Vector2& size,
+        PhysicalBody2D::Collision_Callback callback
+    )
     {
         if (m_InactiveBodies.empty())
         {
@@ -79,8 +133,8 @@ namespace Elysium
                 info.Collision = true;
 
                 Vector2 normal = glm::normalize(body2.Position - body1.Position);
-                info.CollisionInfoPair.second.Normal = normal;
-                info.CollisionInfoPair.first.Normal = -normal;
+                info.CollisionInfoPair[1].Normal = normal;
+                info.CollisionInfoPair[0].Normal = -normal;
 
                 float min1 = glm::dot(body1.Position - (normal * radius1), normal);
                 float max1 = glm::dot(body1.Position + (normal * radius1), normal);
@@ -141,12 +195,12 @@ namespace Elysium
             }
 
             info.Collision = true;
-            info.CollisionInfoPair.first.Normal = -collisionNormal;
-            info.CollisionInfoPair.second.Normal = collisionNormal;
+            info.CollisionInfoPair[0].Normal = -collisionNormal;
+            info.CollisionInfoPair[1].Normal = collisionNormal;
             if (firstIsMax)
             {
-                info.CollisionInfoPair.first.Normal = collisionNormal;
-                info.CollisionInfoPair.second.Normal = -collisionNormal;
+                info.CollisionInfoPair[0].Normal = collisionNormal;
+                info.CollisionInfoPair[1].Normal = -collisionNormal;
             }
         }
             break;
@@ -200,12 +254,12 @@ namespace Elysium
             }
 
             info.Collision = true;
-            info.CollisionInfoPair.second.Normal = collisionNormal;
-            info.CollisionInfoPair.first.Normal = -collisionNormal;
+            info.CollisionInfoPair[1].Normal = collisionNormal;
+            info.CollisionInfoPair[0].Normal = -collisionNormal;
             if (firstIsMax && circleFirst || !firstIsMax && !circleFirst)
             {
-                info.CollisionInfoPair.first.Normal = collisionNormal;
-                info.CollisionInfoPair.second.Normal = -collisionNormal;
+                info.CollisionInfoPair[0].Normal = collisionNormal;
+                info.CollisionInfoPair[1].Normal = -collisionNormal;
             }
         }
             break;
@@ -270,7 +324,7 @@ namespace Elysium
 
     void PhysicsSystem2D::onUpdate(Timestep ts)
     {
-        ts = std::min(1.0f / 30.0f, (float)ts);
+        ts = std::min(1.0f / 30.0f, static_cast<float>(ts));
 
         std::for_each(std::execution::par,
             m_Bodies.begin(), 
@@ -291,7 +345,7 @@ namespace Elysium
                             {
                             case Collider::CIRCLE:
                                 body.AngularVelocity = Math::cross(body.Normal, body.Velocity) / body.Inertia;
-                                body.Rotation += body.AngularVelocity * (float)ts;
+                                body.Rotation += body.AngularVelocity * static_cast<float>(ts);
                                 break;
                             case Collider::QUAD:
                             {
@@ -311,11 +365,6 @@ namespace Elysium
 
                         body.Force = { 0.0f, 0.0f };
                     }
-
-#ifdef __DEBUG
-                    if (m_LoggedBodies.find(i) != m_LoggedBodies.end())
-                        printInfo(i);
-#endif
 
                     body.Impulse = { 0.0f, 0.0f };
                     body.ContactImpulse = { 0.0f, 0.0f };
@@ -341,8 +390,7 @@ namespace Elysium
         }
         std::sort(ssBodies.begin(), ssBodies.end(), [this](BodyHandle i, BodyHandle j)
             {
-                return (m_Bodies[i].MinimumVertex.y <
-                m_Bodies[j].MinimumVertex.y);
+                return (m_Bodies[i].MinimumVertex.y < m_Bodies[j].MinimumVertex.y);
             }
         );
 
@@ -352,8 +400,7 @@ namespace Elysium
             for (size_t b = a + 1; b < ssBodies.size(); b++)
             {
                 BodyHandle j = ssBodies[b];
-                if (m_Bodies[j].MinimumVertex.y >
-                    m_Bodies[i].MaximumVertex.y)
+                if (m_Bodies[j].MinimumVertex.y > m_Bodies[i].MaximumVertex.y)
                 {
                     break;
                 }
@@ -367,8 +414,8 @@ namespace Elysium
                     checkNarrowPhase(m_Bodies[i], m_Bodies[j], info);
                     if (info.Collision)
                     {
-                        Vector2 iNormal = info.CollisionInfoPair.first.Normal;
-                        Vector2 jNormal = info.CollisionInfoPair.second.Normal;
+                        Vector2 iNormal = info.CollisionInfoPair[0].Normal;
+                        Vector2 jNormal = info.CollisionInfoPair[1].Normal;
 
                         float magnitude1 = glm::length(m_Bodies[i].Velocity);
                         float magnitude2 = glm::length(m_Bodies[j].Velocity);
@@ -384,16 +431,39 @@ namespace Elysium
                             applyCollisionResponse(m_Bodies[j], m_Bodies[i], jNormal, info.minOverlap, ts);
 
                         if (m_Bodies[i].Callback && m_Bodies[i].CallbackExecutions < m_Bodies[i].NumberOfExecution)
-                            m_Bodies[i].Callback(m_Bodies[i], m_Bodies[j], { true, info.minOverlap,
-                                std::make_pair(info.CollisionInfoPair.first, info.CollisionInfoPair.second),
-                                ts });
+                        {
+                            m_Bodies[i].Callback(
+                                m_Bodies[i],
+                                m_Bodies[j],
+                                { true, info.minOverlap, { info.CollisionInfoPair[0], info.CollisionInfoPair[1] }, ts }
+                            );
+                        }
 
                         if (m_Bodies[j].Callback && m_Bodies[j].CallbackExecutions < m_Bodies[j].NumberOfExecution)
-                            m_Bodies[j].Callback(m_Bodies[j], m_Bodies[i],{ true, info.minOverlap,
-                                    std::make_pair(info.CollisionInfoPair.second, info.CollisionInfoPair.first),
-                                ts });
+                        {
+                            m_Bodies[j].Callback(
+                                m_Bodies[j],
+                                m_Bodies[i],
+                                { true, info.minOverlap, { info.CollisionInfoPair[1], info.CollisionInfoPair[0] }, ts }
+                            );
+                        }
                     }
                 }
+            }
+        }
+    }
+
+    void PhysicsSystem2D::Update()
+    {
+        while (!m_Shutdown.load())
+        {
+            auto frameID = Application::Get().getFrameID();
+            auto timestep = Application::Get().getTimestep();
+            if (m_LastFrameID < frameID && m_RunUpdateThread.load())
+            {
+                m_LastFrameID = frameID;
+                std::scoped_lock lock(m_UpdateMutex);
+                onUpdate(timestep);
             }
         }
     }

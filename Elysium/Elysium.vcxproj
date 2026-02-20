@@ -97,7 +97,7 @@
       <PreprocessorDefinitions>GLFW_INCLUDE_NONE;_WINSOCK_DEPRECATED_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)\Glad\include\;$(ProjectDir)src\;$(ProjectDir)src\vendor\</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
     <Link>
@@ -128,7 +128,7 @@ xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\Elysium.lib" "$(So
       <PreprocessorDefinitions>GLFW_INCLUDE_NONE;_WINSOCK_DEPRECATED_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)\Glad\include\;$(ProjectDir)src\;$(ProjectDir)src\vendor\</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
     <Link>
@@ -161,7 +161,7 @@ xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\Elysium.lib" "$(So
       <PreprocessorDefinitions>GLFW_INCLUDE_NONE;_WINSOCK_DEPRECATED_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)\Glad\include\;$(ProjectDir)src\;$(ProjectDir)src\vendor\</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
     <Link>
@@ -196,7 +196,7 @@ xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\Elysium.lib" "$(So
       <PreprocessorDefinitions>GLFW_INCLUDE_NONE;_WINSOCK_DEPRECATED_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)\Glad\include\;$(ProjectDir)src\;$(ProjectDir)src\vendor\</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
     <Link>
@@ -236,15 +236,13 @@ xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\Elysium.lib" "$(So
     <ClCompile Include="src\Elysium\Physics\PhysicalBody2D.cpp" />
     <ClCompile Include="src\Elysium\Renderer\Framebuffer.cpp" />
     <ClCompile Include="src\Elysium\Renderer\Assert.cpp" />
-    <ClCompile Include="src\Elysium\SceneManager.cpp" />
-    <ClCompile Include="src\Elysium\Editor.cpp" />
     <ClCompile Include="src\Elysium\Log.cpp" />
     <ClCompile Include="src\Elysium\Input.cpp" />
     <ClCompile Include="src\Elysium\LayerStack.cpp" />
     <ClCompile Include="src\Elysium\Layer.cpp" />
     <ClCompile Include="src\Elysium\Application.cpp" />
     <ClCompile Include="src\Elysium\OrthographicCameraController.cpp" />
-    <ClCompile Include="src\Elysium\ParticleSystem.cpp" />
+    <ClCompile Include="src\Elysium\ParticleSystem2D.cpp" />
     <ClCompile Include="src\Elysium\Physics\PhysicsSystem2D.cpp" />
     <ClCompile Include="src\Elysium\Random.cpp" />
     <ClCompile Include="src\Elysium\Renderer\Camera.cpp" />
@@ -252,7 +250,6 @@ xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\Elysium.lib" "$(So
     <ClCompile Include="src\Elysium\Renderer\Shader.cpp" />
     <ClCompile Include="src\Elysium\Renderer\IndexBuffer.cpp" />
     <ClCompile Include="src\Elysium\Renderer\RenderUtility.cpp" />
-    <ClCompile Include="src\Elysium\Scene.cpp" />
     <ClCompile Include="src\Elysium\Timer.cpp" />
     <ClCompile Include="src\Elysium\Window.cpp" />
     <ClCompile Include="src\Elysium\Renderer\VertexBuffer.cpp" />
@@ -421,8 +418,6 @@ xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\Elysium.lib" "$(So
     <ClInclude Include="src\Elysium\Renderer\Framebuffer.h" />
     <ClInclude Include="src\Elysium\Renderer\Assert.h" />
     <ClInclude Include="src\Elysium\Renderer\VertexData.h" />
-    <ClInclude Include="src\Elysium\SceneManager.h" />
-    <ClInclude Include="src\Elysium\Editor.h" />
     <ClInclude Include="src\Elysium\Animation.h" />
     <ClInclude Include="src\Elysium\Log.h" />
     <ClInclude Include="src\Elysium\Input.h" />
@@ -436,7 +431,7 @@ xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\Elysium.lib" "$(So
     <ClInclude Include="src\Elysium\Events\KeyEvent.h" />
     <ClInclude Include="src\Elysium\Events\MouseEvent.h" />
     <ClInclude Include="src\Elysium\OrthographicCameraController.h" />
-    <ClInclude Include="src\Elysium\ParticleSystem.h" />
+    <ClInclude Include="src\Elysium\ParticleSystem2D.h" />
     <ClInclude Include="src\Elysium\Physics\PhysicalBody2D.h" />
     <ClInclude Include="src\Elysium\Physics\PhysicsSystem2D.h" />
     <ClInclude Include="src\Elysium\Random.h" />
@@ -447,7 +442,6 @@ xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\Elysium.lib" "$(So
     <ClInclude Include="src\Elysium\Renderer\Shader.h" />
     <ClInclude Include="src\Elysium\Renderer\IndexBuffer.h" />
     <ClInclude Include="src\Elysium\Renderer\RenderUtility.h" />
-    <ClInclude Include="src\Elysium\Scene.h" />
     <ClInclude Include="src\Elysium\Timer.h" />
     <ClInclude Include="src\Elysium\Window.h" />
     <ClInclude Include="src\Elysium\Timestep.h" />

@@ -1,9 +1,7 @@
 #include "TicTacToeScene.h"
 
-#include "Game/Systems.h"
-
 TicTacToeScene::TicTacToeScene(unsigned int width, unsigned int height) :
-    Elysium::Scene("Tic-Tac-Toe"),
+    Scene("Tic-Tac-Toe"),
     m_Camera(-m_Height * (float)(width / height), m_Height* (float)(width / height), -m_Height * 0.5f, m_Height * 0.5f),
     m_X("res/texture/TicTacToeX.png"),
     m_O("res/texture/TicTacToeO.png"),
@@ -14,8 +12,8 @@ TicTacToeScene::TicTacToeScene(unsigned int width, unsigned int height) :
     m_OpponentMinimax(&m_Grid),
     m_EpisodeData(0, s_DataLength, true)
 {
-    m_CoinTextures[0] = m_X.getTextureData();
-    m_CoinTextures[1] = m_O.getTextureData();
+    m_MarkTextures[0] = m_X.getTextureData();
+    m_MarkTextures[1] = m_O.getTextureData();
 
     m_Camera.setPosition({ 0.0f, 0.0f, 0.0f });
 
@@ -115,11 +113,11 @@ void TicTacToeScene::addAction(Elysium::Vector2 position, size_t index)
     {
         m_MoveCooldown = s_Cooldown;
 
-        m_Coins[m_CoinIndex] = position;
-        m_CoinsTextureIndexes[m_CoinIndex++] = m_Turn == -1 ? 1 : 2;
+        m_Marks[m_MarkIndex] = position;
+        m_MarksTextureIndexes[m_MarkIndex++] = m_Turn == -1 ? 1 : 2;
         m_Grid.Grid[index] = m_Turn;
 
-        if (m_CoinIndex >= 9)
+        if (m_MarkIndex >= 9)
         {
             m_GameOver = true;
             m_Tie = true;
@@ -854,10 +852,10 @@ void TicTacToeScene::onUpdate(Elysium::Timestep ts)
                 m_Turn = Elysium::Random::Integer() == 1 ? -1 : 1;
             }
             m_MoveCooldown = s_Cooldown;
-            m_Coins.fill({ 0.0f, 0.0f });
-            m_CoinsTextureIndexes.fill(0);
+            m_Marks.fill({ 0.0f, 0.0f });
+            m_MarksTextureIndexes.fill(0);
 
-            m_CoinIndex = 0;
+            m_MarkIndex = 0;
 
             if (m_TrainModel) updateModels();
 
@@ -922,9 +920,9 @@ void TicTacToeScene::onUpdate(Elysium::Timestep ts)
     Elysium::Renderer::drawQuad({ position, 0.0f }, { 2.0f, size }, { 0.0f, 0.0f, 1.0f, 1.0f });
     Elysium::Renderer::drawQuad({ -position, 0.0f }, { 2.0f, size }, { 0.0f, 0.0f, 1.0f, 1.0f });
 
-    for (size_t i = 0; i < m_CoinIndex; i++)
+    for (size_t i = 0; i < m_MarkIndex; i++)
     {
-        Elysium::Renderer::drawQuad(m_Coins[i], { 3.0f, 3.0f }, m_CoinTextures[m_CoinsTextureIndexes[i] - 1]);
+        Elysium::Renderer::drawQuad(m_Marks[i], { 3.0f, 3.0f }, m_MarkTextures[m_MarksTextureIndexes[i] - 1]);
     }
     Elysium::Renderer::endScene();
 

@@ -3,8 +3,9 @@
 #include <algorithm>
 
 #include "Elysium/Log.h"
-#include "Elysium/Renderer/Renderer.h"
 #include "Elysium/Timestep.h"
+
+#include "Elysium/Renderer/Renderer.h"
 
 #include <commdlg.h>
 #define GLFW_EXPOSE_NATIVE_WIN32
@@ -12,56 +13,49 @@
 
 namespace Elysium
 {
-    Application* Application::s_Instance = nullptr;
+    inline static Application* s_Instance = nullptr;
 
-    Application::Application(const UpdateFunction& updateFunction, 
-        const std::string& title, unsigned int width, unsigned int height, 
-        bool imgui) : m_Function(updateFunction), m_ImGui(imgui)
+    Application::Application( 
+        const std::string& title,
+        unsigned int width,
+        unsigned int height
+    )
     {
         Log::Init();
 
         m_Window = std::unique_ptr<Window>(Window::Create( { title, width, height } ));
         m_Window->setEventCallback(BIND_EVENT_FUNCTION(Application::onEvent));
 
-        if (m_Window->getStatus() == 0)
-            ELY_CORE_ERROR("Glad Init Error!");
+        if (m_Window->getStatus() == 0) ELY_CORE_ERROR("Glad Init Error!");
         
-        #ifdef _DEBUG
+#if defined(_DEBUG)
         ELY_CORE_INFO("OpenGL version: {0}", glGetString(GL_VERSION));
-        #endif
+#endif
 
-        m_Run = std::bind(&Application::runWithoutImGui, this);
-        if (m_ImGui)
-        {
-            const char* glsl_version = "#version 130";
-            ImGui::CreateContext();
-            ImGui_ImplGlfw_InitForOpenGL(m_Window->getGLFWWindow(), true);
-            ImGui_ImplOpenGL3_Init(glsl_version);
-            ImGui::StyleColorsDark();
+        const char* glsl_version = "#version 130";
+        ImGui::CreateContext();
+        ImGui_ImplGlfw_InitForOpenGL(m_Window->getGLFWWindow(), true);
+        ImGui_ImplOpenGL3_Init(glsl_version);
+        ImGui::StyleColorsDark();
 
-            ImGuiIO& io = ImGui::GetIO();
-            io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+        ImGuiIO& io = ImGui::GetIO();
+        io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
-            m_Run = std::bind(&Application::runWithImGui, this);
-        }
         Renderer::Init();
 
+#if defined(_WIN64) || defined(_WIN32)
         WSADATA wsaData;
         int res = WSAStartup(MAKEWORD(2, 2), &wsaData);
-        if (res != NO_ERROR) 
-            ELY_CORE_ERROR("WSAStartup failed with error!");
+        if (res != NO_ERROR) ELY_CORE_ERROR("WSAStartup failed with error!");
+#endif
     }
 
     Application::~Application()
     {
-        SceneManager.unloadScene();
-        if (m_ImGui)
-        {
-            ImGui_ImplOpenGL3_Shutdown();
-            ImGui_ImplOpenGL3_Shutdown();
-            ImGui_ImplGlfw_Shutdown();
-            ImGui::DestroyContext();
-        }
+        ImGui_ImplOpenGL3_Shutdown();
+        ImGui_ImplOpenGL3_Shutdown();
+        ImGui_ImplGlfw_Shutdown();
+        ImGui::DestroyContext();
         Renderer::Shutdown();
 
         WSACleanup();
@@ -73,22 +67,19 @@ namespace Elysium
         dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FUNCTION(Application::onWindowCloseEvent));
         dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FUNCTION(Application::onWindowResizeEvent));
 
-        SceneManager.onEvent(event);
-
-        for (auto it = LayerStack.end(); it != LayerStack.begin();)
+        for (auto it = m_LayerStack.end(); it != m_LayerStack.begin();)
         {
             if (*--it)
             {
                 (*it)->onEvent(event);
-                if (event.Handled)
-                    break;
+                if (event.Handled) break;
             }
         }
     }
 
     bool Application::onWindowCloseEvent(WindowCloseEvent& event)
     {
-        m_Running = false;
+        m_Running.store(false);
         return true;
     }
 
@@ -106,79 +97,29 @@ namespace Elysium
         return false;
     }
 
-    void Application::runWithImGui()
-    {
-        while (m_Running)
-        {
-            Render::Clear();
-
-            float time = (float)glfwGetTime();
-            Timestep timestep = time - m_LastFrameTime;
-            m_LastFrameTime = time;
-
-            ImGui_ImplOpenGL3_NewFrame();
-            ImGui_ImplGlfw_NewFrame();
-            ImGui::NewFrame();
-
-            //if (!m_Minimized)
-            {
-                m_Function();
-
-                SceneManager.onUpdate(timestep);
-
-                for (Layer* layer : LayerStack)
-                {
-                    if (layer)
-                        layer->onUpdate(timestep);
-                }
-            }
-
-            ImGui::Render();
-            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-            m_Window->onUpdate();
-        }
-    }
-
-    void Application::runWithoutImGui()
-    {
-        while (m_Running)
-        {
-            Render::Clear();
-
-            float time = (float)glfwGetTime();
-            Timestep timestep = time - m_LastFrameTime;
-            m_LastFrameTime = time;
-
-            if (!m_Minimized)
-            {
-                m_Function();
-
-                SceneManager.onUpdate(timestep);
-
-                for (Layer* layer : LayerStack)
-                {
-                    if (layer)
-                        layer->onUpdate(timestep);
-                }
-            }
-
-            m_Window->onUpdate();
-        }
-    }
-
-    Application* Application::createApplication(const UpdateFunction& function, 
+    void Application::Init(
         const std::string& title, 
-        unsigned int width, unsigned int height,
-        bool imgui)
+        unsigned int width,
+        unsigned int height
+    )
     {
-        if (!s_Instance)
-            s_Instance = new Application(function, title, width, height, imgui);
-        return s_Instance;
+        if (!s_Instance) s_Instance = new Application(title, width, height);
+    }
+
+    void Application::Shutdown()
+    {
+        delete s_Instance;
+        s_Instance = nullptr;
+    }
+
+    Application& Application::Get()
+    {
+        return *s_Instance;
     }
 
     std::string Application::openFile(const char* filter)
     {
+#if defined(_WIN64) || defined(_WIN32)
         OPENFILENAMEA ofn;
         CHAR szFile[260] = { 0 };
         ZeroMemory(&ofn, sizeof(OPENFILENAME));
@@ -193,11 +134,13 @@ namespace Elysium
         {
             return ofn.lpstrFile;
         }
+#endif
         return std::string();
     }
 
     std::string Application::saveFile(const char* filter)
     {
+#if defined(_WIN64) || defined(_WIN32)
         OPENFILENAMEA ofn;
         CHAR szFile[260] = { 0 };
         ZeroMemory(&ofn, sizeof(OPENFILENAME));
@@ -212,17 +155,37 @@ namespace Elysium
         {
             return ofn.lpstrFile;
         }
+#endif
         return std::string();
     }
 
     void Application::Run()
     {
-        m_Run();
-    }
+        while (m_Running.load())
+        {
+            Render::Clear();
 
-    void Application::Shutdown()
-    {
-        delete s_Instance;
-        s_Instance = nullptr;
+            float time = static_cast<float>(glfwGetTime());
+            m_Timestep.store(time - m_LastFrameTime);
+            m_LastFrameTime = time;
+            m_FrameID++;
+
+            ImGui_ImplOpenGL3_NewFrame();
+            ImGui_ImplGlfw_NewFrame();
+            ImGui::NewFrame();
+
+            if (!m_Minimized)
+            {
+                for (auto& layer : m_LayerStack)
+                {
+                    if (layer) layer->onUpdate(m_Timestep);
+                }
+            }
+
+            ImGui::Render();
+            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+            m_Window->onUpdate();
+        }
     }
 }

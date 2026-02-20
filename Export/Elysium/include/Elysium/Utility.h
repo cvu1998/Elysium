@@ -10,6 +10,13 @@
 
 namespace Elysium
 {
+    enum class UpdateDevice
+    {
+        CPU = 0,
+        CPU_THREAD = 1,
+        GPU = 2
+    };
+
     namespace Utility
     {
         void CreateRandomVector(std::vector<float>& vector, size_t size, float min, float max);

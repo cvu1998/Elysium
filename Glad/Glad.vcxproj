@@ -110,7 +110,7 @@
       </PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile />
       <AdditionalIncludeDirectories>$(ProjectDir)include\</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -135,7 +135,7 @@ xcopy "$(ProjectDir)include\*.h" "$(SolutionDir)Export\Elysium\include\Glad\" /S
       </PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile />
       <AdditionalIncludeDirectories>$(ProjectDir)include\</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -158,7 +158,7 @@ xcopy "$(ProjectDir)include\*.h" "$(SolutionDir)Export\Elysium\include\Glad\" /S
       </PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile />
       <AdditionalIncludeDirectories>$(ProjectDir)include\</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -183,7 +183,7 @@ xcopy "$(ProjectDir)include\*.h" "$(SolutionDir)Export\Elysium\include\Glad\" /S
       </PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile />
       <AdditionalIncludeDirectories>$(ProjectDir)include\</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

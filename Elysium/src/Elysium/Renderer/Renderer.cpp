@@ -4,16 +4,16 @@
 
 #include "Elysium/Math.h"
 
-static const size_t MaxQuadCount = 10000;
-static const size_t MaxQuadVertexCount = MaxQuadCount * 4;
-static const size_t MaxQuadIndexCount = MaxQuadCount * 6;
-static const size_t MaxTextureCount = 32;
+const size_t MaxQuadCount = 10000;
+const size_t MaxQuadVertexCount = MaxQuadCount * 4;
+const size_t MaxQuadIndexCount = MaxQuadCount * 6;
+const size_t MaxTextureCount = 32;
 
-static const uint32_t MaxLineCount = 20000;
-static const uint32_t MaxLineVertexCount = MaxLineCount * 2;
-static const uint32_t MaxLineIndexCount = MaxLineCount * 2;
+const uint32_t MaxLineCount = 20000;
+const uint32_t MaxLineVertexCount = MaxLineCount * 2;
+const uint32_t MaxLineIndexCount = MaxLineCount * 2;
 
-static const uint32_t MaxPointCount = 40000;
+const uint32_t MaxPointCount = 40000;
 
 namespace Elysium
 {

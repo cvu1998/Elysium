@@ -3,18 +3,27 @@
 #include "Values.h"
 
 DummyPlayer::DummyPlayer(
-    const Elysium::Vector2& position, 
-    int up, int left, int right,
-    int kick, int lob, int swap) : 
-    UpKey(up), LeftKey(left), RightKey(right),
-    KickKey(kick), LobKey(lob), SwapKey(swap),
+    const Elysium::Vector2& position,
+    int up,
+    int left,
+    int right,
+    int kick,
+    int lob,
+    int swap
+) : 
+    UpKey(up),
+    LeftKey(left),
+    RightKey(right),
+    KickKey(kick),
+    LobKey(lob),
+    SwapKey(swap),
     RunAnimation(m_FrameRate)
 {
-    m_Player = e_PhysicsSystem2D.createPhysicalBody(Elysium::BodyType::DYNAMIC, Elysium::Collider::QUAD,
+    m_Player = Elysium::PhysicsSystem2D::Get().createPhysicalBody(Elysium::BodyType::DYNAMIC, Elysium::Collider::QUAD,
         "Player", 50.0f, position, { 2.0f, 2.0f },
         [this](Elysium::PhysicalBody2D& body, Elysium::PhysicalBody2D& collidee, const Elysium::CollisionInfo& info)
         {
-            if (info.CollisionInfoPair.first.Normal.y > 0.01f)
+            if (info.CollisionInfoPair[0].Normal.y > 0.01f)
             {
                 if (Elysium::Input::isKeyPressed(UpKey))
                 {

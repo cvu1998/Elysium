@@ -2,12 +2,15 @@
 
 #include <functional>
 #include <memory>
+#include <mutex>
+#include <thread>
 #include <vector>
 
 #include <glm/glm.hpp>
 
 #include "Elysium/Math.h"
 #include "Elysium/Timestep.h"
+#include "Elysium/Utility.h"
 
 #include "Elysium/Renderer/Camera.h"
 #include "Elysium/Renderer/Renderer.h"
@@ -15,12 +18,6 @@
 
 namespace Elysium
 {
-	enum class UpdateDevice
-	{
-		CPU = 0,
-		GPU = 1
-	};
-
 	struct ParticleProperties
 	{
 		Vector2		Position = { 0.0f, 0.0f };
@@ -39,7 +36,7 @@ namespace Elysium
 		float			LifeTime = 1.0f;
 	};
 
-	class ParticleSystem
+	class ParticleSystem2D
 	{
 	private:
 		struct Particle
@@ -61,7 +58,7 @@ namespace Elysium
 		};
 
 		bool m_Warning = false;
-		uint32_t m_ParticlePoolSize;
+		size_t m_ParticlePoolSize;
 		uint32_t m_PoolIndex;
 
 		std::vector<Particle> m_ParticlePool;
@@ -72,26 +69,37 @@ namespace Elysium
 
 		int m_WorkGroupSize;
 
-		using OnUpdateFunction = std::function<void(Timestep)>;
-
-		OnUpdateFunction m_OnUpdate;
-
 	private:
+		ParticleSystem2D(size_t poolSize);
+		~ParticleSystem2D();
+
+		ParticleSystem2D(const ParticleSystem2D&) = delete;
+		ParticleSystem2D(ParticleSystem2D&&) = delete;
+		ParticleSystem2D& operator=(const ParticleSystem2D&) = delete;
+		ParticleSystem2D& operator=(ParticleSystem2D&&) = delete;
+
 		void addParticle(const ParticleProperties& particleProperties, Particle& particle);
 
-		void onCPUUpdate(Timestep ts);
-		void onGPUUpdate(Timestep ts);
-
 	public:
-		// Initial ParticlePoolSize
-		// Which is adjusted to a larger value in respect to the number of particles the user wants to emit
-		ParticleSystem(uint32_t poolSize, UpdateDevice device = UpdateDevice::CPU);
-		~ParticleSystem();
+		static void Init(size_t poolSize);
+		static void Shutdown();
+
+		static ParticleSystem2D& Get();
 
 		// Emit a new particle
 		void Emit(const ParticleProperties& particleProperties);
+		void reset(size_t poolSize);
+		void resizePool(size_t poolSize);
 
+		template<UpdateDevice T>
 		void onUpdate(Timestep ts);
+
+		template<>
+		void onUpdate<UpdateDevice::CPU>(Timestep ts);
+
+		template<>
+		void onUpdate<UpdateDevice::GPU>(Timestep ts);
+
 		void onRender(const OrthographicCamera& camera);
 	};
 }

@@ -2,9 +2,10 @@
 
 #include <Elysium.h>
 
+#include "../Scene.h"
 #include "Game/Connect4Grid.h"
 
-class Connect4Scene : public Elysium::Scene
+class Connect4Scene : public Scene
 {
 private:
     float m_Height = 30.0f;
@@ -15,7 +16,10 @@ private:
     std::array<Elysium::BodyHandle, 9> m_Rectangles;
     std::array<std::pair<Elysium::PhysicalBody2D*, uint32_t>, 42> m_Coins = { std::make_pair(nullptr, 0) };
     Elysium::BodyHandle m_CoinIndex = 0;
-    std::array<Elysium::TextureData, 2> m_CoinTextures; // 1 Blue, 2 Red
+    // 1 Yellow and 2 Red
+    std::array<glm::vec4, 2> m_CoinColors;
+    Elysium::Texture m_CoinTexture;
+    Elysium::TextureData m_CoinTextureData;
 
     Connect4Grid m_Grid;
     uint32_t m_Turn = 1;
@@ -28,6 +32,11 @@ private:
 public:
     Connect4Scene(unsigned int width, unsigned int height);
     ~Connect4Scene();
+
+    inline void Cleanup() override
+    {
+        Elysium::PhysicsSystem2D::Shutdown();
+    }
 
     void onUpdate(Elysium::Timestep ts) override;
     void onEvent(Elysium::Event& event) override;

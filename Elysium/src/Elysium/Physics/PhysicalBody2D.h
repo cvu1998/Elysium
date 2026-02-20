@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <functional>
 #include <limits>
 
@@ -37,12 +38,12 @@ namespace Elysium
     {
         bool Collision = false;
         float minOverlap = std::numeric_limits<float>::max();
-        std::pair<BodyCollisionInfo, BodyCollisionInfo> CollisionInfoPair;
+        std::array<BodyCollisionInfo, 2> CollisionInfoPair;
 
         Timestep ts;
     };
 
-    class PhysiscsSystem2D;
+    class PhysicsSystem2D;
 
     class PhysicalBody2D
     {
