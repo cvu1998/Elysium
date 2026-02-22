@@ -23,7 +23,7 @@ namespace Elysium
 
         Complex operator*(float a)
         {
-            return { this->real * a, this->real * a };
+            return { this->real * a, this->imaginary * a };
         }
 
         static Complex scaleXY(const Complex& complex, float x, float y)

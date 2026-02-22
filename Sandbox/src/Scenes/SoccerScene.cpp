@@ -46,7 +46,7 @@ m_Adversary({ 27.5f, 20.0f }, ELY_KEY_UP, ELY_KEY_LEFT, ELY_KEY_RIGHT,
 
     Elysium::PhysicsSystem2D& physicsSys = Elysium::PhysicsSystem2D::Get();
     physicsSys.createPhysicalBody(&m_Ground, Elysium::BodyType::STATIC, Elysium::Collider::QUAD, "Ground", 10.0f, { 0.0f, 0.0f }, { 500.0f, 2.0f });
-    physicsSys.createPhysicalBody(&m_Ball, Elysium::BodyType::DYNAMIC, Elysium::Collider::CIRCLE, "Ball", 1.0f, { 0.0f, 10.0f }, { 2.0f, 2.0f });
+    physicsSys.createPhysicalBody(&m_Ball, Elysium::BodyType::DYNAMIC, Elysium::Collider::CIRCLE, "Ball", 2.5f, { 0.0f, 10.0f }, { 2.0f, 2.0f });
 
     physicsSys.createPhysicalBody(&m_Rectangles[0], Elysium::BodyType::STATIC, Elysium::Collider::QUAD, "Rectangle", 0.0f, { 0.0f, 29.0f }, { 60.0f, 2.0f });
     physicsSys.createPhysicalBody(&m_Rectangles[1], Elysium::BodyType::STATIC, Elysium::Collider::QUAD, "Rectangle", 0.0f, { -30.0f, 20.0f }, { 2.0f, 30.0f });
@@ -55,11 +55,9 @@ m_Adversary({ 27.5f, 20.0f }, ELY_KEY_UP, ELY_KEY_LEFT, ELY_KEY_RIGHT,
     Elysium::PhysicalBody2D* ground = physicsSys.getPhysicalBody(m_Ground);
     ground->setFrictionCoefficient(1.0f);
 
-    Elysium::PhysicalBody2D* ball = physicsSys.getPhysicalBody(m_Ball);
-    ball->setElasticityCoefficient(1.0f);
-
     m_Player.Ball = physicsSys.getPhysicalBody(m_Ball);
     m_Adversary.Ball = physicsSys.getPhysicalBody(m_Ball);
+    m_Player.Ball->setElasticityCoefficient(0.5f);
 
     m_Camera.setPosition({ 0.0f, -1.0f, 0.0f });
 }

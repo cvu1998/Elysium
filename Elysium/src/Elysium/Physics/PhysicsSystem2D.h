@@ -12,15 +12,15 @@
 
 namespace Elysium
 {
-    using BodyHandle = uint32_t;
+    using BodyHandle = unsigned short;
+
+    const float EPSILON = 1e-6f;
 
     class PhysicsSystem2D final
     {
     private:
         std::deque<PhysicalBody2D> m_Bodies;
         std::vector<BodyHandle> m_InactiveBodies;
-
-        std::unordered_set<size_t> m_LoggedBodies;
 
         std::thread m_UpdateThread;
         std::mutex m_UpdateMutex;
@@ -44,10 +44,16 @@ namespace Elysium
         bool checkBroadPhase(const PhysicalBody2D& body1, const PhysicalBody2D& body2);
         void checkNarrowPhase(const PhysicalBody2D& body1, const PhysicalBody2D& body2, CollisionInfo& info);
 
-        void applyCollisionResponse(
-            PhysicalBody2D& body,
-            const PhysicalBody2D& otherBody,
-            const Vector2& normal,
+        Vector2 computeContactPoint(
+            const PhysicalBody2D& bodyI,
+            const PhysicalBody2D& bodyJ,
+            const Vector2& iNormal
+        );
+
+        void resolveCollision(
+            PhysicalBody2D& bodyI,
+            PhysicalBody2D& bodyJ,
+            const Vector2& iNormal,
             float overlap,
             Timestep ts
         );
@@ -77,7 +83,7 @@ namespace Elysium
             float mass,
             const Vector2& initialPosition,
             const Vector2& size,
-            PhysicalBody2D::Collision_Callback callback = nullptr
+            PhysicalBody2D::Collision_Callback&& callback = nullptr
         );
 
         void createPhysicalBody(
@@ -88,7 +94,7 @@ namespace Elysium
             float mass,
             const Vector2& initialPosition,
             const Vector2& size,
-            PhysicalBody2D::Collision_Callback callback = nullptr
+            PhysicalBody2D::Collision_Callback&& callback = nullptr
         );
 
         void removePhysicalBody(BodyHandle body);
@@ -102,12 +108,11 @@ namespace Elysium
             std::scoped_lock lock(m_UpdateMutex);
             m_Bodies.clear();
             m_InactiveBodies.clear();
-            m_LoggedBodies.clear();
         }
 
         std::mutex& getUpdateMutex() { return m_UpdateMutex; }
 
-        void runThread(bool runThread) { m_RunUpdateThread.store(runThread); }
+        void runThread(bool runThread) { m_RunUpdateThread.store(runThread, std::memory_order::memory_order_release); }
 
         void logInfo(const char* tag);
 

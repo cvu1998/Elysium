@@ -68,27 +68,23 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) :
     m_BallTexture = m_Textures[0].getTextureData();
 
     Elysium::PhysicsSystem2D& physicsSys = Elysium::PhysicsSystem2D::Get();
-    physicsSys.createPhysicalBody(&m_Ground, Elysium::BodyType::STATIC, Elysium::Collider::QUAD, "Ground", 10.0f, { 0.0f, 0.0f }, { 500.0f, 2.0f });
+    physicsSys.createPhysicalBody(&m_Ground, Elysium::BodyType::STATIC, Elysium::Collider::QUAD, "Ground", 1000.0f, { 0.0f, 0.0f }, { 500.0f, 2.0f });
     physicsSys.createPhysicalBody(&m_MoveableBox, Elysium::BodyType::DYNAMIC, Elysium::Collider::QUAD, "Box", 10.0f, { 4.5f, 25.0f }, { 2.0f, 2.0f });
     physicsSys.createPhysicalBody(&m_Box1, Elysium::BodyType::STATIC, Elysium::Collider::QUAD, "Static-Box-Left", 10.0f, { 2.5f, 2.0f }, { 2.0f, 2.0f });
     physicsSys.createPhysicalBody(&m_Box2, Elysium::BodyType::STATIC, Elysium::Collider::QUAD, "Static-Box-Right", 10.0f, { 4.5f, 2.0f }, { 2.0f, 2.0f });
 
-    physicsSys.createPhysicalBody(&m_Ball, Elysium::BodyType::DYNAMIC, Elysium::Collider::CIRCLE, "Ball", 1.0f, { -2.0f, 10.0f }, { 2.0f, 2.0f });
-    physicsSys.createPhysicalBody(&m_Circle, Elysium::BodyType::DYNAMIC, Elysium::Collider::CIRCLE, "Circle", 1.0f, { -5.0f, 10.0f }, { 2.0f, 2.0f });
+    physicsSys.createPhysicalBody(&m_Ball, Elysium::BodyType::DYNAMIC, Elysium::Collider::CIRCLE, "Ball", 5.0f, { -2.0f, 10.0f }, { 2.0f, 2.0f });
+    physicsSys.createPhysicalBody(&m_Circle, Elysium::BodyType::DYNAMIC, Elysium::Collider::CIRCLE, "Circle", 5.0f, { -5.0f, 10.0f }, { 2.0f, 2.0f });
 
     Elysium::PhysicalBody2D* ground = physicsSys.getPhysicalBody(m_Ground);
     Elysium::PhysicalBody2D* box1 = physicsSys.getPhysicalBody(m_Box1);
     Elysium::PhysicalBody2D* box2 = physicsSys.getPhysicalBody(m_Box2);
-    ground->setFrictionCoefficient(1.0f);
-    box1->setFrictionCoefficient(1.0f);
+    ground->setFrictionCoefficient(1.05f);
+    box1->setFrictionCoefficient(0.5f);
     box2->setFrictionCoefficient(1.0f);
 
-    Elysium::PhysicalBody2D* ball = physicsSys.getPhysicalBody(m_Ball);
-    ball->setElasticityCoefficient(1.0f);
-
-    Elysium::PhysicalBody2D* circle = physicsSys.getPhysicalBody(m_Circle);
-
     m_Player.Ball = physicsSys.getPhysicalBody(m_Ball);
+    m_Player.Ball->setElasticityCoefficient(0.5f);
 
     //--- PERCEPTRON ---//
     Elysium::Perceptron perceptron(Elysium::AI::Activation::STEP);

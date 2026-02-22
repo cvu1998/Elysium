@@ -13,8 +13,7 @@ namespace Elysium
     {
         NONE = -1,
         STATIC = 0,
-        KINEMATIC = 1,
-        DYNAMIC = 2
+        DYNAMIC = 1
     };
 
     enum class BodyStatus
@@ -49,9 +48,11 @@ namespace Elysium
     {
         friend class PhysicsSystem2D;
 
-        using Collision_Callback = std::function<void(PhysicalBody2D& body,
+        using Collision_Callback = std::function<void(
+            PhysicalBody2D& body,
             PhysicalBody2D& collidee,
-            const CollisionInfo& collisionInfo)>;
+            const CollisionInfo& collisionInfo
+            )>;
 
     private:
         BodyType Type = BodyType::NONE;
@@ -73,8 +74,8 @@ namespace Elysium
         Vector2 ContactImpulse = { 0.0f, 0.0f };
         Vector2 ContactNormal = { 0.0f, 0.0f };
         
-        float ElasticityCoefficient = 1.0f;
-        float FrictionCoefficient = 0.0f;
+        float ElasticityCoefficient = 1.0f;  // 1 = e = 0 (inelastic) | 2 = e = 1 (elastic)
+        float FrictionCoefficient = 1.0f;    // 0 = no friction       | 1 = max friction
         float GravitationalAccel = 0.0f;
 
         std::vector<Vector2> m_ModelVertices;
@@ -99,18 +100,20 @@ namespace Elysium
 
     private:
         PhysicalBody2D() = default;
-        PhysicalBody2D(BodyType type, Collider collider, const char* tag, float mass,
-            const Vector2& initialPosition, const Vector2& size,
-            Collision_Callback callback);
+        PhysicalBody2D(
+            BodyType type,
+            Collider collider,
+            const char* tag, float mass,
+            const Vector2& initialPosition,
+            const Vector2& size,
+            Collision_Callback&& callback
+        );
 
         Vector2 tranformVertex(const Vector2& vertex) const;
 
-        void getVertices(std::vector<Vector2>& vertices) const;
+        void getVertices(std::array<Vector2, 4>& vertices) const;
 
-        Vector2 getMaxVertex() const;
-        Vector2 getMinVertex() const;
-
-        void updateNormals();
+        void updateBoundsAndNormals();
 
         void onUpdate(Timestep ts);
 

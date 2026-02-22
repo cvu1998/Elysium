@@ -25,6 +25,7 @@ public:
     Elysium::TextureData m_IdleTexture; 
 
     Elysium::PhysicalBody2D* Ball = nullptr;
+    unsigned long long m_FrameID = 0;
 
 public:
     DummyPlayer(

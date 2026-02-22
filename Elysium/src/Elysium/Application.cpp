@@ -79,7 +79,7 @@ namespace Elysium
 
     bool Application::onWindowCloseEvent(WindowCloseEvent& event)
     {
-        m_Running.store(false);
+        m_Running.store(false, std::memory_order::memory_order_release);
         return true;
     }
 
@@ -161,14 +161,14 @@ namespace Elysium
 
     void Application::Run()
     {
-        while (m_Running.load())
+        while (m_Running.load(std::memory_order::memory_order_acquire))
         {
             Render::Clear();
 
             float time = static_cast<float>(glfwGetTime());
-            m_Timestep.store(time - m_LastFrameTime);
+            m_Timestep.store(time - m_LastFrameTime, std::memory_order::memory_order_relaxed);
             m_LastFrameTime = time;
-            m_FrameID++;
+            m_FrameID.fetch_add(1, std::memory_order::memory_order_relaxed);
 
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplGlfw_NewFrame();

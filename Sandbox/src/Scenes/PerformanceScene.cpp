@@ -1,5 +1,7 @@
 #include "PerformanceScene.h"
 
+constexpr float BOX_MASS = 20.0f;
+
 PerformanceScene::PerformanceScene(unsigned int width, unsigned int height) :
 Scene("Stress Test"),
 m_Camera(-m_Height * (float)(width / height), m_Height * (float)(width / height), -m_Height * 0.5f, m_Height * 0.5f),
@@ -66,7 +68,7 @@ m_Player({ { -12.5f, 20.0f } })
     m_BoxTexture.subtextureCoordinates({ 4, 1 }, { 128, 128 });
 
     Elysium::PhysicsSystem2D& physicsSys = Elysium::PhysicsSystem2D::Get();
-    physicsSys.createPhysicalBody(&m_Ground, Elysium::BodyType::STATIC, Elysium::Collider::QUAD, "Ground", 10.0f, { 0.0f, 0.0f }, { 5000.0f, 2.0f });
+    physicsSys.createPhysicalBody(&m_Ground, Elysium::BodyType::STATIC, Elysium::Collider::QUAD, "Ground", 1000.0f, { 0.0f, 0.0f }, { 5000.0f, 2.0f });
 
     Elysium::PhysicalBody2D* ground = physicsSys.getPhysicalBody(m_Ground);
     ground->setFrictionCoefficient(1.0f);
@@ -74,7 +76,7 @@ m_Player({ { -12.5f, 20.0f } })
     float depth = -((float)m_GroundLayers.size() * 2.0f);
     for (size_t i = 0; i < m_GroundLayers.size(); i++)
     {
-        physicsSys.createPhysicalBody(&m_GroundLayers[i], Elysium::BodyType::STATIC, Elysium::Collider::QUAD, "Layer", 10.0f, { 0.0f, depth + (float)(2.0f * i) }, { 500.0f, 2.0f });
+        physicsSys.createPhysicalBody(&m_GroundLayers[i], Elysium::BodyType::STATIC, Elysium::Collider::QUAD, "Layer", BOX_MASS, { 0.0f, depth + (float)(2.0f * i) }, { 500.0f, 2.0f });
     }
 }
 
@@ -98,7 +100,7 @@ void PerformanceScene::onUpdate(Elysium::Timestep ts)
             float x = (Elysium::Random::Float() * 200.0f) - 100.0f;
             const float y = (float)m_Boxes.size() / 10.0f;
             Elysium::Vector2 position = { x, y };
-            physicsSys.createPhysicalBody(&m_Boxes[m_Index], Elysium::BodyType::DYNAMIC, Elysium::Collider::QUAD, "Box", 5.0f, position, { 2.0f, 2.0f });
+            physicsSys.createPhysicalBody(&m_Boxes[m_Index], Elysium::BodyType::DYNAMIC, Elysium::Collider::QUAD, "Box", BOX_MASS, position, { 2.0f, 2.0f });
 
             Elysium::PhysicalBody2D* box = physicsSys.getPhysicalBody(m_Boxes[m_Index]);
             box->setFrictionCoefficient(1.0f);
