@@ -34,28 +34,12 @@ namespace Elysium
 
 	void ParticleSystem2D::reset(size_t poolSize)
 	{
-		m_PositionX.clear();
-		m_PositionX.clear();
-		m_VelocityY.clear();
-		m_VelocityY.clear();
-
-		m_Rotation.clear();
-		m_RotationSpeed.clear();
-
-		m_SizeBegin.clear();
-		m_SizeEnd.clear();
-		m_Size.clear();
-
-		m_ColorBegin.clear();
-		m_ColorEnd.clear();
-		m_Color.clear();
-
-		m_LifeTime.clear();
-		m_LifeRemaining.clear();
-
-		m_Active.clear();
-
-		m_ParticleTextureData.clear();
+		applyOnVectors(
+			[&](auto& vec)
+			{
+				vec.clear();
+			}
+		);
 
 		resizePool(poolSize);
 
@@ -83,28 +67,12 @@ namespace Elysium
 	{
 		m_ParticlePoolSize = poolSize;
 
-		m_PositionX.resize(poolSize);
-		m_PositionY.resize(poolSize);
-		m_VelocityX.resize(poolSize);
-		m_VelocityY.resize(poolSize);
-
-		m_Rotation.resize(poolSize);
-		m_RotationSpeed.resize(poolSize);
-
-		m_SizeBegin.resize(poolSize);
-		m_SizeEnd.resize(poolSize);
-		m_Size.resize(poolSize);
-
-		m_ColorBegin.resize(poolSize);
-		m_ColorEnd.resize(poolSize);
-		m_Color.resize(poolSize);
-
-		m_LifeTime.resize(poolSize);
-		m_LifeRemaining.resize(poolSize);
-
-		m_Active.resize(poolSize);
-
-		m_ParticleTextureData.resize(poolSize); 
+		applyOnVectors(
+			[&](auto& vec)
+			{
+				vec.resize(m_ParticlePoolSize);
+			}
+		);
 
 		GL_ASSERT(glGenBuffers(s_BufferCount, m_SSBO.data()));
 		for (int i = 0; i < s_BufferCount; ++i)
@@ -112,9 +80,9 @@ namespace Elysium
 			GL_ASSERT(glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_SSBO[i]));
 			switch(i)
 			{
+			case 7:
+			case 8:
 			case 9:
-			case 10:
-			case 11:
 			{
 				GL_ASSERT(glBufferData(GL_SHADER_STORAGE_BUFFER, m_ParticlePoolSize * sizeof(Vector4), NULL, GL_STATIC_DRAW));
 				break;
@@ -130,15 +98,13 @@ namespace Elysium
 
 	void ParticleSystem2D::addParticle(const ParticleProperties& particleProperties, size_t index)
 	{
-		m_PositionX[index] = particleProperties.Position.x;
-		m_PositionY[index] = particleProperties.Position.y;
+		m_Position[index] = particleProperties.Position;
 		m_Rotation[index] = Random::Float() * 360.0f;
 		m_RotationSpeed[index] = Random::Float() * particleProperties.RotationSpeed;
 
-		m_VelocityX[index] = particleProperties.Velocity.x;
-		m_VelocityY[index] = particleProperties.Velocity.y;
-		m_VelocityX[index] += particleProperties.VelocityVariation.x * (Random::Float() - 0.5f);
-		m_VelocityY[index] += particleProperties.VelocityVariation.y * (Random::Float() - 0.5f);
+		m_Velocity[index] = particleProperties.Velocity;
+		m_Velocity[index].x += particleProperties.VelocityVariation.x * (Random::Float() - 0.5f);
+		m_Velocity[index].y += particleProperties.VelocityVariation.y * (Random::Float() - 0.5f);
 
 		m_ColorBegin[index] = particleProperties.ColorBegin;
 		m_ColorEnd[index] = particleProperties.ColorEnd;
@@ -159,8 +125,7 @@ namespace Elysium
 		for (size_t i = 0; i < m_PoolIndex; ++i)
 		{
 			m_LifeRemaining[i] -= timestep;
-			m_PositionX[i] += m_VelocityX[i] * timestep;
-			m_PositionY[i] += m_VelocityY[i] * timestep;
+			m_Position[i] += m_Velocity[i] * timestep;
 			m_Rotation[i] += m_RotationSpeed[i] * timestep;
 
 			// Fade away particles
@@ -175,48 +140,44 @@ namespace Elysium
 	template<>
 	void ParticleSystem2D::onUpdate<UpdateDevice::GPU>(Timestep ts)
 	{
-		GL_ASSERT(glNamedBufferSubData(m_SSBO[0], 0, m_PoolIndex * sizeof(float), m_PositionX.data()));
-		GL_ASSERT(glNamedBufferSubData(m_SSBO[1], 0, m_PoolIndex * sizeof(float), m_PositionY.data()));
-		GL_ASSERT(glNamedBufferSubData(m_SSBO[2], 0, m_PoolIndex * sizeof(float), m_VelocityX.data()));
-		GL_ASSERT(glNamedBufferSubData(m_SSBO[3], 0, m_PoolIndex * sizeof(float), m_VelocityY.data()));
+		GL_ASSERT(glNamedBufferSubData(m_SSBO[0], 0, m_PoolIndex * sizeof(float), m_Position.data()));
+		GL_ASSERT(glNamedBufferSubData(m_SSBO[1], 0, m_PoolIndex * sizeof(float), m_Velocity.data()));
 
-		GL_ASSERT(glNamedBufferSubData(m_SSBO[4], 0, m_PoolIndex * sizeof(float), m_Rotation.data()));
-		GL_ASSERT(glNamedBufferSubData(m_SSBO[5], 0, m_PoolIndex * sizeof(float), m_RotationSpeed.data()));
+		GL_ASSERT(glNamedBufferSubData(m_SSBO[2], 0, m_PoolIndex * sizeof(float), m_Rotation.data()));
+		GL_ASSERT(glNamedBufferSubData(m_SSBO[3], 0, m_PoolIndex * sizeof(float), m_RotationSpeed.data()));
 
-		GL_ASSERT(glNamedBufferSubData(m_SSBO[6], 0, m_PoolIndex * sizeof(float), m_SizeBegin.data()));
-		GL_ASSERT(glNamedBufferSubData(m_SSBO[7], 0, m_PoolIndex * sizeof(float), m_SizeEnd.data()));
-		GL_ASSERT(glNamedBufferSubData(m_SSBO[8], 0, m_PoolIndex * sizeof(float), m_Size.data()));
+		GL_ASSERT(glNamedBufferSubData(m_SSBO[4], 0, m_PoolIndex * sizeof(float), m_SizeBegin.data()));
+		GL_ASSERT(glNamedBufferSubData(m_SSBO[5], 0, m_PoolIndex * sizeof(float), m_SizeEnd.data()));
+		GL_ASSERT(glNamedBufferSubData(m_SSBO[6], 0, m_PoolIndex * sizeof(float), m_Size.data()));
 
-		GL_ASSERT(glNamedBufferSubData(m_SSBO[9], 0, m_PoolIndex * sizeof(Vector4), m_ColorBegin.data()));
-		GL_ASSERT(glNamedBufferSubData(m_SSBO[10], 0, m_PoolIndex * sizeof(Vector4), m_ColorEnd.data()));
-		GL_ASSERT(glNamedBufferSubData(m_SSBO[11], 0, m_PoolIndex * sizeof(Vector4), m_Color.data()));
+		GL_ASSERT(glNamedBufferSubData(m_SSBO[7], 0, m_PoolIndex * sizeof(Vector4), m_ColorBegin.data()));
+		GL_ASSERT(glNamedBufferSubData(m_SSBO[8], 0, m_PoolIndex * sizeof(Vector4), m_ColorEnd.data()));
+		GL_ASSERT(glNamedBufferSubData(m_SSBO[9], 0, m_PoolIndex * sizeof(Vector4), m_Color.data()));
 
-		GL_ASSERT(glNamedBufferSubData(m_SSBO[12], 0, m_PoolIndex * sizeof(float), m_LifeTime.data()));
-		GL_ASSERT(glNamedBufferSubData(m_SSBO[13], 0, m_PoolIndex * sizeof(float), m_LifeRemaining.data()));
+		GL_ASSERT(glNamedBufferSubData(m_SSBO[10], 0, m_PoolIndex * sizeof(float), m_LifeTime.data()));
+		GL_ASSERT(glNamedBufferSubData(m_SSBO[11], 0, m_PoolIndex * sizeof(float), m_LifeRemaining.data()));
 
 		m_ComputeShader.bind();
 		m_ComputeShader.setUniform1f("u_Timestep", static_cast<float>(ts));
 		GL_ASSERT(glDispatchCompute((m_PoolIndex / m_WorkGroupSize) + 1, 1, 1));
 		GL_ASSERT(glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT));
 
-		GL_ASSERT(glGetNamedBufferSubData(m_SSBO[0], 0, m_PoolIndex * sizeof(float), m_PositionX.data()));
-		GL_ASSERT(glGetNamedBufferSubData(m_SSBO[1], 0, m_PoolIndex * sizeof(float), m_PositionY.data()));
-		GL_ASSERT(glGetNamedBufferSubData(m_SSBO[2], 0, m_PoolIndex * sizeof(float), m_VelocityX.data()));
-		GL_ASSERT(glGetNamedBufferSubData(m_SSBO[3], 0, m_PoolIndex * sizeof(float), m_VelocityY.data()));
+		GL_ASSERT(glGetNamedBufferSubData(m_SSBO[0], 0, m_PoolIndex * sizeof(float), m_Position.data()));
+		GL_ASSERT(glGetNamedBufferSubData(m_SSBO[1], 0, m_PoolIndex * sizeof(float), m_Velocity.data()));
 
-		GL_ASSERT(glGetNamedBufferSubData(m_SSBO[4], 0, m_PoolIndex * sizeof(float), m_Rotation.data()));
-		GL_ASSERT(glGetNamedBufferSubData(m_SSBO[5], 0, m_PoolIndex * sizeof(float), m_RotationSpeed.data()));
+		GL_ASSERT(glGetNamedBufferSubData(m_SSBO[2], 0, m_PoolIndex * sizeof(float), m_Rotation.data()));
+		GL_ASSERT(glGetNamedBufferSubData(m_SSBO[3], 0, m_PoolIndex * sizeof(float), m_RotationSpeed.data()));
 
-		GL_ASSERT(glGetNamedBufferSubData(m_SSBO[6], 0, m_PoolIndex * sizeof(float), m_SizeBegin.data()));
-		GL_ASSERT(glGetNamedBufferSubData(m_SSBO[7], 0, m_PoolIndex * sizeof(float), m_SizeEnd.data()));
-		GL_ASSERT(glGetNamedBufferSubData(m_SSBO[8], 0, m_PoolIndex * sizeof(float), m_Size.data()));
+		GL_ASSERT(glGetNamedBufferSubData(m_SSBO[4], 0, m_PoolIndex * sizeof(float), m_SizeBegin.data()));
+		GL_ASSERT(glGetNamedBufferSubData(m_SSBO[5], 0, m_PoolIndex * sizeof(float), m_SizeEnd.data()));
+		GL_ASSERT(glGetNamedBufferSubData(m_SSBO[6], 0, m_PoolIndex * sizeof(float), m_Size.data()));
 
-		GL_ASSERT(glGetNamedBufferSubData(m_SSBO[9], 0, m_PoolIndex * sizeof(Vector4), m_ColorBegin.data()));
-		GL_ASSERT(glGetNamedBufferSubData(m_SSBO[10], 0, m_PoolIndex * sizeof(Vector4), m_ColorEnd.data()));
-		GL_ASSERT(glGetNamedBufferSubData(m_SSBO[11], 0, m_PoolIndex * sizeof(Vector4), m_Color.data()));
+		GL_ASSERT(glGetNamedBufferSubData(m_SSBO[7], 0, m_PoolIndex * sizeof(Vector4), m_ColorBegin.data()));
+		GL_ASSERT(glGetNamedBufferSubData(m_SSBO[8], 0, m_PoolIndex * sizeof(Vector4), m_ColorEnd.data()));
+		GL_ASSERT(glGetNamedBufferSubData(m_SSBO[9], 0, m_PoolIndex * sizeof(Vector4), m_Color.data()));
 
-		GL_ASSERT(glGetNamedBufferSubData(m_SSBO[12], 0, m_PoolIndex * sizeof(float), m_LifeTime.data()));
-		GL_ASSERT(glGetNamedBufferSubData(m_SSBO[13], 0, m_PoolIndex * sizeof(float), m_LifeRemaining.data()));
+		GL_ASSERT(glGetNamedBufferSubData(m_SSBO[10], 0, m_PoolIndex * sizeof(float), m_LifeTime.data()));
+		GL_ASSERT(glGetNamedBufferSubData(m_SSBO[11], 0, m_PoolIndex * sizeof(float), m_LifeRemaining.data()));
 	}
 
 	void ParticleSystem2D::Emit(const ParticleProperties& particleProperties)
@@ -252,10 +213,8 @@ namespace Elysium
 				m_Active[i] = false;
 
 				--m_PoolIndex;
-				std::swap(m_PositionX[i], m_PositionX[m_PoolIndex]);
-				std::swap(m_PositionY[i], m_PositionY[m_PoolIndex]);
-				std::swap(m_VelocityX[i], m_VelocityX[m_PoolIndex]);
-				std::swap(m_VelocityY[i], m_VelocityY[m_PoolIndex]);
+				std::swap(m_Position[i], m_Position[m_PoolIndex]);
+				std::swap(m_Velocity[i], m_Velocity[m_PoolIndex]);
 				std::swap(m_Rotation[i], m_Rotation[m_PoolIndex]);
 				std::swap(m_RotationSpeed[i], m_RotationSpeed[m_PoolIndex]);
 				std::swap(m_SizeBegin[i], m_SizeBegin[m_PoolIndex]);
@@ -275,7 +234,7 @@ namespace Elysium
 			particleTextureData.RendererID +=  1 + ( m_ParticleTextureData[i].RendererID  - 1 ) * ( m_ParticleTextureData[i].RendererID > 1 );
 
 			Renderer::drawQuadWithRotation(
-				{ m_PositionX[i], m_PositionY[i] },
+				m_Position[i],
 				{ m_Size[i], m_Size[i] },
 				glm::radians(m_Rotation[i]),
 				particleTextureData,

@@ -44,10 +44,8 @@ namespace Elysium
 		size_t m_ParticlePoolSize;
 		uint32_t m_PoolIndex;
 
-		std::vector<float> m_PositionX;
-		std::vector<float> m_PositionY;
-		std::vector<float> m_VelocityX;
-		std::vector<float> m_VelocityY;
+		std::vector<Vector2> m_Position;
+		std::vector<Vector2> m_Velocity;
 
 		std::vector<float> m_Rotation;
 		std::vector<float> m_RotationSpeed;
@@ -67,7 +65,7 @@ namespace Elysium
 
 		std::vector<TextureData> m_ParticleTextureData;
 
-		static constexpr int s_BufferCount = 14;
+		static constexpr int s_BufferCount = 12;
 		std::array<unsigned int, s_BufferCount> m_SSBO;
 		Shader m_ComputeShader;
 
@@ -83,6 +81,31 @@ namespace Elysium
 		ParticleSystem2D& operator=(ParticleSystem2D&&) = delete;
 
 		void addParticle(const ParticleProperties& particleProperties, size_t index);
+
+		template<typename f>
+		void applyOnVectors(f&& function)
+		{
+			function(m_Position);
+			function(m_Velocity);
+
+			function(m_Rotation);
+			function(m_RotationSpeed);
+
+			function(m_SizeBegin);
+			function(m_SizeEnd);
+			function(m_Size);
+
+			function(m_ColorBegin);
+			function(m_ColorEnd);
+			function(m_Color);
+
+			function(m_LifeTime);
+			function(m_LifeRemaining);
+
+			function(m_Active);
+
+			function(m_ParticleTextureData);
+		}
 
 	public:
 		static void Init(size_t poolSize);

@@ -1,64 +1,56 @@
 #shader compute
 #version 430 core
 
-layout(std430, binding = 0) buffer PositionXBuffer
+layout(std430, binding = 0) buffer PositionBuffer
 {
-	float PositionX[];
+	vec2 Position[];
 };
-layout(std430, binding = 1) buffer PositionYBuffer
+layout(std430, binding = 1) buffer VelocityBuffer
 {
-	float PositionY[];
-};
-layout(std430, binding = 2) buffer VelocityXBuffer
-{
-	float VelocityX[];
-};
-layout(std430, binding = 3) buffer VelocityYBuffer
-{
-	float VelocityY[];
+	vec2 Velocity[];
 };
 
-layout(std430, binding = 4) buffer RotationBuffer
+layout(std430, binding = 2) buffer RotationBuffer
 {
 	float Rotation[];
 };
 
-layout(std430, binding = 5) buffer RotationSpeedBuffer
+layout(std430, binding = 3) buffer RotationSpeedBuffer
 {
 	float RotationSpeed[];
 };
 
-layout(std430, binding = 6) buffer SizeBeginBuffer
+layout(std430, binding = 4) buffer SizeBeginBuffer
 {
 	float SizeBegin[];
 };
-layout(std430, binding = 7) buffer SizeEndBuffer
+layout(std430, binding = 5) buffer SizeEndBuffer
 {
 	float SizeEnd[];
 };
-layout(std430, binding = 8) buffer SizeBuffer
+layout(std430, binding = 6) buffer SizeBuffer
 {
 	float Size[];
 };
 
-layout(std430, binding = 9) buffer ColorBeginBuffer
+layout(std430, binding = 7) buffer ColorBeginBuffer
 {
 	vec4 ColorBegin[];
 };
-layout(std430, binding = 10) buffer ColorEndBuffer
+layout(std430, binding = 8) buffer ColorEndBuffer
 {
 	vec4 ColorEnd[];
 };
-layout(std430, binding = 11) buffer ColorBuffer
+layout(std430, binding = 9) buffer ColorBuffer
 {
 	vec4 Color[];
 };
 
-layout(std430, binding = 12) buffer LifeTimeBuffer
+layout(std430, binding = 10) buffer LifeTimeBuffer
 {
 	float LifeTime[];
 };
-layout(std430, binding = 13) buffer LifeRemainingBuffer
+layout(std430, binding = 11) buffer LifeRemainingBuffer
 {
 	float LifeRemaining[];
 };
@@ -72,8 +64,7 @@ void main()
 	uint gid = gl_GlobalInvocationID.x;
 
 	LifeRemaining[gid] -= u_Timestep;
-	PositionX[gid] += VelocityX[gid] * u_Timestep;
-	PositionY[gid] += VelocityY[gid] * u_Timestep;
+	Position[gid] += Velocity[gid] * u_Timestep;
 	Rotation[gid] += RotationSpeed[gid] * u_Timestep;
 
 	// Fade away particles
