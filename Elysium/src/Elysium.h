@@ -3,7 +3,6 @@
 // ---Application---
 #include "Elysium/Application.h"
 #include "Elysium/Layer.h"
-#include "Elysium/Scene.h"
 #include "Elysium/Window.h"
 
 #include "Elysium/Timestep.h"
@@ -13,7 +12,7 @@
 #include "Elysium/MouseCodes.h"
 
 #include "Elysium/OrthographicCameraController.h"
-#include "Elysium/ParticleSystem.h"
+#include "Elysium/ParticleSystem2D.h"
 
 #include "Elysium/Animation.h"
 #include "Elysium/Math.h"
@@ -24,7 +23,6 @@
 #include "Elysium/Physics/PhysicsSystem2D.h"
 #include "Elysium/Physics/PhysicalBody2D.h"
 
-#include "Elysium/Editor.h"
 #include "Elysium/ImGuiUtility.h"
 
 #include "Elysium/Utility.h"

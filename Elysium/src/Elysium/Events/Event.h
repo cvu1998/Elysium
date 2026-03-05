@@ -73,8 +73,8 @@ namespace Elysium
     public:
         EventDispatcher(Event& event) : m_Event(event) { }
         
-        template<typename T>
-        bool Dispatch(EventFunction<T> function)
+        template<std::derived_from<Event> T, typename F>
+        bool Dispatch(F&& function)
         {
             if (m_Event.getEventType() == T::getStaticType())
             {

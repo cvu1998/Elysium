@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Game/Systems.h"
+#include "Elysium.h"
 
 class DummyPlayer
 {
@@ -25,10 +25,18 @@ public:
     Elysium::TextureData m_IdleTexture; 
 
     Elysium::PhysicalBody2D* Ball = nullptr;
+    unsigned long long m_FrameID = 0;
 
 public:
-    DummyPlayer(const Elysium::Vector2& position, int up = ELY_KEY_W, int left = ELY_KEY_A, int right = ELY_KEY_D,
-        int kick = ELY_KEY_S, int lob = ELY_KEY_Q, int swap = ELY_KEY_E);
+    DummyPlayer(
+        const Elysium::Vector2& position,
+        int up = ELY_KEY_W,
+        int left = ELY_KEY_A,
+        int right = ELY_KEY_D,
+        int kick = ELY_KEY_S,
+        int lob = ELY_KEY_Q,
+        int swap = ELY_KEY_E
+    );
 
     inline Elysium::PhysicalBody2D* getBody() { return m_Player; }
 

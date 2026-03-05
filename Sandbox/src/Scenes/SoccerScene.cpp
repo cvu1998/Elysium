@@ -1,6 +1,7 @@
 #include "SoccerScene.h"
 
-SoccerScene::SoccerScene(unsigned int width, unsigned int height) : Elysium::Scene("Soccer"),
+SoccerScene::SoccerScene(unsigned int width, unsigned int height) :
+Scene("Soccer"),
 m_Camera(-m_Height * (float)(width / height), m_Height* (float)(width / height), 0.0f, m_Height),
 m_Player({ -27.5f, 20.0f }),
 m_Adversary({ 27.5f, 20.0f }, ELY_KEY_UP, ELY_KEY_LEFT, ELY_KEY_RIGHT,
@@ -43,44 +44,43 @@ m_Adversary({ 27.5f, 20.0f }, ELY_KEY_UP, ELY_KEY_LEFT, ELY_KEY_RIGHT,
 
     m_BallTexture = m_Textures[3].getTextureData();
 
-    e_PhysicsSystem2D.createPhysicalBody(&m_Ground, Elysium::BodyType::STATIC, Elysium::Collider::QUAD, "Ground", 10.0f, { 0.0f, 0.0f }, { 500.0f, 2.0f });
-    e_PhysicsSystem2D.createPhysicalBody(&m_Ball, Elysium::BodyType::DYNAMIC, Elysium::Collider::CIRCLE, "Ball", 1.0f, { 0.0f, 10.0f }, { 2.0f, 2.0f });
+    Elysium::PhysicsSystem2D& physicsSys = Elysium::PhysicsSystem2D::Get();
+    physicsSys.createPhysicalBody(&m_Ground, Elysium::BodyType::STATIC, Elysium::Collider::QUAD, "Ground", 10.0f, { 0.0f, 0.0f }, { 500.0f, 2.0f });
+    physicsSys.createPhysicalBody(&m_Ball, Elysium::BodyType::DYNAMIC, Elysium::Collider::CIRCLE, "Ball", 2.5f, { 0.0f, 10.0f }, { 2.0f, 2.0f });
 
-    e_PhysicsSystem2D.createPhysicalBody(&m_Rectangles[0], Elysium::BodyType::STATIC, Elysium::Collider::QUAD, "Rectangle", 0.0f, { 0.0f, 29.0f }, { 60.0f, 2.0f });
-    e_PhysicsSystem2D.createPhysicalBody(&m_Rectangles[1], Elysium::BodyType::STATIC, Elysium::Collider::QUAD, "Rectangle", 0.0f, { -30.0f, 20.0f }, { 2.0f, 30.0f });
-    e_PhysicsSystem2D.createPhysicalBody(&m_Rectangles[2], Elysium::BodyType::STATIC, Elysium::Collider::QUAD, "Rectangle", 0.0f, { 30.0f, 20.0f }, { 2.0f, 30.0f });
+    physicsSys.createPhysicalBody(&m_Rectangles[0], Elysium::BodyType::STATIC, Elysium::Collider::QUAD, "Rectangle", 0.0f, { 0.0f, 29.0f }, { 60.0f, 2.0f });
+    physicsSys.createPhysicalBody(&m_Rectangles[1], Elysium::BodyType::STATIC, Elysium::Collider::QUAD, "Rectangle", 0.0f, { -30.0f, 20.0f }, { 2.0f, 30.0f });
+    physicsSys.createPhysicalBody(&m_Rectangles[2], Elysium::BodyType::STATIC, Elysium::Collider::QUAD, "Rectangle", 0.0f, { 30.0f, 20.0f }, { 2.0f, 30.0f });
 
-    Elysium::PhysicalBody2D* ground = e_PhysicsSystem2D.getPhysicalBody(m_Ground);
+    Elysium::PhysicalBody2D* ground = physicsSys.getPhysicalBody(m_Ground);
     ground->setFrictionCoefficient(1.0f);
 
-    Elysium::PhysicalBody2D* ball = e_PhysicsSystem2D.getPhysicalBody(m_Ball);
-    ball->setElasticityCoefficient(1.0f);
-
-    m_Player.Ball = e_PhysicsSystem2D.getPhysicalBody(m_Ball);
-    m_Adversary.Ball = e_PhysicsSystem2D.getPhysicalBody(m_Ball);
+    m_Player.Ball = physicsSys.getPhysicalBody(m_Ball);
+    m_Adversary.Ball = physicsSys.getPhysicalBody(m_Ball);
+    m_Player.Ball->setElasticityCoefficient(0.5f);
 
     m_Camera.setPosition({ 0.0f, -1.0f, 0.0f });
 }
 
 SoccerScene::~SoccerScene()
 {
-    e_PhysicsSystem2D.clear();
 }
 
 void SoccerScene::onUpdate(Elysium::Timestep ts)
 {
+    Elysium::PhysicsSystem2D& physicsSys = Elysium::PhysicsSystem2D::Get();
     if (m_GameOver)
     {
-        e_PhysicsSystem2D.removePhysicalBody(m_Ball);
+        physicsSys.removePhysicalBody(m_Ball);
         Elysium::PhysicalBody2D* adversary = m_Adversary.getBody();
         Elysium::PhysicalBody2D* player = m_Player.getBody();
 
         adversary->Position = { 27.5f, 20.0f };
         player->Position = { -27.5f, 20.0f };
 
-        e_PhysicsSystem2D.createPhysicalBody(&m_Ball, Elysium::BodyType::DYNAMIC, Elysium::Collider::CIRCLE, "Ball", 1.0f, { 0.0f, 10.0f }, { 2.0f, 2.0f });
+        physicsSys.createPhysicalBody(&m_Ball, Elysium::BodyType::DYNAMIC, Elysium::Collider::CIRCLE, "Ball", 1.0f, { 0.0f, 10.0f }, { 2.0f, 2.0f });
             
-        Elysium::PhysicalBody2D* ball = e_PhysicsSystem2D.getPhysicalBody(m_Ball);
+        Elysium::PhysicalBody2D* ball = physicsSys.getPhysicalBody(m_Ball);
         ball->setElasticityCoefficient(1.0f);
 
         m_GameOver = false;
@@ -88,8 +88,8 @@ void SoccerScene::onUpdate(Elysium::Timestep ts)
 
     Elysium::PhysicalBody2D* adversary = m_Adversary.getBody();
     Elysium::PhysicalBody2D* player = m_Player.getBody();
-    const Elysium::PhysicalBody2D& ground = e_PhysicsSystem2D.readPhysicalBody(m_Ground);
-    const Elysium::PhysicalBody2D& ball = e_PhysicsSystem2D.readPhysicalBody(m_Ball);
+    const Elysium::PhysicalBody2D& ground = physicsSys.readPhysicalBody(m_Ground);
+    const Elysium::PhysicalBody2D& ball = physicsSys.readPhysicalBody(m_Ball);
 
     Elysium::Renderer::beginScene(m_Camera);
     Elysium::Renderer::drawQuad({ 0.0f, 15.0f }, { 1000.0f, 30.0f }, m_Background, { 15.0f, 1.0f });
@@ -99,7 +99,7 @@ void SoccerScene::onUpdate(Elysium::Timestep ts)
     auto width = Elysium::Application::Get().getWindow().getWidth();
     auto height = Elysium::Application::Get().getWindow().getHeight();
 
-    e_PhysicsSystem2D.onUpdate(ts);
+    physicsSys.onUpdate(ts);
 
     m_Adversary.onUpdate(ts);
     m_Player.onUpdate(ts);
@@ -123,7 +123,7 @@ void SoccerScene::onUpdate(Elysium::Timestep ts)
 
     for (size_t i = 0 ; i < m_Rectangles.size(); i++)
     {
-        const Elysium::PhysicalBody2D& rectangle = e_PhysicsSystem2D.readPhysicalBody(m_Rectangles[i]);
+        const Elysium::PhysicalBody2D& rectangle = physicsSys.readPhysicalBody(m_Rectangles[i]);
         switch (i)
         {
         case 1:

@@ -1,8 +1,9 @@
 #pragma once
 
+#include "../Scene.h"
 #include "Game/DummyPlayer.h"
 
-class PerformanceScene : public Elysium::Scene
+class PerformanceScene : public Scene
 {
 private:
     float m_Height = 30.0f;
@@ -13,7 +14,6 @@ private:
 
     Elysium::ParticleProperties m_Particle;
     Elysium::ParticleProperties m_Particle2;
-    Elysium::ParticleSystem m_ParticleSystem;
 
     DummyPlayer m_Player;
 
@@ -29,6 +29,12 @@ private:
 public:
     PerformanceScene(unsigned int height, unsigned int width);
     ~PerformanceScene();
+
+    inline void Cleanup() override
+    {
+        Elysium::PhysicsSystem2D::Shutdown();
+        Elysium::ParticleSystem2D::Shutdown();
+    }
 
     void onUpdate(Elysium::Timestep ts) override;
     void onEvent(Elysium::Event& event) override;

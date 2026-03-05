@@ -7,7 +7,6 @@
 #include <imgui/imgui_impl_opengl3.h>
 
 #include "Elysium/LayerStack.h"
-#include "Elysium/SceneManager.h"
 #include "Elysium/Window.h"
 
 namespace Elysium 
@@ -15,33 +14,25 @@ namespace Elysium
     class Application final
     {
     private:
-        static Application* s_Instance;
-
         std::unique_ptr<Window> m_Window;
-        bool m_ImGui;
-        bool m_Running = true;
+        std::atomic<bool> m_Running = true;
         bool m_Minimized = false;
         float m_LastFrameTime = 0.0f;
+        std::atomic<unsigned long long> m_FrameID = 0;
+        std::atomic<Timestep> m_Timestep;
 
-        using UpdateFunction = std::function<void()>;
-
-        UpdateFunction m_Run;
-        UpdateFunction m_Function;
-
-    public:
-        LayerStack LayerStack;
-        SceneManager SceneManager;
+        LayerStack m_LayerStack;
 
     private:
-        Application(const UpdateFunction& function,
+        Application(
             const std::string& title, 
-            unsigned int width, unsigned int height,
-            bool imgui);
+            unsigned int width,
+            unsigned int height
+        );
         ~Application();
 
         Application(const Application&) = delete;
         Application(Application&&) = delete;
-
         Application& operator=(const Application&) = delete;
         Application& operator=(Application&&) = delete;
 
@@ -50,24 +41,28 @@ namespace Elysium
         bool onWindowCloseEvent(WindowCloseEvent& event);
         bool onWindowResizeEvent(WindowResizeEvent& event);
 
-        void runWithImGui();
-        void runWithoutImGui();
-
     public:
-        static Application* createApplication(const UpdateFunction& function,
+        static void Init(
             const std::string& title = "Elysium Engine",
-            unsigned int width = 1280, unsigned int height = 720,
-            bool imgui = true);
+            unsigned int width = 1280,
+            unsigned int height = 720
+        );
+        static void Shutdown();
 
-        static Application& Get() { return *s_Instance; }
+        static Application& Get();
+        unsigned long long getFrameID() { return m_FrameID.load(std::memory_order_relaxed); }
+        Timestep getTimestep() { return m_Timestep.load(std::memory_order_relaxed); }
+        bool isRunning() { return m_Running.load(std::memory_order_acquire);  }
+
         static std::string openFile(const char* filter);
         static std::string saveFile(const char* filter);
 
         Window& getWindow() { return *m_Window; }
         const Window& getWindow() const { return *m_Window; }
 
+        inline LayerStack& getLayerStack() { return m_LayerStack;  }
+
         void Run();
-        void Shutdown();
     };
 }
 

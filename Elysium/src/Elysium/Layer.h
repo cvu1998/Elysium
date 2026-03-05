@@ -13,6 +13,7 @@ namespace Elysium
 
     public:
         Layer(const char* name = "Layer");
+        Layer(const Layer& other) = delete;
         virtual ~Layer() = default;
 
         virtual void onAttach() { }
@@ -21,5 +22,3 @@ namespace Elysium
         virtual void onEvent(Event& event) { }
     };
 }
-
-

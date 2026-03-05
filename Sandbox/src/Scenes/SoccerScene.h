@@ -1,8 +1,9 @@
 #pragma once
 
+#include "../Scene.h"
 #include "Game/DummyPlayer.h"
 
-class SoccerScene : public Elysium::Scene
+class SoccerScene : public Scene
 {
 private:
     float m_Height = 30.0f;
@@ -28,6 +29,11 @@ private:
 public:
     SoccerScene(unsigned int height, unsigned int width);
     ~SoccerScene();
+
+    inline void Cleanup() override
+    {
+        Elysium::PhysicsSystem2D::Shutdown();
+    }
 
     void onUpdate(Elysium::Timestep ts) override;
     void onEvent(Elysium::Event& event) override;

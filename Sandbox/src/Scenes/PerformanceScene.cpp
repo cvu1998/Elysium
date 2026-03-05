@@ -1,8 +1,10 @@
 #include "PerformanceScene.h"
 
-PerformanceScene::PerformanceScene(unsigned int width, unsigned int height) : Elysium::Scene("Stress Test"),
+constexpr float BOX_MASS = 20.0f;
+
+PerformanceScene::PerformanceScene(unsigned int width, unsigned int height) :
+Scene("Stress Test"),
 m_Camera(-m_Height * (float)(width / height), m_Height * (float)(width / height), -m_Height * 0.5f, m_Height * 0.5f),
-m_ParticleSystem(17500, Elysium::UpdateDevice::CPU),
 m_Player({ { -12.5f, 20.0f } })
 {
     Elysium::Random::Init();
@@ -22,6 +24,8 @@ m_Player({ { -12.5f, 20.0f } })
     m_Textures.emplace_back("res/texture/Run (8).png");
 
     m_Background = m_Textures[2].getTextureData();
+
+    Elysium::ParticleSystem2D::Init(17500);
 
     m_Particle.Position = { 0.0f, 0.0f };
     m_Particle.Velocity = { 0.0f, 0.0f };
@@ -63,41 +67,47 @@ m_Player({ { -12.5f, 20.0f } })
     m_BoxTexture = m_Textures[1].getTextureData();
     m_BoxTexture.subtextureCoordinates({ 4, 1 }, { 128, 128 });
 
-    e_PhysicsSystem2D.createPhysicalBody(&m_Ground, Elysium::BodyType::STATIC, Elysium::Collider::QUAD, "Ground", 10.0f, { 0.0f, 0.0f }, { 5000.0f, 2.0f });
+    Elysium::PhysicsSystem2D& physicsSys = Elysium::PhysicsSystem2D::Get();
+    physicsSys.createPhysicalBody(&m_Ground, Elysium::BodyType::STATIC, Elysium::Collider::QUAD, "Ground", 1000.0f, { 0.0f, 0.0f }, { 5000.0f, 2.0f });
 
-    Elysium::PhysicalBody2D* ground = e_PhysicsSystem2D.getPhysicalBody(m_Ground);
+    Elysium::PhysicalBody2D* ground = physicsSys.getPhysicalBody(m_Ground);
     ground->setFrictionCoefficient(1.0f);
 
     float depth = -((float)m_GroundLayers.size() * 2.0f);
     for (size_t i = 0; i < m_GroundLayers.size(); i++)
     {
-        e_PhysicsSystem2D.createPhysicalBody(&m_GroundLayers[i], Elysium::BodyType::STATIC, Elysium::Collider::QUAD, "Layer", 10.0f, { 0.0f, depth + (float)(2.0f * i) }, { 500.0f, 2.0f });
+        physicsSys.createPhysicalBody(&m_GroundLayers[i], Elysium::BodyType::STATIC, Elysium::Collider::QUAD, "Layer", BOX_MASS, { 0.0f, depth + (float)(2.0f * i) }, { 500.0f, 2.0f });
     }
 }
 
 PerformanceScene::~PerformanceScene()
 {
-    e_PhysicsSystem2D.clear();
 }
 
 void PerformanceScene::onUpdate(Elysium::Timestep ts)
 {
-    const Elysium::PhysicalBody2D* player = m_Player.getBody();
-    const Elysium::PhysicalBody2D& ground = e_PhysicsSystem2D.readPhysicalBody(m_Ground);
-
-    m_SpawnTime += ts;
-    if (m_Index < m_Boxes.size() && m_SpawnTime > 0.05f)
+    const Elysium::PhysicalBody2D* player = nullptr;
+    const Elysium::PhysicalBody2D* ground = nullptr;
+    Elysium::PhysicsSystem2D& physicsSys = Elysium::PhysicsSystem2D::Get();
     {
-        float x = (Elysium::Random::Float() * 200.0f) - 100.0f;
-        const float y = (float)m_Boxes.size() / 10.0f;
-        Elysium::Vector2 position = { x, y };
-        e_PhysicsSystem2D.createPhysicalBody(&m_Boxes[m_Index], Elysium::BodyType::DYNAMIC, Elysium::Collider::QUAD, "Box", 5.0f, position, { 2.0f, 2.0f });
-        
-        Elysium::PhysicalBody2D* box = e_PhysicsSystem2D.getPhysicalBody(m_Boxes[m_Index]);
-        box->setFrictionCoefficient(1.0f);
+        std::scoped_lock lock(physicsSys.getUpdateMutex());
+        player = m_Player.getBody();
+        ground = &physicsSys.readPhysicalBody(m_Ground);
 
-        m_Index++;
-        m_SpawnTime = 0.0f;
+        m_SpawnTime += ts;
+        if (m_Index < m_Boxes.size() && m_SpawnTime > 0.05f)
+        {
+            float x = (Elysium::Random::Float() * 200.0f) - 100.0f;
+            const float y = (float)m_Boxes.size() / 10.0f;
+            Elysium::Vector2 position = { x, y };
+            physicsSys.createPhysicalBody(&m_Boxes[m_Index], Elysium::BodyType::DYNAMIC, Elysium::Collider::QUAD, "Box", BOX_MASS, position, { 2.0f, 2.0f });
+
+            Elysium::PhysicalBody2D* box = physicsSys.getPhysicalBody(m_Boxes[m_Index]);
+            box->setFrictionCoefficient(1.0f);
+
+            m_Index++;
+            m_SpawnTime = 0.0f;
+        }
     }
 
     m_Camera.setPosition({ player->Position.x, player->Position.y + (player->getSize().y * 4.0f), 0.0f });
@@ -115,28 +125,26 @@ void PerformanceScene::onUpdate(Elysium::Timestep ts)
 
     for (int i = 0; i < 5; i++)
     {
-        m_ParticleSystem.Emit(m_Particle);
-        m_ParticleSystem.Emit(m_Particle2);
+        Elysium::ParticleSystem2D::Get().Emit(m_Particle);
+        Elysium::ParticleSystem2D::Get().Emit(m_Particle2);
     }
-    m_ParticleSystem.onUpdate(ts);
-    m_ParticleSystem.onRender(m_Camera);
-
-    e_PhysicsSystem2D.onUpdate(ts);
+    Elysium::ParticleSystem2D::Get().onUpdate<Elysium::UpdateDevice::CPU>(ts);
+    Elysium::ParticleSystem2D::Get().onRender(m_Camera);
 
     m_Player.onUpdate(ts);
 
     Elysium::Renderer::beginScene(m_Camera);
     Elysium::Renderer::drawQuad(player->Position, player->getSize(), m_Player.m_TextureData);
-    Elysium::Renderer::drawQuad(ground.Position, ground.getSize(), m_GroundTexture);
+    Elysium::Renderer::drawQuad(ground->Position, ground->getSize(), m_GroundTexture);
     for (Elysium::BodyHandle& body : m_GroundLayers)
     {
-        const Elysium::PhysicalBody2D& layer = e_PhysicsSystem2D.readPhysicalBody(body);
+        const Elysium::PhysicalBody2D& layer = physicsSys.readPhysicalBody(body);
         Elysium::Renderer::drawQuad(layer.Position, layer.getSize(), m_GroundTexture);
     }
     unsigned int number = 0;
     for (size_t i = 0; i < m_Index; i++)
     {
-        const Elysium::PhysicalBody2D& b = e_PhysicsSystem2D.readPhysicalBody(m_Boxes[i]);
+        const Elysium::PhysicalBody2D& b = physicsSys.readPhysicalBody(m_Boxes[i]);
         Elysium::Renderer::drawQuadWithRotation(b.Position, b.getSize(), b.Rotation, m_BoxTexture);
         if (b.Position.y > 0.0f)
             number++;

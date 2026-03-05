@@ -2,9 +2,10 @@
 
 #include <Elysium.h>
 
+#include "../Scene.h"
 #include "Game/TicTacToeMinimax.h"
 
-class TicTacToeScene : public Elysium::Scene
+class TicTacToeScene : public Scene
 {
 private:
     float m_Height = 30.0f;
@@ -13,10 +14,10 @@ private:
     Elysium::Texture m_X;
     Elysium::Texture m_O;
 
-    std::array<Elysium::Vector2, 9> m_Coins;
-    std::array<uint32_t, 9> m_CoinsTextureIndexes = { 0 };
-    Elysium::BodyHandle m_CoinIndex = 0;
-    std::array<Elysium::TextureData, 2> m_CoinTextures; // 1 X, 2 O
+    std::array<Elysium::Vector2, 9> m_Marks;
+    std::array<uint32_t, 9> m_MarksTextureIndexes = { 0 };
+    Elysium::BodyHandle m_MarkIndex = 0;
+    std::array<Elysium::TextureData, 2> m_MarkTextures; // 1 X, 2 O
 
     TicTacToeGrid m_Grid;
     int m_Turn = 1;
