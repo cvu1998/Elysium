@@ -112,7 +112,7 @@ namespace Elysium
 
         std::mutex& getUpdateMutex() { return m_UpdateMutex; }
 
-        void runThread(bool runThread) { m_RunUpdateThread.store(runThread, std::memory_order::memory_order_release); }
+        void runThread(bool runThread) { m_RunUpdateThread.store(runThread, std::memory_order_release); }
 
         void logInfo(const char* tag);
 

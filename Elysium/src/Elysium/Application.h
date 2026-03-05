@@ -50,8 +50,8 @@ namespace Elysium
         static void Shutdown();
 
         static Application& Get();
-        unsigned long long getFrameID() { return m_FrameID.load(std::memory_order::memory_order_relaxed); }
-        Timestep getTimestep() { return m_Timestep.load(std::memory_order::memory_order_relaxed); }
+        unsigned long long getFrameID() { return m_FrameID.load(std::memory_order_relaxed); }
+        Timestep getTimestep() { return m_Timestep.load(std::memory_order_relaxed); }
         bool isRunning() { return m_Running.load(std::memory_order_acquire);  }
 
         static std::string openFile(const char* filter);

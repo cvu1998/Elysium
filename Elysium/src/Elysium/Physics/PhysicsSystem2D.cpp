@@ -44,7 +44,7 @@ namespace Elysium
 
     void PhysicsSystem2D::Shutdown()
     {
-        s_Instance->m_Shutdown.store(true, std::memory_order::relaxed);
+        s_Instance->m_Shutdown.store(true, std::memory_order_relaxed);
         delete s_Instance;
         s_Instance = nullptr;
     }
@@ -513,11 +513,11 @@ namespace Elysium
 
     void PhysicsSystem2D::Update()
     {
-        while (!m_Shutdown.load(std::memory_order::memory_order_relaxed))
+        while (!m_Shutdown.load(std::memory_order_relaxed))
         {
             auto frameID = Application::Get().getFrameID();
             auto timestep = Application::Get().getTimestep();
-            if (m_LastFrameID < frameID && m_RunUpdateThread.load(std::memory_order::memory_order_acquire))
+            if (m_LastFrameID < frameID && m_RunUpdateThread.load(std::memory_order_acquire))
             {
                 m_LastFrameID = frameID;
                 std::scoped_lock lock(m_UpdateMutex);

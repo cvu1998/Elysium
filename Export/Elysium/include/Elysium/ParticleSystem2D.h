@@ -11,6 +11,7 @@
 #include "Elysium/Math.h"
 #include "Elysium/Timestep.h"
 #include "Elysium/Utility.h"
+#include "Elysium/Timer.h"
 
 #include "Elysium/Renderer/Camera.h"
 #include "Elysium/Renderer/Renderer.h"
@@ -39,32 +40,35 @@ namespace Elysium
 	class ParticleSystem2D
 	{
 	private:
-		struct Particle
-		{
-			Vector4 ColorBegin, ColorEnd, Color;
-
-			Vector2 Position;
-			Vector2 Velocity;
-
-			float Rotation;
-			float RotationSpeed;
-
-			float SizeBegin, SizeEnd, Size;
-
-			float LifeTime;
-			float LifeRemaining;
-
-			bool Active = false;
-		};
-
 		bool m_Warning = false;
 		size_t m_ParticlePoolSize;
 		uint32_t m_PoolIndex;
 
-		std::vector<Particle> m_ParticlePool;
+		std::vector<float> m_PositionX;
+		std::vector<float> m_PositionY;
+		std::vector<float> m_VelocityX;
+		std::vector<float> m_VelocityY;
+
+		std::vector<float> m_Rotation;
+		std::vector<float> m_RotationSpeed;
+
+		std::vector<float> m_SizeBegin;
+		std::vector<float> m_SizeEnd;
+		std::vector<float> m_Size;
+
+		std::vector<Vector4> m_ColorBegin;
+		std::vector<Vector4> m_ColorEnd;
+		std::vector<Vector4> m_Color;
+
+		std::vector<float> m_LifeTime;
+		std::vector<float> m_LifeRemaining;
+
+		std::vector<float> m_Active;
+
 		std::vector<TextureData> m_ParticleTextureData;
 
-		unsigned int m_SSBO;
+		static constexpr int s_BufferCount = 14;
+		std::array<unsigned int, s_BufferCount> m_SSBO;
 		Shader m_ComputeShader;
 
 		int m_WorkGroupSize;
@@ -78,7 +82,7 @@ namespace Elysium
 		ParticleSystem2D& operator=(const ParticleSystem2D&) = delete;
 		ParticleSystem2D& operator=(ParticleSystem2D&&) = delete;
 
-		void addParticle(const ParticleProperties& particleProperties, Particle& particle);
+		void addParticle(const ParticleProperties& particleProperties, size_t index);
 
 	public:
 		static void Init(size_t poolSize);
