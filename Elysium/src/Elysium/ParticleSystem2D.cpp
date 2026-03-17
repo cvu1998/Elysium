@@ -74,6 +74,11 @@ namespace Elysium
 			}
 		);
 
+		for (size_t i = 0; i < m_ParticlePoolSize; ++i)
+		{
+			m_ParticleTextureData[i].RendererID = 1U;
+		}
+
 		GL_ASSERT(glGenBuffers(s_BufferCount, m_SSBO.data()));
 		for (int i = 0; i < s_BufferCount; ++i)
 		{
@@ -114,8 +119,6 @@ namespace Elysium
 
 		m_LifeTime[index] = particleProperties.LifeTime;
 		m_LifeRemaining[index] = particleProperties.LifeTime;
-
-		m_Active[index] = true;
 	}
 
 	template<>
@@ -160,6 +163,69 @@ namespace Elysium
 		m_ComputeShader.bind();
 		m_ComputeShader.setUniform1f("u_Timestep", static_cast<float>(ts));
 		GL_ASSERT(glDispatchCompute((m_PoolIndex / m_WorkGroupSize) + 1, 1, 1));
+	}
+
+	void ParticleSystem2D::Emit(const ParticleProperties& particleProperties)
+	{
+		if (m_PoolIndex < m_ParticlePoolSize)
+		{
+			addParticle(particleProperties, m_PoolIndex);
+			if (particleProperties.TextureData.RendererID > 0U)
+			{
+				m_ParticleTextureData[m_PoolIndex] = particleProperties.TextureData;
+			}
+			++m_PoolIndex;
+		}
+		else
+		{
+			if (!m_Warning)
+			{
+				ELY_CORE_WARN("Increase Pool Size!");
+				m_Warning = true;
+			}
+		}
+	}
+
+	template<>
+	void ParticleSystem2D::onRender<UpdateDevice::CPU>(const OrthographicCamera& camera)
+	{
+		Renderer::beginScene(camera);
+		for (size_t i = 0; i < m_PoolIndex;)
+		{
+			if (m_LifeRemaining[i] <= 0.0f)
+			{
+				--m_PoolIndex;
+				std::swap(m_Position[i], m_Position[m_PoolIndex]);
+				std::swap(m_Velocity[i], m_Velocity[m_PoolIndex]);
+				std::swap(m_Rotation[i], m_Rotation[m_PoolIndex]);
+				std::swap(m_RotationSpeed[i], m_RotationSpeed[m_PoolIndex]);
+				std::swap(m_SizeBegin[i], m_SizeBegin[m_PoolIndex]);
+				std::swap(m_Size[i], m_Size[m_PoolIndex]);
+				std::swap(m_ColorBegin[i], m_ColorBegin[m_PoolIndex]);
+				std::swap(m_ColorEnd[i], m_ColorEnd[m_PoolIndex]);
+				std::swap(m_Color[i], m_Color[m_PoolIndex]);
+				std::swap(m_LifeTime[i], m_LifeTime[m_PoolIndex]);
+				std::swap(m_LifeRemaining[i], m_LifeRemaining[m_PoolIndex]);
+				std::swap(m_ParticleTextureData[i], m_ParticleTextureData[m_PoolIndex]);
+				continue;
+			}
+
+			Renderer::drawQuadWithRotation(
+				m_Position[i],
+				{ m_Size[i], m_Size[i] },
+				glm::radians(m_Rotation[i]),
+				m_ParticleTextureData[i],
+				{ 1.0f, 1.0f },
+				m_Color[i]
+			);
+			++i;
+		}
+		Renderer::endScene();
+	}
+
+	template<>
+	void ParticleSystem2D::onRender<UpdateDevice::GPU>(const OrthographicCamera& camera)
+	{
 		GL_ASSERT(glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT));
 
 		GL_ASSERT(glGetNamedBufferSubData(m_SSBO[0], 0, m_PoolIndex * sizeof(float), m_Position.data()));
@@ -178,40 +244,12 @@ namespace Elysium
 
 		GL_ASSERT(glGetNamedBufferSubData(m_SSBO[10], 0, m_PoolIndex * sizeof(float), m_LifeTime.data()));
 		GL_ASSERT(glGetNamedBufferSubData(m_SSBO[11], 0, m_PoolIndex * sizeof(float), m_LifeRemaining.data()));
-	}
 
-	void ParticleSystem2D::Emit(const ParticleProperties& particleProperties)
-	{
-		if (!m_Active[m_PoolIndex] && m_PoolIndex < m_ParticlePoolSize)
-		{
-			addParticle(particleProperties, m_PoolIndex);
-			m_ParticleTextureData[m_PoolIndex++] = particleProperties.TextureData;
-		}
-		else
-		{
-			if (!m_Warning)
-			{
-				ELY_CORE_WARN("Increase Pool Size!");
-				m_Warning = true;
-			}
-		}
-	}
-
-	template<UpdateDevice U>
-	void ParticleSystem2D::onUpdate(Timestep ts)
-	{
-		onUpdate<U>(ts);
-	}
-
-	void ParticleSystem2D::onRender(const OrthographicCamera& camera)
-	{
 		Renderer::beginScene(camera);
-		for (size_t i = 0; i < m_PoolIndex; ++i)
+		for (size_t i = 0; i < m_PoolIndex;)
 		{
 			if (m_LifeRemaining[i] <= 0.0f)
 			{
-				m_Active[i] = false;
-
 				--m_PoolIndex;
 				std::swap(m_Position[i], m_Position[m_PoolIndex]);
 				std::swap(m_Velocity[i], m_Velocity[m_PoolIndex]);
@@ -224,23 +262,19 @@ namespace Elysium
 				std::swap(m_Color[i], m_Color[m_PoolIndex]);
 				std::swap(m_LifeTime[i], m_LifeTime[m_PoolIndex]);
 				std::swap(m_LifeRemaining[i], m_LifeRemaining[m_PoolIndex]);
-				std::swap(m_Active[i], m_Active[m_PoolIndex]);
 				std::swap(m_ParticleTextureData[i], m_ParticleTextureData[m_PoolIndex]);
 				continue;
 			}
-
-			TextureData particleTextureData = m_ParticleTextureData[i];
-			// RendererID = .RendererID > 1 ? RendererID : 1;
-			particleTextureData.RendererID +=  1 + ( m_ParticleTextureData[i].RendererID  - 1 ) * ( m_ParticleTextureData[i].RendererID > 1 );
 
 			Renderer::drawQuadWithRotation(
 				m_Position[i],
 				{ m_Size[i], m_Size[i] },
 				glm::radians(m_Rotation[i]),
-				particleTextureData,
+				m_ParticleTextureData[i],
 				{ 1.0f, 1.0f },
 				m_Color[i]
 			);
+			++i;
 		}
 		Renderer::endScene();
 	}

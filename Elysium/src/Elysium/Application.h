@@ -15,11 +15,12 @@ namespace Elysium
     {
     private:
         std::unique_ptr<Window> m_Window;
-        std::atomic<bool> m_Running = true;
         bool m_Minimized = false;
         float m_LastFrameTime = 0.0f;
-        std::atomic<unsigned long long> m_FrameID = 0;
-        std::atomic<Timestep> m_Timestep;
+
+        alignas(std::hardware_destructive_interference_size * 2) std::atomic<bool> m_Running = true;
+        alignas(std::hardware_destructive_interference_size * 2) std::atomic<unsigned long long> m_FrameID = 0;
+        alignas(std::hardware_destructive_interference_size * 2) std::atomic<Timestep> m_Timestep;
 
         LayerStack m_LayerStack;
 

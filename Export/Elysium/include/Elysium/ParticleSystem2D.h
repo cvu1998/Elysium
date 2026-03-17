@@ -61,8 +61,6 @@ namespace Elysium
 		std::vector<float> m_LifeTime;
 		std::vector<float> m_LifeRemaining;
 
-		std::vector<float> m_Active;
-
 		std::vector<TextureData> m_ParticleTextureData;
 
 		static constexpr int s_BufferCount = 12;
@@ -102,8 +100,6 @@ namespace Elysium
 			function(m_LifeTime);
 			function(m_LifeRemaining);
 
-			function(m_Active);
-
 			function(m_ParticleTextureData);
 		}
 
@@ -118,7 +114,7 @@ namespace Elysium
 		void reset(size_t poolSize);
 		void resizePool(size_t poolSize);
 
-		template<UpdateDevice T>
+		template<UpdateDevice D>
 		void onUpdate(Timestep ts);
 
 		template<>
@@ -127,6 +123,13 @@ namespace Elysium
 		template<>
 		void onUpdate<UpdateDevice::GPU>(Timestep ts);
 
+		template<UpdateDevice D>
 		void onRender(const OrthographicCamera& camera);
+
+		template<>
+		void onRender<UpdateDevice::CPU>(const OrthographicCamera& camera);
+
+		template<>
+		void onRender<UpdateDevice::GPU>(const OrthographicCamera& camera);
 	};
 }

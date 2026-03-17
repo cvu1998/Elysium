@@ -122,14 +122,13 @@ void PerformanceScene::onUpdate(Elysium::Timestep ts)
 
     m_Particle.Position = m_Camera.getScreenToWorldPosition(width, height, mousePosition);
     m_Particle2.Position = { player->Position.x, player->Position.y };
-
     for (int i = 0; i < 5; i++)
     {
         Elysium::ParticleSystem2D::Get().Emit(m_Particle);
         Elysium::ParticleSystem2D::Get().Emit(m_Particle2);
     }
     Elysium::ParticleSystem2D::Get().onUpdate<Elysium::UpdateDevice::CPU>(ts);
-    Elysium::ParticleSystem2D::Get().onRender(m_Camera);
+    Elysium::ParticleSystem2D::Get().onRender<Elysium::UpdateDevice::CPU>(m_Camera);
 
     m_Player.onUpdate(ts);
 

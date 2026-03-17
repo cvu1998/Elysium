@@ -21,20 +21,21 @@ namespace Elysium
 {
 	struct ParticleProperties
 	{
-		Vector2		Position = { 0.0f, 0.0f };
-		Vector2		Velocity = { 0.0f, 10.0f };
-		Vector2		VelocityVariation = { 1.0f, 1.0f };
-		float			RotationSpeed = 180.f;
+		Vector2		Position			= { 0.0f, 0.0f };
+		Vector2		Velocity			= { 0.0f, 10.0f };
+		Vector2		VelocityVariation	= { 1.0f, 1.0f };
+		float		RotationSpeed		= 180.f;
 
-		Vector4		ColorBegin = { 1.0f, 1.0f, 1.0f, 1.0f };
-		Vector4		ColorEnd = { 0.0f, 0.0f, 0.0f, 1.0f };
-		TextureData		TextureData;
+		Vector4		ColorBegin	= { 1.0f, 1.0f, 1.0f, 1.0f };
+		Vector4		ColorEnd	= { 0.0f, 0.0f, 0.0f, 1.0f };
 
-		float			SizeBegin = 1.0f;
-		float			SizeEnd = 0.0f;
-		float			SizeVariation = 0.1f;
+		TextureData	TextureData;
 
-		float			LifeTime = 1.0f;
+		float		SizeBegin		= 1.0f;
+		float		SizeEnd			= 0.0f;
+		float		SizeVariation	= 0.1f;
+
+		float		LifeTime = 1.0f;
 	};
 
 	class ParticleSystem2D
@@ -60,8 +61,6 @@ namespace Elysium
 
 		std::vector<float> m_LifeTime;
 		std::vector<float> m_LifeRemaining;
-
-		std::vector<float> m_Active;
 
 		std::vector<TextureData> m_ParticleTextureData;
 
@@ -102,8 +101,6 @@ namespace Elysium
 			function(m_LifeTime);
 			function(m_LifeRemaining);
 
-			function(m_Active);
-
 			function(m_ParticleTextureData);
 		}
 
@@ -118,7 +115,7 @@ namespace Elysium
 		void reset(size_t poolSize);
 		void resizePool(size_t poolSize);
 
-		template<UpdateDevice T>
+		template<UpdateDevice D>
 		void onUpdate(Timestep ts);
 
 		template<>
@@ -127,6 +124,13 @@ namespace Elysium
 		template<>
 		void onUpdate<UpdateDevice::GPU>(Timestep ts);
 
+		template<UpdateDevice D>
 		void onRender(const OrthographicCamera& camera);
+
+		template<>
+		void onRender<UpdateDevice::CPU>(const OrthographicCamera& camera);
+
+		template<>
+		void onRender<UpdateDevice::GPU>(const OrthographicCamera& camera);
 	};
 }

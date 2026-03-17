@@ -299,12 +299,13 @@ namespace Elysium
         float textureIndex = 0.0f;
         float halfLength = size.x * 0.5f;
         float halfWidth = size.y * 0.5f;
-
         for (size_t i = 0; i < 4; i++)
         {
 
-            s_Data->QuadBufferPtr->Position = { position.x + halfLength * s_Data->PositionSign[i].x,
-                position.y + halfWidth * s_Data->PositionSign[i].y };
+            s_Data->QuadBufferPtr->Position = {
+                position.x + halfLength * s_Data->PositionSign[i].x,
+                position.y + halfWidth * s_Data->PositionSign[i].y
+            };
 
             s_Data->QuadBufferPtr->Color = color;
             s_Data->QuadBufferPtr->TextureCoordinates = s_Data->TextureCoordinates[i];
@@ -334,24 +335,25 @@ namespace Elysium
         {
             if (s_Data->TextureSlots[i] == textureID)
             {
-                textureIndex = float(i);
+                textureIndex = static_cast<float>(i);
                 break;
             }
         }
 
         if (textureIndex == 0.0f)
         {
-            textureIndex = (float)s_Data->TextureSlotIndex;
+            textureIndex = static_cast<float>(s_Data->TextureSlotIndex);
             s_Data->TextureSlots[s_Data->TextureSlotIndex++] = textureID;
         }
 
         float halfLength = size.x * 0.5f;
         float halfWidth = size.y * 0.5f;
-
         for (size_t i = 0; i < 4; i++)
         {
-            s_Data->QuadBufferPtr->Position = { position.x + halfLength * s_Data->PositionSign[i].x,
-                position.y + halfWidth * s_Data->PositionSign[i].y };
+            s_Data->QuadBufferPtr->Position = {
+                position.x + halfLength * s_Data->PositionSign[i].x,
+                position.y + halfWidth * s_Data->PositionSign[i].y
+            };
 
             s_Data->QuadBufferPtr->Color = color;
             s_Data->QuadBufferPtr->TextureCoordinates = texture.TextureCoordinates[i];
@@ -379,12 +381,19 @@ namespace Elysium
 
         Complex transform(cos(rotation), sin(rotation));
         Complex translation(position.x, position.y);
-
         for (size_t i = 0; i < 4; i++)
         {
-            s_Data->QuadBufferPtr->Position = (glm::vec2) (Complex::scaleXY(Complex(s_Data->QuadVertexPositions[i].x, s_Data->QuadVertexPositions[i].y), size.x, size.y)
+            s_Data->QuadBufferPtr->Position = static_cast<glm::vec2>(
+                Complex::scaleXY(
+                Complex(
+                    s_Data->QuadVertexPositions[i].x,
+                    s_Data->QuadVertexPositions[i].y),
+                    size.x,
+                    size.y
+                )
                 * transform
-                + translation);
+                + translation
+                );
 
             s_Data->QuadBufferPtr->Color = color;
             s_Data->QuadBufferPtr->TextureCoordinates = s_Data->TextureCoordinates[i];
@@ -401,7 +410,7 @@ namespace Elysium
         const glm::vec2& tillingFactor,
         const glm::vec4& color)
     {
-        if (s_Data->QuadIndexCount >= MaxQuadIndexCount || s_Data->TextureSlotIndex > 32)
+        if (s_Data->QuadIndexCount >= MaxQuadIndexCount || s_Data->TextureSlotIndex > 32U)
         {
             endQuadBatch();
             flushQuads();
@@ -410,29 +419,37 @@ namespace Elysium
 
         unsigned int textureID = texture.RendererID;
         float textureIndex = 0.0f;
-        for (unsigned int i = 1; i < s_Data->TextureSlotIndex; i++)
+        for (unsigned int i = 1U; i < s_Data->TextureSlotIndex; i++)
         {
             if (s_Data->TextureSlots[i] == textureID)
             {
-                textureIndex = float(i);
+                textureIndex = static_cast<float>(i);
                 break;
             }
         }
 
         if (textureIndex == 0.0f)
         {
-            textureIndex = (float)s_Data->TextureSlotIndex;
+            textureIndex = static_cast<float>(s_Data->TextureSlotIndex);
             s_Data->TextureSlots[s_Data->TextureSlotIndex++] = textureID;
         }
 
         Complex transform(cos(rotation), sin(rotation));
         Complex translation(position.x, position.y);
-
         for (size_t i = 0; i < 4; i++)
         {
-            s_Data->QuadBufferPtr->Position = (glm::vec2) (Complex::scaleXY(Complex(s_Data->QuadVertexPositions[i].x, s_Data->QuadVertexPositions[i].y), size.x, size.y)
+            s_Data->QuadBufferPtr->Position = static_cast<glm::vec2>(
+                Complex::scaleXY(
+                Complex(
+                    s_Data->QuadVertexPositions[i].x,
+                    s_Data->QuadVertexPositions[i].y
+                ),
+                size.x,
+                size.y
+                )
                 * transform
-                + translation);
+                + translation
+                );
 
             s_Data->QuadBufferPtr->Color = color;
             s_Data->QuadBufferPtr->TextureCoordinates = texture.TextureCoordinates[i];

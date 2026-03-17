@@ -13,21 +13,30 @@ namespace Elysium
         friend class Texture;
 
     private:
-        int m_Width, m_Height;
+        int m_Width;
+        int m_Height;
 
     public:
         unsigned int RendererID = 0;
 
         bool CoordinatesInverted = false;
-        glm::vec2 TextureCoordinates[4] = { {0.0f, 0.0f}, {1.0f, 0.0f}, {1.0f, 1.0f}, {0.0f, 1.0f} };
+        glm::vec2 TextureCoordinates[4] = {
+            {0.0f, 0.0f},
+            {1.0f, 0.0f},
+            {1.0f, 1.0f},
+            {0.0f, 1.0f}
+        };
 
         inline int getHeight() const { return m_Height; }
         inline int getWidth() const { return m_Width; }
 
         void reflectAroundXAxis();
         void reflectAroundYAxis();
-        void subtextureCoordinates(const glm::vec2& coordinates, const glm::vec2& size,
-            const glm::vec2& offset = { 0.0f, 0.0f });
+        void subtextureCoordinates(
+            const glm::vec2& coordinates,
+            const glm::vec2& size,
+            const glm::vec2& offset = { 0.0f, 0.0f }
+        );
     };
 
     class Texture

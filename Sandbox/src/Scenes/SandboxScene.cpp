@@ -201,9 +201,7 @@ SandboxScene::SandboxScene(unsigned int width, unsigned int height) :
         Elysium::Matrix::Slice(IrisData, 0, 145, 4, 0),
         10000,
         10);
-    //IrisModel.save("res/AI/iris-model");
 
-    //IrisModel.load("res/AI/iris-model");
     IrisModel.summary();
 
     Elysium::Matrix IrisResults;
@@ -241,6 +239,12 @@ void SandboxScene::onUpdate(Elysium::Timestep ts)
 
     m_Particle.Position = m_Camera.getScreenToWorldPosition(width, height, mousePosition);
     m_Particle2.Position = { player->Position.x, player->Position.y };
+    for (int i = 0; i < 10; i++)
+    {
+        Elysium::ParticleSystem2D::Get().Emit(m_Particle);
+        Elysium::ParticleSystem2D::Get().Emit(m_Particle2);
+    }
+    Elysium::ParticleSystem2D::Get().onUpdate<Elysium::UpdateDevice::CPU>(ts);
 
     physicsSys.onUpdate(ts);
 
@@ -250,13 +254,7 @@ void SandboxScene::onUpdate(Elysium::Timestep ts)
     Elysium::Renderer::drawQuad({ 0.0f, 15.0f }, { 1000.0f, 30.0f }, m_Background, { 15.0f, 1.0f });
     Elysium::Renderer::endScene();
 
-    for (int i = 0; i < 5; i++)
-    {
-        Elysium::ParticleSystem2D::Get().Emit(m_Particle);
-        Elysium::ParticleSystem2D::Get().Emit(m_Particle2);
-    }
-    Elysium::ParticleSystem2D::Get().onUpdate<Elysium::UpdateDevice::CPU>(ts);
-    Elysium::ParticleSystem2D::Get().onRender(m_Camera);
+    Elysium::ParticleSystem2D::Get().onRender<Elysium::UpdateDevice::CPU>(m_Camera);
 
     Elysium::Renderer::beginScene(m_Camera);
     Elysium::Renderer::drawQuad(player->Position, player->getSize(), m_Player.m_TextureData);

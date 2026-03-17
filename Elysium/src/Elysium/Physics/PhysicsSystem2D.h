@@ -2,6 +2,7 @@
 
 #include <atomic>
 #include <deque>
+#include <memory>
 #include <mutex>
 #include <thread>
 #include <unordered_set>
@@ -25,8 +26,8 @@ namespace Elysium
         std::thread m_UpdateThread;
         std::mutex m_UpdateMutex;
         unsigned long long m_LastFrameID = 0;
-        std::atomic<bool> m_RunUpdateThread;
-        std::atomic<bool> m_Shutdown = false;
+        alignas(std::hardware_destructive_interference_size * 2) std::atomic<bool> m_RunUpdateThread = false;
+        alignas(std::hardware_destructive_interference_size * 2) std::atomic<bool> m_Shutdown = false;
 
     public:
         bool Gravity = true;
@@ -63,7 +64,7 @@ namespace Elysium
         void Update();
 
     public:
-        template<UpdateDevice T>
+        template<UpdateDevice D>
         static void Init();
 
         template<>
