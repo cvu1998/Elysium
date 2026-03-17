@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.13.0)
+cmake_minimum_required(VERSION 3.20.0)
 project(Glad
         VERSION 1.0
         LANGUAGES CXX
@@ -19,6 +19,5 @@ target_compile_features("${PROJECT_NAME}" PUBLIC cxx_std_20)
 add_library("${PROJECT_NAME}" STATIC "${SOURCES}")
 
 target_include_directories(Glad
-    PUBLIC  include/
-    PRIVATE src/
+    PUBLIC PUBLIC_HEADER
 )
