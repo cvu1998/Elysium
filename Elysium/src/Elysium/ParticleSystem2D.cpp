@@ -74,11 +74,6 @@ namespace Elysium
 			}
 		);
 
-		for (size_t i = 0; i < m_ParticlePoolSize; ++i)
-		{
-			m_ParticleTextureData[i].RendererID = 1U;
-		}
-
 		GL_ASSERT(glGenBuffers(s_BufferCount, m_SSBO.data()));
 		for (int i = 0; i < s_BufferCount; ++i)
 		{
@@ -170,11 +165,7 @@ namespace Elysium
 		if (m_PoolIndex < m_ParticlePoolSize)
 		{
 			addParticle(particleProperties, m_PoolIndex);
-			if (particleProperties.TextureData.RendererID > 0U)
-			{
-				m_ParticleTextureData[m_PoolIndex] = particleProperties.TextureData;
-			}
-			++m_PoolIndex;
+			m_ParticleTextureData[m_PoolIndex++] = particleProperties.TextureData;
 		}
 		else
 		{
@@ -210,11 +201,15 @@ namespace Elysium
 				continue;
 			}
 
+			std::array<unsigned int, 2> textureID = { 1, m_ParticleTextureData[i].RendererID };
+			TextureData textureData = m_ParticleTextureData[i];
+			textureData.RendererID = textureID[m_ParticleTextureData[i].RendererID > 1];
+			
 			Renderer::drawQuadWithRotation(
 				m_Position[i],
 				{ m_Size[i], m_Size[i] },
 				glm::radians(m_Rotation[i]),
-				m_ParticleTextureData[i],
+				textureData,
 				{ 1.0f, 1.0f },
 				m_Color[i]
 			);

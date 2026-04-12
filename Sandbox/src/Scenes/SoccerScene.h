@@ -19,11 +19,12 @@ private:
     uint32_t m_BlueScore = 0;
     uint32_t m_RedScore = 0;
 
-    std::array<Elysium::BodyHandle, 3> m_Rectangles;
+    std::array<Elysium::BodyID , 3> m_Rectangles;
 
-    Elysium::BodyHandle m_Ground;
+    Elysium::BodyID m_Ground;
+    Elysium::BodyID m_Ball;
+
     Elysium::TextureData m_GroundTexture;
-    Elysium::BodyHandle m_Ball;
     Elysium::TextureData m_BallTexture;
 
 public:

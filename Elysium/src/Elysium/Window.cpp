@@ -31,7 +31,13 @@ namespace Elysium
             s_GLFWInitialized = true;
         }
 
-        m_Window = glfwCreateWindow((int)m_Data.Width, (int)m_Data.Height, m_Data.Title.c_str(), nullptr, nullptr);
+        m_Window = glfwCreateWindow(
+            static_cast<int>(m_Data.Width),
+            static_cast<int>(m_Data.Height),
+            m_Data.Title.data(),
+            nullptr,
+            nullptr
+        );
         if (!m_Window)
         {
             glfwSetErrorCallback(GLFWErrorCallback);

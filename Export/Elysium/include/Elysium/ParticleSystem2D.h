@@ -21,20 +21,21 @@ namespace Elysium
 {
 	struct ParticleProperties
 	{
-		Vector2		Position = { 0.0f, 0.0f };
-		Vector2		Velocity = { 0.0f, 10.0f };
-		Vector2		VelocityVariation = { 1.0f, 1.0f };
-		float			RotationSpeed = 180.f;
+		Vector2		Position			= { 0.0f, 0.0f };
+		Vector2		Velocity			= { 0.0f, 10.0f };
+		Vector2		VelocityVariation	= { 1.0f, 1.0f };
+		float		RotationSpeed		= 180.f;
 
-		Vector4		ColorBegin = { 1.0f, 1.0f, 1.0f, 1.0f };
-		Vector4		ColorEnd = { 0.0f, 0.0f, 0.0f, 1.0f };
-		TextureData		TextureData;
+		Vector4		ColorBegin	= { 1.0f, 1.0f, 1.0f, 1.0f };
+		Vector4		ColorEnd	= { 0.0f, 0.0f, 0.0f, 1.0f };
 
-		float			SizeBegin = 1.0f;
-		float			SizeEnd = 0.0f;
-		float			SizeVariation = 0.1f;
+		TextureData	TextureData;
 
-		float			LifeTime = 1.0f;
+		float		SizeBegin		= 1.0f;
+		float		SizeEnd			= 0.0f;
+		float		SizeVariation	= 0.1f;
+
+		float		LifeTime = 1.0f;
 	};
 
 	class ParticleSystem2D

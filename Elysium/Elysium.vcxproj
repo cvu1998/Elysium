@@ -250,6 +250,7 @@ xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\Elysium.lib" "$(So
     <ClCompile Include="src\Elysium\Renderer\Shader.cpp" />
     <ClCompile Include="src\Elysium\Renderer\IndexBuffer.cpp" />
     <ClCompile Include="src\Elysium\Renderer\RenderUtility.cpp" />
+    <ClCompile Include="src\Elysium\String.cpp" />
     <ClCompile Include="src\Elysium\Timer.cpp" />
     <ClCompile Include="src\Elysium\Window.cpp" />
     <ClCompile Include="src\Elysium\Renderer\VertexBuffer.cpp" />
@@ -410,6 +411,7 @@ xcopy "$(SolutionDir)bin\$(Configuration)-$(Platform)\Elysium\Elysium.lib" "$(So
     <ClInclude Include="src\Elysium\AI\HiddenLayer.h" />
     <ClInclude Include="src\Elysium\AI\Matrix.h" />
     <ClInclude Include="src\Elysium\AI\Perceptron.h" />
+    <ClInclude Include="src\Elysium\String.h" />
     <ClInclude Include="src\Elysium\ImGuiUtility.h" />
     <ClInclude Include="src\Elysium\MathUtility.h" />
     <ClInclude Include="src\Elysium\Network\network_header.h" />

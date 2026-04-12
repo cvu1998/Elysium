@@ -3,6 +3,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include "Elysium/String.h"
 #include "Elysium/Events/ApplicationEvent.h"
 #include "Elysium/Events/KeyEvent.h"
 #include "Elysium/Events/MouseEvent.h"
@@ -11,10 +12,10 @@ namespace Elysium
 {
     struct WindowProperties
     {
-        std::string Title;
+        String32 Title;
         unsigned int Width, Height;
 
-        WindowProperties(const std::string& title, unsigned int width, unsigned int height) :
+        WindowProperties(const String32& title, unsigned int width, unsigned int height) :
             Title(title), Width(width), Height(height) { }
     };
 
@@ -27,7 +28,7 @@ namespace Elysium
 
         struct WindowData
         {
-            std::string Title;
+            String32 Title;
             unsigned int Width, Height;
 
             int Status;

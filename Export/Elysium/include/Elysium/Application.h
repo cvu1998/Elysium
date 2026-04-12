@@ -19,14 +19,14 @@ namespace Elysium
         float m_LastFrameTime = 0.0f;
 
         alignas(std::hardware_destructive_interference_size * 2) std::atomic<bool> m_Running = true;
-        alignas(std::hardware_destructive_interference_size * 2) std::atomic<unsigned long long> m_FrameID = 0;
+        alignas(std::hardware_destructive_interference_size * 2) std::atomic<uint64_t> m_FrameID = 0;
         alignas(std::hardware_destructive_interference_size * 2) std::atomic<Timestep> m_Timestep;
 
         LayerStack m_LayerStack;
 
     private:
         Application(
-            const std::string& title, 
+            const String32& title,
             unsigned int width,
             unsigned int height
         );
@@ -44,14 +44,14 @@ namespace Elysium
 
     public:
         static void Init(
-            const std::string& title = "Elysium Engine",
+            const String32& title = "Elysium Engine",
             unsigned int width = 1280,
             unsigned int height = 720
         );
         static void Shutdown();
 
         static Application& Get();
-        unsigned long long getFrameID() { return m_FrameID.load(std::memory_order_relaxed); }
+        uint64_t getFrameID() { return m_FrameID.load(std::memory_order_relaxed); }
         Timestep getTimestep() { return m_Timestep.load(std::memory_order_relaxed); }
         bool isRunning() { return m_Running.load(std::memory_order_acquire);  }
 

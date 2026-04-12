@@ -16,7 +16,7 @@ namespace Elysium
     inline static Application* s_Instance = nullptr;
 
     Application::Application( 
-        const std::string& title,
+        const String32& title,
         unsigned int width,
         unsigned int height
     )
@@ -98,7 +98,7 @@ namespace Elysium
     }
 
     void Application::Init(
-        const std::string& title, 
+        const String32& title,
         unsigned int width,
         unsigned int height
     )

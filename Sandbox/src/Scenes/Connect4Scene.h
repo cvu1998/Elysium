@@ -13,9 +13,9 @@ private:
     Elysium::OrthographicCamera m_Camera;
     Elysium::Texture m_SpriteSheet;
 
-    std::array<Elysium::BodyHandle, 9> m_Rectangles;
-    std::array<std::pair<Elysium::PhysicalBody2D*, uint32_t>, 42> m_Coins = { std::make_pair(nullptr, 0) };
-    Elysium::BodyHandle m_CoinIndex = 0;
+    std::array<Elysium::BodyID , 9> m_Rectangles;
+    std::array<std::pair<Elysium::BodyID, uint32_t>, 42> m_Coins = { std::make_pair(0, 0) };
+    unsigned int m_CoinIndex = 0;
     // 1 Yellow and 2 Red
     std::array<glm::vec4, 2> m_CoinColors;
     Elysium::Texture m_CoinTexture;

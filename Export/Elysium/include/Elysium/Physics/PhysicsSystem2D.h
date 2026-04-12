@@ -1,6 +1,5 @@
 #pragma once
 
-#include <atomic>
 #include <deque>
 #include <memory>
 #include <mutex>
@@ -13,23 +12,23 @@
 
 namespace Elysium
 {
-    using BodyHandle = unsigned short;
-
-    const float EPSILON = 1e-6f;
-
     class PhysicsSystem2D final
     {
     private:
-        std::deque<PhysicalBody2D> m_Bodies;
-        std::vector<BodyHandle> m_InactiveBodies;
+        std::vector<PhysicalBody2D> m_Bodies;
+        std::vector<BodyID> m_IdPool;
+        std::vector<BodyID> m_BodyIndices;
 
         std::thread m_UpdateThread;
+        uint64_t m_LastFrameID = 0;
+
         std::mutex m_UpdateMutex;
-        unsigned long long m_LastFrameID = 0;
-        alignas(std::hardware_destructive_interference_size * 2) std::atomic<bool> m_RunUpdateThread = false;
+        bool m_RunUpdateThread = false;
         alignas(std::hardware_destructive_interference_size * 2) std::atomic<bool> m_Shutdown = false;
 
     public:
+        inline static constexpr float EPSILON = 1e-6f;
+
         bool Gravity = true;
         float GravitationalAccel = -9.80f;
 
@@ -59,7 +58,7 @@ namespace Elysium
             Timestep ts
         );
 
-        void printInfo(BodyHandle i);
+        void printBodyInfo(size_t index);
 
         void Update();
 
@@ -77,7 +76,7 @@ namespace Elysium
 
         static PhysicsSystem2D& Get();
 
-        PhysicalBody2D* createPhysicalBody(
+        BodyID createPhysicalBody(
             BodyType type,
             Collider collider,
             const char* name,
@@ -87,35 +86,20 @@ namespace Elysium
             PhysicalBody2D::Collision_Callback&& callback = nullptr
         );
 
-        void createPhysicalBody(
-            BodyHandle* handle,
-            BodyType type,
-            Collider collider,
-            const char* name,
-            float mass,
-            const Vector2& initialPosition,
-            const Vector2& size,
-            PhysicalBody2D::Collision_Callback&& callback = nullptr
-        );
+        void removePhysicalBody(BodyID id);
 
-        void removePhysicalBody(BodyHandle body);
+        PhysicalBody2D& getBody(BodyID id) { return m_Bodies[m_BodyIndices[id]]; }
 
-        PhysicalBody2D* getPhysicalBody(BodyHandle identifier) { return &m_Bodies[identifier]; };
-        const PhysicalBody2D& readPhysicalBody(BodyHandle identifier) const { return m_Bodies[identifier]; };
-
-        std::deque<PhysicalBody2D>& getBodies() { return m_Bodies; }
         void clear()
         {
-            std::scoped_lock lock(m_UpdateMutex);
             m_Bodies.clear();
-            m_InactiveBodies.clear();
+            m_IdPool.clear();
+            m_BodyIndices.clear();
         }
 
         std::mutex& getUpdateMutex() { return m_UpdateMutex; }
 
-        void runThread(bool runThread) { m_RunUpdateThread.store(runThread, std::memory_order_release); }
-
-        void logInfo(const char* tag);
+        bool isRunningThread() { return m_RunUpdateThread; }
 
         void onUpdate(Timestep ts);
     };

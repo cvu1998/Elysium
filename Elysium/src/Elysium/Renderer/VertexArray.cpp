@@ -33,7 +33,7 @@ namespace Elysium
 #ifndef _WIN64
         unsigned int offset = 0;
 #else
-        unsigned long long offset = 0;
+        uint64_t offset = 0;
 #endif
         for (unsigned int i = 0; i < elements.size(); ++i)
         {
@@ -43,7 +43,7 @@ namespace Elysium
 #ifndef _WIN64
             offset += element.count * VertexBufferElement::getSizeOfType((DataType)element.type);
 #else
-            offset += (unsigned long long)element.count * VertexBufferElement::getSizeOfType((DataType)element.type);
+            offset += static_cast<uint64_t>(element.count) * static_cast<uint64_t>(VertexBufferElement::getSizeOfType((DataType)element.type));
 #endif
         }
     }

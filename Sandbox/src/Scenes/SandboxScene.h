@@ -18,15 +18,16 @@ private:
 
     DummyPlayer m_Player;
 
-    Elysium::BodyHandle m_MoveableBox;
-    Elysium::BodyHandle m_Ground;
+    Elysium::BodyID m_MoveableBox;
+    Elysium::BodyID m_Ground;
+    Elysium::BodyID m_Box1;
+    Elysium::BodyID m_Box2;
+    Elysium::BodyID m_Ball;
+    Elysium::BodyID m_Circle;
+
     Elysium::TextureData m_GroundTexture;
-    Elysium::BodyHandle m_Box1;
-    Elysium::BodyHandle m_Box2;
-    Elysium::TextureData m_BoxTexture;
-    Elysium::BodyHandle m_Ball;
-    Elysium::BodyHandle m_Circle;
     Elysium::TextureData m_BallTexture;
+    Elysium::TextureData m_BoxTexture;
 
 public:
     SandboxScene(unsigned int height, unsigned int width);

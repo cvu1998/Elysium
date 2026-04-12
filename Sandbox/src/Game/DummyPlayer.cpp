@@ -24,7 +24,7 @@ DummyPlayer::DummyPlayer(
     SwapKey(swap),
     RunAnimation(m_FrameRate)
 {
-    m_Player = Elysium::PhysicsSystem2D::Get().createPhysicalBody(
+    m_PlayerID = Elysium::PhysicsSystem2D::Get().createPhysicalBody(
         Elysium::BodyType::DYNAMIC,
         Elysium::Collider::QUAD,
         "Player",
@@ -33,7 +33,7 @@ DummyPlayer::DummyPlayer(
         { 2.0f, 2.0f },
         [this](Elysium::PhysicalBody2D& body, Elysium::PhysicalBody2D& collidee, const Elysium::CollisionInfo& info)
         {
-            if (body.Velocity.y < Elysium::EPSILON && info.CollisionInfoPair[0].Normal.y > 0.1f)
+            if (body.Velocity.y < 0.01f && info.CollisionInfoPair[0].Normal.y > 0.1f)
             {
                 if (Elysium::Input::isKeyPressed(UpKey))
                 {
@@ -44,9 +44,9 @@ DummyPlayer::DummyPlayer(
         }
     );
 
-    m_Player->setFrictionCoefficient(0.2f);
-    m_Player->AllowRotation = false;
-    m_Player->setNumberOfCallbackExecution(1);
+    getBody().setFrictionCoefficient(0.2f);
+    getBody().AllowRotation = false;
+    getBody().setNumberOfCallbackExecution(1);
 }
 
 void DummyPlayer::onUpdate(Elysium::Timestep ts)
@@ -59,7 +59,7 @@ void DummyPlayer::onUpdate(Elysium::Timestep ts)
             RunAnimation.reflectAroundYAxis();
             m_PlayerLookingRight = false;
         }
-        if (m_Player->Velocity.x > -PLAYER_MAX_SPEED) m_Player->Impulse.x += -PLAYER_SPEED * m_Player->getMass() * ts;
+        if (getBody().Velocity.x > -PLAYER_MAX_SPEED) getBody().Impulse.x += -PLAYER_SPEED * getBody().getMass() * ts;
         m_TextureData = RunAnimation.getCurrentTexture();
     }
     else if (Elysium::Input::isKeyPressed(RightKey))
@@ -70,7 +70,7 @@ void DummyPlayer::onUpdate(Elysium::Timestep ts)
             RunAnimation.reflectAroundYAxis();
             m_PlayerLookingRight = true;
         }
-        if (m_Player->Velocity.x < PLAYER_MAX_SPEED) m_Player->Impulse.x += PLAYER_SPEED * m_Player->getMass() * ts;
+        if (getBody().Velocity.x < PLAYER_MAX_SPEED) getBody().Impulse.x += PLAYER_SPEED * getBody().getMass() * ts;
         m_TextureData = RunAnimation.getCurrentTexture();
     }
     else
@@ -78,6 +78,26 @@ void DummyPlayer::onUpdate(Elysium::Timestep ts)
         RunAnimation.reset();
         m_TextureData = m_IdleTexture;
         if (!m_PlayerLookingRight) m_TextureData.reflectAroundYAxis();
+    }
+}
+
+void DummyPlayer::applyImpulseOnBall(Elysium::KeyPressedEvent& event) const
+{
+    if (glm::distance(getBody().Position, getBall().Position) < SoccerRange)
+    {
+        Elysium::Vector2 direction = normalize(getBall().Position - getBody().Position);
+        if (event.getKeyCode() == KickKey)
+        {
+            getBall().Impulse += KickImpulse * BALL_SPEED * direction * getBall().getMass();
+        }
+        else if (event.getKeyCode() == LobKey)
+        {
+            getBall().Impulse += KickImpulse * Elysium::Vector2(direction.x, 0.70710678118f) * getBall().getMass();
+        }
+        else if (event.getKeyCode() == SwapKey)
+        {
+            getBall().Position.x += SwapBall * -direction.x;
+        }
     }
 }
 
@@ -89,17 +109,17 @@ void DummyPlayer::onEvent(Elysium::Event& event)
 
 bool DummyPlayer::onKeyPressedEvent(Elysium::KeyPressedEvent& event)
 {
-    if (Ball)
+    if (m_BallID < std::numeric_limits<uint32_t>::max())
     {
-        if (glm::distance(m_Player->Position, Ball->Position) < SoccerRange)
+        auto& physicsSys = Elysium::PhysicsSystem2D::Get();
+        if (physicsSys.isRunningThread())
         {
-            Elysium::Vector2 direction = normalize(Ball->Position - m_Player->Position);
-            if (event.getKeyCode() == KickKey)
-                Ball->Impulse += KickImpulse * BALL_SPEED * direction * Ball->getMass();
-            else if (event.getKeyCode() == LobKey)
-                Ball->Impulse += KickImpulse * Elysium::Vector2(direction.x, 0.70710678118f) * Ball->getMass();
-            else if (event.getKeyCode() == SwapKey)
-                Ball->Position.x += SwapBall * -direction.x;
+            std::scoped_lock lock(physicsSys.getUpdateMutex());
+            applyImpulseOnBall(event);
+        }
+        else
+        {
+            applyImpulseOnBall(event);
         }
     }
     return false;

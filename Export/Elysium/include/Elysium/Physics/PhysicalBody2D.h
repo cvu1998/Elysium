@@ -9,17 +9,12 @@
 
 namespace Elysium
 {
+    using BodyID = uint32_t;
+
     enum class BodyType
     {
-        NONE = -1,
         STATIC = 0,
         DYNAMIC = 1
-    };
-
-    enum class BodyStatus
-    {
-        INACTIVE = 0,
-        ACTIVE = 1
     };
 
     enum class Collider
@@ -35,11 +30,10 @@ namespace Elysium
 
     struct CollisionInfo
     {
-        bool Collision = false;
-        float minOverlap = std::numeric_limits<float>::max();
         std::array<BodyCollisionInfo, 2> CollisionInfoPair;
-
+        float minOverlap = std::numeric_limits<float>::max();
         Timestep ts;
+        bool Collision = false;
     };
 
     class PhysicsSystem2D;
@@ -55,10 +49,10 @@ namespace Elysium
             )>;
 
     private:
-        BodyType Type = BodyType::NONE;
-        BodyStatus Status = BodyStatus::ACTIVE;
+        BodyType Type = BodyType::STATIC;
         Collider Model = Collider::QUAD;
 
+        unsigned int Id = 0;
         const char* Tag = nullptr;
         float Mass = std::numeric_limits<float>::max();
         float InverseMass = 1.0f;
@@ -76,7 +70,6 @@ namespace Elysium
         
         float ElasticityCoefficient = 1.0f;  // 1 = e = 0 (inelastic) | 2 = e = 1 (elastic)
         float FrictionCoefficient = 1.0f;    // 0 = no friction       | 1 = max friction
-        float GravitationalAccel = 0.0f;
 
         std::vector<Vector2> m_ModelVertices;
         std::vector<Vector2> m_Normals;
@@ -101,6 +94,7 @@ namespace Elysium
     private:
         PhysicalBody2D() = default;
         PhysicalBody2D(
+            BodyID id,
             BodyType type,
             Collider collider,
             const char* tag, float mass,

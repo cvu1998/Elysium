@@ -16,7 +16,7 @@ private:
 
     std::array<Elysium::Vector2, 9> m_Marks;
     std::array<uint32_t, 9> m_MarksTextureIndexes = { 0 };
-    Elysium::BodyHandle m_MarkIndex = 0;
+    unsigned int m_MarkIndex = 0;
     std::array<Elysium::TextureData, 2> m_MarkTextures; // 1 X, 2 O
 
     TicTacToeGrid m_Grid;

@@ -54,7 +54,7 @@ namespace Elysium
         return *s_Instance;
     }
 
-    PhysicalBody2D* PhysicsSystem2D::createPhysicalBody(
+    BodyID PhysicsSystem2D::createPhysicalBody(
         BodyType type,
         Collider collider,
         const char* name,
@@ -64,45 +64,36 @@ namespace Elysium
         PhysicalBody2D::Collision_Callback&& callback
     )
     {
-        if (m_InactiveBodies.empty())
+        BodyID id = static_cast<uint32_t>(m_Bodies.size());
+        if (!m_IdPool.empty())
         {
-            m_Bodies.push_back(std::move(PhysicalBody2D(type, collider, name, mass, initialPosition, size, std::move(callback))));
-            return &m_Bodies[m_Bodies.size() - 1];
+            id = m_IdPool.back();
+            m_IdPool.pop_back();
+            m_BodyIndices[id] = id;
         }
-        BodyHandle body = m_InactiveBodies.back();
-        m_InactiveBodies.pop_back();
-        m_Bodies[body] = PhysicalBody2D(type, collider, name, mass, initialPosition, size, std::move(callback));
-        return &m_Bodies[body];
+        else m_BodyIndices.push_back(id);
+
+        m_Bodies.push_back(std::move(PhysicalBody2D(
+            id,
+            type,
+            collider,
+            name,
+            mass,
+            initialPosition,
+            size,
+            std::move(callback)
+            )
+        )
+        );
+        return id;
     }
 
-    void PhysicsSystem2D::createPhysicalBody(
-        BodyHandle* handle,
-        BodyType type,
-        Collider collider,
-        const char* name,
-        float mass,
-        const Vector2& initialPosition,
-        const Vector2& size,
-        PhysicalBody2D::Collision_Callback&& callback
-    )
+    void PhysicsSystem2D::removePhysicalBody(BodyID id)
     {
-        if (m_InactiveBodies.empty())
-        {
-            m_Bodies.push_back(std::move(PhysicalBody2D(type, collider, name, mass, initialPosition, size, std::move(callback))));
-            *handle = (BodyHandle)m_Bodies.size() - 1;
-            return;
-        }
-        BodyHandle body = m_InactiveBodies.back();
-        m_InactiveBodies.pop_back();
-        m_Bodies[body] = PhysicalBody2D(type, collider, name, mass, initialPosition, size, std::move(callback));
-        *handle = body;
-    }
+        std::swap(m_Bodies[m_BodyIndices[id]], m_Bodies.back());
+        m_Bodies.pop_back();
 
-    void PhysicsSystem2D::removePhysicalBody(BodyHandle body)
-    {
-        m_Bodies[body].Status = BodyStatus::INACTIVE;
-        m_InactiveBodies.push_back(body);
-        std::sort(m_InactiveBodies.begin(), m_InactiveBodies.end(), std::greater());
+        m_IdPool.push_back(id);
     }
 
     bool PhysicsSystem2D::checkBroadPhase(const PhysicalBody2D& body1, const PhysicalBody2D& body2)
@@ -270,18 +261,18 @@ namespace Elysium
         }
     }
 
-    void PhysicsSystem2D::printInfo(BodyHandle i)
+    void PhysicsSystem2D::printBodyInfo(size_t index)
     {
-        ELY_CORE_TRACE("-----Body Tag: {0}-----", m_Bodies[i].Tag);
-        ELY_CORE_TRACE("Position: {0}, {1}", m_Bodies[i].Position.x, m_Bodies[i].Position.y);
-        ELY_CORE_TRACE("Velocity: {0}, {1}", m_Bodies[i].Velocity.x, m_Bodies[i].Velocity.y);
-        ELY_CORE_TRACE("Acceleration: {0}, {1}", m_Bodies[i].Acceleration.x, m_Bodies[i].Acceleration.y);
-        ELY_CORE_TRACE("Rotation: {0}", m_Bodies[i].Rotation);
-        ELY_CORE_TRACE("Force: {0}, {1}", m_Bodies[i].Force.x, m_Bodies[i].Force.y);
-        ELY_CORE_TRACE("Contact Impulse: {0}, {1}", m_Bodies[i].ContactImpulse.x, m_Bodies[i].ContactImpulse.y);
-        ELY_CORE_TRACE("Impulse: {0}, {1}", m_Bodies[i].Impulse.x, m_Bodies[i].Impulse.y);
-        ELY_CORE_TRACE("Contact Normal: {0}, {1}", m_Bodies[i].ContactNormal.x, m_Bodies[i].ContactNormal.y);
-        ELY_CORE_TRACE("Normal: {0}, {1}", m_Bodies[i].Normal.x, m_Bodies[i].Normal.y);
+        ELY_CORE_TRACE("-----Body Tag: {0}-----", m_Bodies[index].Tag);
+        ELY_CORE_TRACE("Position: {0}, {1}", m_Bodies[index].Position.x, m_Bodies[index].Position.y);
+        ELY_CORE_TRACE("Velocity: {0}, {1}", m_Bodies[index].Velocity.x, m_Bodies[index].Velocity.y);
+        ELY_CORE_TRACE("Acceleration: {0}, {1}", m_Bodies[index].Acceleration.x, m_Bodies[index].Acceleration.y);
+        ELY_CORE_TRACE("Rotation: {0}", m_Bodies[index].Rotation);
+        ELY_CORE_TRACE("Force: {0}, {1}", m_Bodies[index].Force.x, m_Bodies[index].Force.y);
+        ELY_CORE_TRACE("Contact Impulse: {0}, {1}", m_Bodies[index].ContactImpulse.x, m_Bodies[index].ContactImpulse.y);
+        ELY_CORE_TRACE("Impulse: {0}, {1}", m_Bodies[index].Impulse.x, m_Bodies[index].Impulse.y);
+        ELY_CORE_TRACE("Contact Normal: {0}, {1}", m_Bodies[index].ContactNormal.x, m_Bodies[index].ContactNormal.y);
+        ELY_CORE_TRACE("Normal: {0}, {1}", m_Bodies[index].Normal.x, m_Bodies[index].Normal.y);
         ELY_CORE_TRACE("-----End-----");
     }
 
@@ -422,61 +413,47 @@ namespace Elysium
     {
         ts = std::min(1.0f / 30.0f, static_cast<float>(ts));
 
-        std::for_each(
-            std::execution::seq,
-            m_Bodies.begin(), 
-            m_Bodies.end(), 
-            [ts, this](PhysicalBody2D& body)
-            {
-                if (body.Status != BodyStatus::INACTIVE)
-                {
-                    if (body.Type == BodyType::DYNAMIC)
-                    {
-                        if (Gravity) body.Force.y = GravitationalAccel * body.Mass;
-                        body.onUpdate(ts);
-
-                        if (body.AllowRotation) body.Rotation += body.AngularVelocity * static_cast<float>(ts);
-                    }
-                    else
-                    {
-                        body.Acceleration = { 0.0f, 0.0f };
-                        body.Velocity = { 0.0f, 0.0f };
-
-                        body.Force = { 0.0f, 0.0f };
-                    }
-
-                    body.Impulse = { 0.0f, 0.0f };
-                    body.ContactImpulse = { 0.0f, 0.0f };
-                    body.ContactNormal = { 0.0f, 0.0f };
-                    body.CallbackExecutions = 0;
-
-                    body.updateBoundsAndNormals();
-                }
-            }
-        );
-
-        size_t index = 0;
-        std::vector<BodyHandle> ssBodies(m_Bodies.size() - m_InactiveBodies.size());
-        for (uint32_t i = 0; i < m_Bodies.size(); ++i)
+        for (unsigned int i = 0; i < m_Bodies.size(); ++i)
         {
-            if (m_Bodies[i].Status == BodyStatus::INACTIVE) continue;
-            ssBodies[index++] = i;
+            if (m_Bodies[i].Type == BodyType::DYNAMIC)
+            {
+                if (Gravity) m_Bodies[i].Force.y = GravitationalAccel * m_Bodies[i].Mass;
+                m_Bodies[i].onUpdate(ts);
+
+               if (m_Bodies[i].AllowRotation) m_Bodies[i].Rotation += m_Bodies[i].AngularVelocity * static_cast<float>(ts);
+            }
+            else
+            {
+                m_Bodies[i].Acceleration = { 0.0f, 0.0f };
+                m_Bodies[i].Velocity = { 0.0f, 0.0f };
+
+                m_Bodies[i].Force = { 0.0f, 0.0f };
+            }
+
+            m_Bodies[i].Impulse = { 0.0f, 0.0f };
+            m_Bodies[i].ContactImpulse = { 0.0f, 0.0f };
+            m_Bodies[i].ContactNormal = { 0.0f, 0.0f };
+            m_Bodies[i].CallbackExecutions = 0;
+
+            m_Bodies[i].updateBoundsAndNormals();
         }
+
         std::sort(
-            ssBodies.begin(),
-            ssBodies.end(),
-            [this](BodyHandle i, BodyHandle j)
+            m_Bodies.begin(),
+            m_Bodies.end(),
+            [this](const PhysicalBody2D& a, const PhysicalBody2D& b)
             {
-                return (m_Bodies[i].MinimumVertex.y < m_Bodies[j].MinimumVertex.y);
+                return a.MinimumVertex.y < b.MinimumVertex.y;
             }
         );
 
-        for (size_t a = 0; a < ssBodies.size(); ++a)
+        unsigned int bodyCount = static_cast<unsigned int>(m_Bodies.size());
+        m_BodyIndices.resize(bodyCount);
+        for (unsigned int i = 0; i < bodyCount; ++i)
         {
-            BodyHandle i = ssBodies[a];
-            for (size_t b = a + 1; b < ssBodies.size(); ++b)
+            m_BodyIndices[m_Bodies[i].Id] = i;
+            for (unsigned int  j = i + 1; j < bodyCount; ++j)
             {
-                BodyHandle j = ssBodies[b];
                 if (m_Bodies[j].MinimumVertex.y > m_Bodies[i].MaximumVertex.y) break;
 
                 if (m_Bodies[j].Type == BodyType::STATIC && m_Bodies[i].Type == BodyType::STATIC) continue;
@@ -493,7 +470,7 @@ namespace Elysium
                             m_Bodies[i].Callback(
                                 m_Bodies[i],
                                 m_Bodies[j],
-                                { true, info.minOverlap, { info.CollisionInfoPair[0], info.CollisionInfoPair[1] }, ts }
+                                { { info.CollisionInfoPair[0], info.CollisionInfoPair[1] }, info.minOverlap, ts, true }
                             );
                         }
 
@@ -502,7 +479,7 @@ namespace Elysium
                             m_Bodies[j].Callback(
                                 m_Bodies[j],
                                 m_Bodies[i],
-                                { true, info.minOverlap, { info.CollisionInfoPair[1], info.CollisionInfoPair[0] }, ts }
+                                { { info.CollisionInfoPair[1], info.CollisionInfoPair[0] }, info.minOverlap, ts, true }
                             );
                         }
                     }
@@ -516,11 +493,11 @@ namespace Elysium
         while (!m_Shutdown.load(std::memory_order_relaxed))
         {
             auto frameID = Application::Get().getFrameID();
-            auto timestep = Application::Get().getTimestep();
-            if (m_LastFrameID < frameID && m_RunUpdateThread.load(std::memory_order_acquire))
+            if (m_LastFrameID < frameID)
             {
-                m_LastFrameID = frameID;
                 std::scoped_lock lock(m_UpdateMutex);
+                m_LastFrameID = frameID;
+                auto timestep = Application::Get().getTimestep();
                 onUpdate(timestep);
             }
         }

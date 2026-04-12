@@ -12,10 +12,24 @@ m_CoinTexture("res/texture/TicTacToeO.png")
     m_CoinTextureData.subtextureCoordinates({ 6.0f, 6.0f }, { 420.0f, 420.0f });
 
     Elysium::PhysicsSystem2D& physicsSys = Elysium::PhysicsSystem2D::Get();
-    physicsSys.createPhysicalBody(&m_Rectangles[8], Elysium::BodyType::STATIC, Elysium::Collider::QUAD, "Rectangle", 0.0f, { 0.0f, -1.0f }, { 25.5f, 2.0f });
+    m_Rectangles[8] = physicsSys.createPhysicalBody(
+        Elysium::BodyType::STATIC,
+        Elysium::Collider::QUAD,
+        "Rectangle", 0.0f,
+        { 0.0f, -1.0f },
+        { 25.5f, 2.0f }
+    );
 
     for (size_t i = 0; i < m_Rectangles.size() - 1; i++)
-        physicsSys.createPhysicalBody(&m_Rectangles[i], Elysium::BodyType::STATIC, Elysium::Collider::QUAD, "Rectangle", 0.0f, { (float)(-12.25f + 3.5f * i), 6.5f }, { 1.0f, 13.0f });
+    {
+        m_Rectangles[i] = physicsSys.createPhysicalBody(
+            Elysium::BodyType::STATIC,
+            Elysium::Collider::QUAD,
+            "Rectangle", 0.0f,
+            { (float)(-12.25f + 3.5f * i), 6.5f },
+            { 1.0f, 13.0f }
+        );
+    }
 
     m_Camera.setPosition({ 0.0f, 5.0f, 0.0f });
 }
@@ -32,7 +46,7 @@ void Connect4Scene::onUpdate(Elysium::Timestep ts)
     {
         if (m_Restart)
         {
-            m_Coins.fill(std::make_pair(nullptr, 0));
+            m_Coins.fill(std::make_pair(0, 0));
             physicsSys.clear();
 
             m_CoinIndex = 0;
@@ -41,28 +55,46 @@ void Connect4Scene::onUpdate(Elysium::Timestep ts)
 
             m_Grid.clear();
 
-            physicsSys.createPhysicalBody(&m_Rectangles[8], Elysium::BodyType::STATIC, Elysium::Collider::QUAD, "Rectangle", 0.0f, { 0.0f, -1.0f }, { 25.5f, 2.0f });
+            Elysium::PhysicsSystem2D& physicsSys = Elysium::PhysicsSystem2D::Get();
+            m_Rectangles[8] = physicsSys.createPhysicalBody(
+                Elysium::BodyType::STATIC,
+                Elysium::Collider::QUAD,
+                "Rectangle", 0.0f,
+                { 0.0f, -1.0f },
+                { 25.5f, 2.0f }
+            );
+
             for (size_t i = 0; i < m_Rectangles.size() - 1; i++)
-                physicsSys.createPhysicalBody(&m_Rectangles[i], Elysium::BodyType::STATIC, Elysium::Collider::QUAD, "Rectangle", 0.0f, { (float)(-12.25f + 3.5f * i), 6.5f }, { 1.0f, 13.0f });
+            {
+                m_Rectangles[i] = physicsSys.createPhysicalBody(
+                    Elysium::BodyType::STATIC,
+                    Elysium::Collider::QUAD,
+                    "Rectangle", 0.0f,
+                    { (float)(-12.25f + 3.5f * i), 6.5f },
+                    { 1.0f, 13.0f }
+                );
+            }
         }
     }
 
-    if (m_MoveCooldown < 0.0f)
-        m_MoveCooldown += ts;
+    if (m_MoveCooldown < 0.0f) m_MoveCooldown += ts;
 
     physicsSys.onUpdate(ts);
 
     Elysium::Renderer::beginScene(m_Camera);
-    for (Elysium::BodyHandle& body : m_Rectangles)
-    {
-        const Elysium::PhysicalBody2D& rectangle = physicsSys.readPhysicalBody(body);
-        Elysium::Renderer::drawQuad(rectangle.Position, rectangle.getSize(), { 0.0f, 0.0f, 1.0f, 1.0f });
-    }
-    for (size_t i = 0; i < m_CoinIndex; i++)
+    for (Elysium::BodyID id : m_Rectangles)
     {
         Elysium::Renderer::drawQuad(
-            m_Coins[i].first->Position,
-            m_Coins[i].first->getSize(),
+            physicsSys.getBody(id).Position,
+            physicsSys.getBody(id).getSize(),
+            { 0.0f, 0.0f, 1.0f, 1.0f }
+        );
+    }
+    for (unsigned int i = 0; i < m_CoinIndex; i++)
+    {
+        Elysium::Renderer::drawQuad(
+            physicsSys.getBody(m_Coins[i].first).Position,
+            physicsSys.getBody(m_Coins[i].first).getSize(),
             m_CoinTextureData,
             { 1.0, 1.0 },
             m_CoinColors[m_Coins[i].second - 1]
@@ -139,8 +171,7 @@ bool Connect4Scene::onMousePressedEvent(Elysium::MouseButtonPressedEvent& event)
                 column = 6;
             }
 
-            if (m_CoinIndex >= 42)
-                m_GameOver = true;
+            if (m_CoinIndex >= 42) m_GameOver = true;
 
             if (m_Grid.isValid(column))
             {

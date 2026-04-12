@@ -7,6 +7,7 @@
 namespace Elysium
 {
     PhysicalBody2D::PhysicalBody2D(
+        BodyID id,
         BodyType type,
         Collider collider,
         const char* tag,
@@ -15,6 +16,7 @@ namespace Elysium
         const Vector2& size,
         Collision_Callback&& callback
     ) :
+        Id(id),
         Type(type),
         Model(collider),
         Tag(tag),

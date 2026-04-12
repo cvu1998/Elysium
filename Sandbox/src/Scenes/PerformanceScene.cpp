@@ -68,15 +68,31 @@ m_Player({ { -12.5f, 20.0f } })
     m_BoxTexture.subtextureCoordinates({ 4, 1 }, { 128, 128 });
 
     Elysium::PhysicsSystem2D& physicsSys = Elysium::PhysicsSystem2D::Get();
-    physicsSys.createPhysicalBody(&m_Ground, Elysium::BodyType::STATIC, Elysium::Collider::QUAD, "Ground", 1000.0f, { 0.0f, 0.0f }, { 5000.0f, 2.0f });
 
-    Elysium::PhysicalBody2D* ground = physicsSys.getPhysicalBody(m_Ground);
-    ground->setFrictionCoefficient(1.0f);
-
-    float depth = -((float)m_GroundLayers.size() * 2.0f);
-    for (size_t i = 0; i < m_GroundLayers.size(); i++)
     {
-        physicsSys.createPhysicalBody(&m_GroundLayers[i], Elysium::BodyType::STATIC, Elysium::Collider::QUAD, "Layer", BOX_MASS, { 0.0f, depth + (float)(2.0f * i) }, { 500.0f, 2.0f });
+        std::scoped_lock lock(physicsSys.getUpdateMutex());
+
+        m_Ground = physicsSys.createPhysicalBody(
+            Elysium::BodyType::STATIC,
+            Elysium::Collider::QUAD, "Ground",
+            1000.0f,
+            { 0.0f, 0.0f },
+            { 5000.0f, 2.0f }
+        );
+
+        physicsSys.getBody(m_Ground).setFrictionCoefficient(1.0f);
+
+        float depth = -((float)m_GroundLayers.size() * 2.0f);
+        for (size_t i = 0; i < m_GroundLayers.size(); i++)
+        {
+            m_GroundLayers[i] = physicsSys.createPhysicalBody(
+                Elysium::BodyType::STATIC,
+                Elysium::Collider::QUAD,
+                "Layer", BOX_MASS,
+                { 0.0f, depth + (float)(2.0f * i) },
+                { 500.0f, 2.0f }
+            );
+        }
     }
 }
 
@@ -86,13 +102,15 @@ PerformanceScene::~PerformanceScene()
 
 void PerformanceScene::onUpdate(Elysium::Timestep ts)
 {
-    const Elysium::PhysicalBody2D* player = nullptr;
-    const Elysium::PhysicalBody2D* ground = nullptr;
+    Elysium::Renderer::beginScene(m_Camera);
+    Elysium::Renderer::drawQuad({ 0.0f, 15.0f }, { 1000.0f, 30.0f }, m_Background, { 15.0f, 1.0f });
+    Elysium::Renderer::endScene();
+
     Elysium::PhysicsSystem2D& physicsSys = Elysium::PhysicsSystem2D::Get();
+
+    unsigned int count = 0;
     {
         std::scoped_lock lock(physicsSys.getUpdateMutex());
-        player = m_Player.getBody();
-        ground = &physicsSys.readPhysicalBody(m_Ground);
 
         m_SpawnTime += ts;
         if (m_Index < m_Boxes.size() && m_SpawnTime > 0.05f)
@@ -100,62 +118,82 @@ void PerformanceScene::onUpdate(Elysium::Timestep ts)
             float x = (Elysium::Random::Float() * 200.0f) - 100.0f;
             const float y = (float)m_Boxes.size() / 10.0f;
             Elysium::Vector2 position = { x, y };
-            physicsSys.createPhysicalBody(&m_Boxes[m_Index], Elysium::BodyType::DYNAMIC, Elysium::Collider::QUAD, "Box", BOX_MASS, position, { 2.0f, 2.0f });
+            m_Boxes[m_Index] = physicsSys.createPhysicalBody(
+                Elysium::BodyType::DYNAMIC,
+                Elysium::Collider::QUAD, "Box",
+                BOX_MASS,
+                position,
+                { 2.0f, 2.0f });
 
-            Elysium::PhysicalBody2D* box = physicsSys.getPhysicalBody(m_Boxes[m_Index]);
-            box->setFrictionCoefficient(1.0f);
+            physicsSys.getBody(m_Boxes[m_Index]).setFrictionCoefficient(1.0f);
 
             m_Index++;
             m_SpawnTime = 0.0f;
         }
+
+        m_Camera.setPosition(
+            {
+            m_Player.getBody().Position.x,
+            m_Player.getBody().Position.y + (m_Player.getBody().getSize().y * 4.0f),
+            0.0f
+            }
+        );
+
+        auto mousePosition = Elysium::Input::getMousePosition();
+        auto width = Elysium::Application::Get().getWindow().getWidth();
+        auto height = Elysium::Application::Get().getWindow().getHeight();
+
+        m_Particle.Position = m_Camera.getScreenToWorldPosition(width, height, mousePosition);
+        m_Particle2.Position = { m_Player.getBody().Position.x, m_Player.getBody().Position.y };
+        for (int i = 0; i < 5; i++)
+        {
+            Elysium::ParticleSystem2D::Get().Emit(m_Particle);
+            Elysium::ParticleSystem2D::Get().Emit(m_Particle2);
+        }
+        Elysium::ParticleSystem2D::Get().onUpdate<Elysium::UpdateDevice::CPU>(ts);
+        Elysium::ParticleSystem2D::Get().onRender<Elysium::UpdateDevice::CPU>(m_Camera);
+
+        Elysium::Renderer::beginScene(m_Camera);
+        Elysium::Renderer::drawQuad(
+            m_Player.getBody().Position,
+            m_Player.getBody().getSize(),
+            m_Player.m_TextureData
+        );
+        Elysium::Renderer::drawQuadWithRotation(
+            physicsSys.getBody(m_Ground).Position,
+            physicsSys.getBody(m_Ground).getSize(),
+            physicsSys.getBody(m_Ground).Rotation,
+            m_GroundTexture
+        );
+        for (Elysium::BodyID id : m_GroundLayers)
+        {
+            Elysium::Renderer::drawQuad(
+                physicsSys.getBody(id).Position,
+                physicsSys.getBody(id).getSize(),
+                m_GroundTexture);
+        }
+
+        for (size_t i = 0; i < m_Index; i++)
+        {
+            Elysium::Renderer::drawQuadWithRotation(
+                physicsSys.getBody(m_Boxes[i]).Position,
+                physicsSys.getBody(m_Boxes[i]).getSize(),
+                physicsSys.getBody(m_Boxes[i]).Rotation,
+                m_BoxTexture
+            );
+            count += static_cast<unsigned int>(physicsSys.getBody(m_Boxes[i]).Position.y > 0.0f);
+        }
+        Elysium::Renderer::endScene();
+
+        m_Player.onUpdate(ts);
     }
-
-    m_Camera.setPosition({ player->Position.x, player->Position.y + (player->getSize().y * 4.0f), 0.0f });
-
-    Elysium::Renderer::beginScene(m_Camera);
-    Elysium::Renderer::drawQuad({ 0.0f, 15.0f }, { 1000.0f, 30.0f }, m_Background, { 15.0f, 1.0f });
-    Elysium::Renderer::endScene();
-
-    auto mousePosition = Elysium::Input::getMousePosition();
-    auto width = Elysium::Application::Get().getWindow().getWidth();
-    auto height = Elysium::Application::Get().getWindow().getHeight();
-
-    m_Particle.Position = m_Camera.getScreenToWorldPosition(width, height, mousePosition);
-    m_Particle2.Position = { player->Position.x, player->Position.y };
-    for (int i = 0; i < 5; i++)
-    {
-        Elysium::ParticleSystem2D::Get().Emit(m_Particle);
-        Elysium::ParticleSystem2D::Get().Emit(m_Particle2);
-    }
-    Elysium::ParticleSystem2D::Get().onUpdate<Elysium::UpdateDevice::CPU>(ts);
-    Elysium::ParticleSystem2D::Get().onRender<Elysium::UpdateDevice::CPU>(m_Camera);
-
-    m_Player.onUpdate(ts);
-
-    Elysium::Renderer::beginScene(m_Camera);
-    Elysium::Renderer::drawQuad(player->Position, player->getSize(), m_Player.m_TextureData);
-    Elysium::Renderer::drawQuad(ground->Position, ground->getSize(), m_GroundTexture);
-    for (Elysium::BodyHandle& body : m_GroundLayers)
-    {
-        const Elysium::PhysicalBody2D& layer = physicsSys.readPhysicalBody(body);
-        Elysium::Renderer::drawQuad(layer.Position, layer.getSize(), m_GroundTexture);
-    }
-    unsigned int number = 0;
-    for (size_t i = 0; i < m_Index; i++)
-    {
-        const Elysium::PhysicalBody2D& b = physicsSys.readPhysicalBody(m_Boxes[i]);
-        Elysium::Renderer::drawQuadWithRotation(b.Position, b.getSize(), b.Rotation, m_BoxTexture);
-        if (b.Position.y > 0.0f)
-            number++;
-    }
-    Elysium::Renderer::endScene();
 
     ImGui::Begin("Statistics");
     ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
     ImGui::Text("Number of Draw Calls: %d", Elysium::Renderer::getStats().DrawCount);
     ImGui::Text("Number of Quads: %d", Elysium::Renderer::getStats().QuadCount);
     ImGui::Text("Number of Boxes: %d / %d", m_Index, m_Boxes.size());
-    ImGui::Text("Number of Valid Boxes: %d / %d", number, m_Index);
+    ImGui::Text("Number of Valid Boxes: %d / %d", count, m_Index);
     ImGui::End();
 
     Elysium::Renderer::resetStats();

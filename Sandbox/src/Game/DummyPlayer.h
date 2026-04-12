@@ -5,7 +5,8 @@
 class DummyPlayer
 {
 private:
-    Elysium::PhysicalBody2D* m_Player;
+    Elysium::BodyID m_PlayerID;
+    Elysium::BodyID m_BallID = std::numeric_limits<uint32_t>::max();
 
     static constexpr size_t s_RunAnimationSize = 8;
 
@@ -15,7 +16,10 @@ private:
 
     int KickKey = ELY_KEY_S;
     int LobKey = ELY_KEY_Q;
-    int SwapKey = ELY_KEY_E;
+    int SwapKey = ELY_KEY_E;\
+
+private:
+    void applyImpulseOnBall(Elysium::KeyPressedEvent& event) const;
 
 public:
     float m_FrameRate = 9.0f;
@@ -23,9 +27,6 @@ public:
     Elysium::Animation<s_RunAnimationSize> RunAnimation;
     Elysium::TextureData m_TextureData;
     Elysium::TextureData m_IdleTexture; 
-
-    Elysium::PhysicalBody2D* Ball = nullptr;
-    unsigned long long m_FrameID = 0;
 
 public:
     DummyPlayer(
@@ -38,7 +39,10 @@ public:
         int swap = ELY_KEY_E
     );
 
-    inline Elysium::PhysicalBody2D* getBody() { return m_Player; }
+    Elysium::PhysicalBody2D& getBody() const { return Elysium::PhysicsSystem2D::Get().getBody(m_PlayerID); }
+    Elysium::PhysicalBody2D& getBall() const { return Elysium::PhysicsSystem2D::Get().getBody(m_BallID); }
+
+    void setBallID(Elysium::BodyID ballID) { m_BallID = ballID; }
 
     void onUpdate(Elysium::Timestep ts);
 
